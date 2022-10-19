@@ -5,10 +5,22 @@ import React from 'react';
 
 class App extends React.Component {
 
+  constructor(props) {
+    super(props);
+    this.state = {events: []};
+  }
+
   async componentDidMount() {
     console.log('[App] componentDidMount')
     await socketHasConnected();
-    socket.emit("ping", 'custom-data-sent-from-client', (data) => console.log('received data from socket', data))
+    socket.emit("events/fetch", {}, (res) => {
+      //console.log(res)
+      this.setState({
+        events: res
+      },() => {
+        console.log(this.state.events[0].title)
+      })
+    })
   }
 
   render() {
@@ -27,6 +39,11 @@ class App extends React.Component {
           >
             Learn React
           </a>
+          {this.state.events.map(ele => {
+            return (
+              <p>{ele.title}</p>
+            )
+          })}
         </header>
       </div>
       );
