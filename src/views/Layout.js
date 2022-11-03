@@ -1,4 +1,3 @@
-import logo from '../logo.svg';
 import '../App.css';
 import {socket,socketHasConnected} from '../websocket/socket'
 import React from 'react';
