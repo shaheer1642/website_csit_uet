@@ -6,6 +6,7 @@ import { Outlet, Link } from "react-router-dom";
 
 class Layout extends React.Component {
 
+
   async componentDidMount() {
     console.log('[Layout] componentDidMount')
     await socketHasConnected();
@@ -13,22 +14,26 @@ class Layout extends React.Component {
   }
 
   render() {
+    const tablink = {
+      color: "white",
+      backgroundColor: "DodgerBlue",
+      padding: "10px",
+      fontFamily: "Arial"
+    };
+
     return (
       <div className="App">
         <header className="App-header">
+          <div style={{width: "100vw"}}>
           <nav>
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/login">Login</Link>
-              </li>
-              <li>
-                <Link to="/about">About</Link>
-              </li>
-            </ul>
+                <Link to="/">
+                  <button style={tablink} type="button">Home Page</button>
+                </Link>
+                <Link to="/about">
+                  <button style={tablink} type="button">About</button>
+                </Link>
           </nav>
+          </div>
           <Outlet />
         </header>
       </div>
