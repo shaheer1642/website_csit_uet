@@ -27,8 +27,7 @@ class MainHome extends React.Component {
 
   render() {
     return (
-        <Box sx={{ width: '100%'}}>
-          <Grid container style={{margin: 10, right: 0}}>
+          <Grid container style={{margin: 20}}>
 
             <Grid xs={8}>
               <Typography style={{textAlign: 'left'}} variant="h4">
@@ -38,14 +37,14 @@ class MainHome extends React.Component {
                 The Department of Computer Science & Information Technology offers undergraduate and graduate courses leading to the award of Bachelor of Science and Master of Science in Computer Science respectively. It owes its emergence to the relentlessly growing demand of professionals with expertise in areas of computers, communications and information processing technologies. The Department of CS & IT enjoys full support of the engineering departments. Students work in laboratories equipped with state-of-art computer systems running a wide range of applications and specialized software supporting the courses. The department strongly supports the idea of using modern audio visual aids to enhance the learning capabilities of students and provides them a stimulating and challenging environment essential for high quality education. The graduates of this department will be able to meet the highest standards of training for leadership in computer science and information technology and to capitalize on the huge IT market of the 21st century. The Department of Computer Science & Information Technology is concerned with the theory, design, development of computer Science & Information processing techniques.
               </Typography>
               
-                <Tabs value={this.state.tabValue} onChange={(event, newValue) => this.setState({tabValue: newValue})} TabIndicatorProps={tabStyle.indicatorColor}>
+                <Tabs variant="scrollable" value={this.state.tabValue} onChange={(event, newValue) => this.setState({tabValue: newValue})} TabIndicatorProps={tabStyle.indicatorColor}>
                   <Tab label="Mission" style={ this.state.tabValue === 0 ? tabStyle.active : tabStyle.label}/>
                   <Tab label="Laboratories" style={ this.state.tabValue === 1 ? tabStyle.active : tabStyle.label}/>
                   <Tab label="Industrial Visits" style={ this.state.tabValue === 2 ? tabStyle.active : tabStyle.label}/>
                   <Tab label="Study Tour" style={ this.state.tabValue === 3 ? tabStyle.active : tabStyle.label}/>
                   <Tab label="Internships" style={ this.state.tabValue === 4 ? tabStyle.active : tabStyle.label}/>
                 </Tabs>
-              <div style={{height: 250}}>
+              <div style={{height: 250, overflow: 'auto'}}>
                 <TabPanel value={this.state.tabValue} index={0}>
                   <div>The mission of the CS & IT department is:</div>
                   <div>- To educate undergraduate and graduate majors as well as the broader campus community in the fundamental concepts of the computing disciplines, to create and disseminate computing knowledge and technology, and to use our expertise in computing to help solve societal problems.</div>
@@ -68,15 +67,22 @@ class MainHome extends React.Component {
               </div>
             </Grid>
 
-            <Grid xs={4}>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit6.png" style={{width: "40%", marginTop: 5}} alt="csit_image_1"/>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit4.png" style={{width: "40%", marginTop: 5, marginLeft: 5}} alt="csit_image_2"/>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit2.png" style={{width: "40%", marginTop: 5}} alt="csit_image_3"/>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit3.png" style={{width: "40%", marginTop: 5, marginLeft: 5}} alt="csit_image_4"/>
+            <Grid container xs={4} spacing={0.5}>
+              <Grid item xs={12} md={12} lg={6}>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit6.png" style={{minWidth: '100%'}} alt="csit_image_1"/>
+              </Grid>
+              <Grid item xs={12} md={12} lg={6}>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit4.png" style={{minWidth: '100%'}} alt="csit_image_2"/>
+              </Grid>
+              <Grid item xs={12} md={12} lg={6}>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit2.png" style={{minWidth: '100%'}} alt="csit_image_3"/>
+              </Grid>
+              <Grid item xs={12} md={12} lg={6}>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit3.png" style={{minWidth: '100%'}} alt="csit_image_4"/>
+              </Grid>
             </Grid>
 
           </Grid>
-        </Box>
       );
   }
 }
