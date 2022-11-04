@@ -2,7 +2,8 @@ import {socket,socketHasConnected} from '../websocket/socket'
 import React from 'react';
 import { Link, Outlet } from "react-router-dom";
 import {Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography} from '@mui/material';
-import footerImg from '../images/image1.jpg'
+import footerImg from '../images/website_footer.jpg'
+import bannerImg from '../images/website_banner.jpg'
 
 const styles = {
   tabStyle: {
@@ -51,7 +52,7 @@ class MainLayout extends React.Component {
     return (
       <Grid container spacing={1}>
         <Grid item xs={12} md={12} lg={12}>
-          <img src="https://www.uetpeshawar.edu.pk/images/banner.jpg" style={{width: "100%", marginTop: 5}} alt="uet_banner"/>
+          <img src={bannerImg} style={{width: "100%", marginTop: 5}} alt="uet_banner"/>
         </Grid>
         <Grid item xs={12} md={12} lg={12}>
           <Tabs variant="scrollable" value={this.state.tabValue} onChange={(event, newValue) => this.setState({tabValue: newValue})} TabIndicatorProps={styles.tabStyle.indicatorColor} style={{backgroundColor: styles.tabStyle.background.color}}>

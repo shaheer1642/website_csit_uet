@@ -27,7 +27,7 @@ class MainHome extends React.Component {
 
   render() {
     return (
-          <Grid container style={{margin: 20}}>
+          <Grid container spacing={1} style={{margin: 20}}>
 
             <Grid xs={12} md={8} lg={8}>
               <Typography style={{textAlign: 'left'}} variant="h4">
@@ -69,18 +69,18 @@ class MainHome extends React.Component {
 
             <Grid container xs={12} md={4} lg={4} rowSpacing={0.5} columnSpacing={0.5}>
               <Grid item xs={6} md={12} lg={6}>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit6.png" style={{minWidth: '100%'}} alt="csit_image_1"/>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit6.png" alt="csit_image_1"/>
               </Grid>
               <Grid item xs={6} md={12} lg={6}>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit4.png" style={{minWidth: '100%'}} alt="csit_image_2"/>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit4.png" alt="csit_image_2"/>
               </Grid>
               <Grid item xs={6} md={12} lg={6}>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit2.png" style={{minWidth: '100%'}} alt="csit_image_3"/>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit2.png" alt="csit_image_3"/>
               </Grid>
               <Grid item xs={6} md={12} lg={6}>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit3.png" style={{minWidth: '100%'}} alt="csit_image_4"/>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit3.png" alt="csit_image_4"/>
               </Grid>
-            </Grid>
+            </Grid> 
 
           </Grid>
       );
