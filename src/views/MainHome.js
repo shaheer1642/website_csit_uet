@@ -70,9 +70,9 @@ class MainHome extends React.Component {
 
             <Grid xs={4}>
                 <img src="https://www.uetpeshawar.edu.pk/images/csit6.png" style={{width: "40%", marginTop: 5}} alt="csit_image_1"/>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit4.png" style={{width: "40%", marginTop: 5, marginLeft: 5}} alt="csit_image_1"/>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit2.png" style={{width: "40%", marginTop: 5}} alt="csit_image_1"/>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit3.png" style={{width: "40%", marginTop: 5, marginLeft: 5}} alt="csit_image_1"/>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit4.png" style={{width: "40%", marginTop: 5, marginLeft: 5}} alt="csit_image_2"/>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit2.png" style={{width: "40%", marginTop: 5}} alt="csit_image_3"/>
+                <img src="https://www.uetpeshawar.edu.pk/images/csit3.png" style={{width: "40%", marginTop: 5, marginLeft: 5}} alt="csit_image_4"/>
             </Grid>
 
           </Grid>
