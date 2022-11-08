@@ -1,9 +1,10 @@
-import {socket,socketHasConnected} from '../websocket/socket'
+
 import React from 'react';
 import { Link, Outlet } from "react-router-dom";
 import {Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography} from '@mui/material';
 import footerImg from '../images/website_footer.jpg'
 import bannerImg from '../images/website_banner.jpg'
+import {socket,socketHasConnected} from '../websocket/socket'
 
 const styles = {
   tabStyle: {
@@ -62,7 +63,7 @@ class MainLayout extends React.Component {
                 <Tab label="Centers" to="/about" component={Link} style={ this.state.tabValue === 3 ? styles.tabStyle.active : styles.tabStyle.label}/>
                 <Tab label="Admission" to="/about" component={Link} style={ this.state.tabValue === 4 ? styles.tabStyle.active : styles.tabStyle.label}/>
                 <Tab label="Campuses" to="/about" component={Link} style={ this.state.tabValue === 5 ? styles.tabStyle.active : styles.tabStyle.label}/>
-                <Tab label="CMS" to="/login" component={Link} style={ this.state.tabValue === 6 ? styles.tabStyle.active : styles.tabStyle.label}/>
+                <Tab label="MIS" to="/login" component={Link} style={ this.state.tabValue === 6 ? styles.tabStyle.active : styles.tabStyle.label}/>
                 <Tab label="QEC" to="/about" component={Link} style={ this.state.tabValue === 7 ? styles.tabStyle.active : styles.tabStyle.label}/>
                 <Tab label="ORIC" to="/about" component={Link} style={ this.state.tabValue === 8 ? styles.tabStyle.active : styles.tabStyle.label}/>
                 <Tab label="CDC" to="/about" component={Link} style={ this.state.tabValue === 9 ? styles.tabStyle.active : styles.tabStyle.label}/>
