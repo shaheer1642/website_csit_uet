@@ -5,20 +5,34 @@ import {Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, B
 import {AccountCircle, Password, Visibility, VisibilityOff} from '@mui/icons-material';
 
 const palletes = {
-  primary: '#26768c',
-  secondary: '#c16a3f'
+  primary: '#439CEF',
+  secondary: '#FFFFFF'
 }
 
 const styles = {
   container: {
+    backgroundColor:palletes.primary,
+    background: [
+      
+      "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
+    ],
+ 
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
     width: "100vw",
-    height: "100%"
+    height: "100%",
+   
+
   },
   loginPanel: {
-    border: '5px solid ' + palletes.secondary,
+ 
+    background: "rgba(255, 255, 255, 0.01)",
+    borderRadius: "16px",
+    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.2)",
+
+
+
     display: "flex",
     flexDirection: "column",
     justifyContent: 'center',
@@ -80,7 +94,7 @@ class Login extends React.Component {
       <div style={styles.container}>
         <div style={styles.loginPanel}>
           <div style={styles.header}>
-              <Typography style={{color: palletes.secondary}} variant="h4">
+              <Typography style={{color: palletes.primary}} variant="h4">
                 Login
               </Typography>
           </div>

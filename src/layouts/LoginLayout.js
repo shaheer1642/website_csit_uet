@@ -7,12 +7,14 @@ import { Box } from '@mui/system';
 import login_banner from '../images/login_banner.jpg'
 
 const palletes = {
-  primary: '#26768c',
-  secondary: '#c16a3f'
+  primary: '#439CEF',
+  secondary: '#FFFFFF'
 }
 
 const styles = {
   container: {
+    color: palletes.primary,
+    
     display: 'flex',
     margin: 0,
     padding: 0,
@@ -26,10 +28,15 @@ const styles = {
   header: {
     display: 'flex',
     flex: 1,
-    backgroundColor: palletes.primary,
-    borderBottom: "4px solid " + palletes.secondary,
+  
+    background: [
+      
+      "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
+    ],
+
     width: "100%",
     alignSelf: 'flex-start',
+  
     //opacity: 0.8
   },
   body: {
@@ -43,8 +50,11 @@ const styles = {
   footer: {
     display: 'flex',
     flex: 1,
-    backgroundColor: palletes.primary,
-    borderTop: "4px solid " + palletes.secondary,
+    background: [
+      
+      "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
+    ],
+
     width: "100%",
     alignSelf: 'flex-end',
     //opacity: 0.8
@@ -61,6 +71,9 @@ class LoginLayout extends React.Component {
     return (
       <div style={styles.container}>
         <div style={styles.header}>
+ 
+       <h1>DigiTransform </h1>
+    
 
         </div>
         <div style={styles.body}>
