@@ -35,7 +35,11 @@ const styles = {
     ],
 
     width: "100%",
-    alignSelf: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: "row",
+
+ 
   
     //opacity: 0.8
   },
@@ -72,7 +76,7 @@ class LoginLayout extends React.Component {
       <div style={styles.container}>
         <div style={styles.header}>
  
-       <h1>DigiTransform </h1>
+       <h1>DigiTransform: An Integrated Departmental MIS</h1>
     
 
         </div>
