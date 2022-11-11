@@ -93,7 +93,7 @@ class Login extends React.Component {
       showPassword: false,
       usernameText: '',
       passwordText: '',
-      alertMsg: 'hiii',
+      alertMsg: '',
     };
   }
 
