@@ -138,7 +138,7 @@ class Login extends React.Component {
               <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                 <AccountCircle sx={{ color: palletes.primary, mr: 1, my: 0.5,  }} />
                 <TextField label="Username" variant="standard" 
-                  sx= {styles.inputFields}
+                  sx= {{...styles.inputFields, width: '85%'}}
                   onChange={(e) => this.setState({usernameText: e.target.value})}
                   />
               </Box>

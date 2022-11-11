@@ -11,50 +11,16 @@ const palletes = {
 
 const styles = {
   container: {
-    backgroundColor:palletes.primary,
+    backgroundColor: palletes.primary,
     background: [
-      
       "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
     ],
- 
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
     width: "100%",
     height: "100%",
   },
-  header: {
-    flex: 1,
-    marginTop: 20
-  },
-  headerTitle: {
-    color: palletes.primary
-  },
-  body: {
-    flex: 4,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    width: '100%',
-    padding: 0,
-    margin: 0,
-  },
-  inputFields: { 
-    m: 1, 
-    width: '75%', 
-    '& label.Mui-focused': {
-      color: palletes.secondary,
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: palletes.secondary,
-    },
-  },
-  button: {
-    width: '75%',
-    marginTop: "3%",
-    backgroundColor: palletes.primary
-  }
 }
 
 export default class MisHome extends React.Component {

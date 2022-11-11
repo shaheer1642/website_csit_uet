@@ -17,7 +17,6 @@ const palletes = {
 const styles = {
   container: {
     color: palletes.primary,
-    
     display: 'flex',
     margin: 0,
     padding: 0,
@@ -31,16 +30,11 @@ const styles = {
   header: {
     display: 'flex',
     flex: 1,
-  
     background: [
-      
       "red"
     ],
-
     width: "100%",
     alignSelf: 'flex-start',
-  
-    //opacity: 0.8
   },
   body: {
     display: 'flex',
@@ -56,10 +50,8 @@ const styles = {
     display: 'flex',
     flex: 1,
     background: [
-      
       "blue"
     ],
-
     width: "100%",
     alignSelf: 'flex-end',
     //opacity: 0.8
@@ -91,7 +83,7 @@ class MisLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      socketConnecting: false,
+      socketConnecting: true,
       drawerValue: 0
     };
     
@@ -99,7 +91,6 @@ class MisLayout extends React.Component {
 
   componentDidMount() {
     console.log('[MisLayout] componentDidMount')
-    console.log(user)
     socketHasConnected().then(() => this.setState({socketConnecting: false})).catch(console.error)
     socket.on('connect', this.SocketConnectedListener)
     socket.on('disconnect', this.SocketDisconnectedListener)
@@ -108,7 +99,7 @@ class MisLayout extends React.Component {
   componentDidUpdate() {
     console.log('[MisLayout] componentDidUpdate')
     if (!user.login_token) {
-      //this.props.navigate("/login")
+      this.props.navigate("/login")
     }
   }
 
