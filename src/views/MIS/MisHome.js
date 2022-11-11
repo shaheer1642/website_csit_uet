@@ -22,24 +22,6 @@ const styles = {
     alignItems: 'center',
     width: "100%",
     height: "100%",
-   
-
-  },
-  loginPanel: {
- 
-    background: "rgba(255, 255, 255, 0.01)",
-    borderRadius: "16px",
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.2)",
-
-
-
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: 'center',
-    alignItems: 'center', 
-    width: "400px",
-    height: "70%",
-    minHeight: "350px",
   },
   header: {
     flex: 1,
