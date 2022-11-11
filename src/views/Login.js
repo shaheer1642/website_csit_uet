@@ -1,12 +1,16 @@
 // eslint-disable-no-unused-vars
 import '../App.css';
 import React from 'react';
-import {Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField} from '@mui/material';
+import {Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField, Alert} from '@mui/material';
 import {AccountCircle, Password, Visibility, VisibilityOff} from '@mui/icons-material';
+import { socket, socketHasConnected } from '../websocket/socket';
+import { withRouter } from '../withRouter';
+import eventHandler from '../eventHandler';
 
 const palletes = {
   primary: '#439CEF',
-  secondary: '#FFFFFF'
+  secondary: '#FFFFFF',
+  tertiary: '#eb8f34'
 }
 
 const styles = {
@@ -26,13 +30,9 @@ const styles = {
 
   },
   loginPanel: {
- 
     background: "rgba(255, 255, 255, 0.01)",
     borderRadius: "16px",
     boxShadow: "0 4px 30px rgba(0, 0, 0, 0.2)",
-
-
-
     display: "flex",
     flexDirection: "column",
     justifyContent: 'center',
@@ -72,6 +72,17 @@ const styles = {
     width: '75%',
     marginTop: "3%",
     backgroundColor: palletes.primary
+  },
+  alertBox: {
+    width:'100%', 
+    borderRadius: 0, 
+    color: palletes.tertiary, // text color
+    borderColor: palletes.tertiary, 
+    py: "5px", 
+    px: "10px",
+    '& .MuiAlert-icon': {
+      color: palletes.tertiary, // icon color
+    },
   }
 }
 
@@ -81,12 +92,35 @@ class Login extends React.Component {
     this.state = {
       showPassword: false,
       usernameText: '',
-      passwordText: ''
+      passwordText: '',
+      alertMsg: 'hiii',
     };
   }
 
-  handleOnClickLogin = () => {
-    console.log(this.state.usernameText, this.state.passwordText)
+  handleOnClickLogin = async () => {
+    await socketHasConnected()
+    if (this.state.usernameText == "") {
+      return this.setState({
+        alertMsg: "Enter username"
+      }, () => setTimeout(() => this.setState({alertMsg: ''}), 3000))
+    }
+    if (this.state.passwordText == "") {
+      return this.setState({
+        alertMsg: "Enter password"
+      }, () => setTimeout(() => this.setState({alertMsg: ''}), 3000))
+    }
+    //console.log(this.state.usernameText, this.state.passwordText)
+    socket.emit('login/auth',{username: this.state.usernameText, password: this.state.passwordText}, res => {
+      if (res.code == 200) {
+        console.log('logged in')
+        eventHandler.emit('login/auth', res.data)
+        this.props.navigate("/mis")
+      } else {
+        this.setState({
+          alertMsg: res.message
+        }, () => setTimeout(() => this.setState({alertMsg: ''}), 3000))
+      }
+    })
   }
 
   render() {
@@ -100,6 +134,7 @@ class Login extends React.Component {
           </div>
           <div style={styles.body}>
             <Box sx={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}>
+              {this.state.alertMsg == ''? <></>:<Alert variant= "outlined" severity="warning" sx={styles.alertBox}>{this.state.alertMsg}</Alert>}
               <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                 <AccountCircle sx={{ color: palletes.primary, mr: 1, my: 0.5,  }} />
                 <TextField label="Username" variant="standard" 
@@ -122,7 +157,7 @@ class Login extends React.Component {
               </Box>
             </Box>
             <Button variant="contained" sx={styles.button} onClick={this.handleOnClickLogin}>Login</Button>
-            <Link href='/' style={{marginTop: '3%'}}>Forgot Password?</Link>
+            <Link href='/' style={{marginTop: '3%'}}>Reset Password</Link>
           </div>
         </div>
       </div>
@@ -130,4 +165,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default withRouter(Login);

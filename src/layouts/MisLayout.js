@@ -6,6 +6,8 @@ import {Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography} from
 import { Box } from '@mui/system';
 import login_banner from '../images/login_banner.jpg'
 import EstablishingConnection from '../views/EstablishingConnection';
+import {user} from '../objects/User';
+import { withRouter } from '../withRouter';
 
 const palletes = {
   primary: '#439CEF',
@@ -62,23 +64,31 @@ const styles = {
   }
 }
 
-class LoginLayout extends React.Component {
+class MisLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      socketConnecting: true,
+      socketConnecting: false,
     };
+    
   }
 
   componentDidMount() {
-    console.log('[LoginLayout] componentDidMount')
+    console.log('[MisLayout] componentDidMount')
+    console.log(user)
     socketHasConnected().then(() => this.setState({socketConnecting: false})).catch(console.error)
     socket.on('connect', this.SocketConnectedListener)
     socket.on('disconnect', this.SocketDisconnectedListener)
   }
 
+  componentDidUpdate() {
+    console.log('[MisLayout] componentDidUpdate')
+    if (!user.login_token)
+      this.props.navigate("/login")
+  }
+
   componentWillUnmount() {
-    console.log('[LoginLayout] componentWillUnmount')
+    console.log('[MisLayout] componentWillUnmount')
     socket.removeListener(this.SocketConnectedListener)
     socket.removeListener(this.SocketDisconnectedListener)
   }
@@ -92,10 +102,6 @@ class LoginLayout extends React.Component {
         {this.state.socketConnecting ? <EstablishingConnection />:
           <div style={styles.container}>
             <div style={styles.header}>
-    
-          <h1>DigiTransform </h1>
-        
-
             </div>
             <div style={styles.body}>
               <Outlet/>
@@ -110,4 +116,4 @@ class LoginLayout extends React.Component {
   }
 }
 
-export default LoginLayout;
+export default withRouter(MisLayout)

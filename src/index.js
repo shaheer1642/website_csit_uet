@@ -8,7 +8,9 @@ import About from "./views/About";
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from "./theme";
-import {socket} from './websocket/socket';
+import MisLayout from "./layouts/MisLayout";
+import MisHome from "./views/MIS/MisHome";
+import React from "react";
 
 export default function Router() {
   return (
@@ -20,6 +22,9 @@ export default function Router() {
         </Route>
         <Route path="/login" element={<LoginLayout />}>
           <Route index element={<Login />} />
+        </Route>
+        <Route path="/mis" element={<MisLayout />}>
+          <Route index element={<MisHome />} />
         </Route>
       </Routes>
     </BrowserRouter>
