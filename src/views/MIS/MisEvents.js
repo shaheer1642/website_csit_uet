@@ -75,7 +75,7 @@ const styles = {
   }
 }
 
-export default class MisHome extends React.Component {
+export default class MisEvents extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -86,7 +86,7 @@ export default class MisHome extends React.Component {
     return (
       <div style={styles.container}>
         <Typography style={{color: palletes.primary}} variant="h4">
-          MIS Dashboard
+          MIS Events
         </Typography>
       </div>
       );
