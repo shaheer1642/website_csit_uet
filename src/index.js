@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import LoginLayout from "./layouts/LoginLayout";
 import MainHome from "./views/MainHome";
-import Login from "./views/Login";
+import Login from "./views/Login/Login";
 import About from "./views/About";
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
