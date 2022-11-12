@@ -17,17 +17,13 @@ const styles = {
   container: {
     backgroundColor:palletes.primary,
     background: [
-      
       "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
     ],
- 
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
     width: "100vw",
     height: "100%",
-   
-
   },
   loginPanel: {
     background: "rgba(255, 255, 255, 0.01)",
@@ -37,8 +33,8 @@ const styles = {
     flexDirection: "column",
     justifyContent: 'center',
     alignItems: 'center', 
-    width: "400px",
-    height: "70%",
+    width: "450px",
+    height: "75%",
     minHeight: "350px",
   },
   header: {
@@ -64,17 +60,10 @@ const styles = {
   inputFields: { 
     m: 1, 
     width: '75%', 
-    '& label.Mui-focused': {
-      color: palletes.secondary,
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: palletes.secondary,
-    },
   },
   button: {
     width: '75%',
     marginTop: "3%",
-    backgroundColor: palletes.primary
   },
   alertBox: {
     warning: {
@@ -197,14 +186,14 @@ class Login extends React.Component {
                     </Zoom>
                     <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                       <AccountCircle sx={{ color: palletes.primary, mr: 1, my: 0.5,  }} />
-                      <TextField label="Username" variant="standard" inputProps={{ tabIndex: "1" }}
+                      <TextField color='textField1' label="Username" variant="standard" inputProps={{ tabIndex: "1" }}
                         sx= {{...styles.inputFields, width: '85%'}}
                         onChange={(e) => this.setState({usernameText: e.target.value})}
                         />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                       <Password sx={{ color: palletes.primary, mr: 1, my: 0.5,  }} />
-                      <TextField label="Password" variant="standard" inputProps={{ tabIndex: "2" }}
+                      <TextField color='textField1' label="Password" variant="standard" inputProps={{ tabIndex: "2" }}
                         sx= {styles.inputFields}
                         onChange={(e) => this.setState({passwordText: e.target.value})}
                         type= {this.state.showPassword ? 'text':'password'}
@@ -216,7 +205,7 @@ class Login extends React.Component {
                       </IconButton>
                     </Box>
                   </Box>
-                  <Button variant="contained" sx={styles.button} onClick={this.handleOnClickLogin} tabIndex={"3"}>Login</Button>
+                  <Button variant="contained" color="button1" sx={styles.button} onClick={this.handleOnClickLogin} tabIndex={3}>Login</Button>
                   <Link href="#" style={{marginTop: '3%'}} onClick={() => this.setState({panelToggle: 'reset'})}>Reset Password</Link>
                 </Box>
               </Fade>
@@ -228,14 +217,14 @@ class Login extends React.Component {
                     </Zoom>
                     <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                       <AccountCircle sx={{ color: palletes.primary, mr: 1, my: 0.5,  }} />
-                      <TextField label="Username" variant="standard" inputProps={{ tabIndex: "1" }}
+                      <TextField color='textField1' label="Username" variant="standard" inputProps={{ tabIndex: "1" }}
                         sx= {{...styles.inputFields, width: '85%'}}
                         onChange={(e) => this.setState({usernameText: e.target.value})}
                         />
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                       <Password sx={{ color: palletes.primary, mr: 1, my: 0.5,  }} />
-                      <TextField label="Old Password" variant="standard" inputProps={{ tabIndex: "2" }}
+                      <TextField color='textField1' label="Old Password" variant="standard" inputProps={{ tabIndex: "2" }}
                         sx= {styles.inputFields}
                         onChange={(e) => this.setState({passwordText: e.target.value})}
                         type= {this.state.showPassword ? 'text':'password'}
@@ -248,7 +237,7 @@ class Login extends React.Component {
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                       <Password sx={{ color: palletes.primary, mr: 1, my: 0.5,  }} />
-                      <TextField label="New Password" variant="standard" inputProps={{ tabIndex: "3" }}
+                      <TextField color='textField1' label="New Password" variant="standard" inputProps={{ tabIndex: "3" }}
                         sx= {styles.inputFields}
                         onChange={(e) => this.setState({newPasswordText: e.target.value})}
                         type= {this.state.showPassword ? 'text':'password'}
@@ -260,7 +249,7 @@ class Login extends React.Component {
                       </IconButton>
                     </Box>
                   </Box>
-                  <Button variant="contained" sx={styles.button} onClick={this.handleOnClickReset} tabIndex={"4"}>Reset</Button>
+                  <Button variant="contained" color="button1" sx={styles.button} onClick={this.handleOnClickReset} tabIndex={4}>Reset</Button>
                   <Link href="#" style={{marginTop: '3%'}} onClick={() => this.setState({panelToggle: 'login'})}>Login</Link>
                 </Box>
               </Fade>

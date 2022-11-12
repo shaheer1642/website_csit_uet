@@ -28,8 +28,9 @@ const styles = {
   },
   header: {
     display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     flex: 1,
-  
     background: [
       
       "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
@@ -92,10 +93,9 @@ class LoginLayout extends React.Component {
         {this.state.socketConnecting ? <EstablishingConnection />:
           <div style={styles.container}>
             <div style={styles.header}>
-    
-          <h1>DigiTransform </h1>
-        
-
+              <Typography style={{color: palletes.primary}} variant="h1">
+                Welcome to CS&IT MIS
+              </Typography>
             </div>
             <div style={styles.body}>
               <Outlet/>

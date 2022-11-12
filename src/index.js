@@ -7,7 +7,7 @@ import Login from "./views/Login/Login";
 import About from "./views/About";
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from "./theme";
+import theme from "./Theme";
 import MisLayout from "./layouts/MisLayout";
 import MisHome from "./views/MIS/MisHome";
 import MisEvents from "./views/MIS/MisEvents";
@@ -36,7 +36,7 @@ export default function Router() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <Router />
-  </ThemeProvider>,
+      <CssBaseline />
+      <Router />
+  </ThemeProvider>
 );
