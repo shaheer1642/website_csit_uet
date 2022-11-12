@@ -7,7 +7,7 @@ import Login from "./views/Login/Login";
 import About from "./views/About";
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from "./Theme";
+import theme from "./theme";
 import MisLayout from "./layouts/MisLayout";
 import MisHome from "./views/MIS/MisHome";
 import MisEvents from "./views/MIS/MisEvents";
