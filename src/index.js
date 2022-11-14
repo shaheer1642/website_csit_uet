@@ -3,12 +3,15 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import LoginLayout from "./layouts/LoginLayout";
 import MainHome from "./views/MainHome";
-import Login from "./views/Login";
+import Login from "./views/Login/Login";
 import About from "./views/About";
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from "./theme";
-import {socket} from './websocket/socket';
+import MisLayout from "./layouts/MisLayout";
+import MisHome from "./views/MIS/MisHome";
+import MisEvents from "./views/MIS/MisEvents";
+import React from "react";
 
 export default function Router() {
   return (
@@ -21,6 +24,10 @@ export default function Router() {
         <Route path="/login" element={<LoginLayout />}>
           <Route index element={<Login />} />
         </Route>
+        <Route path="/mis" element={<MisLayout />}>
+          <Route index element={<MisHome />} />
+          <Route path="events" element={<MisEvents />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
@@ -29,7 +36,7 @@ export default function Router() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>
-    <CssBaseline />
-    <Router />
-  </ThemeProvider>,
+      <CssBaseline />
+      <Router />
+  </ThemeProvider>
 );
