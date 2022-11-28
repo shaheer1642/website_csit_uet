@@ -1,7 +1,8 @@
 
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import {Box, Grid, Tabs, Tab} from '@mui/material';
+import {Box, Grid, Tabs, Tab, Button} from '@mui/material';
+import { socket } from '../websocket/socket';
 
 const tabStyle = {
   indicatorColor: {
@@ -21,15 +22,49 @@ class MainHome extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabValue: 0
+      tabValue: 0,
+      eventsArr: []
     };
+  }
+
+  componentDidMount() {
+    socket.emit('events/fetch',{},(res) => {
+      if (res.code == 200) {
+        return this.setState({
+          eventsArr: res.data
+        })
+      }
+    })
+    
+    socket.addEventListener('events/listener/insert',this.eventsListenerInsert)
+    socket.addEventListener('events/listener/delete',this.eventsListenerDelete)
+  }
+
+  componentWillUnmount() {
+    socket.removeEventListener('events/listener/insert',this.eventsListenerInsert)
+    socket.removeEventListener('events/listener/delete',this.eventsListenerDelete)
+  }
+
+  eventsListenerInsert = (res) => {
+    if (res.code == 200) {
+      return this.setState({
+        eventsArr: [...this.state.eventsArr, res.data]
+      })
+    }
+  }
+  eventsListenerDelete = (res) => {
+    if (res.code == 200) {
+      return this.setState({
+        eventsArr: this.state.eventsArr.filter((event) => event.event_id != res.data.event_id)
+      })
+    }
   }
 
   render() {
     return (
           <Grid container spacing={1} style={{margin: 20}}>
 
-            <Grid xs={12} md={8} lg={8}>
+            <Grid item xs={12} md={8} lg={8}>
               <Typography style={{textAlign: 'left'}} variant="h4">
                 Department Of Computer Science & Information Technology Peshawar Campus
               </Typography>
@@ -68,17 +103,35 @@ class MainHome extends React.Component {
             </Grid>
 
             <Grid container xs={12} md={4} lg={4} rowSpacing={0.5} columnSpacing={0.5}>
-              <Grid item xs={6} md={12} lg={6}>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit6.png" alt="csit_image_1"/>
+              <Grid item xs={12}>
+                <Grid item xs={6} md={12} lg={6}>
+                  <img src="https://www.uetpeshawar.edu.pk/images/csit6.png" alt="csit_image_1"/>
+                </Grid>
+                <Grid item xs={6} md={12} lg={6}>
+                  <img src="https://www.uetpeshawar.edu.pk/images/csit4.png" alt="csit_image_2"/>
+                </Grid>
+                <Grid item xs={6} md={12} lg={6}>
+                  <img src="https://www.uetpeshawar.edu.pk/images/csit2.png" alt="csit_image_3"/>
+                </Grid>
+                <Grid item xs={6} md={12} lg={6}>
+                  <img src="https://www.uetpeshawar.edu.pk/images/csit3.png" alt="csit_image_4"/>
+                </Grid>
               </Grid>
-              <Grid item xs={6} md={12} lg={6}>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit4.png" alt="csit_image_2"/>
-              </Grid>
-              <Grid item xs={6} md={12} lg={6}>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit2.png" alt="csit_image_3"/>
-              </Grid>
-              <Grid item xs={6} md={12} lg={6}>
-                <img src="https://www.uetpeshawar.edu.pk/images/csit3.png" alt="csit_image_4"/>
+              <Grid item xs={12}>
+                {this.state.eventsArr.map((event) => {
+                  return (
+                    <Grid container>
+                      <Grid item xs={6}>
+                      <Typography>{event.title}</Typography>
+                      </Grid>
+                      <Grid item xs={6}>
+                      <Button onClick={() => {
+                        socket.emit('events/delete',{event_id: event.event_id},(res) => {})
+                      }}>Del</Button>
+                      </Grid>
+                    </Grid>
+                  )
+                })}
               </Grid>
             </Grid> 
 
