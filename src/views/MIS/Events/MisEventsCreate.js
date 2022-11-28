@@ -3,7 +3,7 @@ import React from 'react';
 import { Grid, TextField, Typography, Button } from '@mui/material';
 import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';
 import { socket } from '../../../websocket/socket';
-import user from '../../../objects/User';
+import {user} from '../../../objects/User';
 
 const palletes = {
   primary: '#439CEF',
