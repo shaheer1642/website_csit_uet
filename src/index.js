@@ -10,7 +10,8 @@ import { ThemeProvider } from '@mui/material/styles';
 import theme from "./theme";
 import MisLayout from "./layouts/MisLayout";
 import MisHome from "./views/MIS/MisHome";
-import MisEvents from "./views/MIS/MisEvents";
+import MisEvents from "./views/MIS/Events/MisEvents";
+import MisEventsCreate from "./views/MIS/Events/MisEventsCreate";
 import React from "react";
 
 export default function Router() {
@@ -27,6 +28,7 @@ export default function Router() {
         <Route path="/mis" element={<MisLayout />}>
           <Route index element={<MisHome />} />
           <Route path="events" element={<MisEvents />} />
+          <Route path="events/create" element={<MisEventsCreate />} />
         </Route>
       </Routes>
     </BrowserRouter>

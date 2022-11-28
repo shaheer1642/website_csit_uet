@@ -1,8 +1,9 @@
 // eslint-disable-no-unused-vars
 import React from 'react';
-import {Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button} from '@mui/material';
-import {AccountCircle, Password, Visibility, VisibilityOff} from '@mui/icons-material';
-import { socket } from '../../websocket/socket';
+import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button } from '@mui/material';
+import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';
+import { socket } from '../../../websocket/socket';
+import { withRouter } from '../../../withRouter';
 
 const palletes = {
   primary: '#439CEF',
@@ -11,7 +12,7 @@ const palletes = {
 
 const styles = {
   container: {
-    backgroundColor:palletes.primary,
+    backgroundColor: palletes.primary,
     background: [
       "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
     ],
@@ -23,7 +24,7 @@ const styles = {
   }
 }
 
-export default class MisEvents extends React.Component {
+class MisEvents extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,22 +32,37 @@ export default class MisEvents extends React.Component {
     };
   }
 
+  handleChangePage = (event, newPage) => {
+    this.setState({
+      page: newPage
+    })
+  };
+
+  handleChangeRowsPerPage = (event) => {
+    this.setState({
+      rowsPerPage: +event.target.value,
+      page: 0
+    })
+  };
+
   componentDidMount() {
-    socket.emit('events/fetch',{},(res) => {
+    socket.emit('events/fetch', {}, (res) => {
       if (res.code == 200) {
         return this.setState({
-          eventsArr: res.data
+          eventsArr: res.data,
+          page: 0,
+          rowsPerPage: 10,
         })
       }
     })
-    
-    socket.addEventListener('events/listener/insert',this.eventsListenerInsert)
-    socket.addEventListener('events/listener/delete',this.eventsListenerDelete)
+
+    socket.addEventListener('events/listener/insert', this.eventsListenerInsert)
+    socket.addEventListener('events/listener/delete', this.eventsListenerDelete)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('events/listener/insert',this.eventsListenerInsert)
-    socket.removeEventListener('events/listener/delete',this.eventsListenerDelete)
+    socket.removeEventListener('events/listener/insert', this.eventsListenerInsert)
+    socket.removeEventListener('events/listener/delete', this.eventsListenerDelete)
   }
 
   eventsListenerInsert = (res) => {
@@ -65,47 +81,15 @@ export default class MisEvents extends React.Component {
   }
 
   render() {
+    const columns = [
+      { id: 'title', label: 'Title' },
+      { id: 'body', label: 'Body' },
+      { id: 'creation_timestamp', label: 'Created At' },
+      { id: 'expiry_timestamp', label: 'Expires' }
+    ];
     return (
       <Grid container style={styles.container}>
-        <EventsList eventsArr={this.state.eventsArr}/>
-      </Grid>
-      );
-  }
-}
-
-class EventsList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      page: 0,
-      rowsPerPage: 10,
-    };
-  }
-
-  handleChangePage = (event, newPage) => {
-    this.setState({
-      page: newPage
-    })
-  };
-
-  handleChangeRowsPerPage = (event) => {
-    this.setState({
-      rowsPerPage: +event.target.value,
-      page: 0
-    })
-  };
-
-  render() {
-    const columns = [
-      { id: 'title', label: 'Title'},
-      { id: 'body', label: 'Body'},
-      { id: 'creation_timestamp', label: 'Created At'},
-      { id: 'expiry_timestamp', label: 'Expires'}
-    ];
-
-    return (
-        <Grid container>
-        <Typography variant="h1" style={{margin: '10px'}}>Events</Typography>
+        <Typography variant="h1" style={{ margin: '10px' }}>Events</Typography>
         <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: 'darkGrey', margin: '10px' }}>
           <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader>
@@ -123,8 +107,8 @@ class EventsList extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.props.eventsArr.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-                  .map((event,index) => {
+                {this.state.eventsArr.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                  .map((event, index) => {
                     return (
                       <TableRow onClick={() => console.log('row clicked')} hover role="checkbox" tabIndex={-1} key={index}>
                         {columns.map((column) => {
@@ -144,15 +128,17 @@ class EventsList extends React.Component {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={this.props.eventsArr.length}
+            count={this.state.eventsArr.length}
             rowsPerPage={this.state.rowsPerPage}
             page={this.state.page}
             onPageChange={this.handleChangePage}
             onRowsPerPageChange={this.handleChangeRowsPerPage}
           />
-      </Paper>
-      <Button variant="contained" color="button1" sx={{margin: '10px'}} onClick={() => {}}>Create New</Button>
+        </Paper>
+        <Button variant="contained" color="button1" sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')}>Create New</Button>
       </Grid>
-    )
+    );
   }
 }
+
+export default withRouter(MisEvents);
