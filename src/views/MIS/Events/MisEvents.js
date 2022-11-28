@@ -28,7 +28,9 @@ class MisEvents extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      eventsArr: []
+      eventsArr: [],
+      page: 0,
+      rowsPerPage: 10,
     };
   }
 
@@ -49,9 +51,7 @@ class MisEvents extends React.Component {
     socket.emit('events/fetch', {}, (res) => {
       if (res.code == 200) {
         return this.setState({
-          eventsArr: res.data,
-          page: 0,
-          rowsPerPage: 10,
+          eventsArr: res.data
         })
       }
     })
