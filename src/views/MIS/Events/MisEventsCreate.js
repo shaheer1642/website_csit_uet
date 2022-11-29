@@ -4,6 +4,8 @@ import { Grid, TextField, Typography, Button, Zoom, Alert } from '@mui/material'
 import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';
 import { socket } from '../../../websocket/socket';
 import { user } from '../../../objects/User';
+import CustomTextField from '../../../components/CustomTextField';
+import CustomButton from '../../../components/CustomButton';
 
 const palletes = {
   primary: '#439CEF',
@@ -83,7 +85,7 @@ export default class MisEventsCreate extends React.Component {
             </Zoom>
           </Grid>
           <Grid item xs={6}>
-            <TextField required variant="filled" style={{ width: '100%' }} color='textField1' label="Title" onChange={(e) => this.setState({ title: e.target.value })} />
+            <CustomTextField required variant="filled" style={{ width: '100%' }} label="Title" onChange={(e) => this.setState({ title: e.target.value })} />
           </Grid>
           <Grid item xs={6}>
             <TextField
@@ -98,15 +100,17 @@ export default class MisEventsCreate extends React.Component {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField required multiline rows={3} sx={{ width: '100%' }} variant="filled" color='textField1' label="Body" onChange={(e) => this.setState({ body: e.target.value })} />
+            <CustomTextField required multiline rows={3} sx={{ width: '100%' }} variant="filled" label="Body" onChange={(e) => this.setState({ body: e.target.value })} />
           </Grid>
           <Grid item xs={12}>
-            <Button variant="contained" color="button1" onClick={() => {
-              socket.emit('events/create', {
-                title: this.state.title,
-                body: this.state.body,
-                expiry_timestamp: this.state.expiry_timestamp
-              },res => {
+            <CustomButton 
+              label='Create'
+              onClick={() => {
+                socket.emit('events/create', {
+                  title: this.state.title,
+                  body: this.state.body,
+                  expiry_timestamp: this.state.expiry_timestamp
+              }, res => {
                 this.setState({
                   alertMsg: res.code == 200 ? "Event created successfully":`${res.status}: ${res.message}`,
                   alertSeverity: res.code == 200 ? 'success':'warning'
@@ -118,7 +122,7 @@ export default class MisEventsCreate extends React.Component {
                   }, () => setTimeout(() => this.setState({alertMsg: ''}), 3000))
                 }
               })
-            }}>Create</Button>
+            }} />
           </Grid>
         </Grid>
       </Grid>

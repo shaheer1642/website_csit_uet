@@ -5,6 +5,7 @@ import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-m
 import { socket } from '../../../websocket/socket';
 import { withRouter } from '../../../withRouter';
 import CustomTable from '../../../components/CustomTable';
+import CustomButton from '../../../components/CustomButton';
 
 const palletes = {
   primary: '#439CEF',
@@ -76,8 +77,8 @@ class MisEvents extends React.Component {
     return (
       <Grid container style={styles.container}>
         <Typography variant="h1" style={{ margin: '10px' }}>Events</Typography>
-        <CustomTable rows={this.state.eventsArr} columns={columns}/>
-        <Button variant="contained" color="button1" sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')}>Create New</Button>
+        <CustomTable  rows={this.state.eventsArr} columns={columns} />
+        <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New"/>
       </Grid>
     );
   }
