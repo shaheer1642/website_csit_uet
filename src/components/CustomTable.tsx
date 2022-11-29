@@ -7,11 +7,11 @@ import LoadingIcon from './LoadingIcon';
 const defaultStyles = {
   colors: {
     headerTextColor: 'white',
-    headerBackgroundColor: Color.blue[500],
+    headerBackgroundColor: Color.orange[500],
     rowTextColor: 'black',
     rowBackgroundColor: 'white',
-    footerTextColor: 'white',
-    footerBackgroundColor: Color.blue[500],
+    footerTextColor: 'black',
+    footerBackgroundColor: 'white',
   }
 }
 

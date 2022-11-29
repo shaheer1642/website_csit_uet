@@ -5,6 +5,7 @@ import * as Color from '@mui/material/colors';
 import { SxProps, Theme } from '@mui/material';
 
 const defaultStyles = {
+    /*
     colors: {
         inputTextColor: 'black',
 
@@ -14,6 +15,7 @@ const defaultStyles = {
         underlineColor: 'grey',
         underlineFocusedColor: Color.orange[700],
     },
+    */
     font: {
         size: "18px",
         family: "Arial"
@@ -27,11 +29,11 @@ interface IProps {
     tabIndex?: number,
     fontSize?: number,
     fontFamily?: string,
-    inputTextColor?: string,
-    labelColor?: string,
-    labelFocusedColor: 'black',
-    underlineFocusedColor: string,
-    underlineColor: string,
+    //inputTextColor?: string,
+    //labelColor?: string,
+    //labelFocusedColor: 'black',
+    //underlineFocusedColor: string,
+    //underlineColor: string,
     sx?: SxProps<Theme> | undefined,
     style?: React.CSSProperties | undefined,
     type?: React.HTMLInputTypeAttribute | undefined,
@@ -50,6 +52,7 @@ export default class CustomTextField extends React.Component<IProps> {
         fontSize: this.props.fontSize || defaultStyles.font.size,
         fontFamily: this.props.fontFamily || defaultStyles.font.family,
 
+        /*
         '& .MuiInput-underline:before': { borderBottomColor: this.props.underlineColor || defaultStyles.colors.underlineColor },
         '& .MuiInput-underline:after': { borderBottomColor: this.props.underlineFocusedColor || defaultStyles.colors.underlineFocusedColor },
         '& .MuiFilledInput-underline:before': { borderBottomColor: this.props.underlineColor || defaultStyles.colors.underlineColor },
@@ -57,15 +60,17 @@ export default class CustomTextField extends React.Component<IProps> {
 
         '& .MuiInput-input': { color: this.props.inputTextColor || defaultStyles.colors.inputTextColor },
 
-        '& .MuiInputLabel-root': { color: this.props.labelColor || defaultStyles.colors.labelColor },
+        '& .MuiInputLabel-standard': { color: this.props.labelColor || defaultStyles.colors.labelColor },
+        '& .MuiInputLabel-filled': { color: this.props.labelColor || defaultStyles.colors.labelColor },
         '& .MuiInputLabel-shrink': { color: this.props.labelFocusedColor || defaultStyles.colors.labelFocusedColor },
+        */
     }
 
     return (
         <TextField
+            color="primary"
             label={this.props.label} 
             variant={this.props.variant || "standard"}
-            //sx= {{...styles, ...this.props.sx}}
             sx= {{...styles, ...this.props.sx}}
             style= {this.props.style}
             onChange={this.props.onChange}

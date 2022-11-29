@@ -32,7 +32,6 @@ const styles = {
     alignItems: 'center',
     flex: 1,
     background: [
-      
       "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
     ],
 

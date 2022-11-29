@@ -78,7 +78,7 @@ export default class MisEventsCreate extends React.Component {
         <Grid item xs={12}>
           <Typography variant="h1" style={{ margin: '10px' }}>Create new event</Typography>
         </Grid>
-        <Grid container xs={12} rowSpacing={'10px'} columnSpacing={'10px'} style={{ margin: '10px' }}>
+        <Grid container rowSpacing={'10px'} columnSpacing={'10px'} style={{ margin: '10px' }}>
           <Grid item xs={12}>
             <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
               <Alert variant= "outlined" severity={this.state.alertSeverity} sx={styles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
@@ -90,9 +90,8 @@ export default class MisEventsCreate extends React.Component {
           <Grid item xs={6}>
             <TextField
               label="Event Expiry"
-              color="textField1"
               type="date"
-              defaultValue={new Date()}
+              defaultValue={new Date().toISOString().split('T')[0]}
               InputLabelProps={{
                 shrink: true,
               }}
