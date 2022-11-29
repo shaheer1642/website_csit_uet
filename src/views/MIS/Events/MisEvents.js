@@ -4,6 +4,7 @@ import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody,
 import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';
 import { socket } from '../../../websocket/socket';
 import { withRouter } from '../../../withRouter';
+import CustomTable from '../../../components/CustomTable';
 
 const palletes = {
   primary: '#439CEF',
@@ -28,24 +29,9 @@ class MisEvents extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      eventsArr: [],
-      page: 0,
-      rowsPerPage: 10,
+      eventsArr: []
     };
   }
-
-  handleChangePage = (event, newPage) => {
-    this.setState({
-      page: newPage
-    })
-  };
-
-  handleChangeRowsPerPage = (event) => {
-    this.setState({
-      rowsPerPage: +event.target.value,
-      page: 0
-    })
-  };
 
   componentDidMount() {
     socket.emit('events/fetch', {}, (res) => {
@@ -82,59 +68,15 @@ class MisEvents extends React.Component {
 
   render() {
     const columns = [
-      { id: 'title', label: 'Title' },
-      { id: 'body', label: 'Body' },
-      { id: 'creation_timestamp', label: 'Created At' },
-      { id: 'expiry_timestamp', label: 'Expires' }
+      { id: 'title', label: 'Title', format: (value) => value},
+      { id: 'body', label: 'Body', format: (value) => value },
+      { id: 'creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString() },
+      { id: 'expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() }, 
     ];
     return (
       <Grid container style={styles.container}>
         <Typography variant="h1" style={{ margin: '10px' }}>Events</Typography>
-        <Paper sx={{ width: '100%', overflow: 'hidden', backgroundColor: 'darkGrey', margin: '10px' }}>
-          <TableContainer sx={{ maxHeight: 440 }}>
-            <Table stickyHeader>
-              <TableHead>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                    >
-                      {column.label}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.state.eventsArr.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-                  .map((event, index) => {
-                    return (
-                      <TableRow onClick={() => console.log('row clicked')} hover role="checkbox" tabIndex={-1} key={index}>
-                        {columns.map((column) => {
-                          const value = event[column.id];
-                          return (
-                            <TableCell key={column.id} align={column.align}>
-                              {value}
-                            </TableCell>
-                          );
-                        })}
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={this.state.eventsArr.length}
-            rowsPerPage={this.state.rowsPerPage}
-            page={this.state.page}
-            onPageChange={this.handleChangePage}
-            onRowsPerPageChange={this.handleChangeRowsPerPage}
-          />
-        </Paper>
+        <CustomTable rows={this.state.eventsArr} columns={columns}/>
         <Button variant="contained" color="button1" sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')}>Create New</Button>
       </Grid>
     );

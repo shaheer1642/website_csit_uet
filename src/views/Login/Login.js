@@ -5,6 +5,7 @@ import {AccountCircle, Password, Visibility, VisibilityOff} from '@mui/icons-mat
 import { socket } from '../../websocket/socket';
 import { withRouter } from '../../withRouter';
 import eventHandler from '../../eventHandler';
+import backgroundImage from '../../images/login_banner.jpg';
 
 const palletes = {
   primary: '#439CEF',
@@ -15,6 +16,7 @@ const palletes = {
 
 const styles = {
   container: {
+    backgroundImage: `url(${backgroundImage})`,
     backgroundColor:palletes.primary,
     background: [
       "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
@@ -127,6 +129,7 @@ class Login extends React.Component {
         eventHandler.emit('login/auth', res.data)
         this.props.navigate("/mis")
       } else {
+        console.log(res)
         this.setState({
           alertMsg: res.message,
           alertSeverity: 'warning'
