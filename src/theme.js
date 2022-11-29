@@ -3,8 +3,8 @@ import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
-    button1: { main: Color.blue[500], dark: Color.blue[900], contrastText: 'white'},
-    textField1: { main: Color.blue[500], dark: Color.blue[900], contrastText: 'white'}
+    button1: { main:'white', dark: Color.brown[400], contrastText: 'black'},
+    textField1: { main: 'white', dark: 'white', contrastText: 'white',light: 'white' ,text:'white'}
   }
 });
 

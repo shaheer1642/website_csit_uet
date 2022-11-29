@@ -5,9 +5,10 @@ import {AccountCircle, Password, Visibility, VisibilityOff} from '@mui/icons-mat
 import { socket } from '../../websocket/socket';
 import { withRouter } from '../../withRouter';
 import eventHandler from '../../eventHandler';
+import background from "../../images/LoginPageImage.jpg";
 
 const palletes = {
-  primary: '#439CEF',
+  primary: '#FFFFFF',
   secondary: '#FFFFFF',
   alertWarning: '#eb8f34',
   alertSuccess: 'green'
@@ -15,10 +16,12 @@ const palletes = {
 
 const styles = {
   container: {
-    backgroundColor:palletes.primary,
-    background: [
-      "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
-    ],
+    
+    backgroundImage: `url(${background})`,
+    backgroundPosition: 'center', /* Center the image */
+    backgroundRepeat: 'no-repeat',/* Do not repeat the image */
+    backgroundSize: 'cover', 
+  
     display: "flex",
     justifyContent: 'center',
     alignItems: 'center',
@@ -26,15 +29,17 @@ const styles = {
     height: "100%",
   },
   loginPanel: {
-    background: "rgba(255, 255, 255, 0.01)",
+    background: "rgba(150, 150, 150, 0.45)",
     borderRadius: "16px",
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.2)",
+    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+    backdropFilter: "blur(4px)",
+
     display: "flex",
     flexDirection: "column",
     justifyContent: 'center',
     alignItems: 'center', 
     width: "450px",
-    height: "75%",
+    padding:'50px',
     minHeight: "350px",
   },
   header: {
@@ -59,6 +64,7 @@ const styles = {
   },
   inputFields: { 
     m: 1, 
+  
     width: '75%', 
   },
   button: {
@@ -206,7 +212,7 @@ class Login extends React.Component {
                     </Box>
                   </Box>
                   <Button variant="contained" color="button1" sx={styles.button} onClick={this.handleOnClickLogin} tabIndex={3}>Login</Button>
-                  <Link href="#" style={{marginTop: '3%'}} onClick={() => this.setState({panelToggle: 'reset'})}>Reset Password</Link>
+                  <Link href="#" style={{marginTop: '3%',color: palletes.primary,textDecorationColor: 'white'}} onClick={() => this.setState({panelToggle: 'reset'})}>Reset Password</Link>
                 </Box>
               </Fade>
               <Fade direction={'up'} in={this.state.panelToggle == 'reset' ? true:false}  timeout={this.state.panelToggle == 'reset' ? 500 : 0} mountOnEnter unmountOnExit>
@@ -250,7 +256,7 @@ class Login extends React.Component {
                     </Box>
                   </Box>
                   <Button variant="contained" color="button1" sx={styles.button} onClick={this.handleOnClickReset} tabIndex={4}>Reset</Button>
-                  <Link href="#" style={{marginTop: '3%'}} onClick={() => this.setState({panelToggle: 'login'})}>Login</Link>
+                  <Link href="#" style={{marginTop: '3%',color: palletes.primary,textDecorationColor: 'white'}} onClick={() => this.setState({panelToggle: 'login'})}>Login</Link>
                 </Box>
               </Fade>
           </div>

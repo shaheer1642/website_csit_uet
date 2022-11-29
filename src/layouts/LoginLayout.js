@@ -92,17 +92,11 @@ class LoginLayout extends React.Component {
       <React.Fragment>
         {this.state.socketConnecting ? <EstablishingConnection />:
           <div style={styles.container}>
-            <div style={styles.header}>
-              <Typography style={{color: palletes.primary}} variant="h1">
-                Welcome to CS&IT MIS
-              </Typography>
-            </div>
+
             <div style={styles.body}>
               <Outlet/>
             </div>
-            <div style={styles.footer}>
 
-            </div>
           </div>
         }
       </React.Fragment>
