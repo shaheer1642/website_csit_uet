@@ -10,19 +10,16 @@ const defaultStyles = {
 interface IProps {
   open: boolean,
   title: string,
-  body: string
+  body: string,
+  onClose: Function
 }
 
 interface IState {
-  open: boolean,
 }
 
 export default class CustomModal extends React.Component<IProps,IState> {
   constructor(props) {
     super(props);
-    this.state = {
-      open: this.props.open
-    }
   }
 
   render() {
@@ -40,8 +37,8 @@ export default class CustomModal extends React.Component<IProps,IState> {
 
     return (
       <Modal
-        open={this.state.open}
-        onClose={() => this.setState({open: this.state.open})}
+        open={this.props.open}
+        onClose={() => this.props.onClose()}
       >
         <Grid container sx={styles}>
           <Typography variant="h6" component="h2">
