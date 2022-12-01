@@ -26,7 +26,7 @@ interface column {
 interface IProps {
   rows: Array<any>,
   columns: Array<column>,
-  onRowClick?: Function,
+  onRowClick: Function,
   headerTextColor?: string,
   headerBackgroundColor?: string,
   rowTextColor?: string,
