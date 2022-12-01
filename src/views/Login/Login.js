@@ -238,48 +238,74 @@ class Login extends React.Component {
             </Grid>
           </Fade>
           <Fade direction={'up'} in={this.state.panelToggle == 'reset' ? true : false} timeout={this.state.panelToggle == 'reset' ? 500 : 0} mountOnEnter unmountOnExit>
-            <Box sx={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
-                <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+            <Grid container columnSpacing={'10px'} rowSpacing={'20px'}>
+               <Grid item xs={12}>
+               <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
                   <Alert variant="outlined" severity={this.state.alertSeverity} sx={styles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
                 </Zoom>
-                <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
+               </Grid>
+               
+                  <Grid item xs={3} sx={{display: 'flex',justifyContent:'end', alignItems:'flex-end',}}>
                   <AccountCircle sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
+                  </Grid>
+                  <Grid item xs={6} sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
                   <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Username" inputProps={{ tabIndex: "1" }} tabIndex={1}
-                    style={{ width: '85%' }}
+            
                     onChange={(e) => this.setState({ usernameText: e.target.value })}
                   />
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                  <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
-                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Old Password" tabIndex={2}
-                    style={{ width: '85%' }}
+                  </Grid>
+                 <Grid item xs={3}></Grid>
+               
+             <Grid item xs={3}  sx={{display: 'flex',justifyContent:'end', alignItems:'flex-end',}}>
+             <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
+             </Grid >
+             <Grid item xs={6}  sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
+             <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Old Password" tabIndex={2}
+                   
                     onChange={(e) => this.setState({ passwordText: e.target.value })}
                     type={this.state.showPassword ? 'text' : 'password'}
                   />
-                  <IconButton
+             </Grid>
+             <Grid item xs={3} sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
+             <IconButton
                     onClick={(e) => this.setState({ showPassword: !this.state.showPassword })}
                   >
                     {this.state.showPassword ? <VisibilityOff sx={{ color: palletes.primary }} /> : <Visibility sx={{ color: palletes.primary }} />}
                   </IconButton>
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                  <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
-                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="New Password" tabIndex={3}
-                    style={{ width: '85%' }}
+             </Grid>
+            <Grid item xs={3} sx={{display: 'flex',justifyContent:'end', alignItems:'flex-end',}}>
+            <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
+            </Grid>
+            <Grid item xs={6} sx={{display: 'flex',justifyContent:'center', alignItems:'flex-end',}}>
+            <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="New Password" tabIndex={3}
+               
                     onChange={(e) => this.setState({ newPasswordText: e.target.value })}
                     type={this.state.showPassword ? 'text' : 'password'}
                   />
-                  <IconButton
+            </Grid>
+            <Grid item xs={3}  sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
+            <IconButton
                     onClick={(e) => this.setState({ showPassword: !this.state.showPassword })}
                   >
                     {this.state.showPassword ? <VisibilityOff sx={{ color: palletes.primary }} /> : <Visibility sx={{ color: palletes.primary }} />}
                   </IconButton>
-                </Box>
-              </Box>
-              <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickReset} tabIndex={4} label="Reset" />
-              <Link href="#" style={{ marginTop: '3%', color: palletes.primary, textDecorationColor: 'white' }} onClick={() => this.setState({ panelToggle: 'login' })}>Login</Link>
-            </Box>
+          
+            </Grid>
+            <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
+            <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickReset} tabIndex={4} label="Reset" />
+            </Grid>
+            <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
+            <Link href="#" style={{ marginTop: '3%', color: palletes.primary, textDecorationColor: 'white' }} onClick={() => this.setState({ panelToggle: 'login' })}>Login</Link>
+            </Grid>
+                
+             
+            
+                  
+               
+              
+            
+    
+            </Grid>
           </Fade>
         </div>
       </div>
