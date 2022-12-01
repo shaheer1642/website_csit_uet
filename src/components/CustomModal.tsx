@@ -41,7 +41,7 @@ export default class CustomModal extends React.Component<IProps,IState> {
     return (
       <Modal
         open={this.state.open}
-        onClose={() => this.setState({open: false})}
+        onClose={() => this.setState({open: this.state.open})}
       >
         <Grid container sx={styles}>
           <Typography variant="h6" component="h2">
