@@ -6,6 +6,7 @@ import { socket } from '../../../websocket/socket';
 import { withRouter } from '../../../withRouter';
 import CustomTable from '../../../components/CustomTable';
 import CustomButton from '../../../components/CustomButton';
+import CustomModal from '../../../components/CustomModal';
 
 const palletes = {
   primary: '#439CEF',
@@ -77,8 +78,9 @@ class MisEvents extends React.Component {
     return (
       <Grid container style={styles.container}>
         <Typography variant="h1" style={{ margin: '10px' }}>Events</Typography>
-        <CustomTable  rows={this.state.eventsArr} columns={columns} />
+        <CustomTable onRowClick={(row) => console.log(row)} rows={this.state.eventsArr} columns={columns} />
         <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New"/>
+        <CustomModal title='something' body='new body' open={true} />
       </Grid>
     );
   }

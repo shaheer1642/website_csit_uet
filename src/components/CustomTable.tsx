@@ -26,6 +26,7 @@ interface column {
 interface IProps {
   rows: Array<any>,
   columns: Array<column>,
+  onRowClick?: Function,
   headerTextColor?: string,
   headerBackgroundColor?: string,
   rowTextColor?: string,
@@ -48,11 +49,14 @@ export default class CustomTable extends React.Component<IProps, IState> {
     };
   }
 
+  handleNVEnter = event => {
+    console.log('Enter: ');
+  }
 
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage
-    })
+    })  
   };
 
   handleChangeRowsPerPage = (event) => {
@@ -106,7 +110,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
                 {this.props.rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                   .map((event, index) => {
                     return (
-                      <TableRow onClick={() => console.log('row clicked')} hover role="checkbox" tabIndex={-1} key={index}>
+                      <TableRow onClick={() => this.props.onRowClick(event)} hover role="checkbox" tabIndex={-1} key={index}>
                         {this.props.columns.map((column) => {
                           const value = event[column.id];
                           return (
