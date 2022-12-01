@@ -2,10 +2,10 @@
 import React from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import * as Color from '@mui/material/colors';
 
 interface IProps {
     color?: string | undefined,
-    test?: string | undefined,
 }
 
 export default class LoadingIcon extends React.Component<IProps> {
@@ -15,7 +15,7 @@ export default class LoadingIcon extends React.Component<IProps> {
 
     render() {
         return (
-            <div style={{display: 'flex', flexDirection: 'row', color: this.props.color || 'blue', margin: '20px'}}>
+            <div style={{display: 'flex', flexDirection: 'row', color: this.props.color || Color.orange[500], margin: '20px'}}>
                 <Spinner animation="grow" size="sm" />
                 <Spinner animation="grow" />
             </div>

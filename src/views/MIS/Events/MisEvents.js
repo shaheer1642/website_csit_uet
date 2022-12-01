@@ -7,6 +7,7 @@ import { withRouter } from '../../../withRouter';
 import CustomTable from '../../../components/CustomTable';
 import CustomButton from '../../../components/CustomButton';
 import CustomModal from '../../../components/CustomModal';
+import * as Color from '@mui/material/colors';
 
 const palletes = {
   primary: '#439CEF',

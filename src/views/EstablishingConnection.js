@@ -1,7 +1,6 @@
 
 import React from 'react';
-import Spinner from 'react-bootstrap/Spinner';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import LoadingIcon from '../components/LoadingIcon';
 
 const palletes = {
   primary: '#439CEF',
@@ -27,10 +26,7 @@ export default class EstablishingConnection extends React.Component {
   render() {
     return (
       <div style={styles.container}>
-        <div style={{display: 'flex', flexDirection: 'row', color: 'white'}}>
-          <Spinner animation="grow" size="sm" />
-          <Spinner animation="grow" />
-        </div>
+        <LoadingIcon color='white' />
         <div style={{marginTop: 20, fontSize: 28, color: 'white'}}>
           Establishing Connection
         </div>

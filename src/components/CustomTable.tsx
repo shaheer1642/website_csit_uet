@@ -10,6 +10,7 @@ const defaultStyles = {
     headerBackgroundColor: Color.orange[500],
     rowTextColor: 'black',
     rowBackgroundColor: 'white',
+    nthRowBackgroundColor: Color.orange[200],
     footerTextColor: 'black',
     footerBackgroundColor: 'white',
   }
@@ -31,6 +32,7 @@ interface IProps {
   headerBackgroundColor?: string,
   rowTextColor?: string,
   rowBackgroundColor?: string,
+  nthRowBackgroundColor?: string,
   footerTextColor?: string,
   footerBackgroundColor?: string,
 }
@@ -84,8 +86,9 @@ export default class CustomTable extends React.Component<IProps, IState> {
       },
     }));
     const StyledTableRow = styled(TableRow)(({ theme }) => ({
+      backgroundColor: this.props.rowBackgroundColor || defaultStyles.colors.rowBackgroundColor,
       '&:nth-of-type(odd)': {
-        backgroundColor: this.props.rowBackgroundColor || defaultStyles.colors.rowBackgroundColor,
+        backgroundColor: this.props.nthRowBackgroundColor || defaultStyles.colors.nthRowBackgroundColor,
       },
       // hide last border
       '&:last-child td, &:last-child th': {
@@ -95,7 +98,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
 
     return (
       <Paper sx={{ width: '100%', overflow: 'hidden', margin: '10px' }}>
-        {this.props.rows.length == 0 ? <LoadingIcon /> :
+        {this.props.rows.length == 0 ? <LoadingIcon color={Color.orange[500]} /> :
         <React.Fragment>
           <TableContainer sx={{ maxHeight: 440 , backgroundColor: styles.background}}>
             <Table stickyHeader>
