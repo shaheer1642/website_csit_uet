@@ -58,6 +58,7 @@ export default class CustomTextField extends React.Component<IProps> {
 
         '& .MuiInput-input': { color: this.props.inputTextColor || defaultStyles.colors.inputTextColor },
 
+        '& .MuiIFormLabel-root': {color: this.props.labelColor || defaultStyles.colors.labelColor },
         '& .MuiInputLabel-standard': { color: this.props.labelColor || defaultStyles.colors.labelColor },
         '& .MuiInputLabel-filled': { color: this.props.labelColor || defaultStyles.colors.labelColor },
         '& .MuiInputLabel-shrink': { color: this.props.labelFocusedColor || defaultStyles.colors.labelFocusedColor },

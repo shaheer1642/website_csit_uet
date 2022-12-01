@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination } from '@mui/material';
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled  } from '@mui/material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
 
@@ -26,7 +26,7 @@ interface column {
 interface IProps {
   rows: Array<any>,
   columns: Array<column>,
-  onRowClick: Function,
+  onRowClick?: Function,
   headerTextColor?: string,
   headerBackgroundColor?: string,
   rowTextColor?: string,
@@ -69,57 +69,63 @@ export default class CustomTable extends React.Component<IProps, IState> {
   render() {
     const styles = {
       background: 'darkGrey',
-      table: {
-        "& th": {
-          color: this.props.headerTextColor || defaultStyles.colors.headerTextColor,
-          backgroundColor: this.props.headerBackgroundColor || defaultStyles.colors.headerBackgroundColor
-        },
-        "& tr": {
-          backgroundColor: this.props.rowBackgroundColor || defaultStyles.colors.rowBackgroundColor
-        }
-      },
-      tableCell: {
-        color: this.props.rowTextColor || defaultStyles.colors.rowTextColor,
-      },
       tablePagination: {
         color: this.props.footerTextColor || defaultStyles.colors.footerTextColor,
         backgroundColor: this.props.footerBackgroundColor || defaultStyles.colors.footerBackgroundColor
       }
     }
+    const StyledTableCell = styled(TableCell)(({ theme }) => ({
+      [`&.${tableCellClasses.head}`]: {
+        backgroundColor: this.props.headerBackgroundColor || defaultStyles.colors.headerBackgroundColor,
+        color: this.props.headerTextColor || defaultStyles.colors.headerTextColor,
+      },
+      [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+      },
+    }));
+    const StyledTableRow = styled(TableRow)(({ theme }) => ({
+      '&:nth-of-type(odd)': {
+        backgroundColor: this.props.rowBackgroundColor || defaultStyles.colors.rowBackgroundColor,
+      },
+      // hide last border
+      '&:last-child td, &:last-child th': {
+        border: 0,
+      },
+    }));
 
     return (
       <Paper sx={{ width: '100%', overflow: 'hidden', margin: '10px' }}>
         {this.props.rows.length == 0 ? <LoadingIcon /> :
         <React.Fragment>
           <TableContainer sx={{ maxHeight: 440 , backgroundColor: styles.background}}>
-            <Table stickyHeader sx={styles.table}>
+            <Table stickyHeader>
               <TableHead>
-                <TableRow>
+                <StyledTableRow >
                   {this.props.columns.map((column) => (
-                    <TableCell
+                    <StyledTableCell
                       key={column.id}
                       align={column.align}
                       style={{ minWidth: column.minWidth }}
                     >
                       {column.label}
-                    </TableCell>
+                    </StyledTableCell>
                   ))}
-                </TableRow>
+                </StyledTableRow >
               </TableHead>
               <TableBody>
                 {this.props.rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                   .map((event, index) => {
                     return (
-                      <TableRow onClick={() => this.props.onRowClick(event)} hover role="checkbox" tabIndex={-1} key={index}>
+                      <StyledTableRow  hover onClick={() => this.props.onRowClick ? this.props.onRowClick(event):{}} role="checkbox" tabIndex={-1} key={index}>
                         {this.props.columns.map((column) => {
                           const value = event[column.id];
                           return (
-                            <TableCell key={column.id} align={column.align} sx={styles.tableCell}>
+                            <StyledTableCell key={column.id} align={column.align}>
                               {column.format(value)}
-                            </TableCell>
+                            </StyledTableCell>
                           );
                         })}
-                      </TableRow>
+                      </StyledTableRow >
                     );
                   })}
               </TableBody>
@@ -141,3 +147,4 @@ export default class CustomTable extends React.Component<IProps, IState> {
     )
   }
 }
+
