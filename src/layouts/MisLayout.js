@@ -2,12 +2,16 @@
 import {socket,socketHasConnected} from '../websocket/socket'
 import React from 'react';
 import { Link, Outlet } from "react-router-dom";
-import {Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography, Drawer} from '@mui/material';
+import {Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography, Drawer, IconButton} from '@mui/material';
+import {Logout} from '@mui/icons-material';
 import { Box } from '@mui/system';
 import login_banner from '../images/login_banner.jpg'
 import EstablishingConnection from '../views/EstablishingConnection';
 import {user} from '../objects/User';
 import { withRouter } from '../withRouter';
+import CustomButton from '../components/CustomButton';
+import { generateNewToken } from '../websocket/socket';
+import eventHandler from '../eventHandler';
 
 const palletes = {
   primary: '#439CEF',
@@ -112,12 +116,19 @@ class MisLayout extends React.Component {
   SocketConnectedListener = () => this.setState({socketConnecting: false})
   SocketDisconnectedListener = () => this.setState({socketConnecting: true})
 
+  onLogoutClick = () => {
+    generateNewToken()
+    eventHandler.emit('login/auth', {})
+    this.props.navigate("/login")
+  }
+
   render() {
     return (
       <React.Fragment>
         {this.state.socketConnecting ? <EstablishingConnection />:
           <div style={styles.container}>
             <div style={styles.header}>
+              <CustomButton onClick={() => this.onLogoutClick()} style={{marginLeft: 'auto', height: '50%', alignSelf: 'center'}} startIcon={<Logout />} label="Logout" />
             </div>
             <div style={styles.body}>
               <div style={{display: 'flex', flex: 1, width: '100%', height: '100%'}}>

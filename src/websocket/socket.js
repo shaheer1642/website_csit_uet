@@ -1,10 +1,12 @@
 import {io} from 'socket.io-client';
 import * as uuid from 'uuid';
 
+if (!getCookie('login_token')) generateNewToken()
+
 const socket = io(process.env.REACT_APP_SOCKET_URL, {
     transports : ['websocket'],
-    query: {
-        token: uuid.v4()
+    auth: {
+        token: getCookie('login_token')
     }
 });
 
@@ -27,7 +29,20 @@ async function socketHasConnected() {
     })
 }
 
+async function generateNewToken() {
+    document.cookie = `login_token=${uuid.v4()};path=/`;
+    //socket.emit('restartConn')
+    socket.auth.token = getCookie('login_token')
+    await socketHasConnected()
+    socket.disconnect()
+    socket.connect()
+}
+function getCookie(name) {
+    return document.cookie.split('; ').find((row) => row.startsWith(`${name}=`))?.split('=')[1]
+}
+
 export {
     socket,
-    socketHasConnected
+    socketHasConnected,
+    generateNewToken
 }

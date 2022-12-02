@@ -32,7 +32,9 @@ interface IProps {
   //hoverBackgroundColor?: string,
   disabled?: boolean,
   sx?: SxProps<Theme> | undefined,
-  style?: React.CSSProperties | undefined
+  style?: React.CSSProperties | undefined,
+  startIcon?: React.ReactNode,
+  endIcon?: React.ReactNode,
 }
 
 export default class CustomButton extends React.Component<IProps> {
@@ -63,6 +65,8 @@ export default class CustomButton extends React.Component<IProps> {
         disabled={this.props.disabled}
         variant={this.props.variant || "contained"}
         tabIndex={this.props.tabIndex}
+        startIcon={this.props.startIcon}
+        endIcon={this.props.endIcon}
       >{this.props.label}</Button>
     )
   }

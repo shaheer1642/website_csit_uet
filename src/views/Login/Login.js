@@ -115,6 +115,17 @@ class Login extends React.Component {
     };
   }
 
+  componentDidMount() {
+    // check if user already logged in
+    socket.emit('login/auth', {}, res => {
+      if (res.code == 200) {
+        console.log('logged in')
+        eventHandler.emit('login/auth', res.data)
+        this.props.navigate("/mis")
+      }
+    })
+  }
+
   handleOnClickLogin = async () => {
     if (this.state.usernameText == "") {
       return this.setState({
@@ -199,8 +210,8 @@ class Login extends React.Component {
                   </Grid>
                   <Grid item xs={6} sx={{justifyContent:'start', alignContent:'center',}}>
               
-                   <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Username" variant="standard" inputProps={{ tabIndex: "1" }}
-                      
+                   <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Username" variant="standard" tabIndex={1}
+                      onPressEnter={this.handleOnClickLogin}
                       onChange={(e) => this.setState({ usernameText: e.target.value })} /> 
                   </Grid>
                   <Grid item xs={3} sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
@@ -213,8 +224,8 @@ class Login extends React.Component {
                     <Password sx={{ color: palletes.primary, }} />
                   </Grid>
                   <Grid item xs={6} sx={{display: 'flex',justifyContent:'start', }}>
-                    <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Password" variant="standard" inputProps={{ tabIndex: "2" }}
-                     
+                    <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Password" variant="standard" tabIndex={2}
+                      onPressEnter={this.handleOnClickLogin}
                       onChange={(e) => this.setState({ passwordText: e.target.value })}
                       type={this.state.showPassword ? 'text' : 'password'}
                     />
@@ -230,7 +241,7 @@ class Login extends React.Component {
              
               
               <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
-                <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickLogin} tabIndex={4} label="Login" />
+                <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickLogin} tabIndex={3} label="Login" />
               </Grid>
               <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
                 <Link href="#" style={{ marginTop: '3%', color: palletes.primary, textDecorationColor: 'white' }} onClick={() => this.setState({ panelToggle: 'reset' })}>Reset Password</Link>

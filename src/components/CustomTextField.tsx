@@ -22,22 +22,23 @@ const defaultStyles = {
 
 interface IProps {
     label: string,
-    variant?: "standard" | undefined,
-    onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> | undefined,
+    variant?: "standard",
+    onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
     tabIndex?: number,
     fontSize?: number,
     fontFamily?: string,
     inputTextColor?: string,
     labelColor?: string,
-    labelFocusedColor: 'black',
-    underlineFocusedColor: string,
-    underlineColor: string,
-    sx?: SxProps<Theme> | undefined,
-    style?: React.CSSProperties | undefined,
-    type?: React.HTMLInputTypeAttribute | undefined,
+    labelFocusedColor?: 'black',
+    underlineFocusedColor?: string,
+    underlineColor?: string,
+    sx?: SxProps<Theme>,
+    style?: React.CSSProperties,
+    type?: React.HTMLInputTypeAttribute,
     required?: boolean,
     multiline?: boolean,
-    rows?: number
+    rows?: number,
+    onPressEnter?: Function,
 }
 
 export default class CustomTextField extends React.Component<IProps> {
@@ -78,6 +79,9 @@ export default class CustomTextField extends React.Component<IProps> {
             required={this.props.required}
             multiline={this.props.multiline}
             rows={this.props.rows}
+            onKeyUp={(e) => {
+                if (e.key == 'Enter') return this.props.onPressEnter ? this.props.onPressEnter() : {}
+            }}
         />
     )
   }

@@ -6,6 +6,7 @@ import * as Color from '@mui/material/colors';
 
 interface IProps {
     color?: string | undefined,
+    style?: React.CSSProperties | undefined,
 }
 
 export default class LoadingIcon extends React.Component<IProps> {
@@ -15,7 +16,7 @@ export default class LoadingIcon extends React.Component<IProps> {
 
     render() {
         return (
-            <div style={{display: 'flex', flexDirection: 'row', color: this.props.color || Color.orange[500], margin: '20px'}}>
+            <div style={{display: 'flex', flexDirection: 'row', color: this.props.color || Color.orange[500], margin: '20px', ...this.props.style}}>
                 <Spinner animation="grow" size="sm" />
                 <Spinner animation="grow" />
             </div>
