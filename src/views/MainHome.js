@@ -247,8 +247,8 @@ class MainHome extends React.Component {
               <Row xs={3}>
                 {this.state.eventsArr.map((event) => {
                   return (
-                    <Col>
-                      <Card>
+                    <Col sm={6} md={4} className='mt-3'>
+                      <Card >
                         {/* <CardImg
                           top
                           width="100%"
