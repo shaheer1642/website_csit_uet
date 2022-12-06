@@ -8,6 +8,7 @@ import CustomTable from '../../../components/CustomTable';
 import CustomButton from '../../../components/CustomButton';
 import CustomModal from '../../../components/CustomModal';
 import * as Color from '@mui/material/colors';
+import FormGenerator from '../../../components/FormGenerator';
 
 const palletes = {
   primary: '#439CEF',
