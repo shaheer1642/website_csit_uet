@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import React from 'react';
 import { TextField } from '@mui/material';
 import * as Color from '@mui/material/colors';
