@@ -22,7 +22,7 @@ const defaultStyles = {
 
 interface IProps {
     label: string,
-    variant?: "standard",
+    variant?: "standard" | "filled",
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
     tabIndex?: number,
     fontSize?: number,
