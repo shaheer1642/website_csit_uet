@@ -22,6 +22,7 @@ const defaultStyles = {
 
 interface IProps {
     label: string,
+    value?: string,
     variant?: "standard" | "filled",
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
     tabIndex?: number,
@@ -38,6 +39,7 @@ interface IProps {
     required?: boolean,
     multiline?: boolean,
     rows?: number,
+    maxRows?: number,
     onPressEnter?: Function,
 }
 
@@ -69,6 +71,7 @@ export default class CustomTextField extends React.Component<IProps> {
     return (
         <TextField
             color="primary"
+            value={this.props.value}
             label={this.props.label} 
             variant={this.props.variant || "standard"}
             sx= {{...styles, ...this.props.sx}}
@@ -79,6 +82,7 @@ export default class CustomTextField extends React.Component<IProps> {
             required={this.props.required}
             multiline={this.props.multiline}
             rows={this.props.rows}
+            maxRows={this.props.maxRows}
             onKeyUp={(e) => {
                 if (e.key == 'Enter') return this.props.onPressEnter ? this.props.onPressEnter() : {}
             }}

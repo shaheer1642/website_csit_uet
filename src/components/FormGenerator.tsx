@@ -62,7 +62,9 @@ interface fieldOptions {
       /**Position of the field in the form i.e. 2 */
       position: number | undefined, 
       /**Grid xs number. Default is 12 */
-      xs: number | undefined
+      xs: number | undefined, 
+      /**Default value of this field*/
+      defaultValue: any | undefined
     };
 }
 
@@ -104,7 +106,11 @@ export default class FormGenerator extends React.Component<IProps, IState> {
       }
       schema_temp = schema_temp.sort((a, b) => a.position - b.position)
       console.log(schema_temp)
-      this.setState({formLoading: false, schema: schema_temp})
+      var formFields: Object = {}
+      schema_temp.map((attribute) => {
+        formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue
+      })
+      this.setState({formLoading: false, schema: schema_temp, formFields: formFields})
     })
   }
 
@@ -142,8 +148,9 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                 attribute.type == 'string' ?
                   <CustomTextField 
                     required={this.props.formType == 'create' ? true:false} 
+                    value={this.props.options[attribute.key].defaultValue}
                     multiline ={attribute.multiline}
-                    rows={attribute.multiline ? 3:1}
+                    maxRows={attribute.multiline ? 10:1}
                     variant="filled" style={{ width: '100%' }}
                     label={this.props.options[attribute.key].label}
                     onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)} />
