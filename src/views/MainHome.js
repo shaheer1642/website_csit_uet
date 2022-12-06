@@ -2,8 +2,11 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import { Box, Grid, Tabs, Tab, Button } from "@mui/material";
 import { socket } from "../websocket/socket";
-import { Container } from "reactstrap";
-import Marquee from 'marquee-react-dwyer';
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
+import Row from "react-bootstrap/Row";
+import { CardImg, CardText, CardBody,  Container } from "reactstrap";
+
 const tabStyle = {
   indicatorColor: {
     sx: {
@@ -240,54 +243,42 @@ class MainHome extends React.Component {
 
         <Grid item xs={12}>
           <div className="App">
-            <Container
-              style={{
-                border: "3px solid ",
-                width: "400px",
-                maxHeight: "400px",
-                overflow: "scroll",
-              }}
-            >
-              {this.state.eventsArr.map((event) => {
-                return (
-                  <div>
-                    <marquee
-                      onmouseover="this.stop();
-"
-                      style="BORDER-RIGHT: #fff 1px solid; 
-                        PADDING-RIGHT: 4px; 
-                        BORDER-TOP: #fff 1px solid; 
-                        PADDING-LEFT: 3px; 
-                        PADDING-BOTTOM: 3px; 
-                        MARGIN: 0px; 
-                        BORDER-LEFT: #fff 1px solid; 
-                        PADDING-TOP: 3px; 
-                        BORDER-BOTTOM: #fff 1px solid; 
-                        HEIGHT: 340px;"
-                                              onmouseout="this.start();
-                        "
-                                              scrollamount="2"
-                                              scrolldelay="60"
-                                              direction="up"
-                    >
-                      <Typography style={{ textAlign: "center" }}>
-                        {event.title}
-                      </Typography>
-                      <Typography style={{ textAlign: "center" }}>
-                        {event.body}
-                      </Typography>
-                      <div
-                        style={{
-                          flex: 1,
-                          height: "1px",
-                          backgroundColor: "orange",
-                        }}
-                      />
-                      {/* </hr> */}
-                    </marquee>
-                  </div>
-                );
-              })}
+            <Container>
+              <Row xs={3}>
+                {this.state.eventsArr.map((event) => {
+                  return (
+                    <Col sm={6} md={4} className='mt-3'>
+                      <Card >
+                        {/* <CardImg
+                          top
+                          width="100%"
+                          src="/assets/318x180.svg"
+                          alt="Card image cap"
+                        /> */}
+                        <CardBody>
+                          <Typography style={{textAlign:"center"}}>{event.title}</Typography>
+                          <CardText style={{textAlign:"center"}}>{event.body}</CardText>
+                          <Card.Footer style={{cursor: "pointer",
+                                              textAlign:"center"
+                        }}>
+                          <Button 
+                            onClick={() => {
+                              socket.emit(
+                                "events/delete",
+                                { event_id: event.event_id },
+                                (res) => {}
+                              );
+                            }}
+                          >
+                            Delete
+                          </Button>
+                          </Card.Footer>
+                        </CardBody>
+                      </Card>
+                    </Col>
+                  );
+                })}
+              </Row>
             </Container>
           </div>
         </Grid>
