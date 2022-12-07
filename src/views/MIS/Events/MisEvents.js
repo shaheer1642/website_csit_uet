@@ -78,8 +78,8 @@ class MisEvents extends React.Component {
     const columns = [
       { id: 'title', label: 'Title', format: (value) => value},
       { id: 'body', label: 'Body', format: (value) => value },
-      { id: 'creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString() },
-      { id: 'expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() }, 
+      { id: 'event_creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString() },
+      { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() }, 
     ];
     return (
       <Grid container style={styles.container}>

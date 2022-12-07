@@ -12,6 +12,7 @@ import { withRouter } from '../withRouter';
 import CustomButton from '../components/CustomButton';
 import { generateNewToken } from '../websocket/socket';
 import eventHandler from '../eventHandler';
+import * as Color from '@mui/material/colors';
 
 const palletes = {
   primary: '#439CEF',
@@ -34,30 +35,23 @@ const styles = {
   header: {
     display: 'flex',
     flex: 1,
-    background: [
-      "red"
-    ],
+    backgroundColor: 'white',
+    borderBottom: `5px solid ${Color.orange[200]}`,
     width: "100%",
     alignSelf: 'flex-start',
+    maxHeight: '10%'
   },
   body: {
-    display: 'flex',
-    flexDirection: 'row',
-    flex: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
-    width: "100%",
-    height: "100%"
+    height: '80%'
   },
   footer: {
     display: 'flex',
     flex: 1,
-    background: [
-      "blue"
-    ],
+    backgroundColor: 'white',
+    borderTop: `5px solid ${Color.orange[200]}`,
     width: "100%",
     alignSelf: 'flex-end',
+    maxHeight: '10%'
     //opacity: 0.8
   },
   tabStyle: {
@@ -77,9 +71,10 @@ const styles = {
     },
   },
   list: {
-    backgroundColor: 'grey',
+    backgroundColor: 'white',
+    borderRight: `5px solid ${Color.orange[200]}`,
     width: '100%',
-    height: '100%'
+    height: '100%',
   }
 }
 
@@ -130,8 +125,8 @@ class MisLayout extends React.Component {
             <div style={styles.header}>
               <CustomButton onClick={() => this.onLogoutClick()} style={{marginLeft: 'auto', height: '50%', alignSelf: 'center'}} startIcon={<Logout />} label="Logout" />
             </div>
-            <div style={styles.body}>
-              <div style={{display: 'flex', flex: 1, width: '100%', height: '100%'}}>
+            <Grid container style={styles.body} rowSpacing='10px'>
+              <Grid item style={{width: '10%'}}>
                   <List style={styles.list}>
                       <ListItem button component={Link} to="">
                         <ListItemText primary="Home" />
@@ -140,11 +135,11 @@ class MisLayout extends React.Component {
                         <ListItemText primary="Events" />
                       </ListItem>
                   </List>
-              </div>
-              <div style={{backgroundColor: 'yellow', flex: 3}}>
+              </Grid>
+              <Grid item style={{display:'flex',alignItems: 'center', justifyContent: 'center', width: '90%'}}>
                 <Outlet />
-              </div>
-            </div>
+              </Grid>
+            </Grid>
             <div style={styles.footer}>
 
             </div>
