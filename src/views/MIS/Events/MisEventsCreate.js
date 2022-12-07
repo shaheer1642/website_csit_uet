@@ -20,7 +20,7 @@ export default class MisEventsCreate extends React.Component {
               position: 1,
               xs: 6
             },
-            expiry_timestamp: {
+            event_expiry_timestamp: {
               label: 'Event Expiry',
               position: 2,
               xs: 6,
