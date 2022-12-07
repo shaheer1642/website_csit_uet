@@ -5,7 +5,8 @@ import { socket } from "../websocket/socket";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import { CardImg, CardText, CardBody,  Container } from "reactstrap";
+import { Container } from "reactstrap";
+import { TypeFlags } from "typescript";
 
 const tabStyle = {
   indicatorColor: {
@@ -239,42 +240,56 @@ class MainHome extends React.Component {
               />
             </Grid>
           </Grid>
-        </Grid>
+          </Grid>
+          
+          
+          
 
-        <Grid item xs={12}>
-          <div className="App">
-            <Container 
-              style={{
-                border: "3px solid ",
-                width: "400px",
-                maxHeight: "400px",
-                overflow: "scroll",
-              }}>
-              <Row xs={12}>
-                {this.state.eventsArr.map((event) => {
-                  return (
-                    <div>
-                        <Typography style={{ textAlign: "center" }}>
-                          {event.title}
+          <Grid container xs={12} md={4} lg={4}>
+            <div className="App">
+            <div Container
+                style={{
+                  border: "1px solid rgb(218, 216, 216)",
+                  padding: '0 0 0 10px'
+                  
+                }}>News and Event</div>
+              <Container
+                style={{
+                  border: "1px solid rgb(218, 216, 216)",
+                  Width: "1000px",
+                  maxHeight: "400px",
+                  overflow: "scroll",
+                }}
+               
+              >
+                
+                {/* <img src="images/new.gif"></img> */}
+                <Row xs={12}>
+                  {this.state.eventsArr.map((event) => {
+                    return (
+                      <div ref="messageList" style={{ backgroundColor: "rgb(218, 216, 216)" }}>
+                        {/* <Typography>NEW</Typography>  */}
+                        <Typography style={{padding:"10px",
+                                            fontSize: 18,}}>
+                          {event.title} ({event.body})
                         </Typography>
-                        <Typography style={{ textAlign: "center" }}>
-                          {event.body}
-                        </Typography>
+                        
                         <div
                           style={{
                             flex: 1,
                             height: "1px",
-                            backgroundColor: "orange",
+                            backgroundColor: "#fff",
                           }}
                         />
-                    </div>
-                  );
-                })}
-              </Row>
-            </Container>
-          </div>
+                      </div>
+                    );
+                  })}
+                </Row>
+              </Container>
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
+     
     );
   }
 }
