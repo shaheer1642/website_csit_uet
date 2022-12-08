@@ -59,19 +59,15 @@ class MisEvents extends React.Component {
     socket.removeEventListener('events/listener/delete', this.eventsListenerDelete)
   }
 
-  eventsListenerInsert = (res) => {
-    if (res.code == 200) {
-      return this.setState({
-        eventsArr: [...this.state.eventsArr, res.data]
-      })
-    }
+  eventsListenerInsert = (data) => {
+    return this.setState({
+      eventsArr: [data, ...this.state.eventsArr]
+    })
   }
-  eventsListenerDelete = (res) => {
-    if (res.code == 200) {
-      return this.setState({
-        eventsArr: this.state.eventsArr.filter((event) => event.event_id != res.data.event_id)
-      })
-    }
+  eventsListenerDelete = (data) => {
+    return this.setState({
+      eventsArr: this.state.eventsArr.filter((event) => event.event_id != data.event_id)
+    })
   }
 
   render() {
