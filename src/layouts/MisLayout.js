@@ -1,158 +1,218 @@
-// eslint-disable-disable-next-line
-import {socket,socketHasConnected} from '../websocket/socket'
-import React from 'react';
-import { Link, Outlet } from "react-router-dom";
-import {Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography, Drawer, IconButton} from '@mui/material';
-import {Logout} from '@mui/icons-material';
-import { Box } from '@mui/system';
-import login_banner from '../images/login_banner.jpg'
-import EstablishingConnection from '../views/EstablishingConnection';
-import {user} from '../objects/User';
-import { withRouter } from '../withRouter';
-import CustomButton from '../components/CustomButton';
-import { generateNewToken } from '../websocket/socket';
-import eventHandler from '../eventHandler';
+import * as React from 'react';
+import { styled, useTheme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import MuiDrawer from '@mui/material/Drawer';
+import MuiAppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import List from '@mui/material/List';
+import CssBaseline from '@mui/material/CssBaseline';
+import Typography from '@mui/material/Typography';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import * as Icon from '@mui/icons-material';
+import {Link,Outlet} from 'react-router-dom';
+import { useEffect } from 'react';
+import * as uuid from 'uuid';
 
-const palletes = {
-  primary: '#439CEF',
-  secondary: '#FFFFFF'
-}
+const drawerWidth = 240;
 
-const styles = {
-  container: {
-    color: palletes.primary,
-    display: 'flex',
-    margin: 0,
-    padding: 0,
-    flex: 1,
-    flexDirection: 'column',
-    height: "100vh",
-    width: "100vw",
-    //backgroundImage: `url(${login_banner})`,
-    //backgroundSize: 'cover',
+const openedMixin = (theme) => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
+
+const closedMixin = (theme) => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(8)} + 1px)`,
   },
-  header: {
-    display: 'flex',
-    flex: 1,
-    background: [
-      "red"
-    ],
-    width: "100%",
-    alignSelf: 'flex-start',
-  },
-  body: {
-    display: 'flex',
-    flexDirection: 'row',
-    flex: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignContent: 'center',
-    width: "100%",
-    height: "100%"
-  },
-  footer: {
-    display: 'flex',
-    flex: 1,
-    background: [
-      "blue"
-    ],
-    width: "100%",
-    alignSelf: 'flex-end',
-    //opacity: 0.8
-  },
-  tabStyle: {
-    background: {
-      color: '#FAA567'
-    },
-    indicatorColor: {
-      sx: {
-        backgroundColor: '#DE2D18',
-      },
-    },
-    label: {
-      color: 'white'
-    },
-    active: {
-      color: '#DE2D18'
-    },
-  },
-  list: {
-    backgroundColor: 'grey',
-    width: '100%',
-    height: '100%'
-  }
-}
+});
 
-class MisLayout extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      socketConnecting: true,
-      drawerValue: 0
-    };
-    
-  }
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+  padding: theme.spacing(0, 1),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+}));
 
-  componentDidMount() {
-    console.log('[MisLayout] componentDidMount')
-    socketHasConnected().then(() => this.setState({socketConnecting: false})).catch(console.error)
-    socket.on('connect', this.SocketConnectedListener)
-    socket.on('disconnect', this.SocketDisconnectedListener)
-  }
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(['width', 'margin'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
 
-  componentDidUpdate() {
-    console.log('[MisLayout] componentDidUpdate')
-    if (!user.login_token) {
-      this.props.navigate("/login")
-    }
-  }
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    width: drawerWidth,
+    flexShrink: 0,
+    whiteSpace: 'nowrap',
+    boxSizing: 'border-box',
+    ...(open && {
+      ...openedMixin(theme),
+      '& .MuiDrawer-paper': openedMixin(theme),
+    }),
+    ...(!open && {
+      ...closedMixin(theme),
+      '& .MuiDrawer-paper': closedMixin(theme),
+    }),
+  }),
+);
 
-  componentWillUnmount() {
-    console.log('[MisLayout] componentWillUnmount')
-    socket.removeListener(this.SocketConnectedListener)
-    socket.removeListener(this.SocketDisconnectedListener)
-  }
+export default function MiniDrawer() {
+  const theme = useTheme();
+  const [open, setOpen] = React.useState(false);
+
+  useEffect(() => {
+    console.log('component mounted')
   
-  SocketConnectedListener = () => this.setState({socketConnecting: false})
-  SocketDisconnectedListener = () => this.setState({socketConnecting: true})
+    return () => {
+      console.log('component unmounted')
+    }
+  })
+  
 
-  onLogoutClick = () => {
-    generateNewToken()
-    eventHandler.emit('login/auth', {})
-    this.props.navigate("/login")
-  }
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
 
-  render() {
-    return (
-      <React.Fragment>
-        {this.state.socketConnecting ? <EstablishingConnection />:
-          <div style={styles.container}>
-            <div style={styles.header}>
-              <CustomButton onClick={() => this.onLogoutClick()} style={{marginLeft: 'auto', height: '50%', alignSelf: 'center'}} startIcon={<Logout />} label="Logout" />
-            </div>
-            <div style={styles.body}>
-              <div style={{display: 'flex', flex: 1, width: '100%', height: '100%'}}>
-                  <List style={styles.list}>
-                      <ListItem button component={Link} to="">
-                        <ListItemText primary="Home" />
-                      </ListItem>
-                      <ListItem button component={Link} to="events">
-                        <ListItemText primary="Events" />
-                      </ListItem>
-                  </List>
-              </div>
-              <div style={{backgroundColor: 'yellow', flex: 3}}>
-                <Outlet />
-              </div>
-            </div>
-            <div style={styles.footer}>
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
-            </div>
-          </div>
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CssBaseline />
+      <AppBar position="fixed" open={open}>
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            sx={{
+              marginRight: 5,
+              ...(open && { display: 'none' }),
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div">
+            Dashboard
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer variant="permanent" open={open}>
+        <DrawerHeader>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </DrawerHeader>
+       <List>
+
+        <ListItem button component={Link} to=""  disablePadding sx={{ display: 'block' }}>
+        <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Icon.Home /> 
+                </ListItemIcon>
+                <ListItemText primary='Home'  sx={{ opacity: open ? 1 : 0 }}/>
+              </ListItemButton>
+        </ListItem>
+        <ListItem button component={Link} to="events"  disablePadding sx={{ display: 'block' }}>
+        <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                 <Icon.Campaign/> 
+                </ListItemIcon>
+                <ListItemText primary='Events'  sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+        </ListItem>
+        <Divider/>
+        <ListItem button component={Link} to="/login"  disablePadding sx={{ display: 'block' }}>
+        <ListItemButton
+        onClick={
+          ()=>document.cookie=`login_token=${uuid.v1()};path=/`
         }
-      </React.Fragment>
-    );
-  }
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                 <Icon.PowerSettingsNew style={{color:'Red'}}/> 
+                </ListItemIcon>
+                <ListItemText primary='Logout'  sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+        </ListItem>
+       </List>
+       
+        
+       
+      </Drawer>
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <DrawerHeader />
+       <Outlet/>
+      </Box>
+    </Box>
+  );
 }
-
-export default withRouter(MisLayout)
