@@ -5,7 +5,7 @@ import { socket } from "../websocket/socket";
 import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import { CardImg, CardText, CardBody,  Container } from "reactstrap";
+import { Container } from "reactstrap";
 
 const tabStyle = {
   indicatorColor: {
@@ -239,50 +239,56 @@ class MainHome extends React.Component {
               />
             </Grid>
           </Grid>
-        </Grid>
+          </Grid>
+          
+          
+          
 
-        <Grid item xs={12}>
-          <div className="App">
-            <Container>
-              <Row xs={3}>
-                {this.state.eventsArr.map((event) => {
-                  return (
-                    <Col sm={6} md={4} className='mt-3'>
-                      <Card >
-                        {/* <CardImg
-                          top
-                          width="100%"
-                          src="/assets/318x180.svg"
-                          alt="Card image cap"
-                        /> */}
-                        <CardBody>
-                          <Typography style={{textAlign:"center"}}>{event.title}</Typography>
-                          <CardText style={{textAlign:"center"}}>{event.body}</CardText>
-                          <Card.Footer style={{cursor: "pointer",
-                                              textAlign:"center"
-                        }}>
-                          <Button 
-                            onClick={() => {
-                              socket.emit(
-                                "events/delete",
-                                { event_id: event.event_id },
-                                (res) => {}
-                              );
-                            }}
-                          >
-                            Delete
-                          </Button>
-                          </Card.Footer>
-                        </CardBody>
-                      </Card>
-                    </Col>
-                  );
-                })}
-              </Row>
-            </Container>
-          </div>
+          <Grid container xs={12} md={4} lg={4}>
+            <div className="App">
+            <div Container
+                style={{
+                  border: "1px solid rgb(218, 216, 216)",
+                  padding: '0 0 0 10px'
+                  
+                }}>News and Event</div>
+              <Container
+                style={{
+                  border: "1px solid rgb(218, 216, 216)",
+                  Width: "1000px",
+                  maxHeight: "400px",
+                  overflow: "scroll",
+                }}
+               
+              >
+                
+                {/* <img src="images/new.gif"></img> */}
+                <Row xs={12}>
+                  {this.state.eventsArr.map((event) => {
+                    return (
+                      <div ref="messageList" style={{ backgroundColor: "rgb(218, 216, 216)" }}>
+                        {/* <Typography>NEW</Typography>  */}
+                        <Typography style={{padding:"10px",
+                                            fontSize: 18,}}>
+                          {event.title} ({event.body})
+                        </Typography>
+                        
+                        <div
+                          style={{
+                            flex: 1,
+                            height: "1px",
+                            backgroundColor: "#fff",
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </Row>
+              </Container>
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
+     
     );
   }
 }

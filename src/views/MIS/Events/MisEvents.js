@@ -8,6 +8,7 @@ import CustomTable from '../../../components/CustomTable';
 import CustomButton from '../../../components/CustomButton';
 import CustomModal from '../../../components/CustomModal';
 import * as Color from '@mui/material/colors';
+import FormGenerator from '../../../components/FormGenerator';
 
 const palletes = {
   primary: '#439CEF',
@@ -58,27 +59,23 @@ class MisEvents extends React.Component {
     socket.removeEventListener('events/listener/delete', this.eventsListenerDelete)
   }
 
-  eventsListenerInsert = (res) => {
-    if (res.code == 200) {
-      return this.setState({
-        eventsArr: [...this.state.eventsArr, res.data]
-      })
-    }
+  eventsListenerInsert = (data) => {
+    return this.setState({
+      eventsArr: [data, ...this.state.eventsArr]
+    })
   }
-  eventsListenerDelete = (res) => {
-    if (res.code == 200) {
-      return this.setState({
-        eventsArr: this.state.eventsArr.filter((event) => event.event_id != res.data.event_id)
-      })
-    }
+  eventsListenerDelete = (data) => {
+    return this.setState({
+      eventsArr: this.state.eventsArr.filter((event) => event.event_id != data.event_id)
+    })
   }
 
   render() {
     const columns = [
       { id: 'title', label: 'Title', format: (value) => value},
       { id: 'body', label: 'Body', format: (value) => value },
-      { id: 'creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString() },
-      { id: 'expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() }, 
+      { id: 'event_creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString() },
+      { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() }, 
     ];
     return (
       <Grid container style={styles.container}>

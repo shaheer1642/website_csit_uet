@@ -1,4 +1,4 @@
-
+// @ts-nocheck
 import React from 'react';
 import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled  } from '@mui/material';
 import * as Color from '@mui/material/colors';
