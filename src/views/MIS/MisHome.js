@@ -32,7 +32,7 @@ export default class MisHome extends React.Component {
 
   render() {
     return (
-      <div style={styles.container}>
+      <div >
         <Typography style={{color: palletes.primary}} variant="h4">
           MIS Dashboard
         </Typography>

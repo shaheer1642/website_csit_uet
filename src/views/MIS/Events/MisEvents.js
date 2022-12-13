@@ -75,10 +75,11 @@ class MisEvents extends React.Component {
       { id: 'title', label: 'Title', format: (value) => value},
       { id: 'body', label: 'Body', format: (value) => value },
       { id: 'event_creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString() },
-      { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() }, 
+      { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() },
+     
     ];
     return (
-      <Grid container style={styles.container}>
+      <Grid container >
         <Typography variant="h1" style={{ margin: '10px' }}>Events</Typography>
         <CustomTable onRowClick={(row) => this.setState({modalTitle:row.title,modalBody:row.body,modalShow:true})} rows={this.state.eventsArr} columns={columns} />
         <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New"/>
