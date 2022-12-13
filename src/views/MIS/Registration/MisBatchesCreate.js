@@ -8,30 +8,30 @@ export default class MisBatchesCreate extends React.Component {
   }
 
   render() {
-    
+    //123
     return (
         <FormGenerator 
           endpoint='batches' 
           formType="create" 
-          submitSuccessMessage='Batch Created Successfully'
+          submitSuccessMessage='Event Created Successfully'
           backgroundColor='white'
           options={{
             batch_no: {
-              label: 'Batch Number',   
+              label: 'Title',   
               position: 1,
+              xs: 6
+            },
+            joined_semester: {
+              label: 'Title',   
+              position: 2,
               xs: 6
             },
             degree_type: {
-              label: 'Degree Type',   
-              position: 1,
-              xs: 6
-            },
-            
-            joined_semester: {
-              label: 'Body',
+              label: 'Title',   
               position: 3,
               xs: 12
-            }
+            },
+           
           }}
         />
     );
