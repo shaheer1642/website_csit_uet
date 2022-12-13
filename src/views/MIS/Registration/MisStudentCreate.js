@@ -10,7 +10,7 @@ export default class MisStudentCreate extends React.Component {
   render() {
     return (
       <FormGenerator
-        endpoint="students/create"
+        endpoint="students"
         formType="create"
         submitSuccessMessage="Student Created Successfully"
         backgroundColor="white"

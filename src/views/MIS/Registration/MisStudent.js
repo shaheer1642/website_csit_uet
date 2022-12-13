@@ -77,7 +77,7 @@ class MisStudent extends React.Component {
         />
         <CustomButton
           sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("MisStudentCreate")}
+          onClick={() => this.props.navigate("create")}
           label="Create New"
         />
         <CustomModal

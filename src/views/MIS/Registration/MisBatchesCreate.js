@@ -31,6 +31,11 @@ export default class MisBatchesCreate extends React.Component {
               position: 3,
               xs: 12
             },
+            batch_advisor_id: {
+              label: 'Title',   
+              position: 3,
+              xs: 12
+            },
            
           }}
         />
