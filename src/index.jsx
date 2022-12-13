@@ -11,8 +11,10 @@ import theme from "./theme";
 import MisLayout from "./layouts/MisLayout";
 import MisHome from "./views/MIS/MisHome";
 import MisEvents from "./views/MIS/Events/MisEvents";
+import MisBatches from "./views/MIS/Registration/MisBatches";
 import MisEventsCreate from "./views/MIS/Events/MisEventsCreate";
 import React from "react";
+import MisBatchesCreate from "./views/MIS/Registration/MisBatchesCreate";
 
 export default function Router() {
   return (
@@ -29,6 +31,9 @@ export default function Router() {
           <Route index element={<MisHome />} />
           <Route path="events" element={<MisEvents />} />
           <Route path="events/create" element={<MisEventsCreate />} />
+          <Route path="batches" element={<MisBatches/>}/>
+          <Route path="batches/create" element={<MisBatchesCreate/>}/>
+     
         </Route>
       </Routes>
     </BrowserRouter>

@@ -2,13 +2,10 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import { Box, Grid, Tabs, Tab, Button } from "@mui/material";
 import { socket } from "../websocket/socket";
-
+import Card from "react-bootstrap/Card";
+import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import { Container } from "reactstrap";
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
 
 const tabStyle = {
   indicatorColor: {
@@ -242,51 +239,56 @@ class MainHome extends React.Component {
               />
             </Grid>
           </Grid>
-        </Grid>
+          </Grid>
+          
+          
+          
 
-        <Grid container xs={12} md={4} lg={4}>
-          <div className="App">
-            <div
-              Container
-              style={{
-                border: "1px solid rgb(218, 216, 216)",
-                padding: "0 0 0 10px",
-              }}
-            >
-              News and Event
+          <Grid container xs={12} md={4} lg={4}>
+            <div className="App">
+            <div Container
+                style={{
+                  border: "1px solid rgb(218, 216, 216)",
+                  padding: '0 0 0 10px'
+                  
+                }}>News and Event</div>
+              <Container
+                style={{
+                  border: "1px solid rgb(218, 216, 216)",
+                  Width: "1000px",
+                  maxHeight: "400px",
+                  overflow: "scroll",
+                }}
+               
+              >
+                
+                {/* <img src="images/new.gif"></img> */}
+                <Row xs={12}>
+                  {this.state.eventsArr.map((event) => {
+                    return (
+                      <div ref="messageList" style={{ backgroundColor: "rgb(218, 216, 216)" }}>
+                        {/* <Typography>NEW</Typography>  */}
+                        <Typography style={{padding:"10px",
+                                            fontSize: 18,}}>
+                          {event.title} ({event.body})
+                        </Typography>
+                        
+                        <div
+                          style={{
+                            flex: 1,
+                            height: "1px",
+                            backgroundColor: "#fff",
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
+                </Row>
+              </Container>
             </div>
-            <Container
-              style={{
-                border: "1px solid rgb(218, 216, 216)",
-                Width: "1000px",
-                maxHeight: "250px",
-                overflow: "scroll",
-              }}
-            >
-              
-              <Row xs={12}>
-                {this.state.eventsArr.map((event) => {
-                  return (
-                    <div style={{ backgroundColor: "rgb(218, 216, 216)" }}>
-                      
-                      <Typography style={{ padding: "10px", fontSize: 18 }}>
-                        {event.title} ({event.body})
-                      </Typography>
-                      <div
-                        style={{
-                          flex: 1,
-                          height: "1px",
-                          backgroundColor: "#fff",
-                        }}
-                      />
-                    </div>
-                  );
-                })}
-              </Row>
-            </Container>
-          </div>
+          </Grid>
         </Grid>
-      </Grid>
+     
     );
   }
 }
