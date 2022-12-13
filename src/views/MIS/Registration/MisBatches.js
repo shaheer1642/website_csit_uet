@@ -61,7 +61,7 @@ class MisBatches extends React.Component {
     return (
       <Grid container >
         <Typography variant="h1" style={{ margin: '10px' }}>Batches</Typography>
-        <CustomTable onRowClick={(row) => this.setState({modalTitle:row.title,modalBody:row.body,modalShow:true})} rows={this.state.batchesArr} columns={columns} />
+        <CustomTable onRowClick={(row) => this.props.navigate('students')} rows={this.state.batchesArr} columns={columns} />
         <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New"/>
         <CustomModal title={this.state.modalTitle} body={this.state.modalBody} open={this.state.modalShow} onClose={() => this.setState({modalShow: false})}/>
       </Grid>
