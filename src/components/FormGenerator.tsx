@@ -1,4 +1,5 @@
-// @ts-nocheck
+// @ts-nocheck 
+// @typescript-eslint/no-unused-vars
 import React from 'react';
 import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, TextField, Grid, Zoom, Alert, AlertColor } from '@mui/material';
 import * as Color from '@mui/material/colors';
@@ -64,7 +65,13 @@ interface fieldOptions {
       /**Grid xs number. Default is 12 */
       xs: number | undefined, 
       /**Default value of this field*/
-      defaultValue: any | undefined
+      defaultValue: any | undefined,
+      /**Hint*/
+      placeholder: any | undefined,
+      /**Whether this field can be null*/
+      required: boolean | undefined,
+      /**Whether this field is editable*/
+      disabled: boolean | undefined,
     };
 }
 
@@ -145,9 +152,11 @@ export default class FormGenerator extends React.Component<IProps, IState> {
           return (
             <Grid item xs={this.props.options[attribute.key].xs || 12}>
               {
-                attribute.type == 'string' ?
+                attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' ?
                   <CustomTextField 
-                    required={this.props.formType == 'create' ? true:false} 
+                    disabled={this.props.options[attribute.key].disabled}
+                    required={this.props.options[attribute.key].required == undefined || this.props.options[attribute.key].required == true ? true:false}
+                    placeholder={this.props.options[attribute.key].placeholder}
                     value={this.props.options[attribute.key].defaultValue}
                     multiline ={attribute.multiline}
                     maxRows={attribute.multiline ? 10:1}

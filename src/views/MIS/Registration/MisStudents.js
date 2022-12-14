@@ -36,18 +36,22 @@ class MisStudent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loadingStudents: true,
       studentsArr: [],
       modalTitle: "",
       modalBody: "",
       modalShow: false,
     };
+    this.batch_id = this.props.location.state.batch_id
+    this.batch_name = this.props.location.state.batch_name
   }
 
   componentDidMount() {
-    socket.emit("students/fetch", {}, (res) => {
+    socket.emit("students/fetch", {batch_id: this.batch_id}, (res) => {
       if (res.code == 200) {
         return this.setState({
-        studentsArr: res.data,
+          studentsArr: res.data,
+          loadingStudents: false
         });
       }
     });
@@ -57,15 +61,16 @@ class MisStudent extends React.Component {
     const columns = [
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "student_id", label: "Student ID", format: (value) => value },
-      { id: "student_address", label: "address", format: (value) => value },
+      { id: "student_address", label: "Address", format: (value) => value },
     //   { id: "student_id", label: "Student ID", format: (value) => value },
     ];
     return (
       <Grid container>
         <Typography variant="h1" style={{ margin: "10px" }}>
-          Students
+          {`Students (${this.batch_name})`}
         </Typography>
         <CustomTable
+          loadingState = {this.state.loadingStudents}
           onRowClick={(row) =>
             this.setState({
               modalTitle: row.title,
@@ -78,7 +83,7 @@ class MisStudent extends React.Component {
         />
         <CustomButton
           sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("create")}
+          onClick={() => this.props.navigate("create", {state: {batch_id: this.batch_id}})}
           label="Create New"
         />
         <CustomModal

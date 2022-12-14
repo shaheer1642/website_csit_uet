@@ -1,10 +1,12 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from "react";
 import FormGenerator from "../../../components/FormGenerator";
+import { withRouter } from "../../../withRouter";
 
-export default class MisStudentCreate extends React.Component {
+class MisStudentCreate extends React.Component {
   constructor(props) {
     super(props);
+    this.batch_id = this.props.location.state.batch_id
   }
 
   render() {
@@ -27,6 +29,8 @@ export default class MisStudentCreate extends React.Component {
           },
             batch_id: {
             label: "Batch ID",
+            defaultValue: this.batch_id,
+            disabled: true,
             position: 3,
             xs: 6,
           },
@@ -45,3 +49,5 @@ export default class MisStudentCreate extends React.Component {
     );
   }
 }
+
+export default withRouter(MisStudentCreate);

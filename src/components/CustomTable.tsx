@@ -35,6 +35,7 @@ interface IProps {
   nthRowBackgroundColor?: string,
   footerTextColor?: string,
   footerBackgroundColor?: string,
+  loadingState?: boolean
 }
 
 interface IState {
@@ -98,7 +99,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
 
     return (
       <Paper sx={{ width: '100%', overflow: 'hidden', margin: '10px' }}>
-        {this.props.rows.length == 0 ? <LoadingIcon color={Color.orange[500]} /> :
+        {this.props.loadingState ? <LoadingIcon color={Color.orange[500]} /> :
         <React.Fragment>
           <TableContainer sx={{ maxHeight: 440 , backgroundColor: styles.background}}>
             <Table stickyHeader>

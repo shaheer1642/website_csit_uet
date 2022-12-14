@@ -41,6 +41,8 @@ interface IProps {
     rows?: number,
     maxRows?: number,
     onPressEnter?: Function,
+    placeholder?: string,
+    disabled?: boolean
 }
 
 export default class CustomTextField extends React.Component<IProps> {
@@ -71,7 +73,9 @@ export default class CustomTextField extends React.Component<IProps> {
     return (
         <TextField
             color="primary"
+            disabled={this.props.disabled}
             value={this.props.value}
+            placeholder={this.props.placeholder}
             label={this.props.label} 
             variant={this.props.variant || "standard"}
             sx= {{...styles, ...this.props.sx}}
