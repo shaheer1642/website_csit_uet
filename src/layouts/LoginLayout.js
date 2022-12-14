@@ -1,4 +1,4 @@
-// eslint-disable-disable-next-line
+/* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import {socket,socketHasConnected} from '../websocket/socket'
 import React from 'react';
 import { Link, Outlet } from "react-router-dom";

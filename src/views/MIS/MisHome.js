@@ -1,4 +1,4 @@
-// eslint-disable-no-unused-vars
+/* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
 import {Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField} from '@mui/material';
 import {AccountCircle, Password, Visibility, VisibilityOff} from '@mui/icons-material';

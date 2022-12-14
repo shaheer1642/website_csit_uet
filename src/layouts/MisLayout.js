@@ -1,3 +1,4 @@
+/* eslint eqeqeq: "off", no-unused-vars: "off" */
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';

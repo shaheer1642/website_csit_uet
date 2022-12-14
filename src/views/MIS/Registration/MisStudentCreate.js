@@ -1,4 +1,4 @@
-// eslint-disable-no-unused-vars
+/* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from "react";
 import FormGenerator from "../../../components/FormGenerator";
 

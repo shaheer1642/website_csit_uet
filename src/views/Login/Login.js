@@ -1,4 +1,4 @@
-
+/* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
 import { Typography, IconButton, Button, Link, Box, TextField, Alert, Fade, Zoom, Grid } from '@mui/material';
 import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';

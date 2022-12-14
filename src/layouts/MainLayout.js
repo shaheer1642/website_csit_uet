@@ -1,4 +1,4 @@
-
+/* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
 import { Link, Outlet } from "react-router-dom";
 import {Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography} from '@mui/material';
