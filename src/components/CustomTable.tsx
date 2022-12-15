@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React from 'react';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled  } from '@mui/material';
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, IconButton } from '@mui/material';
+import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
 
@@ -22,12 +23,15 @@ interface column {
   format: Function,
   align: "inherit" | "left" | "center" | "right" | "justify" | undefined,
   minWidth: string | undefined,
+  component?: React.Component
 };
 
 interface IProps {
   rows: Array<any>,
   columns: Array<column>,
   onRowClick?: Function,
+  onEditClick?: Function,
+  onDeleteClick?: Function,
   headerTextColor?: string,
   headerBackgroundColor?: string,
   rowTextColor?: string,
@@ -59,7 +63,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage
-    })  
+    })
   };
 
   handleChangeRowsPerPage = (event) => {
@@ -100,52 +104,68 @@ export default class CustomTable extends React.Component<IProps, IState> {
     return (
       <Paper sx={{ width: '100%', overflow: 'hidden', margin: '10px' }}>
         {this.props.loadingState ? <LoadingIcon color={Color.orange[500]} /> :
-        <React.Fragment>
-          <TableContainer sx={{ maxHeight: 440 , backgroundColor: styles.background}}>
-            <Table stickyHeader>
-              <TableHead>
-                <StyledTableRow >
-                  {this.props.columns.map((column) => (
-                    <StyledTableCell
-                      key={column.id}
-                      align={column.align}
-                      style={{ minWidth: column.minWidth }}
-                    >
-                      {column.label}
-                    </StyledTableCell>
-                  ))}
-                </StyledTableRow >
-              </TableHead>
-              <TableBody>
-                {this.props.rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
-                  .map((event, index) => {
-                    return (
-                      <StyledTableRow hover role="checkbox" tabIndex={-1} key={index}>
-                        {this.props.columns.map((column, index) => {
-                          const value = event[column.id];
-                          return (
-                            <StyledTableCell onClick={() => column.component ? {} : this.props.onRowClick ? this.props.onRowClick(event):{}} key={index} align={column.align}>
-                              {column.component ? column.component : column.format(value)}
-                            </StyledTableCell>
-                          );
-                        })}
-                      </StyledTableRow >
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            sx={styles.tablePagination}
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={this.props.rows.length}
-            rowsPerPage={this.state.rowsPerPage}
-            page={this.state.page}
-            onPageChange={this.handleChangePage}
-            onRowsPerPageChange={this.handleChangeRowsPerPage}
-          />
-        </React.Fragment>
+          <React.Fragment>
+            <TableContainer sx={{ maxHeight: 440, backgroundColor: styles.background }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <StyledTableRow >
+                    {this.props.columns.map((column) => (
+                      <StyledTableCell
+                        key={column.id}
+                        align={column.align}
+                        style={{ minWidth: column.minWidth }}
+                      >
+                        {column.label}
+                      </StyledTableCell>
+                    ))}
+                    {this.props.onEditClick || this.props.onDeleteClick ?
+                      <StyledTableCell
+                        key="action_buttons"
+                        align="left"
+                      >
+                        Actions
+                      </StyledTableCell> : <></>
+                    }
+                  </StyledTableRow >
+                </TableHead>
+                <TableBody>
+                  {this.props.rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                    .map((row, index) => {
+                      return (
+                        <StyledTableRow hover role="checkbox" key={index}>
+                          {this.props.columns.map((column, index) => {
+                            const value = row[column.id];
+                            return (
+                              <StyledTableCell onClick={() => this.props.onRowClick ? this.props.onRowClick(row) : {}} key={index} align={column.align}>
+                                {column.format ? column.format(value) : value}
+                              </StyledTableCell>
+                            );
+                          })}
+                          {this.props.onEditClick || this.props.onDeleteClick?
+                            <StyledTableCell key="action_buttons">
+                              {this.props.onEditClick ? 
+                              <IconButton style={{ color: Color.blue[500] }} onClick={() => this.props.onEditClick(row)}><Edit /></IconButton>:<></>}
+                              {this.props.onDeleteClick ?
+                              <IconButton style={{ color: Color.red[500] }} onClick={() => this.props.onDeleteClick(row)}><Delete /></IconButton>:<></>}
+                            </StyledTableCell> : <></>
+                          }
+                        </StyledTableRow >
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              sx={styles.tablePagination}
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={this.props.rows.length}
+              rowsPerPage={this.state.rowsPerPage}
+              page={this.state.page}
+              onPageChange={this.handleChangePage}
+              onRowsPerPageChange={this.handleChangeRowsPerPage}
+            />
+          </React.Fragment>
         }
       </Paper>
     )

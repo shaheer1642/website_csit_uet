@@ -68,8 +68,6 @@ interface fieldOptions {
       defaultValue: any | undefined,
       /**Hint*/
       placeholder: any | undefined,
-      /**Whether this field can be null*/
-      required: boolean | undefined,
       /**Whether this field is editable*/
       disabled: boolean | undefined,
     };
@@ -109,7 +107,11 @@ export default class FormGenerator extends React.Component<IProps, IState> {
       for (const key in res.data.data_types) {
         const data_type = res.data.data_types[key]
         if (data_type.required.includes(`${this.props.endpoint}/${this.props.formType}`) || data_type.optional.includes(`${this.props.endpoint}/${this.props.formType}`))
-          schema_temp.push({...data_type, key: key, position: this.props.options[key]?.position || null})
+          schema_temp.push({...data_type, 
+            key: key, 
+            position: this.props.options[key]?.position || null,
+            required: data_type.required.includes(`${this.props.endpoint}/${this.props.formType}`) ? true : false
+          })
       }
       schema_temp = schema_temp.sort((a, b) => a.position - b.position)
       console.log(schema_temp)
@@ -155,9 +157,9 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                 attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' ?
                   <CustomTextField 
                     disabled={this.props.options[attribute.key].disabled}
-                    required={this.props.options[attribute.key].required == undefined || this.props.options[attribute.key].required == true ? true:false}
+                    required={attribute.required}
                     placeholder={this.props.options[attribute.key].placeholder}
-                    value={this.props.options[attribute.key].defaultValue}
+                    value={this.state.formFields[attribute.key]}
                     multiline ={attribute.multiline}
                     maxRows={attribute.multiline ? 10:1}
                     variant="filled" style={{ width: '100%' }}

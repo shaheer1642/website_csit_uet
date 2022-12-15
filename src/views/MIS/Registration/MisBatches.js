@@ -49,6 +49,24 @@ class MisBatches extends React.Component {
       }
     })
 
+    socket.addEventListener('batches/listener/insert', this.batchesListenerInsert)
+    socket.addEventListener('batches/listener/delete', this.batchesListenerDelete)
+  }
+
+  componentWillUnmount() {
+    socket.removeEventListener('batches/listener/insert', this.batchesListenerInsert)
+    socket.removeEventListener('batches/listener/delete', this.batchesListenerDelete)
+  }
+
+  batchesListenerInsert = (data) => {
+    return this.setState({
+      batchesArr: [data, ...this.state.batchesArr]
+    })
+  }
+  batchesListenerDelete = (data) => {
+    return this.setState({
+      batchesArr: this.state.batchesArr.filter((batch) => batch.batch_id != data.batch_id)
+    })
   }
 
 
@@ -56,21 +74,16 @@ class MisBatches extends React.Component {
     const columns = [
       { id: 'batch_no', label: 'Batch Number', format: (value) => value},
       { id: 'degree_type', label: 'Degree Type', format: (value) => value },
-      { 
-        id: 'action_buttons', 
-        label: 'Actions', 
-        component: 
-        <ButtonGroup>
-          <IconButton style={{color: Color.blue[500]}} onClick={() => console.log('edit clicked')}><Edit /></IconButton>
-          <IconButton style={{color: Color.red[700]}} onClick={() => console.log('delete clicked')}><Delete /></IconButton>
-        </ButtonGroup>
-      }
-     
     ];
     return (
       <Grid container >
         <Typography variant="h1" style={{ margin: '10px' }}>Batches</Typography>
-        <CustomTable loadingState = {this.state.loadingBatches} onRowClick={(row) => this.props.navigate('students', {state: {batch_id: row.batch_id, batch_name: `${row.batch_no} ${row.degree_type} ${row.joined_semester}`}})} rows={this.state.batchesArr} columns={columns} />
+        <CustomTable 
+        loadingState = {this.state.loadingBatches} 
+        onRowClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, batch_name: `${batch.batch_no} ${batch.degree_type} ${batch.joined_semester}`}})} 
+        onEditClick={(batch) => console.log('edit clicked', batch.batch_id)}
+        onDeleteClick={(batch) => socket.emit('batches/delete', { batch_id: batch.batch_id })}
+        rows={this.state.batchesArr} columns={columns} />
         <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New"/>
       </Grid>
     );

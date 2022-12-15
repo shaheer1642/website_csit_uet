@@ -17,8 +17,13 @@ class MisStudentCreate extends React.Component {
         submitSuccessMessage="Student Created Successfully"
         backgroundColor="white"
         options={{
-            student_id: {
-            label: "Student ID",
+            cnic: {
+            label: "CNIC",
+            position: 1,
+            xs: 6,
+          },
+            reg_no: {
+            label: "Registration No",
             position: 1,
             xs: 6,
           },

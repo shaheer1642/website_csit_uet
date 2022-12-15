@@ -57,22 +57,36 @@ class MisStudent extends React.Component {
         });
       }
     });
+
+    socket.addEventListener('students/listener/insert', this.studentsListenerInsert)
+    socket.addEventListener('students/listener/delete', this.studentsListenerDelete)
+  }
+
+  componentWillUnmount() {
+    socket.removeEventListener('students/listener/insert', this.studentsListenerInsert)
+    socket.removeEventListener('students/listener/delete', this.studentsListenerDelete)
+  }
+
+  studentsListenerInsert = (data) => {
+    return this.setState({
+      studentsArr: [data, ...this.state.studentsArr]
+    })
+  }
+  studentsListenerDelete = (data) => {
+    return this.setState({
+      studentsArr: this.state.studentsArr.filter((student) => student.student_id != data.student_id)
+    })
   }
 
   render() {
     const columns = [
       { id: "student_name", label: "Student Name", format: (value) => value },
-      { id: "student_id", label: "Student ID", format: (value) => value },
+      { id: "father_name", label: "Father Name", format: (value) => value },
+      { id: "cnic", label: "CNIC", format: (value) => value },
+      { id: "reg_no", label: "Registration No", format: (value) => value },
       { id: "student_address", label: "Address", format: (value) => value },
-      { 
-        id: 'action_buttons', 
-        label: 'Actions', 
-        component: 
-        <ButtonGroup>
-          <IconButton style={{color: Color.blue[500]}} onClick={() => console.log('edit clicked')}><Edit /></IconButton>
-          <IconButton style={{color: Color.red[700]}} onClick={() => console.log('delete clicked')}><Delete /></IconButton>
-        </ButtonGroup>
-      }
+      { id: "username", label: "Username", format: (value) => value },
+      { id: "password", label: "Password", format: (value) => value }
     ];
     return (
       <Grid container>
@@ -81,13 +95,9 @@ class MisStudent extends React.Component {
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingStudents}
-          onRowClick={(row) =>
-            this.setState({
-              modalTitle: row.title,
-              modalBody: row.body,
-              modalShow: true,
-            })
-          }
+          onRowClick={(student) => this.setState({ modalTitle: student.student_name, modalBody: student.student_address, modalShow: true})}
+          onEditClick={(student) => console.log('edit clicked', student.student_id)}
+          onDeleteClick={(student) => socket.emit('students/delete', { student_id: student.student_id })}
           rows={this.state.studentsArr}
           columns={columns}
         />

@@ -1,7 +1,6 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
-import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button, IconButton, ButtonGroup } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography } from '@mui/material';
 import { socket } from '../../../websocket/socket';
 import { withRouter } from '../../../withRouter';
 import CustomTable from '../../../components/CustomTable';
@@ -34,9 +33,9 @@ class MisEvents extends React.Component {
     super(props);
     this.state = {
       eventsArr: [],
-      modalTitle:'',
-      modalBody:'',
-      modalShow:false,
+      modalTitle: '',
+      modalBody: '',
+      modalShow: false,
 
     };
   }
@@ -72,24 +71,23 @@ class MisEvents extends React.Component {
 
   render() {
     const columns = [
-      { id: 'title', label: 'Title', format: (value) => value},
+      { id: 'title', label: 'Title', format: (value) => value },
       { id: 'body', label: 'Body', format: (value) => value },
       { id: 'event_creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString() },
-      { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() },
-      { id: 'action_buttons', label: 'Actions', 
-        component: 
-        <ButtonGroup>
-          <IconButton style={{color: Color.blue[500]}} onClick={() => console.log('edit clicked')}><Edit /></IconButton>
-          <IconButton style={{color: Color.red[700]}} onClick={() => console.log('delete clicked')}><Delete /></IconButton>
-        </ButtonGroup>
-      },
+      { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() }
     ];
     return (
       <Grid container >
         <Typography variant="h1" style={{ margin: '10px' }}>Events</Typography>
-        <CustomTable onRowClick={(row) => this.setState({modalTitle:row.title,modalBody:row.body,modalShow:true})} rows={this.state.eventsArr} columns={columns} />
-        <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New"/>
-        <CustomModal title={this.state.modalTitle} body={this.state.modalBody} open={this.state.modalShow} onClose={() => this.setState({modalShow: false})}/>
+        <CustomTable
+          onRowClick={(event) => this.setState({ modalTitle: event.title, modalBody: event.body, modalShow: true })}
+          onEditClick={(event) => console.log('edit clicked', event.event_id)}
+          onDeleteClick={(event) => socket.emit('events/delete', { event_id: event.event_id })}
+          rows={this.state.eventsArr}
+          columns={columns}
+        />
+        <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New" />
+        <CustomModal title={this.state.modalTitle} body={this.state.modalBody} open={this.state.modalShow} onClose={() => this.setState({ modalShow: false })} />
       </Grid>
     );
   }
