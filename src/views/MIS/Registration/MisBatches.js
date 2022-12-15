@@ -1,7 +1,7 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
-import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button } from '@mui/material';
-import { AccountCircle, FlashOnOutlined, Password, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button, ButtonGroup, IconButton } from '@mui/material';
+import { Delete, Edit } from '@mui/icons-material';
 import { socket } from '../../../websocket/socket';
 import { withRouter } from '../../../withRouter';
 import CustomTable from '../../../components/CustomTable';
@@ -56,6 +56,15 @@ class MisBatches extends React.Component {
     const columns = [
       { id: 'batch_no', label: 'Batch Number', format: (value) => value},
       { id: 'degree_type', label: 'Degree Type', format: (value) => value },
+      { 
+        id: 'action_buttons', 
+        label: 'Actions', 
+        component: 
+        <ButtonGroup>
+          <IconButton style={{color: Color.blue[500]}} onClick={() => console.log('edit clicked')}><Edit /></IconButton>
+          <IconButton style={{color: Color.red[700]}} onClick={() => console.log('delete clicked')}><Delete /></IconButton>
+        </ButtonGroup>
+      }
      
     ];
     return (

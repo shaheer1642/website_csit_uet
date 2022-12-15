@@ -120,12 +120,12 @@ export default class CustomTable extends React.Component<IProps, IState> {
                 {this.props.rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                   .map((event, index) => {
                     return (
-                      <StyledTableRow  hover onClick={() => this.props.onRowClick ? this.props.onRowClick(event):{}} role="checkbox" tabIndex={-1} key={index}>
-                        {this.props.columns.map((column) => {
+                      <StyledTableRow hover role="checkbox" tabIndex={-1} key={index}>
+                        {this.props.columns.map((column, index) => {
                           const value = event[column.id];
                           return (
-                            <StyledTableCell key={column.id} align={column.align}>
-                              {column.format(value)}
+                            <StyledTableCell onClick={() => column.component ? {} : this.props.onRowClick ? this.props.onRowClick(event):{}} key={index} align={column.align}>
+                              {column.component ? column.component : column.format(value)}
                             </StyledTableCell>
                           );
                         })}

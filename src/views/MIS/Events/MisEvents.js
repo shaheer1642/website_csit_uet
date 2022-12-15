@@ -1,7 +1,7 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
-import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button } from '@mui/material';
-import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button, IconButton, ButtonGroup } from '@mui/material';
+import { Delete, Edit } from '@mui/icons-material';
 import { socket } from '../../../websocket/socket';
 import { withRouter } from '../../../withRouter';
 import CustomTable from '../../../components/CustomTable';
@@ -76,7 +76,13 @@ class MisEvents extends React.Component {
       { id: 'body', label: 'Body', format: (value) => value },
       { id: 'event_creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString() },
       { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() },
-     
+      { id: 'action_buttons', label: 'Actions', 
+        component: 
+        <ButtonGroup>
+          <IconButton style={{color: Color.blue[500]}} onClick={() => console.log('edit clicked')}><Edit /></IconButton>
+          <IconButton style={{color: Color.red[700]}} onClick={() => console.log('delete clicked')}><Delete /></IconButton>
+        </ButtonGroup>
+      },
     ];
     return (
       <Grid container >
