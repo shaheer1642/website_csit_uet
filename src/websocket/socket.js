@@ -1,5 +1,6 @@
 import {io} from 'socket.io-client';
 import * as uuid from 'uuid';
+import eventHandler from '../eventHandler';
 
 if (!getCookie('login_token')) generateNewToken()
 
@@ -33,6 +34,7 @@ async function generateNewToken() {
     document.cookie = `login_token=${uuid.v4()};path=/`;
     //socket.emit('restartConn')
     socket.auth.token = getCookie('login_token')
+    eventHandler.emit('login/auth', {})
     await socketHasConnected()
     socket.disconnect()
     socket.connect()

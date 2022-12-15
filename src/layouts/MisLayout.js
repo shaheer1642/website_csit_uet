@@ -19,9 +19,15 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import * as Icon from '@mui/icons-material';
-import {Link,Outlet} from 'react-router-dom';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import * as uuid from 'uuid';
+import { generateNewToken } from '../websocket/socket';
+import { withRouter } from '../withRouter';
+import { socket, socketHasConnected } from '../websocket/socket';
+import EstablishingConnection from '../views/EstablishingConnection';
+import eventHandler from '../eventHandler';
+import {user} from './../objects/User'
 
 const drawerWidth = 240;
 
@@ -90,18 +96,33 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function MiniDrawer() {
+function MisLayout() {
   const theme = useTheme();
+  const navigate = useNavigate()
   const [open, setOpen] = React.useState(false);
+  const [socketConnecting, setSocketConnecting] = React.useState(true);
 
   useEffect(() => {
-    console.log('component mounted')
-  
+    console.log('[MisLayout] componentDidMount')
+    socketHasConnected().then(() => setSocketConnecting(false)).catch(console.error)
+    socket.on('connect', SocketConnectedListener)
+    socket.on('disconnect', SocketDisconnectedListener)
+
     return () => {
-      console.log('component unmounted')
+      console.log('[MisLayout] componentWillUnmount')
+      socket.removeListener(SocketConnectedListener)
+      socket.removeListener(SocketDisconnectedListener)
     }
   })
-  
+
+  useEffect(() => {
+    console.log('[MisLayout] componentDidUpdate')
+    if (!user.login_token)
+      navigate("/login")
+  });
+
+  const SocketConnectedListener = () => setSocketConnecting(false)
+  const SocketDisconnectedListener = () => setSocketConnecting(true)
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -111,129 +132,138 @@ export default function MiniDrawer() {
     setOpen(false);
   };
 
-  return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open}>
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{
-              marginRight: 5,
-              ...(open && { display: 'none' }),
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Dashboard
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-          </IconButton>
-        </DrawerHeader>
-       <List>
+  const onLogoutClick = () => {
+    console.log('[onLogoutClick]')
+    generateNewToken()
+    //navigate("/login")
+  }
 
-        <ListItem button component={Link} to=""  disablePadding sx={{ display: 'block' }}>
-        <ListItemButton
+  return (
+    <React.Fragment>
+      {socketConnecting ? <EstablishingConnection /> :
+        <Box sx={{ display: 'flex' }}>
+          <AppBar position="fixed" open={open}>
+            <Toolbar>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                onClick={handleDrawerOpen}
+                edge="start"
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
+                  marginRight: 5,
+                  ...(open && { display: 'none' }),
                 }}
               >
-                <ListItemIcon
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" noWrap component="div">
+                Dashboard
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <Drawer variant="permanent" open={open}>
+            <DrawerHeader>
+              <IconButton onClick={handleDrawerClose}>
+                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+              </IconButton>
+            </DrawerHeader>
+            <List>
+
+              <ListItem button component={Link} to="" disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
                   }}
                 >
-                  <Icon.Home /> 
-                </ListItemIcon>
-                <ListItemText primary='Home'  sx={{ opacity: open ? 1 : 0 }}/>
-              </ListItemButton>
-        </ListItem>
-        <ListItem button component={Link} to="events"  disablePadding sx={{ display: 'block' }}>
-        <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon.Home />
+                  </ListItemIcon>
+                  <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem button component={Link} to="events" disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
                   }}
                 >
-                 <Icon.Campaign/> 
-                </ListItemIcon>
-                <ListItemText primary='Events'  sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-        </ListItem>
-        <ListItem button component={Link} to="batches"  disablePadding sx={{ display: 'block' }}>
-        <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon.Campaign />
+                  </ListItemIcon>
+                  <ListItemText primary='Events' sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+              <ListItem button component={Link} to="batches" disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
                   }}
                 >
-                 <Icon.GroupAdd/> 
-                </ListItemIcon>
-                <ListItemText primary='Registration'  sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-        </ListItem>
-        <Divider/>
-        <ListItem button component={Link} to="/login"  disablePadding sx={{ display: 'block' }}>
-        <ListItemButton
-        onClick={
-          ()=>document.cookie=`login_token=${uuid.v1()};path=/`
-        }
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon.GroupAdd />
+                  </ListItemIcon>
+                  <ListItemText primary='Registration' sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+              <Divider />
+              <ListItem disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  onClick={onLogoutClick}
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
                   }}
                 >
-                 <Icon.PowerSettingsNew style={{color:'Red'}}/> 
-                </ListItemIcon>
-                <ListItemText primary='Logout'  sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-        </ListItem>
-       </List>
-       
-        
-       
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-       <Outlet/>
-      </Box>
-    </Box>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon.PowerSettingsNew style={{ color: 'Red' }} />
+                  </ListItemIcon>
+                  <ListItemText primary='Logout' sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
+            </List>
+
+
+
+          </Drawer>
+          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <DrawerHeader />
+            <Outlet />
+          </Box>
+        </Box>
+      }
+    </React.Fragment>
   );
 }
+
+export default withRouter(MisLayout)
