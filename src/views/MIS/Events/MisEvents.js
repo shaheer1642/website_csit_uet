@@ -50,11 +50,17 @@ class MisEvents extends React.Component {
     })
 
     socket.addEventListener('events/listener/insert', this.eventsListenerInsert)
+    socket.addEventListener('events/listener/update', this.eventsListenerUpdate)
     socket.addEventListener('events/listener/delete', this.eventsListenerDelete)
+  }
+
+  componentDidUpdate() {
+    console.log('MisEvents Updated',this.state)
   }
 
   componentWillUnmount() {
     socket.removeEventListener('events/listener/insert', this.eventsListenerInsert)
+    socket.removeEventListener('events/listener/update', this.eventsListenerUpdate)
     socket.removeEventListener('events/listener/delete', this.eventsListenerDelete)
   }
 
@@ -62,6 +68,17 @@ class MisEvents extends React.Component {
     return this.setState({
       eventsArr: [data, ...this.state.eventsArr]
     })
+  }
+  eventsListenerUpdate = (data) => {
+    this.setState(state => {
+        const eventsArr = state.eventsArr.map((event, index) => {
+          if (event.event_id === data.event_id) return data;
+          else return event
+        });
+        return {
+          eventsArr,
+        }
+    });
   }
   eventsListenerDelete = (data) => {
     return this.setState({
@@ -81,7 +98,7 @@ class MisEvents extends React.Component {
         <Typography variant="h1" style={{ margin: '10px' }}>Events</Typography>
         <CustomTable
           onRowClick={(event) => this.setState({ modalTitle: event.title, modalBody: event.body, modalShow: true })}
-          onEditClick={(event) => console.log('edit clicked', event.event_id)}
+          onEditClick={(event) => this.props.navigate('update', {state: {event_id: event.event_id}})}
           onDeleteClick={(event) => socket.emit('events/delete', { event_id: event.event_id })}
           rows={this.state.eventsArr}
           columns={columns}

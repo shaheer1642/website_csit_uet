@@ -169,7 +169,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                   <TextField
                     label={this.props.options[attribute.key].label}
                     type="date"
-                    defaultValue={new Date().toISOString().split('T')[0]}
+                    defaultValue={new Date(this.state.formFields[attribute.key] || null).toISOString().split('T')[0]}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -182,7 +182,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
         })}
         <Grid item xs={12}>
           <CustomButton 
-            label='Create'
+            label={this.props.formType == 'create' ? 'Create' : 'Update'}
             onClick={() => {
               socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
                 this.setState({

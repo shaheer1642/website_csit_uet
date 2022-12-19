@@ -13,6 +13,7 @@ import MisHome from "./views/MIS/MisHome";
 import MisEvents from "./views/MIS/Events/MisEvents";
 import MisBatches from "./views/MIS/Registration/MisBatches";
 import MisEventsCreate from "./views/MIS/Events/MisEventsCreate";
+import MisEventsUpdate from "./views/MIS/Events/MisEventsUpdate";
 import React from "react";
 import MisBatchesCreate from "./views/MIS/Registration/MisBatchesCreate";
 import MisStudent from "./views/MIS/Registration/MisStudents";
@@ -33,6 +34,7 @@ export default function Router() {
           <Route index element={<MisHome />} />
           <Route path="events" element={<MisEvents />} />
           <Route path="events/create" element={<MisEventsCreate />} />
+          <Route path="events/update" element={<MisEventsUpdate />} />
           <Route path="batches" element={<MisBatches/>}/>
           <Route path="batches/create" element={<MisBatchesCreate/>}/>
           <Route path="batches/students" element={<MisStudent/>}/>
