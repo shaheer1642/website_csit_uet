@@ -59,11 +59,13 @@ class MisStudent extends React.Component {
     });
 
     socket.addEventListener('students/listener/insert', this.studentsListenerInsert)
+    socket.addEventListener('students/listener/update', this.studentsListenerUpdate)
     socket.addEventListener('students/listener/delete', this.studentsListenerDelete)
   }
 
   componentWillUnmount() {
     socket.removeEventListener('students/listener/insert', this.studentsListenerInsert)
+    socket.removeEventListener('students/listener/update', this.studentsListenerUpdate)
     socket.removeEventListener('students/listener/delete', this.studentsListenerDelete)
   }
 
@@ -71,6 +73,17 @@ class MisStudent extends React.Component {
     return this.setState({
       studentsArr: [data, ...this.state.studentsArr]
     })
+  }
+  studentsListenerUpdate = (data) => {
+    return this.setState(state => {
+        const studentsArr = state.studentsArr.map((student, index) => {
+          if (student.student_id === data.student_id) return data;
+          else return student
+        });
+        return {
+          studentsArr,
+        }
+    });
   }
   studentsListenerDelete = (data) => {
     return this.setState({
@@ -81,7 +94,7 @@ class MisStudent extends React.Component {
   render() {
     const columns = [
       { id: "student_name", label: "Student Name", format: (value) => value },
-      { id: "father_name", label: "Father Name", format: (value) => value },
+      { id: "student_father_name", label: "Father Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "reg_no", label: "Registration No", format: (value) => value },
       { id: "student_address", label: "Address", format: (value) => value },
@@ -96,7 +109,7 @@ class MisStudent extends React.Component {
         <CustomTable
           loadingState = {this.state.loadingStudents}
           onRowClick={(student) => this.setState({ modalTitle: student.student_name, modalBody: student.student_address, modalShow: true})}
-          onEditClick={(student) => console.log('edit clicked', student.student_id)}
+          onEditClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
           onDeleteClick={(student) => socket.emit('students/delete', { student_id: student.student_id })}
           rows={this.state.studentsArr}
           columns={columns}

@@ -70,7 +70,7 @@ class MisEvents extends React.Component {
     })
   }
   eventsListenerUpdate = (data) => {
-    this.setState(state => {
+    return this.setState(state => {
         const eventsArr = state.eventsArr.map((event, index) => {
           if (event.event_id === data.event_id) return data;
           else return event

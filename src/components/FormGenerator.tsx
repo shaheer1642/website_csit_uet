@@ -185,6 +185,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
             label={this.props.formType == 'create' ? 'Create' : 'Update'}
             onClick={() => {
               socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
+                console.log(`[${this.props.endpoint}/${this.props.formType}] response`,res)
                 this.setState({
                   alertMsg: res.code == 200 ? this.props.submitSuccessMessage:`${res.status}: ${res.message}`,
                   alertSeverity: res.code == 200 ? 'success':'warning'

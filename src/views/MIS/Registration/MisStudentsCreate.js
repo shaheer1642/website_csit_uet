@@ -3,7 +3,7 @@ import React from "react";
 import FormGenerator from "../../../components/FormGenerator";
 import { withRouter } from "../../../withRouter";
 
-class MisStudentCreate extends React.Component {
+class MisStudentsCreate extends React.Component {
   constructor(props) {
     super(props);
     this.batch_id = this.props.location.state.batch_id
@@ -17,34 +17,34 @@ class MisStudentCreate extends React.Component {
         submitSuccessMessage="Student Created Successfully"
         backgroundColor="white"
         options={{
-            cnic: {
+          cnic: {
             label: "CNIC",
             position: 1,
             xs: 6,
           },
-            reg_no: {
+          reg_no: {
             label: "Registration No",
             position: 1,
             xs: 6,
           },
-            student_name: {
+          student_name: {
             label: "Student Name",
             position: 1,
             xs: 6,
           },
-            batch_id: {
+          batch_id: {
             label: "Batch ID",
             defaultValue: this.batch_id,
             disabled: true,
             position: 3,
             xs: 6,
           },
-            student_father_name: {
+          student_father_name: {
             label: "Father Name",
             position: 1,
             xs: 6,
           },
-            student_address: {
+          student_address: {
             label: "Address",
             position: 1,
             xs: 6,
@@ -55,4 +55,4 @@ class MisStudentCreate extends React.Component {
   }
 }
 
-export default withRouter(MisStudentCreate);
+export default withRouter(MisStudentsCreate);

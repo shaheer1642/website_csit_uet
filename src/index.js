@@ -16,8 +16,10 @@ import MisEventsCreate from "./views/MIS/Events/MisEventsCreate";
 import MisEventsUpdate from "./views/MIS/Events/MisEventsUpdate";
 import React from "react";
 import MisBatchesCreate from "./views/MIS/Registration/MisBatchesCreate";
+import MisBatchesUpdate from "./views/MIS/Registration/MisBatchesUpdate";
 import MisStudent from "./views/MIS/Registration/MisStudents";
-import MisStudentCreate from "./views/MIS/Registration/MisStudentsCreate";
+import MisStudentsCreate from "./views/MIS/Registration/MisStudentsCreate";
+import MisStudentsUpdate from "./views/MIS/Registration/MisStudentsUpdate";
 
 export default function Router() {
   return (
@@ -37,8 +39,10 @@ export default function Router() {
           <Route path="events/update" element={<MisEventsUpdate />} />
           <Route path="batches" element={<MisBatches/>}/>
           <Route path="batches/create" element={<MisBatchesCreate/>}/>
+          <Route path="batches/update" element={<MisBatchesUpdate/>}/>
           <Route path="batches/students" element={<MisStudent/>}/>
-          <Route path="batches/students/create" element={<MisStudentCreate/>}/> 
+          <Route path="batches/students/create" element={<MisStudentsCreate/>}/> 
+          <Route path="batches/students/update" element={<MisStudentsUpdate/>}/> 
         </Route>
       </Routes>
     </BrowserRouter>
