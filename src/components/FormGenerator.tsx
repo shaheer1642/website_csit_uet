@@ -1,7 +1,7 @@
 // @ts-nocheck 
 // @typescript-eslint/no-unused-vars
 import React from 'react';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, TextField, Grid, Zoom, Alert, AlertColor } from '@mui/material';
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, TextField, Grid, Zoom, Alert, AlertColor, FormControlLabel, Radio, RadioGroup, FormControl, FormLabel } from '@mui/material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
 import { socket } from '../websocket/socket';
@@ -68,8 +68,14 @@ interface fieldOptions {
       defaultValue: any | undefined,
       /**Hint*/
       placeholder: any | undefined,
+      /**Width in %age*/
+      width: string | undefined,
       /**Whether this field is editable*/
       disabled: boolean | undefined,
+      /**field type. i.e. text, radiobox, checkbox (requires additional attributes for options)*/
+      fieldType: string | undefined
+      /**options for chosen field type, if any*/
+      fieldTypeOptions: Array<any> | undefined
     };
 }
 
@@ -117,7 +123,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
       console.log(schema_temp)
       var formFields: Object = {}
       schema_temp.map((attribute) => {
-        formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue
+        formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue || this.props.options[attribute.key]?.fieldTypeOptions?.[0]
       })
       this.setState({formLoading: false, schema: schema_temp, formFields: formFields})
     })
@@ -155,6 +161,19 @@ export default class FormGenerator extends React.Component<IProps, IState> {
             <Grid item xs={this.props.options[attribute.key].xs || 12}>
               {
                 attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' ?
+                  this.props.options[attribute.key].fieldType == 'radiobox' ? 
+                  
+                  <FormControl required={attribute.required}>
+                    <FormLabel>{this.props.options[attribute.key].label}</FormLabel>
+                    <RadioGroup row defaultValue={this.props.options[attribute.key].fieldTypeOptions[0]} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
+                      {
+                        this.props.options[attribute.key].fieldTypeOptions.map(option => {
+                          return <FormControlLabel  value={option} control={<Radio />} label={option} />
+                        })
+                      }
+                    </RadioGroup>
+                  </FormControl>
+                  :
                   <CustomTextField 
                     disabled={this.props.options[attribute.key].disabled}
                     required={attribute.required}
@@ -162,7 +181,8 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                     value={this.state.formFields[attribute.key]}
                     multiline ={attribute.multiline}
                     maxRows={attribute.multiline ? 10:1}
-                    variant="filled" style={{ width: '100%' }}
+                    variant="filled" 
+                    style={{ width: this.props.options[attribute.key].width || '100%' }}
                     label={this.props.options[attribute.key].label}
                     onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)} />
                 : attribute.type == 'unix_timestamp_milliseconds' ?

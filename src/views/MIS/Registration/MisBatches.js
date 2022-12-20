@@ -10,6 +10,7 @@ import CustomModal from '../../../components/CustomModal';
 import * as Color from '@mui/material/colors';
 import FormGenerator from '../../../components/FormGenerator';
 import { Navigate } from 'react-router-dom'
+import ConfirmationModal from '../../../components/ConfirmationModal';
 
 const palletes = {
   primary: '#439CEF',
@@ -36,6 +37,10 @@ class MisBatches extends React.Component {
     this.state = {
       batchesArr: [],
       loadingBatches: true,
+
+      confirmationModalShow: false,
+      confirmationModalMessage: '',
+      confirmationModalExecute: () => {}
     };
   }
 
@@ -81,7 +86,13 @@ class MisBatches extends React.Component {
       batchesArr: this.state.batchesArr.filter((batch) => batch.batch_id != data.batch_id)
     })
   }
-
+  confirmationModalDestroy = () => {
+    this.setState({
+      confirmationModalShow: false,
+      confirmationModalMessage: '',
+      confirmationModalExecute: () => {}
+    })
+  }
 
   render() {
     const columns = [
@@ -96,9 +107,25 @@ class MisBatches extends React.Component {
         loadingState = {this.state.loadingBatches} 
         onRowClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, batch_name: `${batch.batch_no} ${batch.degree_type} ${batch.joined_semester}`}})}
         onEditClick={(batch) => this.props.navigate('update', {state: {batch_id: batch.batch_id}})}
-        onDeleteClick={(batch) => socket.emit('batches/delete', { batch_id: batch.batch_id })}
+        onDeleteClick={(batch) => {
+          this.setState({
+            confirmationModalShow: true,
+            confirmationModalMessage: 'Are you sure you want to delete this batch? This will also delete all the students in the batch',
+            confirmationModalExecute: () => socket.emit('batches/delete', { batch_id: batch.batch_id })
+          })
+        }}
         rows={this.state.batchesArr} columns={columns} />
         <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New"/>
+        <ConfirmationModal 
+          open={this.state.confirmationModalShow} 
+          message={this.state.confirmationModalMessage} 
+          onClose={() => this.confirmationModalDestroy()}
+          onClickNo={() => this.confirmationModalDestroy()}
+          onClickYes={() => {
+            this.state.confirmationModalExecute()
+            this.confirmationModalDestroy()
+          }}
+        />
       </Grid>
     );
   }

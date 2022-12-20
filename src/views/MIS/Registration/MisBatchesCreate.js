@@ -20,19 +20,22 @@ export default class MisBatchesCreate extends React.Component {
               label: 'Batch No',   
               defaultValue: new Date().getFullYear(),
               position: 1,
-              xs: 6
+              xs: 12,
+              width: '30%'
             },
             joined_semester: {
               label: 'Joined Semester',
-              placeholder: 'Spring | Fall',
               position: 2,
-              xs: 6
+              xs: 6,
+              fieldType: 'radiobox',
+              fieldTypeOptions: ['Spring', 'Fall']
             },
             degree_type: {
               label: 'Degree Type',   
-              placeholder: 'Msc | Phd',
               position: 3,
-              xs: 12
+              xs: 6,
+              fieldType: 'radiobox',
+              fieldTypeOptions: ['Msc', 'Phd']
             },
             batch_advisor_id: {
               label: 'Batch Advisor Id',
