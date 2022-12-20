@@ -86,6 +86,7 @@ class MisBatches extends React.Component {
       batchesArr: this.state.batchesArr.filter((batch) => batch.batch_id != data.batch_id)
     })
   }
+  
   confirmationModalDestroy = () => {
     this.setState({
       confirmationModalShow: false,

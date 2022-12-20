@@ -8,6 +8,7 @@ import CustomButton from '../../../components/CustomButton';
 import CustomModal from '../../../components/CustomModal';
 import * as Color from '@mui/material/colors';
 import FormGenerator from '../../../components/FormGenerator';
+import ConfirmationModal from '../../../components/ConfirmationModal';
 
 const palletes = {
   primary: '#439CEF',
@@ -37,6 +38,9 @@ class MisEvents extends React.Component {
       modalBody: '',
       modalShow: false,
 
+      confirmationModalShow: false,
+      confirmationModalMessage: '',
+      confirmationModalExecute: () => {}
     };
   }
 
@@ -86,6 +90,14 @@ class MisEvents extends React.Component {
     })
   }
 
+  confirmationModalDestroy = () => {
+    this.setState({
+      confirmationModalShow: false,
+      confirmationModalMessage: '',
+      confirmationModalExecute: () => {}
+    })
+  }
+  
   render() {
     const columns = [
       { id: 'title', label: 'Title', format: (value) => value },
@@ -99,12 +111,28 @@ class MisEvents extends React.Component {
         <CustomTable
           onRowClick={(event) => this.setState({ modalTitle: event.title, modalBody: event.body, modalShow: true })}
           onEditClick={(event) => this.props.navigate('update', {state: {event_id: event.event_id}})}
-          onDeleteClick={(event) => socket.emit('events/delete', { event_id: event.event_id })}
+          onDeleteClick={(event) => {
+            this.setState({
+              confirmationModalShow: true,
+              confirmationModalMessage: 'Are you sure you want to delete this event?',
+              confirmationModalExecute: () => socket.emit('events/delete', { event_id: event.event_id })
+            })
+          }}
           rows={this.state.eventsArr}
           columns={columns}
         />
         <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New" />
         <CustomModal title={this.state.modalTitle} body={this.state.modalBody} open={this.state.modalShow} onClose={() => this.setState({ modalShow: false })} />
+        <ConfirmationModal 
+          open={this.state.confirmationModalShow} 
+          message={this.state.confirmationModalMessage} 
+          onClose={() => this.confirmationModalDestroy()}
+          onClickNo={() => this.confirmationModalDestroy()}
+          onClickYes={() => {
+            this.state.confirmationModalExecute()
+            this.confirmationModalDestroy()
+          }}
+        />
       </Grid>
     );
   }

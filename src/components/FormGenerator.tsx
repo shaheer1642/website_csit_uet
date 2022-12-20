@@ -162,29 +162,28 @@ export default class FormGenerator extends React.Component<IProps, IState> {
               {
                 attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' ?
                   this.props.options[attribute.key].fieldType == 'radiobox' ? 
-                  
-                  <FormControl required={attribute.required}>
-                    <FormLabel>{this.props.options[attribute.key].label}</FormLabel>
-                    <RadioGroup row defaultValue={this.props.options[attribute.key].fieldTypeOptions[0]} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
-                      {
-                        this.props.options[attribute.key].fieldTypeOptions.map(option => {
-                          return <FormControlLabel  value={option} control={<Radio />} label={option} />
-                        })
-                      }
-                    </RadioGroup>
-                  </FormControl>
-                  :
-                  <CustomTextField 
-                    disabled={this.props.options[attribute.key].disabled}
-                    required={attribute.required}
-                    placeholder={this.props.options[attribute.key].placeholder}
-                    value={this.state.formFields[attribute.key]}
-                    multiline ={attribute.multiline}
-                    maxRows={attribute.multiline ? 10:1}
-                    variant="filled" 
-                    style={{ width: this.props.options[attribute.key].width || '100%' }}
-                    label={this.props.options[attribute.key].label}
-                    onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)} />
+                    <FormControl required={attribute.required}>
+                      <FormLabel>{this.props.options[attribute.key].label}</FormLabel>
+                      <RadioGroup row defaultValue={this.props.options[attribute.key].fieldTypeOptions[0]} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
+                        {
+                          this.props.options[attribute.key].fieldTypeOptions.map(option => {
+                            return <FormControlLabel  value={option} control={<Radio />} label={option} />
+                          })
+                        }
+                      </RadioGroup>
+                    </FormControl>
+                    :
+                    <CustomTextField 
+                      disabled={this.props.options[attribute.key].disabled}
+                      required={attribute.required}
+                      placeholder={this.props.options[attribute.key].placeholder}
+                      value={this.state.formFields[attribute.key]}
+                      multiline ={attribute.multiline}
+                      maxRows={attribute.multiline ? 10:1}
+                      variant="filled" 
+                      style={{ width: this.props.options[attribute.key].width || '100%' }}
+                      label={this.props.options[attribute.key].label}
+                      onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)} />
                 : attribute.type == 'unix_timestamp_milliseconds' ?
                   <TextField
                     label={this.props.options[attribute.key].label}

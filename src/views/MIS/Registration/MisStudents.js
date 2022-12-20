@@ -13,7 +13,7 @@ import { withRouter } from "../../../withRouter";
 import CustomTable from "../../../components/CustomTable";
 import CustomButton from "../../../components/CustomButton";
 import CustomModal from "../../../components/CustomModal";
-
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 const palletes = {
   primary: "#439CEF",
@@ -53,7 +53,11 @@ class MisStudent extends React.Component {
       if (res.code == 200) {
         return this.setState({
           studentsArr: res.data,
-          loadingStudents: false
+          loadingStudents: false,
+
+          confirmationModalShow: false,
+          confirmationModalMessage: '',
+          confirmationModalExecute: () => {}
         });
       }
     });
@@ -90,6 +94,14 @@ class MisStudent extends React.Component {
       studentsArr: this.state.studentsArr.filter((student) => student.student_id != data.student_id)
     })
   }
+  
+  confirmationModalDestroy = () => {
+    this.setState({
+      confirmationModalShow: false,
+      confirmationModalMessage: '',
+      confirmationModalExecute: () => {}
+    })
+  }
 
   render() {
     const columns = [
@@ -110,7 +122,13 @@ class MisStudent extends React.Component {
           loadingState = {this.state.loadingStudents}
           onRowClick={(student) => this.setState({ modalTitle: student.student_name, modalBody: student.student_address, modalShow: true})}
           onEditClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
-          onDeleteClick={(student) => socket.emit('students/delete', { student_id: student.student_id })}
+          onDeleteClick={(student) => {
+            this.setState({
+              confirmationModalShow: true,
+              confirmationModalMessage: 'Are you sure you want to remove this student?',
+              confirmationModalExecute: () => socket.emit('students/delete', { student_id: student.student_id })
+            })
+          }}
           rows={this.state.studentsArr}
           columns={columns}
         />
@@ -124,6 +142,16 @@ class MisStudent extends React.Component {
           body={this.state.modalBody}
           open={this.state.modalShow}
           onClose={() => this.setState({ modalShow: false })}
+        />
+        <ConfirmationModal 
+          open={this.state.confirmationModalShow} 
+          message={this.state.confirmationModalMessage} 
+          onClose={() => this.confirmationModalDestroy()}
+          onClickNo={() => this.confirmationModalDestroy()}
+          onClickYes={() => {
+            this.state.confirmationModalExecute()
+            this.confirmationModalDestroy()
+          }}
         />
       </Grid>
     );
