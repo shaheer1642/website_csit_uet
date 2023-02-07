@@ -110,6 +110,7 @@ class MisStudent extends React.Component {
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "reg_no", label: "Registration No", format: (value) => value },
       { id: "student_address", label: "Address", format: (value) => value },
+      { id: "student_gender", label: "Gender", format: (value) => value },
       { id: "username", label: "Username", format: (value) => value },
       { id: "password", label: "Password", format: (value) => value }
     ];
