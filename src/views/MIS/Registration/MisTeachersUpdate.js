@@ -54,7 +54,6 @@ class MisTeachersUpdate extends React.Component {
           cnic: {
             label: "CNIC",
             defaultValue: this.state.cnic,
-            disabled: true,
             position: 3,
             xs: 6,
           },
