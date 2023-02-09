@@ -2,15 +2,15 @@
 import React from 'react';
 import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button, ButtonGroup, IconButton } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import { socket } from '../../../websocket/socket';
-import { withRouter } from '../../../withRouter';
-import CustomTable from '../../../components/CustomTable';
-import CustomButton from '../../../components/CustomButton';
-import CustomModal from '../../../components/CustomModal';
+import { socket } from '../../../../websocket/socket';
+import { withRouter } from '../../../../withRouter';
+import CustomTable from '../../../../components/CustomTable';
+import CustomButton from '../../../../components/CustomButton';
+import CustomModal from '../../../../components/CustomModal';
 import * as Color from '@mui/material/colors';
-import FormGenerator from '../../../components/FormGenerator';
+import FormGenerator from '../../../../components/FormGenerator';
 import { Navigate } from 'react-router-dom'
-import ConfirmationModal from '../../../components/ConfirmationModal';
+import ConfirmationModal from '../../../../components/ConfirmationModal';
 
 const palletes = {
   primary: '#439CEF',

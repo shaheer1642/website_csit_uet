@@ -2,7 +2,7 @@
 import React from 'react';
 import {Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField} from '@mui/material';
 import {AccountCircle, Password, Visibility, VisibilityOff} from '@mui/icons-material';
-import { socket } from '../../websocket/socket';
+import { socket } from '../../../websocket/socket';
 
 const palletes = {
   primary: '#439CEF',

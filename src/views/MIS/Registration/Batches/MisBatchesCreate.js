@@ -1,6 +1,6 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from 'react';
-import FormGenerator from '../../../components/FormGenerator';
+import FormGenerator from '../../../../components/FormGenerator';
 
 export default class MisBatchesCreate extends React.Component {
   constructor(props) {

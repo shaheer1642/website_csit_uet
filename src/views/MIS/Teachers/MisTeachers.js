@@ -33,7 +33,7 @@ class MisTeachers extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loadingteachers: true,
+      loadingTeachers: true,
       teachersArr: [],
       modalTitle: "",
       modalBody: "",
@@ -42,11 +42,11 @@ class MisTeachers extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("teachers/fetch", { batch_id: this.batch_id }, (res) => {
+    socket.emit("teachers/fetch", {}, (res) => {
       if (res.code == 200) {
         return this.setState({
           teachersArr: res.data,
-          loadingteachers: false,
+          loadingTeachers: false,
 
           confirmationModalShow: false,
           confirmationModalMessage: "",
@@ -129,7 +129,7 @@ class MisTeachers extends React.Component {
           {`Teachers`}
         </Typography>
         <CustomTable
-          loadingState={this.state.loadingteachers}
+          loadingState={this.state.loadingTeachers}
           onRowClick={(teacher) =>
             this.setState({
               modalTitle: teacher.teacher_name,
@@ -158,11 +158,7 @@ class MisTeachers extends React.Component {
         />
         <CustomButton
           sx={{ margin: "10px" }}
-          onClick={() =>
-            this.props.navigate("create", {
-              state: { batch_id: this.batch_id },
-            })
-          }
+          onClick={() => this.props.navigate("create")}
           label="Create New"
         />
         <CustomModal
