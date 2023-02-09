@@ -17,31 +17,11 @@ class MisCoursesCreate extends React.Component {
         submitSuccessMessage="Courses Created Successfully"
         backgroundColor="white"
         options={{
-          // cnic: {
-          //   label: "CNIC",
-          //   position: 1,
-          //   xs: 6,
-          // },
-          // reg_no: {
-          //   label: "Registration No",
-          //   position: 1,
-          //   xs: 6,
-          // },
           course_name: {
             label: "Course Name",
             position: 1,
-            xs: 6,
+            xs: 12,
           },
-      
-          // teacher_gender: {
-          //   label: "Gender",
-          //   position: 1,
-          //   xs: 6,
-          //   fieldType: 'radiobox',
-          //   fieldTypeOptions: ['Male', 'Female']
-          // },
-         
-         
         }}
       />
     );

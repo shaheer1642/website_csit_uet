@@ -66,7 +66,7 @@ class MisCoursesUpdate extends React.Component {
           course_name: {
             label: "course Name",
             defaultValue: this.state.course_name,
-            position: 5,
+            position: 1,
             xs: 6,
           },
      

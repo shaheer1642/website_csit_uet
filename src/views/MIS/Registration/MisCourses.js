@@ -132,8 +132,8 @@ class MisCourses extends React.Component {
           loadingState={this.state.loadingteachers}
           onRowClick={(courses) =>
             this.setState({
-              modalTitle: course.course_name,
-              modalBody: course.course_address,
+              modalTitle: courses.course_name,
+              modalBody: courses.course_address,
               modalShow: true,
             })
           }
@@ -148,7 +148,7 @@ class MisCourses extends React.Component {
               confirmationModalMessage:
                 "Are you sure you want to remove this course?",
               confirmationModalExecute: () =>
-                socket.emit("courses/delete", { course_id: course.course_id }),
+                socket.emit("courses/delete", { course_id: courses.course_id }),
             });
           }}
           rows={this.state.coursesArr}

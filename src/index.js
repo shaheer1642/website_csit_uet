@@ -24,6 +24,9 @@ import MisTeachers from "./views/MIS/Registration/MisTeachers";
 import MisTeachersCreate from "./views/MIS/Registration/MisTeachersCreate";
 import MisTeachersUpdate from "./views/MIS/Registration/MisTeachersUpdate";
 import MisCourses from "./views/MIS/Registration/MisCourses";
+import MisCoursesCreate from "./views/MIS/Registration/MisCoursesCreate";
+import MisCoursesUpdate from "./views/MIS/Registration/MisCoursesUpdate";
+
 
 export default function Router() {
   return (
