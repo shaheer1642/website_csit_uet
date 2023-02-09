@@ -17,7 +17,7 @@ import MisEventsUpdate from "./views/MIS/Events/MisEventsUpdate";
 import React from "react";
 import MisBatchesCreate from "./views/MIS/Registration/MisBatchesCreate";
 import MisBatchesUpdate from "./views/MIS/Registration/MisBatchesUpdate";
-import MisStudent from "./views/MIS/Registration/MisStudents";
+import MisStudentsAndSemesters from "./views/MIS/Registration/MisStudentsAndSemesters";
 import MisStudentsCreate from "./views/MIS/Registration/MisStudentsCreate";
 import MisStudentsUpdate from "./views/MIS/Registration/MisStudentsUpdate";
 import MisTeachers from "./views/MIS/Registration/MisTeachers";
@@ -26,6 +26,8 @@ import MisTeachersUpdate from "./views/MIS/Registration/MisTeachersUpdate";
 import MisCourses from "./views/MIS/Registration/MisCourses";
 import MisCoursesCreate from "./views/MIS/Registration/MisCoursesCreate";
 import MisCoursesUpdate from "./views/MIS/Registration/MisCoursesUpdate";
+import MisSemestersCreate from "./views/MIS/Registration/MisSemestersCreate";
+import MisSemestersUpdate from "./views/MIS/Registration/MisSemestersUpdate";
 
 
 export default function Router() {
@@ -47,9 +49,11 @@ export default function Router() {
           <Route path="batches" element={<MisBatches/>}/>
           <Route path="batches/create" element={<MisBatchesCreate/>}/>
           <Route path="batches/update" element={<MisBatchesUpdate/>}/>
-          <Route path="batches/students" element={<MisStudent/>}/>
-          <Route path="batches/students/create" element={<MisStudentsCreate/>}/> 
-          <Route path="batches/students/update" element={<MisStudentsUpdate/>}/> 
+          <Route path="batches/studentsandsemesters" element={<MisStudentsAndSemesters/>}/>
+          <Route path="batches/studentsandsemesters/studentscreate" element={<MisStudentsCreate/>}/> 
+          <Route path="batches/studentsandsemesters/studentsupdate" element={<MisStudentsUpdate/>}/> 
+          <Route path="batches/studentsandsemesters/semesterscreate" element={<MisSemestersCreate/>}/> 
+          <Route path="batches/studentsandsemesters/semestersupdate" element={<MisSemestersUpdate/>}/> 
           <Route path="teachers" element={<MisTeachers/>}/>
           <Route path="teachers/create" element={<MisTeachersCreate/>}/>
           <Route path="teachers/update" element={<MisTeachersUpdate/>}/>

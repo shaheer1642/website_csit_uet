@@ -106,7 +106,7 @@ class MisBatches extends React.Component {
         <Typography variant="h1" style={{ margin: '10px' }}>Batches</Typography>
         <CustomTable 
         loadingState = {this.state.loadingBatches} 
-        onRowClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, batch_name: `${batch.batch_no} ${batch.degree_type} ${batch.joined_semester}`}})}
+        onRowClick={(batch) => this.props.navigate('studentsandsemesters', {state: {batch_id: batch.batch_id, batch_name: `${batch.batch_no} ${batch.degree_type} ${batch.joined_semester}`}})}
         onEditClick={(batch) => this.props.navigate('update', {state: {batch_id: batch.batch_id}})}
         onDeleteClick={(batch) => {
           this.setState({
