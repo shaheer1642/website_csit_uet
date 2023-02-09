@@ -1,4 +1,3 @@
-/* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from "react";
 import Typography from "@mui/material/Typography";
 import { Box, Grid, Tabs, Tab, Button } from "@mui/material";

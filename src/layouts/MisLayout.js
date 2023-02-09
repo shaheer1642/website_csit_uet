@@ -249,6 +249,26 @@ function MisLayout() {
                   <ListItemText primary='Teachers' sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
               </ListItem>
+              <ListItem button component={Link} to="courses" disablePadding sx={{ display: 'block' }}>
+                <ListItemButton
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon.CheckCircle/>
+                  </ListItemIcon>
+                  <ListItemText primary='courses' sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </ListItem>
               <Divider />
               <ListItem disablePadding sx={{ display: 'block' }}>
                 <ListItemButton
