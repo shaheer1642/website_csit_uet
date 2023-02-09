@@ -266,7 +266,7 @@ function MisLayout() {
                   >
                     <Icon.Book/>
                   </ListItemIcon>
-                  <ListItemText primary='courses' sx={{ opacity: open ? 1 : 0 }} />
+                  <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
               </ListItem>
               <Divider />

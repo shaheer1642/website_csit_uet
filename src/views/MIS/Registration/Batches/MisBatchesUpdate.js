@@ -1,9 +1,9 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from 'react';
-import FormGenerator from '../../../components/FormGenerator';
-import { socket } from '../../../websocket/socket';
-import { withRouter } from '../../../withRouter';
-import LoadingIcon from '../../../components/LoadingIcon';
+import FormGenerator from '../../../../components/FormGenerator';
+import { socket } from '../../../../websocket/socket';
+import { withRouter } from '../../../../withRouter';
+import LoadingIcon from '../../../../components/LoadingIcon';
 
 class MisBatchesUpdate extends React.Component {
   constructor(props) {
@@ -64,11 +64,11 @@ class MisBatchesUpdate extends React.Component {
             xs: 6
           },
           degree_type: {
-            label: 'Degree Type',
-            defaultValue: this.state.degree_type,
-            placeholder: 'Msc | Phd',
+            label: 'Degree Type',   
             position: 3,
-            xs: 12
+            xs: 6,
+            fieldType: 'radiobox',
+            fieldTypeOptions: ['Msc', 'Phd']
           },
           batch_advisor_id: {
             label: 'Batch Advisor Id',

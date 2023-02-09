@@ -1,7 +1,7 @@
 // @ts-nocheck 
 // @typescript-eslint/no-unused-vars
 import React from 'react';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, TextField, Grid, Zoom, Alert, AlertColor, FormControlLabel, Radio, RadioGroup, FormControl, FormLabel } from '@mui/material';
+import { Table, TableContainer, Typography, Checkbox, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, TextField, Grid, Zoom, Alert, AlertColor, FormControlLabel, Radio, RadioGroup, FormControl, FormLabel } from '@mui/material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
 import { socket } from '../websocket/socket';
@@ -158,15 +158,15 @@ export default class FormGenerator extends React.Component<IProps, IState> {
         </Grid>
         {this.state.schema.map(attribute => {
           return (
-            <Grid item xs={this.props.options[attribute.key].xs || 12}>
+            <Grid item xs={this.props.options[attribute.key]?.xs || "auto"}>
               {
                 attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' ?
-                  this.props.options[attribute.key].fieldType == 'radiobox' ? 
+                  this.props.options[attribute.key]?.fieldType == 'radiobox' ? 
                     <FormControl required={attribute.required}>
-                      <FormLabel>{this.props.options[attribute.key].label}</FormLabel>
-                      <RadioGroup row defaultValue={this.props.options[attribute.key].fieldTypeOptions[0]} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
+                      <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
+                      <RadioGroup row defaultValue={this.props.options[attribute.key]?.fieldTypeOptions[0]} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
                         {
-                          this.props.options[attribute.key].fieldTypeOptions.map(option => {
+                          this.props.options[attribute.key]?.fieldTypeOptions.map(option => {
                             return <FormControlLabel  value={option} control={<Radio />} label={option} />
                           })
                         }
@@ -174,27 +174,29 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                     </FormControl>
                     :
                     <CustomTextField 
-                      disabled={this.props.options[attribute.key].disabled}
+                      disabled={this.props.options[attribute.key]?.disabled}
                       required={attribute.required}
-                      placeholder={this.props.options[attribute.key].placeholder}
+                      placeholder={this.props.options[attribute.key]?.placeholder}
                       value={this.state.formFields[attribute.key]}
                       multiline ={attribute.multiline}
                       maxRows={attribute.multiline ? 10:1}
                       variant="filled" 
-                      style={{ width: this.props.options[attribute.key].width || '100%' }}
-                      label={this.props.options[attribute.key].label}
+                      style={{ width: this.props.options[attribute.key]?.width || '100%' }}
+                      label={this.props.options[attribute.key]?.label}
                       onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)} />
-                : attribute.type == 'unix_timestamp_milliseconds' ?
-                  <TextField
-                    label={this.props.options[attribute.key].label}
-                    type="date"
-                    defaultValue={new Date(this.state.formFields[attribute.key] || null).toISOString().split('T')[0]}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    onChange={(e) => this.handleFormFieldChange(attribute.key,new Date(e.target.value).getTime())}
-                  />
-                : <></>
+                    : attribute.type == 'boolean' ?
+                    <FormControlLabel control={<Checkbox defaultChecked={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.checked)} />} label={this.props.options[attribute.key]?.label} />
+                    : attribute.type == 'unix_timestamp_milliseconds' ?
+                    <TextField
+                      label={this.props.options[attribute.key]?.label}
+                      type="date"
+                      defaultValue={new Date(this.state.formFields[attribute.key] || null).toISOString().split('T')[0]}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      onChange={(e) => this.handleFormFieldChange(attribute.key,new Date(e.target.value).getTime())}
+                    />
+                    : <Typography>Could not determine attribute type for {attribute.key}</Typography>
               }
             </Grid>
           )

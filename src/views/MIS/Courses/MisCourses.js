@@ -33,7 +33,7 @@ class MisCourses extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loadingcourses: true,
+      loadingCourses: true,
       coursesArr: [],
       modalTitle: "",
       modalBody: "",
@@ -42,11 +42,11 @@ class MisCourses extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("courses/fetch", { batch_id: this.batch_id }, (res) => {
+    socket.emit("courses/fetch", {}, (res) => {
       if (res.code == 200) {
         return this.setState({
           coursesArr: res.data,
-          loadingcourses: false,
+          loadingCourses: false,
 
           confirmationModalShow: false,
           confirmationModalMessage: "",
@@ -118,10 +118,9 @@ class MisCourses extends React.Component {
 
   render() {
     const columns = [
-      { id: "course_id", label: "course id", format: (value) => value },
-      { id: "course_name", label: "course name", format: (value) => value },
-      // { id: "reg_no", label: "Registration No", format: (value) => value },
-      // { id: "teacher_gender", label: "Gender", format: (value) => value },
+      { id: "course_id", label: "Course ID", format: (value) => value },
+      { id: "course_name", label: "Course Name", format: (value) => value },
+      { id: "departmental", label: "Departmental", format: (value) => value == true ? 'Yes' : value == false ? 'No' : value },
     ];
     return (
       <Grid container>
@@ -129,7 +128,7 @@ class MisCourses extends React.Component {
           {`Courses`}
         </Typography>
         <CustomTable
-          loadingState={this.state.loadingteachers}
+          loadingState={this.state.loadingCourses}
           onRowClick={(courses) =>
             this.setState({
               modalTitle: courses.course_name,
@@ -156,11 +155,7 @@ class MisCourses extends React.Component {
         />
         <CustomButton
           sx={{ margin: "10px" }}
-          onClick={() =>
-            this.props.navigate("create", {
-              state: { batch_id: this.batch_id },
-            })
-          }
+          onClick={() => this.props.navigate("create")}
           label="Create New"
         />
         <CustomModal
