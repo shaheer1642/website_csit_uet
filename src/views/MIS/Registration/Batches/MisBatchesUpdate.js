@@ -26,7 +26,8 @@ class MisBatchesUpdate extends React.Component {
         this.setState({
           loading: false,
           batch_no: batch.batch_no,
-          joined_semester: batch.joined_semester,
+          enrollment_year: batch.enrollment_year,
+          enrollment_season: batch.enrollment_season,
           degree_type: batch.degree_type,
           batch_advisor_id: batch.batch_advisor_id
         })
@@ -56,15 +57,22 @@ class MisBatchesUpdate extends React.Component {
             position: 1,
             xs: 6
           },
-          joined_semester: {
-            label: 'Joined Semester',
-            defaultValue: this.state.joined_semester,
+          enrollment_year: {
+            label: 'Enrollment Year',
+            defaultValue: this.state.enrollment_year,
+            position: 1,
+            xs: 6
+          },
+          enrollment_season: {
+            label: 'Enrollment Season',
+            defaultValue: this.state.enrollment_season,
             placeholder: 'Spring | Fall',
             position: 2,
             xs: 6
           },
           degree_type: {
             label: 'Degree Type',   
+            defaultValue: this.state.degree_type,
             position: 3,
             xs: 6,
             fieldType: 'radiobox',

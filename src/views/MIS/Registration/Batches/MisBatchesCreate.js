@@ -17,14 +17,20 @@ export default class MisBatchesCreate extends React.Component {
           backgroundColor='white'
           options={{
             batch_no: {
-              label: 'Batch No',   
+              label: 'Batch No',
+              position: 1,
+              xs: 12,
+              width: '30%'
+            },
+            enrollment_year: {
+              label: 'Enrollment Year',   
               defaultValue: new Date().getFullYear(),
               position: 1,
               xs: 12,
               width: '30%'
             },
-            joined_semester: {
-              label: 'Joined Semester',
+            enrollment_season: {
+              label: 'Enrollment Season',
               position: 2,
               xs: 6,
               fieldType: 'radiobox',

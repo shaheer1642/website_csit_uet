@@ -164,7 +164,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                   this.props.options[attribute.key]?.fieldType == 'radiobox' ? 
                     <FormControl required={attribute.required}>
                       <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
-                      <RadioGroup row defaultValue={this.props.options[attribute.key]?.fieldTypeOptions[0]} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
+                      <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue || this.props.options[attribute.key]?.fieldTypeOptions[0]} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
                         {
                           this.props.options[attribute.key]?.fieldTypeOptions.map(option => {
                             return <FormControlLabel  value={option} control={<Radio />} label={option} />

@@ -99,14 +99,15 @@ class MisBatches extends React.Component {
     const columns = [
       { id: 'batch_no', label: 'Batch Number', format: (value) => value},
       { id: 'degree_type', label: 'Degree Type', format: (value) => value },
-      { id: 'joined_semester', label: 'Joined Semester', format: (value) => value },
+      { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
+      { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => value },
     ];
     return (
       <Grid container >
         <Typography variant="h1" style={{ margin: '10px' }}>Batches</Typography>
         <CustomTable 
         loadingState = {this.state.loadingBatches} 
-        onRowClick={(batch) => this.props.navigate('studentsandsemesters', {state: {batch_id: batch.batch_id, batch_name: `${batch.batch_no} ${batch.degree_type} ${batch.joined_semester}`}})}
+        onRowClick={(batch) => this.props.navigate('studentsandsemesters', {state: {batch_id: batch.batch_id, batch_name: `Batch ${batch.batch_no} - ${batch.degree_type}`}})}
         onEditClick={(batch) => this.props.navigate('update', {state: {batch_id: batch.batch_id}})}
         onDeleteClick={(batch) => {
           this.setState({

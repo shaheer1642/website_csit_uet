@@ -8,12 +8,12 @@ import {
 } from "@mui/material";
 import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
-import { socket } from "../../../../websocket/socket";
-import { withRouter } from "../../../../withRouter";
-import CustomTable from "../../../../components/CustomTable";
-import CustomButton from "../../../../components/CustomButton";
-import CustomModal from "../../../../components/CustomModal";
-import ConfirmationModal from "../../../../components/ConfirmationModal";
+import { socket } from "../../../websocket/socket";
+import { withRouter } from "../../../withRouter";
+import CustomTable from "../../../components/CustomTable";
+import CustomButton from "../../../components/CustomButton";
+import CustomModal from "../../../components/CustomModal";
+import ConfirmationModal from "../../../components/ConfirmationModal";
 
 const palletes = {
   primary: "#439CEF",
