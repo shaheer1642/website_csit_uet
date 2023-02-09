@@ -4,6 +4,8 @@ import FormGenerator from '../../../components/FormGenerator';
 import { socket } from '../../../websocket/socket';
 import { withRouter } from '../../../withRouter';
 import LoadingIcon from '../../../components/LoadingIcon';
+import { Grid } from '@mui/material';
+import GoBackButton from '../../../components/GoBackButton';
 
 class MisTeachersUpdate extends React.Component {
   constructor(props) {
@@ -37,6 +39,8 @@ class MisTeachersUpdate extends React.Component {
   render() {
     return (
       this.state.loading ? <LoadingIcon />:
+      <Grid>
+      <GoBackButton context={this.props.navigate}/>
       <FormGenerator 
         endpoint="teachers"
         formType="update" 
@@ -80,6 +84,8 @@ class MisTeachersUpdate extends React.Component {
           },
         }}
       />
+      </Grid>
+
     );
   }
 }

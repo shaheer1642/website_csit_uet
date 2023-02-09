@@ -1,7 +1,9 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
+import { Grid } from "@mui/material";
 import React from "react";
 import FormGenerator from "../../../../../components/FormGenerator";
 import { withRouter } from "../../../../../withRouter";
+import GoBackButton from "../../../../../components/GoBackButton";
 
 class MisSemestersCreate extends React.Component {
   constructor(props) {
@@ -11,6 +13,8 @@ class MisSemestersCreate extends React.Component {
 
   render() {
     return (
+      <Grid>
+      <GoBackButton context={this.props.navigate}/>
       <FormGenerator
         endpoint="semesters"
         formType="create"
@@ -54,6 +58,8 @@ class MisSemestersCreate extends React.Component {
           
         }}
       />
+      </Grid>
+
     );
   }
 }

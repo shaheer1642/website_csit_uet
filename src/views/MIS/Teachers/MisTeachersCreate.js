@@ -2,7 +2,8 @@
 import React from "react";
 import FormGenerator from "../../../components/FormGenerator";
 import { withRouter } from "../../../withRouter";
-
+import { Grid } from "@mui/material";
+import GoBackButton from "../../../components/GoBackButton";
 class MisTeachersCreate extends React.Component {
   constructor(props) {
     super(props);
@@ -11,6 +12,8 @@ class MisTeachersCreate extends React.Component {
 
   render() {
     return (
+      <Grid>
+    <GoBackButton context={this.props.navigate}/>
       <FormGenerator
         endpoint="teachers"
         formType="create"
@@ -44,6 +47,8 @@ class MisTeachersCreate extends React.Component {
          
         }}
       />
+      </Grid>
+  
     );
   }
 }

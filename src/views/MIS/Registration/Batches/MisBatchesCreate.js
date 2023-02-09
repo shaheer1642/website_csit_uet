@@ -1,8 +1,12 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from 'react';
 import FormGenerator from '../../../../components/FormGenerator';
+import GoBackButton from '../../../../components/GoBackButton';
+import { Grid } from '@mui/material';
+import { withRouter } from '../../../../withRouter';
 
-export default class MisBatchesCreate extends React.Component {
+
+class MisBatchesCreate extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -10,6 +14,8 @@ export default class MisBatchesCreate extends React.Component {
   render() {
     //123
     return (
+      <Grid>
+      <GoBackButton context={this.props.navigate}/>
         <FormGenerator 
           endpoint='batches' 
           formType="create" 
@@ -50,6 +56,9 @@ export default class MisBatchesCreate extends React.Component {
             },
           }}
         />
+      </Grid>
+      
     );
   }
 }
+export default withRouter(MisBatchesCreate);

@@ -1,15 +1,19 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from 'react';
 import FormGenerator from '../../../components/FormGenerator';
-
-export default class MisEventsCreate extends React.Component {
+import { Grid } from '@mui/material';
+import GoBackButton from '../../../components/GoBackButton';
+import { withRouter } from "../../../withRouter";
+class MisEventsCreate extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
     return (
-        <FormGenerator 
+        <Grid container >
+          <GoBackButton context={this.props.navigate}/>
+         <FormGenerator 
           endpoint='events' 
           formType="create" 
           submitSuccessMessage='Event Created Successfully'
@@ -33,6 +37,9 @@ export default class MisEventsCreate extends React.Component {
             }
           }}
         />
+        </Grid>
+      
     );
   }
 }
+export default withRouter(MisEventsCreate);

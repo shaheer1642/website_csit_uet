@@ -4,6 +4,8 @@ import FormGenerator from '../../../../components/FormGenerator';
 import { socket } from '../../../../websocket/socket';
 import { withRouter } from '../../../../withRouter';
 import LoadingIcon from '../../../../components/LoadingIcon';
+import { Grid } from '@mui/material';
+import GoBackButton from '../../../../components/GoBackButton';
 
 class MisBatchesUpdate extends React.Component {
   constructor(props) {
@@ -38,6 +40,8 @@ class MisBatchesUpdate extends React.Component {
   render() {
     return (
       this.state.loading ? <LoadingIcon />:
+      <Grid>
+     <GoBackButton context={this.props.navigate}/>
       <FormGenerator 
         endpoint="batches"
         formType="update" 
@@ -86,6 +90,8 @@ class MisBatchesUpdate extends React.Component {
           },
         }}
       />
+      </Grid>
+     
     );
   }
 }
