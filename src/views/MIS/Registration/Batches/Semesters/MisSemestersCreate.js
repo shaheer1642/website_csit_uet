@@ -1,7 +1,7 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from "react";
-import FormGenerator from "../../../../components/FormGenerator";
-import { withRouter } from "../../../../withRouter";
+import FormGenerator from "../../../../../components/FormGenerator";
+import { withRouter } from "../../../../../withRouter";
 
 class MisSemestersCreate extends React.Component {
   constructor(props) {
@@ -17,7 +17,6 @@ class MisSemestersCreate extends React.Component {
         submitSuccessMessage="Student Created Successfully"
         backgroundColor="white"
         options={{
-        
           batch_id: {
             label: "Batch ID",
             defaultValue: this.batch_id,

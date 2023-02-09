@@ -17,17 +17,17 @@ import MisEventsUpdate from "./views/MIS/Events/MisEventsUpdate";
 import React from "react";
 import MisBatchesCreate from "./views/MIS/Registration/Batches/MisBatchesCreate";
 import MisBatchesUpdate from "./views/MIS/Registration/Batches/MisBatchesUpdate";
-import MisStudentsCreate from "./views/MIS/Registration/Students/MisStudentsCreate";
-import MisStudentsUpdate from "./views/MIS/Registration/Students/MisStudentsUpdate";
+import MisStudentsCreate from "./views/MIS/Registration/Batches/Students/MisStudentsCreate";
+import MisStudentsUpdate from "./views/MIS/Registration/Batches/Students/MisStudentsUpdate";
 import MisTeachers from "./views/MIS/Teachers/MisTeachers";
 import MisTeachersCreate from "./views/MIS/Teachers/MisTeachersCreate";
 import MisTeachersUpdate from "./views/MIS/Teachers/MisTeachersUpdate";
 import MisCourses from "./views/MIS/Courses/MisCourses";
 import MisCoursesCreate from "./views/MIS/Courses/MisCoursesCreate";
 import MisCoursesUpdate from "./views/MIS/Courses/MisCoursesUpdate";
-import MisStudentsAndSemesters from "./views/MIS/Registration/MisStudentsAndSemesters";
-import MisSemestersCreate from "./views/MIS/Registration/Semesters/MisSemestersCreate";
-import MisSemestersUpdate from "./views/MIS/Registration/Semesters/MisSemestersUpdate";
+import MisStudentsAndSemesters from "./views/MIS/Registration/Batches/MisStudentsAndSemesters";
+import MisSemestersCreate from "./views/MIS/Registration/Batches/Semesters/MisSemestersCreate";
+import MisSemestersUpdate from "./views/MIS/Registration/Batches/Semesters/MisSemestersUpdate";
 
 
 export default function Router() {

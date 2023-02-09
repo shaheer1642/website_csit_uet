@@ -1,9 +1,9 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from 'react';
-import FormGenerator from '../../../../components/FormGenerator';
-import { socket } from '../../../../websocket/socket';
-import { withRouter } from '../../../../withRouter';
-import LoadingIcon from '../../../../components/LoadingIcon';
+import FormGenerator from '../../../../../components/FormGenerator';
+import { socket } from '../../../../../websocket/socket';
+import { withRouter } from '../../../../../withRouter';
+import LoadingIcon from '../../../../../components/LoadingIcon';
 
 class MisStudentsUpdate extends React.Component {
   constructor(props) {

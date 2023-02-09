@@ -1,9 +1,9 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from 'react';
-import FormGenerator from '../../../../components/FormGenerator';
-import { socket } from '../../../../websocket/socket';
-import { withRouter } from '../../../../withRouter';
-import LoadingIcon from '../../../../components/LoadingIcon';
+import FormGenerator from '../../../../../components/FormGenerator';
+import { socket } from '../../../../../websocket/socket';
+import { withRouter } from '../../../../../withRouter';
+import LoadingIcon from '../../../../../components/LoadingIcon';
 
 class MisSemestersUpdate extends React.Component {
   constructor(props) {
@@ -26,6 +26,7 @@ class MisSemestersUpdate extends React.Component {
       console.log('[semesters/fetch] response:',res)
       if (res.code == 200) {
         const semester = res.data[0]
+        console.log('setting state')
         this.setState({
           loading: false,
           semester_no: semester.semester_no,
@@ -42,16 +43,23 @@ class MisSemestersUpdate extends React.Component {
     return (
       this.state.loading ? <LoadingIcon />:
       <FormGenerator 
-        endpoint="semeters"
+        endpoint="semesters"
         formType="update" 
         submitSuccessMessage='Semester Edited Successfully'
         backgroundColor='white'
         options={{
-          student_id: {
+          semester_id: {
             semester: "Semester ID",
             defaultValue: this.semester_id,
             disabled: true,
             position: 1,
+            xs: 6,
+          },
+          batch_id: {
+            label: "Batch ID",
+            defaultValue: this.batch_id,
+            disabled: true,
+            position: 2,
             xs: 6,
           },
           semester_no: {
