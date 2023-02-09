@@ -91,9 +91,9 @@ class MisCourses extends React.Component {
   };
   coursesListenerUpdate = (data) => {
     return this.setState((state) => {
-      const coursesArr = state.coursesArr.map((courses, index) => {
-        if (courses.course_id === data.course_id) return data;
-        else return courses;
+      const coursesArr = state.coursesArr.map((course, index) => {
+        if (course.course_id === data.course_id) return data;
+        else return course;
       });
       return {
         coursesArr,
@@ -103,7 +103,7 @@ class MisCourses extends React.Component {
   coursesListenerDelete = (data) => {
     return this.setState({
       coursesArr: this.state.coursesArr.filter(
-        (courses) => courses.course_id != data.course_id
+        (course) => course.course_id != data.course_id
       ),
     });
   };
@@ -132,14 +132,14 @@ class MisCourses extends React.Component {
           loadingState={this.state.loadingteachers}
           onRowClick={(courses) =>
             this.setState({
-              modalTitle: courses.course_name,
-              modalBody: courses.course_address,
+              modalTitle: course.course_name,
+              modalBody: course.course_address,
               modalShow: true,
             })
           }
-          onEditClick={(courses) =>
+          onEditClick={(course) =>
             this.props.navigate("update", {
-              state: { course_id: courses.course_id },
+              state: { course_id: course.course_id },
             })
           }
           onDeleteClick={(courses) => {
@@ -148,7 +148,7 @@ class MisCourses extends React.Component {
               confirmationModalMessage:
                 "Are you sure you want to remove this course?",
               confirmationModalExecute: () =>
-                socket.emit("courses/delete", { course_id: courses.course_id }),
+                socket.emit("courses/delete", { course_id: course.course_id }),
             });
           }}
           rows={this.state.coursesArr}

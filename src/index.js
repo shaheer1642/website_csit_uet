@@ -23,6 +23,7 @@ import MisStudentsUpdate from "./views/MIS/Registration/MisStudentsUpdate";
 import MisTeachers from "./views/MIS/Registration/MisTeachers";
 import MisTeachersCreate from "./views/MIS/Registration/MisTeachersCreate";
 import MisTeachersUpdate from "./views/MIS/Registration/MisTeachersUpdate";
+import MisCourses from "./views/MIS/Registration/MisCourses";
 
 export default function Router() {
   return (
@@ -49,6 +50,9 @@ export default function Router() {
           <Route path="teachers" element={<MisTeachers/>}/>
           <Route path="teachers/create" element={<MisTeachersCreate/>}/>
           <Route path="teachers/update" element={<MisTeachersUpdate/>}/>
+          <Route path="courses" element={<MisCourses/>}/>
+          <Route path="courses/create" element={<MisCoursesCreate/>}/>
+          <Route path="courses/update" element={<MisCoursesUpdate/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

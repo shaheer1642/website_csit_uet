@@ -264,7 +264,7 @@ function MisLayout() {
                       justifyContent: 'center',
                     }}
                   >
-                    <Icon.CheckCircle/>
+                    <Icon.Book/>
                   </ListItemIcon>
                   <ListItemText primary='courses' sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
