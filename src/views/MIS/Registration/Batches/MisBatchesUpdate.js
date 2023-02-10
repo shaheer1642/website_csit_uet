@@ -70,9 +70,10 @@ class MisBatchesUpdate extends React.Component {
           enrollment_season: {
             label: 'Enrollment Season',
             defaultValue: this.state.enrollment_season,
-            placeholder: 'Spring | Fall',
             position: 2,
-            xs: 6
+            xs: 6,
+            fieldType: 'radiobox',
+            fieldTypeOptions: ['Spring', 'Fall']
           },
           degree_type: {
             label: 'Degree Type',   

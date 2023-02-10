@@ -123,7 +123,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
       console.log(schema_temp)
       var formFields: Object = {}
       schema_temp.map((attribute) => {
-        formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue || this.props.options[attribute.key]?.fieldTypeOptions?.[0]
+        formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue
       })
       this.setState({formLoading: false, schema: schema_temp, formFields: formFields})
     })
@@ -164,7 +164,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                   this.props.options[attribute.key]?.fieldType == 'radiobox' ? 
                     <FormControl required={attribute.required}>
                       <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
-                      <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue || this.props.options[attribute.key]?.fieldTypeOptions[0]} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
+                      <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
                         {
                           this.props.options[attribute.key]?.fieldTypeOptions.map(option => {
                             return <FormControlLabel  value={option} control={<Radio />} label={option} />
@@ -175,6 +175,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                     :
                     <CustomTextField 
                       disabled={this.props.options[attribute.key]?.disabled}
+                      type={attribute.type == 'number' ? 'number':'text'}
                       required={attribute.required}
                       placeholder={this.props.options[attribute.key]?.placeholder}
                       value={this.state.formFields[attribute.key]}
@@ -190,7 +191,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                     <TextField
                       label={this.props.options[attribute.key]?.label}
                       type="date"
-                      defaultValue={new Date(this.state.formFields[attribute.key] || null).toISOString().split('T')[0]}
+                      defaultValue={new Date(this.props.options[attribute.key]?.defaultValue || null).toISOString().split('T')[0]}
                       InputLabelProps={{
                         shrink: true,
                       }}

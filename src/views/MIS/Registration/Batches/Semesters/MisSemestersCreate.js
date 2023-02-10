@@ -37,23 +37,26 @@ class MisSemestersCreate extends React.Component {
             label: "Semester Year",
             position: 1,
             xs: 6,
+            defaultValue: new Date().getFullYear(),
           },
           semester_season: {
             label: "Semester Season",
             position: 1,
             xs: 6,
+            fieldType: 'radiobox',
+            fieldTypeOptions: ['Spring', 'Fall']
           },
           semester_start_timestamp: {
             label: 'Semester Start Time',
             position: 2,
-            xs: 2,
+            xs: 6,
             defaultValue: new Date().getTime()
           },
           semester_end_timestamp: {
             label: 'Semester End Time',
             position: 2,
-            xs: 2,
-            defaultValue: new Date().getTime()
+            xs: 6,
+            defaultValue: new Date().getTime() + 10519200000
           },
           
         }}

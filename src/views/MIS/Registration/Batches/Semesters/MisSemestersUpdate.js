@@ -33,8 +33,8 @@ class MisSemestersUpdate extends React.Component {
           semester_no: semester.semester_no,
           semester_year: semester.semester_year,
           semester_season: semester.semester_season,
-          semester_start_timestamp:semester.semester_start_timestamp,
-          semester_end_timestamp:semester.semester_end_timestamp,
+          semester_start_timestamp: Number(semester.semester_start_timestamp),
+          semester_end_timestamp: Number(semester.semester_end_timestamp),
         })
       }
     })
@@ -52,7 +52,7 @@ class MisSemestersUpdate extends React.Component {
         backgroundColor='white'
         options={{
           semester_id: {
-            semester: "Semester ID",
+            label: "Semester ID",
             defaultValue: this.semester_id,
             disabled: true,
             position: 1,
@@ -82,18 +82,20 @@ class MisSemestersUpdate extends React.Component {
             defaultValue: this.state.semester_season,
             position: 1,
             xs: 6,
+            fieldType: 'radiobox',
+            fieldTypeOptions: ['Spring', 'Fall']
           },
           semester_start_timestamp: {
             label: 'Semester Start Time',
             position: 2,
-            xs: 2,
-            defaultValue: this.semester_start_timestamp
+            xs: 6,
+            defaultValue: this.state.semester_start_timestamp
           },
           semester_end_timestamp: {
             label: 'Semester End Time',
             position: 2,
-            xs: 2,
-            defaultValue: this.semester_end_timestamp
+            xs: 6,
+            defaultValue: this.state.semester_end_timestamp
           },
           
        

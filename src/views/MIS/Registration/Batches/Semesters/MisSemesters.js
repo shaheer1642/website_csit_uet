@@ -34,12 +34,12 @@ const styles = {
   },
 };
 
-class MisStudent extends React.Component {
+class MisSemesters extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loadingStudents: true,
-      studentsArr: [],
+      loadingSemesters: true,
+      semestersArr: [],
       modalTitle: "",
       modalBody: "",
       modalShow: false,
@@ -49,11 +49,11 @@ class MisStudent extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("students/fetch", {batch_id: this.batch_id}, (res) => {
+    socket.emit("semesters/fetch", {batch_id: this.batch_id}, (res) => {
       if (res.code == 200) {
         return this.setState({
-          studentsArr: res.data,
-          loadingStudents: false,
+          semestersArr: res.data,
+          loadingSemesters: false,
 
           confirmationModalShow: false,
           confirmationModalMessage: '',
@@ -62,36 +62,36 @@ class MisStudent extends React.Component {
       }
     });
 
-    socket.addEventListener('students/listener/insert', this.studentsListenerInsert)
-    socket.addEventListener('students/listener/update', this.studentsListenerUpdate)
-    socket.addEventListener('students/listener/delete', this.studentsListenerDelete)
+    socket.addEventListener('semesters/listener/insert', this.semestersListenerInsert)
+    socket.addEventListener('semesters/listener/update', this.semestersListenerUpdate)
+    socket.addEventListener('semesters/listener/delete', this.semestersListenerDelete)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('students/listener/insert', this.studentsListenerInsert)
-    socket.removeEventListener('students/listener/update', this.studentsListenerUpdate)
-    socket.removeEventListener('students/listener/delete', this.studentsListenerDelete)
+    socket.removeEventListener('semesters/listener/insert', this.semestersListenerInsert)
+    socket.removeEventListener('semesters/listener/update', this.semestersListenerUpdate)
+    socket.removeEventListener('semesters/listener/delete', this.semestersListenerDelete)
   }
 
-  studentsListenerInsert = (data) => {
+  semestersListenerInsert = (data) => {
     return this.setState({
-      studentsArr: [data, ...this.state.studentsArr]
+      semestersArr: [data, ...this.state.semestersArr]
     })
   }
-  studentsListenerUpdate = (data) => {
+  semestersListenerUpdate = (data) => {
     return this.setState(state => {
-        const studentsArr = state.studentsArr.map((student, index) => {
-          if (student.student_id === data.student_id) return data;
-          else return student
+        const semestersArr = state.semestersArr.map((semester, index) => {
+          if (semester.semester_id === data.semester_id) return data;
+          else return semester
         });
         return {
-          studentsArr,
+          semestersArr,
         }
     });
   }
-  studentsListenerDelete = (data) => {
+  semestersListenerDelete = (data) => {
     return this.setState({
-      studentsArr: this.state.studentsArr.filter((student) => student.student_id != data.student_id)
+      semestersArr: this.state.semestersArr.filter((semester) => semester.semester_id != data.semester_id)
     })
   }
   
@@ -105,37 +105,34 @@ class MisStudent extends React.Component {
 
   render() {
     const columns = [
-      { id: "student_name", label: "Student Name", format: (value) => value },
-      { id: "student_father_name", label: "Father Name", format: (value) => value },
-      { id: "cnic", label: "CNIC", format: (value) => value },
-      { id: "reg_no", label: "Registration No", format: (value) => value },
-      { id: "student_address", label: "Address", format: (value) => value },
-      { id: "student_gender", label: "Gender", format: (value) => value },
-      { id: "username", label: "Username", format: (value) => value },
-      { id: "password", label: "Password", format: (value) => value }
+      { id: "semester_no", label: "Semester No", format: (value) => value },
+      { id: "semester_year", label: "Year", format: (value) => value },
+      { id: "semester_season", label: "Season", format: (value) => value },
+      { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString() },
+      { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString() }
     ];
     return (
       <Grid container>
         <Typography variant="h1" style={{ margin: "10px" }}>
-          {`Students (${this.batch_name})`}
+          {`Semesters (${this.batch_name})`}
         </Typography>
         <CustomTable
-          loadingState = {this.state.loadingStudents}
-          onRowClick={(student) => this.setState({ modalTitle: student.student_name, modalBody: student.student_address, modalShow: true})}
-          onEditClick={(student) => this.props.navigate('students/update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
-          onDeleteClick={(student) => {
+          loadingState = {this.state.loadingSemesters}
+          onRowClick={(semester) => this.setState({ modalTitle: semester.semester_no, modalBody: semester.semester_season, modalShow: true})}
+          onEditClick={(semester) => this.props.navigate('semesters/update', {state: {batch_id: this.batch_id, semester_id: semester.semester_id}})}
+          onDeleteClick={(semester) => {
             this.setState({
               confirmationModalShow: true,
-              confirmationModalMessage: 'Are you sure you want to remove this student?',
-              confirmationModalExecute: () => socket.emit('students/delete', { student_id: student.student_id })
+              confirmationModalMessage: 'Are you sure you want to remove this semester?',
+              confirmationModalExecute: () => socket.emit('semesters/delete', { semester_id: semester.semester_id })
             })
           }}
-          rows={this.state.studentsArr}
+          rows={this.state.semestersArr}
           columns={columns}
         />
         <CustomButton
           sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("students/create", {state: {batch_id: this.batch_id}})}
+          onClick={() => this.props.navigate("semesters/create", {state: {batch_id: this.batch_id}})}
           label="Create New"
         />
         <CustomModal
@@ -159,4 +156,4 @@ class MisStudent extends React.Component {
   }
 }
 
-export default withRouter(MisStudent);
+export default withRouter(MisSemesters);

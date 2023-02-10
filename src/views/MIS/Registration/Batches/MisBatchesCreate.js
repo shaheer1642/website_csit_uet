@@ -25,15 +25,13 @@ class MisBatchesCreate extends React.Component {
             batch_no: {
               label: 'Batch No',
               position: 1,
-              xs: 12,
-              width: '30%'
+              xs: 6,
             },
             enrollment_year: {
-              label: 'Enrollment Year',   
+              label: 'Enrollment Year',
               defaultValue: new Date().getFullYear(),
               position: 1,
-              xs: 12,
-              width: '30%'
+              xs: 6,
             },
             enrollment_season: {
               label: 'Enrollment Season',
