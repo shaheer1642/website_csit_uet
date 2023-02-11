@@ -19,7 +19,7 @@ class MisCoursesCreate extends React.Component {
           <FormGenerator
             endpoint="courses"
             formType="create"
-            submitSuccessMessage="Courses Created Successfully"
+            submitSuccessMessage="Course Created Successfully"
             backgroundColor="white"
             options={{
               course_id: {

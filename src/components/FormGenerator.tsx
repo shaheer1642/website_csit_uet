@@ -7,6 +7,7 @@ import LoadingIcon from './LoadingIcon';
 import { socket } from '../websocket/socket';
 import CustomTextField from './CustomTextField';
 import CustomButton from './CustomButton';
+import CustomSelect from './CustomSelect';
 import { abort } from 'process';
 
 const palletes = {
@@ -76,6 +77,10 @@ interface fieldOptions {
       fieldType: string | undefined
       /**options for chosen field type, if any*/
       fieldTypeOptions: Array<any> | undefined
+      /**endpoint, if any*/
+      endpoint: string | undefined
+      /**Select-Menu items */
+      selectMenuItems: Array<{id: string, label: string}> | undefined
     };
 }
 
@@ -172,6 +177,15 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                         }
                       </RadioGroup>
                     </FormControl>
+                    :
+                  this.props.options[attribute.key]?.fieldType == 'select' ? 
+                    <CustomSelect 
+                      defaultValue={this.props.options[attribute.key]?.defaultValue} 
+                      endpoint={this.props.options[attribute.key]?.endpoint} 
+                      menuItems={this.props.options[attribute.key]?.selectMenuItems} 
+                      label={this.props.options[attribute.key]?.label}
+                      onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}
+                    />
                     :
                     <CustomTextField 
                       disabled={this.props.options[attribute.key]?.disabled}

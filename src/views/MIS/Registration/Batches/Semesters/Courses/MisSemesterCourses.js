@@ -14,6 +14,7 @@ import CustomTable from "../../../../../../components/CustomTable";
 import CustomButton from "../../../../../../components/CustomButton";
 import CustomModal from "../../../../../../components/CustomModal";
 import ConfirmationModal from "../../../../../../components/ConfirmationModal";
+import GoBackButton from "../../../../../../components/GoBackButton";
 
 const palletes = {
   primary: "#439CEF",
@@ -39,7 +40,7 @@ class MisSemesterCourses extends React.Component {
     super(props);
     this.state = {
       loadingSemesterCourses: true,
-      semesterCoursesArr: [],
+      semestersCoursesArr: [],
 
       confirmationModalShow: false,
       confirmationModalMessage: '',
@@ -53,33 +54,27 @@ class MisSemesterCourses extends React.Component {
 
   componentDidMount() {
     this.fetchSemesterCourses();
-    socket.addEventListener('students/listener/insert', this.studentsListenerInsert)
-    socket.addEventListener('students/listener/update', this.studentsListenerUpdate)
-    socket.addEventListener('students/listener/delete', this.studentsListenerDelete)
+    socket.addEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('students/listener/insert', this.studentsListenerInsert)
-    socket.removeEventListener('students/listener/update', this.studentsListenerUpdate)
-    socket.removeEventListener('students/listener/delete', this.studentsListenerDelete)
+    socket.removeEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
   }
 
-  fetchSemesterCourses() {
-    socket.emit("studentsCourses/fetchSemesterCourses", {semester_id: this.semester_id}, (res) => {
+
+  semestersCoursesListenerChanged = (data) => {
+    this.fetchSemesterCourses()
+  }
+  
+  fetchSemesterCourses = () => {
+    socket.emit("semestersCourses/fetch", {semester_id: this.semester_id}, (res) => {
       if (res.code == 200) {
         return this.setState({
-          semesterCoursesArr: res.data,
+          semestersCoursesArr: res.data,
           loadingSemesterCourses: false,
         });
       }
     });
-  }
-
-  studentsListenerInsert = (data) => {
-  }
-  studentsListenerUpdate = (data) => {
-  }
-  studentsListenerDelete = (data) => {
   }
   
   confirmationModalDestroy = () => {
@@ -94,31 +89,32 @@ class MisSemesterCourses extends React.Component {
     const columns = [
       { id: "course_id", label: "Course ID", format: (value) => value },
       { id: "course_name", label: "Course Name", format: (value) => value },
-      { id: "departmental", label: "Departmental", format: (value) => value },
-      { id: "teacher_name", label: "Teacher", format: (value) => value },
+      { id: "departmental", label: "Departmental", format: (value) => value == true ? 'Yes' : value == false ? 'No' : value },
+      { id: "teacher_name", label: "Teacher Name", format: (value) => value },
     ];
     return (
       <Grid container>
+        <GoBackButton context={this.props.navigate}/>
         <Typography variant="h1" style={{ margin: "10px" }}>
           {`Courses (${this.semester_name} | ${this.batch_name})`}
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingSemesterCourses}
           onRowClick={(semesterCourse) => {}}
-          onEditClick={(semesterCourse) => {}}
+          onEditClick={(semesterCourse) => this.props.navigate('update', {state: {sem_course_id: semesterCourse.sem_course_id}})}
           onDeleteClick={(semesterCourse) => {
             this.setState({
               confirmationModalShow: true,
               confirmationModalMessage: 'Are you sure you want to remove this course?',
-              confirmationModalExecute: () => {}
+              confirmationModalExecute: () => socket.emit('semestersCourses/delete', { sem_course_id: semesterCourse.sem_course_id })
             })
           }}
-          rows={this.state.semesterCoursesArr}
+          rows={this.state.semestersCoursesArr}
           columns={columns}
         />
         <CustomButton
           sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("create", {state: {batch_id: this.batch_id}})}
+          onClick={() => this.props.navigate("create", {state: {semester_id: this.semester_id}})}
           label="Create New"
         />
         <ConfirmationModal 
