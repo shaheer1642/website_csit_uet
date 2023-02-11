@@ -35,7 +35,7 @@ const styles = {
   },
 };
 
-class MisSemesterCourses extends React.Component {
+class MisSemestersCourses extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -132,4 +132,4 @@ class MisSemesterCourses extends React.Component {
   }
 }
 
-export default withRouter(MisSemesterCourses);
+export default withRouter(MisSemestersCourses);
