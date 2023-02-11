@@ -118,7 +118,12 @@ class MisSemesters extends React.Component {
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingSemesters}
-          onRowClick={(semester) => this.setState({ modalTitle: semester.semester_no, modalBody: semester.semester_season, modalShow: true})}
+          onRowClick={(semester) => 
+            this.props.navigate('semesters/courses', {state: {
+              ...this.props.location.state, 
+              semester_id: semester.semester_id, 
+              semester_name: `Semester ${semester.semester_no} - ${semester.semester_season} ${semester.semester_year}`
+            }})}
           onEditClick={(semester) => this.props.navigate('semesters/update', {state: {batch_id: this.batch_id, semester_id: semester.semester_id}})}
           onDeleteClick={(semester) => {
             this.setState({

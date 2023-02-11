@@ -28,7 +28,7 @@ import MisStudentsCreate from "./views/MIS/Registration/Batches/Students/MisStud
 import MisStudentsUpdate from "./views/MIS/Registration/Batches/Students/MisStudentsUpdate";
 import MisSemestersCreate from "./views/MIS/Registration/Batches/Semesters/MisSemestersCreate";
 import MisSemestersUpdate from "./views/MIS/Registration/Batches/Semesters/MisSemestersUpdate";
-
+import MisSemesterCourses from "./views/MIS/Registration/Batches/Semesters/Courses/MisSemesterCourses";
 
 export default function Router() {
   return (
@@ -43,23 +43,29 @@ export default function Router() {
         </Route>
         <Route path="/mis" element={<MisLayout />}>
           <Route index element={<MisHome />} />
+
           <Route path="events" element={<MisEvents />} />
-          <Route path="events/create" element={<MisEventsCreate />} />
-          <Route path="events/update" element={<MisEventsUpdate />} />
+            <Route path="events/create" element={<MisEventsCreate />} />
+            <Route path="events/update" element={<MisEventsUpdate />} />
+
           <Route path="batches" element={<MisBatches/>}/>
-          <Route path="batches/create" element={<MisBatchesCreate/>}/>
-          <Route path="batches/update" element={<MisBatchesUpdate/>}/>
+            <Route path="batches/create" element={<MisBatchesCreate/>}/>
+            <Route path="batches/update" element={<MisBatchesUpdate/>}/>
+
           <Route path="batches/batchManagement" element={<MisBatchManagement/>}/>
-          <Route path="batches/batchManagement/students/create" element={<MisStudentsCreate/>}/> 
-          <Route path="batches/batchManagement/students/update" element={<MisStudentsUpdate/>}/> 
-          <Route path="batches/batchManagement/semesters/create" element={<MisSemestersCreate/>}/> 
-          <Route path="batches/batchManagement/semesters/update" element={<MisSemestersUpdate/>}/> 
+            <Route path="batches/batchManagement/students/create" element={<MisStudentsCreate/>}/> 
+            <Route path="batches/batchManagement/students/update" element={<MisStudentsUpdate/>}/> 
+            <Route path="batches/batchManagement/semesters/create" element={<MisSemestersCreate/>}/> 
+            <Route path="batches/batchManagement/semesters/update" element={<MisSemestersUpdate/>}/> 
+            <Route path="batches/batchManagement/semesters/courses" element={<MisSemesterCourses/>}/> 
+
           <Route path="teachers" element={<MisTeachers/>}/>
-          <Route path="teachers/create" element={<MisTeachersCreate/>}/>
-          <Route path="teachers/update" element={<MisTeachersUpdate/>}/>
+            <Route path="teachers/create" element={<MisTeachersCreate/>}/>
+            <Route path="teachers/update" element={<MisTeachersUpdate/>}/>
+
           <Route path="courses" element={<MisCourses/>}/>
-          <Route path="courses/create" element={<MisCoursesCreate/>}/>
-          <Route path="courses/update" element={<MisCoursesUpdate/>}/>
+            <Route path="courses/create" element={<MisCoursesCreate/>}/>
+            <Route path="courses/update" element={<MisCoursesUpdate/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
