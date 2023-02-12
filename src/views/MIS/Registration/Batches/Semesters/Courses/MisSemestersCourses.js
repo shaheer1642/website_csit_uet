@@ -91,6 +91,7 @@ class MisSemestersCourses extends React.Component {
       { id: "course_name", label: "Course Name", format: (value) => value },
       { id: "departmental", label: "Departmental", format: (value) => value == true ? 'Yes' : value == false ? 'No' : value },
       { id: "teacher_name", label: "Teacher Name", format: (value) => value },
+      { id: "registered_students", label: "Total Students", format: (value) => value },
     ];
     return (
       <Grid container>
@@ -100,7 +101,15 @@ class MisSemestersCourses extends React.Component {
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingSemesterCourses}
-          onRowClick={(semesterCourse) => {}}
+          onRowClick={(semesterCourse) => 
+            this.props.navigate('students', {
+              state: {
+                sem_course_id: semesterCourse.sem_course_id, 
+                course_name: `${semesterCourse.course_id} ${semesterCourse.course_name}`,
+                ...this.props.location.state
+              }
+            })
+          }
           onEditClick={(semesterCourse) => this.props.navigate('update', {state: {sem_course_id: semesterCourse.sem_course_id}})}
           onDeleteClick={(semesterCourse) => {
             this.setState({

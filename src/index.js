@@ -31,6 +31,7 @@ import MisSemestersUpdate from "./views/MIS/Registration/Batches/Semesters/MisSe
 import MisSemestersCourses from "./views/MIS/Registration/Batches/Semesters/Courses/MisSemestersCourses";
 import MisSemestersCoursesCreate from "./views/MIS/Registration/Batches/Semesters/Courses/MisSemestersCoursesCreate";
 import MisSemestersCoursesUpdate from "./views/MIS/Registration/Batches/Semesters/Courses/MisSemestersCoursesUpdate";
+import MisCoursesStudents from "./views/MIS/Registration/Batches/Semesters/Courses/Students/MisCoursesStudents";
 
 export default function Router() {
   return (
@@ -62,6 +63,7 @@ export default function Router() {
             <Route path="batches/batchManagement/semesters/courses" element={<MisSemestersCourses/>}/> 
             <Route path="batches/batchManagement/semesters/courses/create" element={<MisSemestersCoursesCreate/>}/> 
             <Route path="batches/batchManagement/semesters/courses/update" element={<MisSemestersCoursesUpdate/>}/> 
+            <Route path="batches/batchManagement/semesters/courses/students" element={<MisCoursesStudents/>}/> 
 
           <Route path="teachers" element={<MisTeachers/>}/>
             <Route path="teachers/create" element={<MisTeachersCreate/>}/>

@@ -8,6 +8,7 @@ import { socket } from '../websocket/socket';
 import CustomTextField from './CustomTextField';
 import CustomButton from './CustomButton';
 import CustomSelect from './CustomSelect';
+import CustomMultiAutocomplete from './CustomMultiAutocomplete';
 import { abort } from 'process';
 
 const palletes = {
@@ -79,6 +80,8 @@ interface fieldOptions {
       fieldTypeOptions: Array<any> | undefined
       /**endpoint, if any*/
       endpoint: string | undefined
+      /**endpoint data, if any*/
+      endpointData: any | undefined
       /**Select-Menu items */
       selectMenuItems: Array<{id: string, label: string}> | undefined
     };
@@ -138,8 +141,8 @@ export default class FormGenerator extends React.Component<IProps, IState> {
     console.log(this.state.formFields)
   }
 
-  handleFormFieldChange = (key: string, value: string | number) => {
-    this.setState({ formFields: {...this.state.formFields, [`${key}`]: value} })
+  handleFormFieldChange = (key: string, value: string | number | []) => {
+    this.setState({ formFields: {...this.state.formFields, [key]: value} })
   }
 
   render(): React.ReactNode {
@@ -165,7 +168,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
           return (
             <Grid item xs={this.props.options[attribute.key]?.xs || "auto"}>
               {
-                attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' ?
+                attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' || attribute.type == 'array' ?
                   this.props.options[attribute.key]?.fieldType == 'radiobox' ? 
                     <FormControl required={attribute.required}>
                       <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
@@ -184,9 +187,8 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                       endpoint={this.props.options[attribute.key]?.endpoint} 
                       menuItems={this.props.options[attribute.key]?.selectMenuItems} 
                       label={this.props.options[attribute.key]?.label}
-                      onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}
-                    />
-                    :
+                      onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.value)}
+                    />:
                     <CustomTextField 
                       disabled={this.props.options[attribute.key]?.disabled}
                       type={attribute.type == 'number' ? 'number':'text'}
