@@ -10,6 +10,7 @@ import CustomButton from './CustomButton';
 import CustomSelect from './CustomSelect';
 import CustomMultiAutocomplete from './CustomMultiAutocomplete';
 import { abort } from 'process';
+import CustomCard from './CustomCard';
 
 const palletes = {
   primary: '#439CEF',
@@ -158,7 +159,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
     return (
       this.state.formLoading ? <LoadingIcon />:
       <div>
-      <Grid container rowSpacing={'20px'} columnSpacing={'20px'} style={{ padding: '10px', backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
+        <CustomCard cardContent={<Grid container rowSpacing={'20px'} columnSpacing={'20px'} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
         <Grid item xs={12}>
           <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
             <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity as AlertColor]}>{this.state.alertMsg}</Alert>
@@ -218,26 +219,27 @@ export default class FormGenerator extends React.Component<IProps, IState> {
             </Grid>
           )
         })}
-        <Grid item xs={12}>
-          <CustomButton 
-            label={this.props.formType == 'create' ? 'Create' : 'Update'}
-            onClick={() => {
-              socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
-                console.log(`[${this.props.endpoint}/${this.props.formType}] response`,res)
-                this.setState({
-                  alertMsg: res.code == 200 ? this.props.submitSuccessMessage:`${res.status}: ${res.message}`,
-                  alertSeverity: res.code == 200 ? 'success':'warning'
-                }, timeoutAlert)
-                if (res.code == 200) {
-                  this.setState({
-                    alertMsg:  this.props.submitSuccessMessage,
-                    alertSeverity: 'success'
-                  }, timeoutAlert)
-                }
-            })
-          }} />
-        </Grid>
-      </Grid>
+      </Grid>} cardActions={
+        
+        <CustomButton 
+        label={this.props.formType == 'create' ? 'Create' : 'Update'}
+        onClick={() => {
+          socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
+            console.log(`[${this.props.endpoint}/${this.props.formType}] response`,res)
+            this.setState({
+              alertMsg: res.code == 200 ? this.props.submitSuccessMessage:`${res.status}: ${res.message}`,
+              alertSeverity: res.code == 200 ? 'success':'warning'
+            }, timeoutAlert)
+            if (res.code == 200) {
+              this.setState({
+                alertMsg:  this.props.submitSuccessMessage,
+                alertSeverity: 'success'
+              }, timeoutAlert)
+            }
+        })
+      }}/>
+      }/>
+      
       </div>
     )
   }
