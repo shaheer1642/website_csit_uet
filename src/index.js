@@ -32,6 +32,9 @@ import MisSemestersCourses from "./views/MIS/Registration/Batches/Semesters/Cour
 import MisSemestersCoursesCreate from "./views/MIS/Registration/Batches/Semesters/Courses/MisSemestersCoursesCreate";
 import MisSemestersCoursesUpdate from "./views/MIS/Registration/Batches/Semesters/Courses/MisSemestersCoursesUpdate";
 import MisCoursesStudents from "./views/MIS/Registration/Batches/Semesters/Courses/Students/MisCoursesStudents";
+import MisCourseGradeManagement from "./views/MIS/Teacher Dashboard/Courses/MisCourseGradeManagement";
+
+import MisTeachersCourses from "./views/MIS/Teacher Dashboard/Courses/MisTeachersCourses";
 
 export default function Router() {
   return (
@@ -72,7 +75,11 @@ export default function Router() {
           <Route path="courses" element={<MisCourses/>}/>
             <Route path="courses/create" element={<MisCoursesCreate/>}/>
             <Route path="courses/update" element={<MisCoursesUpdate/>}/>
+
+          <Route path="tportal/courses" element={<MisTeachersCourses />} />
+          <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />
         </Route>
+
       </Routes>
     </BrowserRouter>
   );

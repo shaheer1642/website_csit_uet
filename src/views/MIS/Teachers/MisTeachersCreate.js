@@ -13,7 +13,7 @@ class MisTeachersCreate extends React.Component {
   render() {
     return (
       <Grid>
-    <GoBackButton context={this.props.navigate}/>
+      <GoBackButton context={this.props.navigate}/>
       <FormGenerator
         endpoint="teachers"
         formType="create"

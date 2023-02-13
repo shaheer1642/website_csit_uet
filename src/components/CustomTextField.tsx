@@ -25,6 +25,7 @@ interface IProps {
     value?: string,
     variant?: "standard" | "filled",
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
+    onFocus?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> | undefined,
     tabIndex?: number,
     fontSize?: number,
     fontFamily?: string,
@@ -81,6 +82,7 @@ export default class CustomTextField extends React.Component<IProps> {
             sx= {{...styles, ...this.props.sx}}
             style= {this.props.style}
             onChange={this.props.onChange}
+            onFocus={this.props.onFocus}
             type={this.props.type || 'text'}
             inputProps={{ tabIndex: this.props.tabIndex }}
             required={this.props.required}
