@@ -156,7 +156,7 @@ function MisLayout() {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" noWrap component="div">
+              <Typography sx={{fontWeight: 'bold'}} variant="h6" noWrap component="div">
                 DigiTransform: An Integrated Departmental MIS
               </Typography>
             </Toolbar>
