@@ -8,10 +8,10 @@ import LoadingIcon from './LoadingIcon';
 const defaultStyles = {
   colors: {
     headerTextColor: 'white',
-    headerBackgroundColor: Color.orange[500],
+    headerBackgroundColor:Color.deepPurple[500],
     rowTextColor: 'black',
     rowBackgroundColor: 'white',
-    nthRowBackgroundColor: Color.orange[200],
+    nthRowBackgroundColor: Color.deepPurple[200],
     footerTextColor: 'black',
     footerBackgroundColor: 'white',
   }

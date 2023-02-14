@@ -157,7 +157,7 @@ function MisLayout() {
                 <MenuIcon />
               </IconButton>
               <Typography variant="h6" noWrap component="div">
-                Dashboard
+                DigiTransform: An Integrated Departmental MIS
               </Typography>
             </Toolbar>
           </AppBar>
