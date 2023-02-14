@@ -11,7 +11,7 @@ const defaultStyles = {
     headerBackgroundColor:Color.deepPurple[500],
     rowTextColor: 'black',
     rowBackgroundColor: 'white',
-    nthRowBackgroundColor: Color.deepPurple[200],
+    nthRowBackgroundColor: Color.deepPurple[100],
     footerTextColor: 'black',
     footerBackgroundColor: 'white',
   }

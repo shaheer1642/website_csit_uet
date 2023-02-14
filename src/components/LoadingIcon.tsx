@@ -16,7 +16,7 @@ export default class LoadingIcon extends React.Component<IProps> {
 
     render() {
         return (
-            <div style={{display: 'flex', flexDirection: 'row', color: this.props.color || Color.orange[500], margin: '20px', ...this.props.style}}>
+            <div style={{display: 'flex', flexDirection: 'row', color: this.props.color || Color.deepPurple[500], margin: '20px', ...this.props.style}}>
                 <Spinner animation="grow" size="sm" />
                 <Spinner animation="grow" />
             </div>

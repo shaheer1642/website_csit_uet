@@ -227,7 +227,7 @@ class MisGradeDistribution extends React.Component {
                     />
                 </Grid>
                 <Grid item xs={"auto"}>
-                  <FormControlLabel style={{userSelect: 'none'}} control={<Checkbox value={this.state.semesterCourse.grade_distribution.mini_project ? true : false} onChange={(e) => this.changeGradeDistribution('mini_project',e.target.checked)}/>} label="Mini Project" />
+                  <FormControlLabel style={{userSelect: 'none'}} control={<Checkbox checked={this.state.semesterCourse.grade_distribution.mini_project} onChange={(e) => this.changeGradeDistribution('mini_project',e.target.checked)}/>} label="Mini Project" />
                 </Grid>
                 <Grid item xs={12}></Grid>
                 <Grid item xs={"auto"}>

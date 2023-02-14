@@ -16,7 +16,9 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  TextField
+  TextField,
+  tableCellClasses,
+  styled
 } from "@mui/material";
 import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
@@ -31,6 +33,7 @@ import { user } from "../../../../objects/User";
 import CustomCard from "../../../../components/CustomCard";
 import CustomTextField from "../../../../components/CustomTextField";
 import LoadingIcon from "../../../../components/LoadingIcon";
+import { convertUpper } from "../../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -75,6 +78,15 @@ const defaultStyles = {
         color: palletes.alertSuccess, // icon color
       },
     }
+  },
+  colors: {
+    headerTextColor: 'white',
+    headerBackgroundColor:Color.deepPurple[500],
+    rowTextColor: 'black',
+    rowBackgroundColor: 'white',
+    nthRowBackgroundColor: Color.deepPurple[100],
+    footerTextColor: 'black',
+    footerBackgroundColor: 'white',
   }
 }
 
@@ -117,30 +129,28 @@ class MisGradeMarking extends React.Component {
       const obj = {
         student_id: student.student_id,
         finals: {
-          total: 50,
-          obtained: 0
+          total: student.marking.finals?.total || 50,
+          obtained: student.marking.finals?.obtained || 0
         },
         mids: {
-          total: 20,
-          obtained: 0
+          total: student.marking.mids?.total || 20,
+          obtained: student.marking.mids?.obtained || 0
         },
-      }
-      if (this.state.semesterCourse.grade_distribution.mini_project) {
-        obj.mini_project = {
-          total: 20,
-          obtained: 0
+        mini_project: {
+          total: student.marking.mini_project?.total || 20,
+          obtained: student.marking.mini_project?.obtained || 0
         }
       }
       Array(this.state.semesterCourse.grade_distribution.total_assignments).fill(0).forEach((e,index) => {
-        obj[`assignment ${index + 1}`] = {
-          total: 5,
-          obtained: 0
+        obj[`assignment_${index + 1}`] = {
+          total: student.marking[`assignment_${index + 1}`]?.total || 5,
+          obtained: student.marking[`assignment_${index + 1}`]?.obtained || 0
         }
       })
       Array(this.state.semesterCourse.grade_distribution.total_quizzes).fill(0).forEach((e,index) => {
-        obj[`quiz ${index + 1}`] = {
-          total: 5,
-          obtained: 0
+        obj[`quiz_${index + 1}`] = {
+          total: student.marking[`quiz_${index + 1}`]?.total || 5,
+          obtained: student.marking[`quiz_${index + 1}`]?.obtained || 0
         }
       })
       markings.push(obj)
@@ -151,13 +161,14 @@ class MisGradeMarking extends React.Component {
   }
 
   updateMarkingsTotal = (key,value) => {
-    if (!Number(value)) return
+    const marks = Number(value)
+    if (marks == NaN) return
     const markings = this.state.markings.map(marking => {
       return {
         ...marking, 
         [key]: { 
           ...marking[key], 
-          total: Number(value)
+          total: marks
         }
       }
     })
@@ -168,14 +179,18 @@ class MisGradeMarking extends React.Component {
   }
 
   updateStudentMarking = (key,student_id,value) => {
-    if (!Number(value)) return
+    const marks = Number(value)
+    if (marks == NaN || marks < 0) return
     const markings = this.state.markings.map(marking => {
       if (student_id != marking.student_id) return marking
-      else  return {
-        ...marking, 
-        [key]: { 
-          ...marking[key], 
-          obtained: Number(value)
+      else {
+        if (marks > marking[key].total) return marking
+        else return {
+          ...marking, 
+          [key]: { 
+            ...marking[key], 
+            obtained: marks
+          }
         }
       }
     })
@@ -213,7 +228,26 @@ class MisGradeMarking extends React.Component {
       timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 5000)
       console.log(timeoutAlertRef)
     }
-
+    const StyledTableCell = styled(TableCell)(({ theme }) => ({
+      [`&.${tableCellClasses.head}`]: {
+        backgroundColor: defaultStyles.colors.headerBackgroundColor,
+        color: defaultStyles.colors.headerTextColor,
+      },
+      [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+      },
+    }));
+    const StyledTableRow = styled(TableRow)(({ theme }) => ({
+      backgroundColor: defaultStyles.colors.rowBackgroundColor,
+      '&:nth-of-type(odd)': {
+        backgroundColor: defaultStyles.colors.nthRowBackgroundColor,
+      },
+      // hide last border
+      '&:last-child td, &:last-child th': {
+        border: 0,
+      },
+    }));
+    
     return (
       <Grid container>
         {this.state.loading ? <LoadingIcon /> :
@@ -233,65 +267,70 @@ class MisGradeMarking extends React.Component {
                 </Grid>
                 <Grid item xs={12}>
 
-                  <TableContainer sx={{ borderColor: Color.orange[700], border: 3, padding: '20px' }}>
+                  <TableContainer>
                     <Table size="small">
                       {/* Headers */}
                       <TableHead>
-                        <TableRow>
-                          {['Registration no','Student name'].concat().map((header,index) => {
+                        <StyledTableRow>
+                          <StyledTableCell align="left">
+                            Reg #
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            Student Name
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            Absolute Total
+                          </StyledTableCell>
+                          <StyledTableCell align="left">
+                            Estimated Grade
+                          </StyledTableCell>
+                          {Object.keys(this.state.markings[0] || {}).filter(key => ((key == 'student_id') || (key == 'mini_project' && !this.state.semesterCourse.grade_distribution.mini_project)) ? false : true).map((attribute) => {
                             return (
-                              <TableCell align="left" >
-                                {header}
-                              </TableCell>
-                            )
-                          })}
-                          {Object.keys(this.state.markings[0] || {}).filter(key => !['student_id'].includes(key)).map((attribute) => {
-                            return (
-                              <TableCell align="left" width={"200px"}>
+                              <StyledTableCell align="left" >
                                 <Grid container>
                                   <Grid item xs={12}>
-                                    <Typography style={{ fontSize: '15px'}}>
-                                      {attribute}
-                                    </Typography>
+                                    {convertUpper(attribute)}
                                   </Grid>
                                   <Grid item xs={"auto"} alignItems="center">
-                                    <Typography style={{ fontSize: '15px', marginTop: '5px'}}>Total:</Typography>
+                                    <Typography style={{ fontSize: '15px', marginTop: '5px', marginRight: '5px'}}>Total:</Typography>
                                   </Grid>
                                   <Grid item xs={"auto"}>
-                                  <TextField onFocus={(e) => e.target.select()} value={this.state.markings[0][attribute].total} onChange={(e) => this.updateMarkingsTotal(attribute,e.target.value)} sx={{'.MuiInputBase-input': { fontSize: '15px' }, width: '50px'}} type="tel" size="small"/>
+                                  <TextField onFocus={(e) => e.target.select()} value={this.state.markings[0][attribute].total} onChange={(e) => this.updateMarkingsTotal(attribute,e.target.value)} sx={{'.MuiInputBase-input': { fontSize: '15px', color: 'white' }, width: '50px'}} type="tel" size="small"/>
                                   </Grid>
                                 </Grid>
-                              </TableCell>
+                              </StyledTableCell>
 
                             )
                           })}
-                        </TableRow>
+                        </StyledTableRow>
                       </TableHead>
                       {/* Rows */}
                       <TableBody>
                       {this.state.courseStudents.map((student,index) => {
                         return (
-                          <TableRow
+                          <StyledTableRow
                             key={index}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
-                            <TableCell component="th" scope="row">
+                            <StyledTableCell component="th" scope="row">
                               {student.reg_no || student.cnic}
-                            </TableCell>
-                            <TableCell align="left">{student.student_name}</TableCell>
-                            {Object.keys(this.state.markings[0] || {}).filter(key => !['student_id'].includes(key)).map((attribute) => {
+                            </StyledTableCell>
+                            <StyledTableCell align="left">{student.student_name}</StyledTableCell>
+                            <StyledTableCell align="left">{`${student.marking.result?.absolute?.obtained_marks || 0}/${student.marking.result?.absolute?.total_marks || 0} (${student.marking.result?.absolute?.percentage || 0}%)`}</StyledTableCell>
+                            <StyledTableCell align="left">{student.marking.result?.absolute?.grade}</StyledTableCell>
+                            {Object.keys(this.state.markings[0] || {}).filter(key => ((key == 'student_id') || (key == 'mini_project' && !this.state.semesterCourse.grade_distribution.mini_project)) ? false : true).map((attribute) => {
                               return (
-                                <TableCell align="left">
+                                <StyledTableCell align="left">
                                   <TextField 
                                     onFocus={(e) => e.target.select()} 
                                     value={this.state.markings.filter(marking => marking.student_id == student.student_id)[0][attribute].obtained} 
                                     onChange={(e) => this.updateStudentMarking(attribute,student.student_id,e.target.value)} sx={{'.MuiInputBase-input': { fontSize: '15px' }, width: '50px'}} 
                                     type="tel" size="small"/>
-                                </TableCell>
+                                </StyledTableCell>
 
                               )
                             })}
-                          </TableRow>
+                          </StyledTableRow>
                         )
                       })}
                       </TableBody>
@@ -302,7 +341,15 @@ class MisGradeMarking extends React.Component {
                 <Grid item xs={"auto"}>
                   <CustomButton 
                     label="Save"
-                    onClick={() => {}}
+                    onClick={() => {
+                      socket.emit(`studentsCourses/updateMarkings`, {sem_course_id: this.sem_course_id, markings: this.state.markings}, res => {
+                        console.log(res)
+                        this.setState({
+                          alertMsg: res.code == 200 ? 'Updated student markings':`${res.status}: ${res.message}`,
+                          alertSeverity: res.code == 200 ? 'success':'warning'
+                        }, timeoutAlert)
+                      })
+                    }}
                   />
                 </Grid>
                 <Grid item xs={"auto"}>
