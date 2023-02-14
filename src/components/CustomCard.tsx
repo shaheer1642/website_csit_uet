@@ -19,7 +19,7 @@ export default class CustomCard extends React.Component<IProps> {
 
     render() {
         return (
-            <Card sx={{margin: '20px', padding: '20px'}} elevation={3}>
+            <Card  sx={{margin: '20px', padding: '20px', borderRadius: 5}} elevation={3}>
               <CardContent>
                 {this.props.cardContent}
               </CardContent>
