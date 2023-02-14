@@ -14,6 +14,7 @@ import CustomTable from "../../../../../components/CustomTable";
 import CustomButton from "../../../../../components/CustomButton";
 import CustomModal from "../../../../../components/CustomModal";
 import ConfirmationModal from "../../../../../components/ConfirmationModal";
+import GoBackButton from "../../../../../components/GoBackButton";
 
 const palletes = {
   primary: "#439CEF",
@@ -112,6 +113,8 @@ class MisSemesters extends React.Component {
       { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString() }
     ];
     return (
+      <Grid>
+<GoBackButton context={this.props.navigate}/>
       <Grid container>
         <Typography variant="h1" style={{ margin: "10px" }}>
           {`Semesters (${this.batch_name})`}
@@ -119,12 +122,12 @@ class MisSemesters extends React.Component {
         <CustomTable
           loadingState = {this.state.loadingSemesters}
           onRowClick={(semester) => 
-            this.props.navigate('semesters/courses', {state: {
+            this.props.navigate('courses', {state: {
               ...this.props.location.state, 
               semester_id: semester.semester_id, 
               semester_name: `Semester ${semester.semester_no} - ${semester.semester_season} ${semester.semester_year}`
             }})}
-          onEditClick={(semester) => this.props.navigate('semesters/update', {state: {batch_id: this.batch_id, semester_id: semester.semester_id}})}
+          onEditClick={(semester) => this.props.navigate('update', {state: {batch_id: this.batch_id, semester_id: semester.semester_id}})}
           onDeleteClick={(semester) => {
             this.setState({
               confirmationModalShow: true,
@@ -137,7 +140,7 @@ class MisSemesters extends React.Component {
         />
         <CustomButton
           sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("semesters/create", {state: {batch_id: this.batch_id}})}
+          onClick={() => this.props.navigate("create", {state: {batch_id: this.batch_id}})}
           label="Create New"
         />
         <CustomModal
@@ -157,6 +160,8 @@ class MisSemesters extends React.Component {
           }}
         />
       </Grid>
+      </Grid>
+      
     );
   }
 }

@@ -227,9 +227,9 @@ function MisLayout() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Icon.GroupAdd />
+                          <Icon.ManageAccounts/>
                         </ListItemIcon>
-                        <ListItemText primary='Registration' sx={{ opacity: open ? 1 : 0 }} />
+                        <ListItemText primary='Management' sx={{ opacity: open ? 1 : 0 }} />
                       </ListItemButton>
                     </ListItem>
                     <ListItem button component={Link} to="teachers" disablePadding sx={{ display: 'block' }}>

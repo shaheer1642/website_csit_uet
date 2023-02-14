@@ -104,7 +104,7 @@ class MisBatches extends React.Component {
     ];
     return (
       <Grid container >
-        <Typography variant="h1" style={{ margin: '10px' }}>Batches</Typography>
+        <Typography variant="h1" style={{ margin: '10px' }}>Select Batch</Typography>
         <CustomTable 
         loadingState = {this.state.loadingBatches} 
         onRowClick={(batch) => this.props.navigate('batchManagement', {state: {batch_id: batch.batch_id, batch_name: `Batch ${batch.batch_no} - ${batch.degree_type}`}})}

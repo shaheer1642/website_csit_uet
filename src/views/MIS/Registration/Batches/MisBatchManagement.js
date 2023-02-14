@@ -1,7 +1,7 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
 import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button, ButtonGroup, IconButton } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { CastForEducation, Delete, Edit, Group } from '@mui/icons-material';
 import { socket } from '../../../../websocket/socket';
 import { withRouter } from '../../../../withRouter';
 import CustomTable from '../../../../components/CustomTable';
@@ -53,11 +53,11 @@ class MisBatchManagement extends React.Component {
     return (
       <Grid container >
         <GoBackButton context={this.props.navigate}/>
-        <Grid item>
-          <MisStudents/>
+        <Grid item xs={2} style={{marginLeft: this.props.marginLeft || '10px',  marginTop: this.props.marginLeft ||'20px'}}>
+            <Button size="large" style={{ maxHeight: '30px',  minHeight: '120px',}} variant="contained" startIcon={<Group/>} onClick={() => this.props.navigate('students', {state: {batch_id: this.batch_id, batch_name: this.batch_name}})}>Student Management</Button>
         </Grid>
-        <Grid item>
-          <MisSemesters/>
+        <Grid item xs={2} style={{marginLeft: this.props.marginLeft || '10px',  marginTop: this.props.marginLeft ||'20px'}}>
+            <Button size="large" style={{ maxHeight: '30px',  minHeight: '120px'}} variant="contained" startIcon={<CastForEducation />} onClick={() => this.props.navigate('semesters', {state: {batch_id: this.batch_id, batch_name: this.batch_name}})}>Semester Management</Button>
         </Grid>
       </Grid>
     );
