@@ -259,7 +259,7 @@ class MisGradeMarking extends React.Component {
           </Grid>
           <CustomCard
             cardContent={
-              <Grid container rowSpacing={"20px"} columnSpacing={"20px"}>
+              <Grid container rowSpacing={"20px"} columnSpacing={"20px"} style={{padding: '10px'}}>
                 <Grid item xs={12}>
                   <Typography variant="h3">
                     Students Marking
@@ -286,18 +286,30 @@ class MisGradeMarking extends React.Component {
                           </StyledTableCell>
                           {Object.keys(this.state.markings[0] || {}).filter(key => ((key == 'student_id') || (key == 'mini_project' && !this.state.semesterCourse.grade_distribution.mini_project)) ? false : true).map((attribute) => {
                             return (
-                              <StyledTableCell align="left" >
-                                <Grid container>
+                              <StyledTableCell align="center" >
+                                <Grid container style={{minWidth: '120px'}}>
                                   <Grid item xs={12}>
                                     {convertUpper(attribute)}
                                   </Grid>
-                                  <Grid item xs={"auto"} alignItems="center">
-                                    <Typography style={{ fontSize: '15px', marginTop: '5px', marginRight: '5px'}}>Total:</Typography>
+                                    <Grid item xs={6} style={{alignItems: 'center', justifyContent: 'right', display: 'flex', padding: '5px'}}>
+                                      <Typography style={{ fontSize: '15px'}}>Total:</Typography>
+                                    </Grid>
+                                    <Grid item xs={6} style={{alignItems: 'center', justifyContent: 'left', display: 'flex', padding: '5px'}}>
+                                      <TextField 
+                                        onFocus={(e) => e.target.select()} 
+                                        value={this.state.markings[0][attribute].total} 
+                                        onChange={(e) => this.updateMarkingsTotal(attribute,e.target.value)} 
+                                        sx={{
+                                          '.MuiInputBase-input': { 
+                                            fontSize: '15px', 
+                                            color: 'white' 
+                                          },
+                                          width: '50px'
+                                        }} 
+                                        type="tel" 
+                                        size="small"/>
+                                    </Grid>
                                   </Grid>
-                                  <Grid item xs={"auto"}>
-                                  <TextField onFocus={(e) => e.target.select()} value={this.state.markings[0][attribute].total} onChange={(e) => this.updateMarkingsTotal(attribute,e.target.value)} sx={{'.MuiInputBase-input': { fontSize: '15px', color: 'white' }, width: '50px'}} type="tel" size="small"/>
-                                  </Grid>
-                                </Grid>
                               </StyledTableCell>
 
                             )
@@ -320,7 +332,7 @@ class MisGradeMarking extends React.Component {
                             <StyledTableCell align="left">{student.marking.result?.absolute?.grade}</StyledTableCell>
                             {Object.keys(this.state.markings[0] || {}).filter(key => ((key == 'student_id') || (key == 'mini_project' && !this.state.semesterCourse.grade_distribution.mini_project)) ? false : true).map((attribute) => {
                               return (
-                                <StyledTableCell align="left">
+                                <StyledTableCell align="center">
                                   <TextField 
                                     onFocus={(e) => e.target.select()} 
                                     value={this.state.markings.filter(marking => marking.student_id == student.student_id)[0][attribute].obtained} 

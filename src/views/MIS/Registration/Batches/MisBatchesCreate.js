@@ -14,8 +14,9 @@ class MisBatchesCreate extends React.Component {
   render() {
     //123
     return (
-      <Grid>
+      <Grid container rowSpacing={"20px"}>
       <GoBackButton context={this.props.navigate}/>
+      <Grid item xs={12}>
         <FormGenerator 
           endpoint='batches' 
           formType="create" 
@@ -55,7 +56,7 @@ class MisBatchesCreate extends React.Component {
           }}
         />
       </Grid>
-      
+      </Grid>
     );
   }
 }

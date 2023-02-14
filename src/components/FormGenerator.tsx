@@ -33,24 +33,24 @@ const defaultStyles = {
   },
   alertBox: {
     warning: {
-      width:'100%', 
-      borderRadius: 0, 
+      width: '100%',
+      borderRadius: 0,
       color: palletes.alertWarning, // text color
-      borderColor: palletes.alertWarning, 
+      borderColor: palletes.alertWarning,
       my: '10px',
-      py: "5px", 
+      py: "5px",
       px: "10px",
       '& .MuiAlert-icon': {
         color: palletes.alertWarning, // icon color
       },
     },
     success: {
-      width:'100%', 
-      borderRadius: 0, 
+      width: '100%',
+      borderRadius: 0,
       color: palletes.alertSuccess, // text color
-      borderColor: palletes.alertSuccess, 
+      borderColor: palletes.alertSuccess,
       my: '10px',
-      py: "5px", 
+      py: "5px",
       px: "10px",
       '& .MuiAlert-icon': {
         color: palletes.alertSuccess, // icon color
@@ -60,32 +60,32 @@ const defaultStyles = {
 }
 
 interface fieldOptions {
-    [name: string]: {
-      /**Label name that appears on the text field */
-      label: string, 
-      /**Position of the field in the form i.e. 2 */
-      position: number | undefined, 
-      /**Grid xs number. Default is 12 */
-      xs: number | undefined, 
-      /**Default value of this field*/
-      defaultValue: any | undefined,
-      /**Hint*/
-      placeholder: any | undefined,
-      /**Width in %age*/
-      width: string | undefined,
-      /**Whether this field is editable*/
-      disabled: boolean | undefined,
-      /**field type. i.e. text, radiobox, checkbox (requires additional attributes for options)*/
-      fieldType: string | undefined
-      /**options for chosen field type, if any*/
-      fieldTypeOptions: Array<any> | undefined
-      /**endpoint, if any*/
-      endpoint: string | undefined
-      /**endpoint data, if any*/
-      endpointData: any | undefined
-      /**Select-Menu items */
-      selectMenuItems: Array<{id: string, label: string}> | undefined
-    };
+  [name: string]: {
+    /**Label name that appears on the text field */
+    label: string,
+    /**Position of the field in the form i.e. 2 */
+    position: number | undefined,
+    /**Grid xs number. Default is 12 */
+    xs: number | undefined,
+    /**Default value of this field*/
+    defaultValue: any | undefined,
+    /**Hint*/
+    placeholder: any | undefined,
+    /**Width in %age*/
+    width: string | undefined,
+    /**Whether this field is editable*/
+    disabled: boolean | undefined,
+    /**field type. i.e. text, radiobox, checkbox (requires additional attributes for options)*/
+    fieldType: string | undefined
+    /**options for chosen field type, if any*/
+    fieldTypeOptions: Array<any> | undefined
+    /**endpoint, if any*/
+    endpoint: string | undefined
+    /**endpoint data, if any*/
+    endpointData: any | undefined
+    /**Select-Menu items */
+    selectMenuItems: Array<{ id: string, label: string }> | undefined
+  };
 }
 
 interface IProps {
@@ -122,8 +122,9 @@ export default class FormGenerator extends React.Component<IProps, IState> {
       for (const key in res.data.data_types) {
         const data_type = res.data.data_types[key]
         if (data_type.required.includes(`${this.props.endpoint}/${this.props.formType}`) || data_type.optional.includes(`${this.props.endpoint}/${this.props.formType}`))
-          schema_temp.push({...data_type, 
-            key: key, 
+          schema_temp.push({
+            ...data_type,
+            key: key,
             position: this.props.options[key]?.position || null,
             required: data_type.required.includes(`${this.props.endpoint}/${this.props.formType}`) ? true : false
           })
@@ -134,7 +135,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
       schema_temp.map((attribute) => {
         formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue
       })
-      this.setState({formLoading: false, schema: schema_temp, formFields: formFields})
+      this.setState({ formLoading: false, schema: schema_temp, formFields: formFields })
     })
   }
 
@@ -143,7 +144,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
   }
 
   handleFormFieldChange = (key: string, value: string | number | []) => {
-    this.setState({ formFields: {...this.state.formFields, [key]: value} })
+    this.setState({ formFields: { ...this.state.formFields, [key]: value } })
   }
 
   render(): React.ReactNode {
@@ -152,96 +153,97 @@ export default class FormGenerator extends React.Component<IProps, IState> {
     function timeoutAlert() {
       console.log('timeoutAlert called')
       clearTimeout(timeoutAlertRef)
-      timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 5000)
+      timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 5000)
       console.log(timeoutAlertRef)
     }
 
     return (
-      this.state.formLoading ? <LoadingIcon />:
-      <div>
-        <CustomCard cardContent={<Grid container rowSpacing={'20px'} columnSpacing={'20px'} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
-        <Grid item xs={12}>
-          <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-            <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity as AlertColor]}>{this.state.alertMsg}</Alert>
-          </Zoom>
-        </Grid>
-        {this.state.schema.map(attribute => {
-          return (
-            <Grid item xs={this.props.options[attribute.key]?.xs || "auto"}>
-              {
-                attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' || attribute.type == 'array' ?
-                  this.props.options[attribute.key]?.fieldType == 'radiobox' ? 
-                    <FormControl required={attribute.required}>
-                      <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
-                      <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
-                        {
-                          this.props.options[attribute.key]?.fieldTypeOptions.map(option => {
-                            return <FormControlLabel  value={option} control={<Radio />} label={option} />
-                          })
-                        }
-                      </RadioGroup>
-                    </FormControl>
-                    :
-                  this.props.options[attribute.key]?.fieldType == 'select' ? 
-                    <CustomSelect 
-                      defaultValue={this.props.options[attribute.key]?.defaultValue} 
-                      endpoint={this.props.options[attribute.key]?.endpoint} 
-                      menuItems={this.props.options[attribute.key]?.selectMenuItems} 
-                      label={this.props.options[attribute.key]?.label}
-                      onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.value)}
-                    />:
-                    <CustomTextField 
-                      disabled={this.props.options[attribute.key]?.disabled}
-                      type={attribute.type == 'number' ? 'number':'text'}
-                      required={attribute.required}
-                      placeholder={this.props.options[attribute.key]?.placeholder}
-                      value={this.state.formFields[attribute.key]}
-                      multiline ={attribute.multiline}
-                      maxRows={attribute.multiline ? 10:1}
-                      variant="filled" 
-                      style={{ width: this.props.options[attribute.key]?.width || '100%' }}
-                      label={this.props.options[attribute.key]?.label}
-                      onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)} />
-                    : attribute.type == 'boolean' ?
-                    <FormControlLabel control={<Checkbox defaultChecked={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.checked)} />} label={this.props.options[attribute.key]?.label} />
-                    : attribute.type == 'unix_timestamp_milliseconds' ?
-                    <TextField
-                      label={this.props.options[attribute.key]?.label}
-                      type="date"
-                      defaultValue={new Date(this.props.options[attribute.key]?.defaultValue || null).toISOString().split('T')[0]}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      onChange={(e) => this.handleFormFieldChange(attribute.key,new Date(e.target.value).getTime())}
-                    />
-                    : <Typography>Could not determine attribute type for {attribute.key}</Typography>
-              }
+      this.state.formLoading ? <LoadingIcon /> :
+        <div>
+          <CustomCard style={{padding: '20px'}} cardContent={
+          <Grid container rowSpacing={'20px'} columnSpacing={'20px'} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
+            <Grid item xs={12}>
+              <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity as AlertColor]}>{this.state.alertMsg}</Alert>
+              </Zoom>
             </Grid>
-          )
-        })}
-      </Grid>} cardActions={
-        
-        <CustomButton 
-          label={this.props.formType == 'create' ? 'Create' : 'Update'}
-          onClick={() => {
-            socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
-              console.log(`[${this.props.endpoint}/${this.props.formType}] response`,res)
-              this.setState({
-                alertMsg: res.code == 200 ? this.props.submitSuccessMessage:`${res.status}: ${res.message}`,
-                alertSeverity: res.code == 200 ? 'success':'warning'
-              }, timeoutAlert)
-              if (res.code == 200) {
-                this.setState({
-                  alertMsg:  this.props.submitSuccessMessage,
-                  alertSeverity: 'success'
-                }, timeoutAlert)
-              }
-          })
-          }}
-        />
-      }/>
-      
-      </div>
+            {this.state.schema.map(attribute => {
+              return (
+                <Grid item xs={this.props.options[attribute.key]?.xs || "auto"}>
+                  {
+                    attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' || attribute.type == 'array' ?
+                      this.props.options[attribute.key]?.fieldType == 'radiobox' ? 
+                        <FormControl required={attribute.required}>
+                          <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
+                          <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
+                            {
+                              this.props.options[attribute.key]?.fieldTypeOptions.map(option => {
+                                return <FormControlLabel  value={option} control={<Radio />} label={option} />
+                              })
+                            }
+                          </RadioGroup>
+                        </FormControl>
+                        :
+                      this.props.options[attribute.key]?.fieldType == 'select' ? 
+                        <CustomSelect 
+                          defaultValue={this.props.options[attribute.key]?.defaultValue} 
+                          endpoint={this.props.options[attribute.key]?.endpoint} 
+                          menuItems={this.props.options[attribute.key]?.selectMenuItems} 
+                          label={this.props.options[attribute.key]?.label}
+                          onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.value)}
+                        />:
+                        <CustomTextField 
+                          disabled={this.props.options[attribute.key]?.disabled}
+                          type={attribute.type == 'number' ? 'number':'text'}
+                          required={attribute.required}
+                          placeholder={this.props.options[attribute.key]?.placeholder}
+                          value={this.state.formFields[attribute.key]}
+                          multiline ={attribute.multiline}
+                          maxRows={attribute.multiline ? 10:1}
+                          variant="filled" 
+                          style={{ width: this.props.options[attribute.key]?.width || '100%' }}
+                          label={this.props.options[attribute.key]?.label}
+                          onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)} />
+                        : attribute.type == 'boolean' ?
+                        <FormControlLabel control={<Checkbox defaultChecked={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.checked)} />} label={this.props.options[attribute.key]?.label} />
+                        : attribute.type == 'unix_timestamp_milliseconds' ?
+                        <TextField
+                          label={this.props.options[attribute.key]?.label}
+                          type="date"
+                          defaultValue={new Date(this.props.options[attribute.key]?.defaultValue || null).toISOString().split('T')[0]}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          onChange={(e) => this.handleFormFieldChange(attribute.key,new Date(e.target.value).getTime())}
+                        />
+                        : <Typography>Could not determine attribute type for {attribute.key}</Typography>
+                  }
+                </Grid>
+              )
+            })}
+            <Grid item xs={12}>
+              <CustomButton 
+                label={this.props.formType == 'create' ? 'Create' : 'Update'}
+                onClick={() => {
+                  socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
+                    console.log(`[${this.props.endpoint}/${this.props.formType}] response`,res)
+                    this.setState({
+                      alertMsg: res.code == 200 ? this.props.submitSuccessMessage:`${res.status}: ${res.message}`,
+                      alertSeverity: res.code == 200 ? 'success':'warning'
+                    }, timeoutAlert)
+                    if (res.code == 200) {
+                      this.setState({
+                        alertMsg:  this.props.submitSuccessMessage,
+                        alertSeverity: 'success'
+                      }, timeoutAlert)
+                    }
+                })
+                }}
+              />
+            </Grid>
+          </Grid>} />
+
+        </div>
     )
   }
 }

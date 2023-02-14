@@ -7,7 +7,7 @@ import { SxProps, Theme } from '@mui/material';
 
 interface IProps {
     context: any,
-    marginLeft: string | undefined
+    style?: React.CSSProperties | undefined,
 }
 
 export default class GoBackButton extends React.Component<IProps> {
@@ -17,7 +17,7 @@ export default class GoBackButton extends React.Component<IProps> {
 
   render() {
     return (
-        <Grid item xs={12} style={{marginLeft: this.props.marginLeft || '10px'}}>
+        <Grid item xs={12} style={this.props.style}>
             <Button variant="outlined" startIcon={<ArrowBack />} onClick={() => this.props.context(-1)}>Back</Button>
         </Grid>
     )

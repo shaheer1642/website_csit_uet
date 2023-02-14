@@ -15,6 +15,7 @@ import CustomButton from "../../../../../components/CustomButton";
 import CustomModal from "../../../../../components/CustomModal";
 import ConfirmationModal from "../../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../../components/GoBackButton";
+import CustomCard from "../../../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -116,15 +117,17 @@ class MisStudent extends React.Component {
       { id: "password", label: "Password", format: (value) => value }
     ];
     return (
+      <Grid container rowSpacing={"20px"}>
+        <GoBackButton context={this.props.navigate}/>
+        <Grid item xs = {12}>
+      <CustomCard cardContent={
       <Grid>
-      <GoBackButton context={this.props.navigate}/>
       <Grid container>
-        <Typography variant="h1" style={{ margin: "10px" }}>
+        <Typography variant="h2" style={{ margin: "10px" }}>
           {`Students (${this.batch_name})`}
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingStudents}
-          onRowClick={(student) => this.setState({ modalTitle: student.student_name, modalBody: student.student_address, modalShow: true})}
           onEditClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
           onDeleteClick={(student) => {
             this.setState({
@@ -159,7 +162,9 @@ class MisStudent extends React.Component {
         />
       </Grid>
       </Grid>
-      
+      }/>
+        </Grid>
+      </Grid>
     );
   }
 }

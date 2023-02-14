@@ -39,9 +39,11 @@ class MisTeachersUpdate extends React.Component {
   render() {
     return (
       this.state.loading ? <LoadingIcon />:
-      <Grid>
+      <Grid container rowSpacing={"20px"}>
       <GoBackButton context={this.props.navigate}/>
-      <FormGenerator 
+        <Grid item xs={12}>
+
+        <FormGenerator 
         endpoint="teachers"
         formType="update" 
         submitSuccessMessage='Teacher Edited Successfully'
@@ -84,6 +86,7 @@ class MisTeachersUpdate extends React.Component {
           },
         }}
       />
+        </Grid>
       </Grid>
 
     );

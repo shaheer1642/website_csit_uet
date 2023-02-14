@@ -13,8 +13,9 @@ class MisStudentsCreate extends React.Component {
 
   render() {
     return (
-      <Grid>
+      <Grid container rowSpacing={"20px"}>
       <GoBackButton context={this.props.navigate}/>
+      <Grid item xs={12}>
       <FormGenerator
         endpoint="students"
         formType="create"
@@ -63,7 +64,7 @@ class MisStudentsCreate extends React.Component {
         }}
       />
       </Grid>
-      
+      </Grid>
     );
   }
 }

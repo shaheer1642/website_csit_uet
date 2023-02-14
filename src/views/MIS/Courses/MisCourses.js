@@ -9,6 +9,7 @@ import CustomTable from "../../../components/CustomTable";
 import CustomButton from "../../../components/CustomButton";
 import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import CustomCard from "../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -123,58 +124,53 @@ class MisCourses extends React.Component {
       { id: "departmental", label: "Departmental", format: (value) => value == true ? 'Yes' : value == false ? 'No' : value },
     ];
     return (
-      <Grid container>
-        <Typography variant="h1" style={{ margin: "10px" }}>
-          {`Courses`}
-        </Typography>
-        <CustomTable
-          loadingState={this.state.loadingCourses}
-          onRowClick={(courses) =>
-            this.setState({
-              modalTitle: courses.course_name,
-              modalBody: courses.course_address,
-              modalShow: true,
-            })
-          }
-          onEditClick={(course) =>
-            this.props.navigate("update", {
-              state: { course_id: course.course_id },
-            })
-          }
-          onDeleteClick={(courses) => {
-            this.setState({
-              confirmationModalShow: true,
-              confirmationModalMessage:
-                "Are you sure you want to remove this course?",
-              confirmationModalExecute: () =>
-                socket.emit("courses/delete", { course_id: courses.course_id }),
-            });
-          }}
-          rows={this.state.coursesArr}
-          columns={columns}
-        />
-        <CustomButton
-          sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("create")}
-          label="Create New"
-        />
-        <CustomModal
-          title={this.state.modalTitle}
-          body={this.state.modalBody}
-          open={this.state.modalShow}
-          onClose={() => this.setState({ modalShow: false })}
-        />
-        <ConfirmationModal
-          open={this.state.confirmationModalShow}
-          message={this.state.confirmationModalMessage}
-          onClose={() => this.confirmationModalDestroy()}
-          onClickNo={() => this.confirmationModalDestroy()}
-          onClickYes={() => {
-            this.state.confirmationModalExecute();
-            this.confirmationModalDestroy();
-          }}
-        />
-      </Grid>
+      <CustomCard cardContent={
+        <Grid container>
+          <Typography variant="h2" style={{ margin: "10px" }}>
+            {`Courses`}
+          </Typography>
+          <CustomTable
+            loadingState={this.state.loadingCourses}
+            onEditClick={(course) =>
+              this.props.navigate("update", {
+                state: { course_id: course.course_id },
+              })
+            }
+            onDeleteClick={(courses) => {
+              this.setState({
+                confirmationModalShow: true,
+                confirmationModalMessage:
+                  "Are you sure you want to remove this course?",
+                confirmationModalExecute: () =>
+                  socket.emit("courses/delete", { course_id: courses.course_id }),
+              });
+            }}
+            rows={this.state.coursesArr}
+            columns={columns}
+          />
+          <CustomButton
+            sx={{ margin: "10px" }}
+            onClick={() => this.props.navigate("create")}
+            label="Create New"
+          />
+          <CustomModal
+            title={this.state.modalTitle}
+            body={this.state.modalBody}
+            open={this.state.modalShow}
+            onClose={() => this.setState({ modalShow: false })}
+          />
+          <ConfirmationModal
+            open={this.state.confirmationModalShow}
+            message={this.state.confirmationModalMessage}
+            onClose={() => this.confirmationModalDestroy()}
+            onClickNo={() => this.confirmationModalDestroy()}
+            onClickYes={() => {
+              this.state.confirmationModalExecute();
+              this.confirmationModalDestroy();
+            }}
+          />
+        </Grid>
+      } />
     );
   }
 }

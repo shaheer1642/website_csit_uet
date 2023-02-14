@@ -16,6 +16,7 @@ import CustomModal from "../../../../components/CustomModal";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../components/GoBackButton";
 import { user } from "../../../../objects/User";
+import CustomCard from "../../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -93,9 +94,10 @@ class MisTeachersCourses extends React.Component {
       { id: "registered_students", label: "Total Students", format: (value) => value },
     ];
     return (
-      <Grid container>
-        <Typography variant="h1" style={{ margin: "10px" }}>
-          {`Courses`}
+      <CustomCard cardContent={
+      <Grid container >
+        <Typography variant="h2" style={{ margin: "10px" }}>
+          Select Course
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingSemesterCourses}
@@ -110,7 +112,8 @@ class MisTeachersCourses extends React.Component {
           rows={this.state.semestersCoursesArr}
           columns={columns}
         />
-      </Grid>
+        </Grid>
+      }/>
     );
   }
 }

@@ -11,8 +11,9 @@ class MisEventsCreate extends React.Component {
 
   render() {
     return (
-        <Grid container >
-          <GoBackButton context={this.props.navigate}/>
+      <Grid container rowSpacing={"20px"}>
+      <GoBackButton context={this.props.navigate}/>
+      <Grid item xs={12}>
          <FormGenerator 
           endpoint='events' 
           formType="create" 
@@ -38,7 +39,7 @@ class MisEventsCreate extends React.Component {
           }}
         />
         </Grid>
-      
+        </Grid>
     );
   }
 }

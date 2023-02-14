@@ -143,7 +143,7 @@ class MisGradeDistribution extends React.Component {
           </Grid>
           <CustomCard
             cardContent={
-              <Grid container rowSpacing={"20px"} columnSpacing={"20px"}>
+              <Grid container rowSpacing={"20px"} columnSpacing={"20px"} style={{padding: '10px'}}>
                 <Grid item xs={12}>
                   <Typography variant="h3">
                     Grade Distribution

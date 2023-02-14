@@ -40,8 +40,9 @@ class MisBatchesUpdate extends React.Component {
   render() {
     return (
       this.state.loading ? <LoadingIcon />:
-      <Grid>
-     <GoBackButton context={this.props.navigate}/>
+      <Grid container rowSpacing={"20px"}>
+      <GoBackButton context={this.props.navigate}/>
+      <Grid item xs={12}>
       <FormGenerator 
         endpoint="batches"
         formType="update" 
@@ -92,7 +93,7 @@ class MisBatchesUpdate extends React.Component {
         }}
       />
       </Grid>
-     
+      </Grid>
     );
   }
 }

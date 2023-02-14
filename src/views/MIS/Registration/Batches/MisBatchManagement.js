@@ -51,13 +51,19 @@ class MisBatchManagement extends React.Component {
 
   render() {
     return (
-      <Grid container >
+      <Grid container rowSpacing={"20px"} columnSpacing={'20px'}>
         <GoBackButton context={this.props.navigate}/>
-        <Grid item xs={2} style={{marginLeft: this.props.marginLeft || '10px',  marginTop: this.props.marginLeft ||'20px'}}>
-            <Button size="large" style={{ maxHeight: '30px',  minHeight: '120px',}} variant="contained" startIcon={<Group/>} onClick={() => this.props.navigate('students', {state: {batch_id: this.batch_id, batch_name: this.batch_name}})}>Student Management</Button>
+        
+        <Grid item xs={12}>
+        <Typography variant="h2">
+        {this.batch_name}
+        </Typography>
         </Grid>
-        <Grid item xs={2} style={{marginLeft: this.props.marginLeft || '10px',  marginTop: this.props.marginLeft ||'20px'}}>
-            <Button size="large" style={{ maxHeight: '30px',  minHeight: '120px'}} variant="contained" startIcon={<CastForEducation />} onClick={() => this.props.navigate('semesters', {state: {batch_id: this.batch_id, batch_name: this.batch_name}})}>Semester Management</Button>
+        <Grid item xs={"auto"}>
+            <Button size="large" style={{ maxHeight: '30px',  minHeight: '120px', fontSize: '20px'}} variant="contained" startIcon={<Group />} onClick={() => this.props.navigate('students', {state: {batch_id: this.batch_id, batch_name: this.batch_name}})}>Student Management</Button>
+        </Grid>
+        <Grid item xs={"auto"}>
+            <Button size="large" style={{ maxHeight: '30px',  minHeight: '120px', fontSize: '20px'}} variant="contained" startIcon={<CastForEducation />} onClick={() => this.props.navigate('semesters', {state: {batch_id: this.batch_id, batch_name: this.batch_name}})}>Semester Management</Button>
         </Grid>
       </Grid>
     );

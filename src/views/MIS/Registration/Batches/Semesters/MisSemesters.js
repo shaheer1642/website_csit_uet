@@ -15,6 +15,7 @@ import CustomButton from "../../../../../components/CustomButton";
 import CustomModal from "../../../../../components/CustomModal";
 import ConfirmationModal from "../../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../../components/GoBackButton";
+import CustomCard from "../../../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -113,10 +114,12 @@ class MisSemesters extends React.Component {
       { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString() }
     ];
     return (
-      <Grid>
-<GoBackButton context={this.props.navigate}/>
+      <Grid container rowSpacing={"20px"}>
+        <GoBackButton context={this.props.navigate}/>
+        <Grid item xs = {12}>
+      <CustomCard cardContent={
       <Grid container>
-        <Typography variant="h1" style={{ margin: "10px" }}>
+        <Typography variant="h2" style={{ margin: "10px" }}>
           {`Semesters (${this.batch_name})`}
         </Typography>
         <CustomTable
@@ -160,8 +163,9 @@ class MisSemesters extends React.Component {
           }}
         />
       </Grid>
+      }/>
       </Grid>
-      
+      </Grid>
     );
   }
 }

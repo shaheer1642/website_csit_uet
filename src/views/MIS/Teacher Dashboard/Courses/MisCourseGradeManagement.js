@@ -87,15 +87,19 @@ class MisCourseGradeManagement extends React.Component {
 
   render() {
     return (
-      <Grid container>
+      <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
         <Grid item xs={12}>
-          <Typography variant="h1" style={{ margin: "10px" }}>
+          <Typography variant="h2">
             {this.props.location.state.course_name}
           </Typography>
         </Grid>
+        <Grid item xs={12}>
         <MisCourseGradeDistribution />
+        </Grid>
+        <Grid item xs={12}>
         <MisCourseGradeMarking />
+        </Grid>
       </Grid>
     );
   }

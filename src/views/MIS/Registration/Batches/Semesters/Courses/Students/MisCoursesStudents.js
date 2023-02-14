@@ -17,6 +17,7 @@ import ConfirmationModal from "../../../../../../../components/ConfirmationModal
 import GoBackButton from "../../../../../../../components/GoBackButton";
 import CustomMultiAutocomplete from "../../../../../../../components/CustomMultiAutocomplete";
 import LoadingIcon from "../../../../../../../components/LoadingIcon";
+import CustomCard from "../../../../../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -102,9 +103,10 @@ class MisCoursesStudents extends React.Component {
   render() {
     return (
       this.state.loadingStudentsCourses ? <LoadingIcon />:
+      <CustomCard cardContent={
       <Grid container>
         <GoBackButton context={this.props.navigate}/>
-        <Typography variant="h1" sx={{ margin: "10px" }}>
+        <Typography variant="h2" sx={{ margin: "10px" }}>
           {`${this.course_name} (${this.semester_name} | ${this.batch_name})`}
         </Typography>
         <Grid item xs={12} sx={{ margin: "10px" }}>
@@ -136,6 +138,7 @@ class MisCoursesStudents extends React.Component {
           />
         </Grid>
       </Grid>
+      }/>
     );
   }
 }

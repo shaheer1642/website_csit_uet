@@ -11,6 +11,7 @@ import * as Color from '@mui/material/colors';
 import FormGenerator from '../../../../components/FormGenerator';
 import { Navigate } from 'react-router-dom'
 import ConfirmationModal from '../../../../components/ConfirmationModal';
+import CustomCard from '../../../../components/CustomCard';
 
 const palletes = {
   primary: '#439CEF',
@@ -103,8 +104,9 @@ class MisBatches extends React.Component {
       { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => value },
     ];
     return (
+      <CustomCard cardContent={
       <Grid container >
-        <Typography variant="h1" style={{ margin: '10px' }}>Select Batch</Typography>
+        <Typography variant="h2" style={{ margin: '10px' }}>Select Batch</Typography>
         <CustomTable 
         loadingState = {this.state.loadingBatches} 
         onRowClick={(batch) => this.props.navigate('batchManagement', {state: {batch_id: batch.batch_id, batch_name: `Batch ${batch.batch_no} - ${batch.degree_type}`}})}
@@ -129,6 +131,7 @@ class MisBatches extends React.Component {
           }}
         />
       </Grid>
+      }/>
     );
   }
 }

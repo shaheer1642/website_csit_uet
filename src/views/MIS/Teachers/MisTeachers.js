@@ -9,6 +9,7 @@ import CustomTable from "../../../components/CustomTable";
 import CustomButton from "../../../components/CustomButton";
 import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
+import CustomCard from "../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -120,23 +121,16 @@ class MisTeachers extends React.Component {
     const columns = [
       { id: "teacher_name", label: "Teacher Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
-      { id: "reg_no", label: "Registration No", format: (value) => value },
       { id: "teacher_gender", label: "Gender", format: (value) => value },
     ];
     return (
+      <CustomCard cardContent={
       <Grid container>
-        <Typography variant="h1" style={{ margin: "10px" }}>
+        <Typography variant="h2" style={{ margin: "10px" }}>
           {`Teachers`}
         </Typography>
         <CustomTable
           loadingState={this.state.loadingTeachers}
-          onRowClick={(teacher) =>
-            this.setState({
-              modalTitle: teacher.teacher_name,
-              modalBody: teacher.teacher_address,
-              modalShow: true,
-            })
-          }
           onEditClick={(teacher) =>
             this.props.navigate("update", {
               state: { teacher_id: teacher.teacher_id },
@@ -178,6 +172,7 @@ class MisTeachers extends React.Component {
           }}
         />
       </Grid>
+      } />
     );
   }
 }

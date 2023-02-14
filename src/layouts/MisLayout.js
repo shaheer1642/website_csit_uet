@@ -28,6 +28,7 @@ import { socket, socketHasConnected } from '../websocket/socket';
 import EstablishingConnection from '../views/EstablishingConnection';
 import eventHandler from '../eventHandler';
 import {user} from './../objects/User'
+import * as Color from "@mui/material/colors";
 
 const drawerWidth = 240;
 
@@ -325,7 +326,7 @@ function MisLayout() {
 
 
           </Drawer>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: Color.grey[100], minHeight: '100vh' }}>
             <DrawerHeader />
             <Outlet />
           </Box>

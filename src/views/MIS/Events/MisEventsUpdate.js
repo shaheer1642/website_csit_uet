@@ -37,8 +37,9 @@ class MisEventsUpdate extends React.Component {
   render() {
     return (
       this.state.loading ? <LoadingIcon />:
-      <Grid container>
+      <Grid container rowSpacing={"20px"}>
       <GoBackButton context={this.props.navigate}/>
+      <Grid item xs={12}>
       <FormGenerator 
         endpoint="events"
         formType="update" 
@@ -73,7 +74,7 @@ class MisEventsUpdate extends React.Component {
         }}
       />
       </Grid>
-      
+      </Grid>
     );
   }
 }

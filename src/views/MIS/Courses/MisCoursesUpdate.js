@@ -37,35 +37,37 @@ class MisCoursesUpdate extends React.Component {
   render() {
     return (
       this.state.loading ? <LoadingIcon />:
-      <Grid container>
+      <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
-        <FormGenerator 
-          endpoint="courses"
-          formType="update" 
-          submitSuccessMessage='Course Edited Successfully'
-          backgroundColor='white'
-          options={{
-            course_id: {
-              label: "Course ID",
-              defaultValue: this.course_id,
-              disabled: true,
-              position: 1,
-              xs: 6,
-            },
-            course_name: {
-              label: "Course Name",
-              defaultValue: this.state.course_name,
-              position: 2,
-              xs: 6,
-            },
-            departmental: {
-              label: "Departmental",
-              defaultValue: this.state.departmental,
-              position: 3,
-              xs: 6,
-            },
-          }}
-        />
+        <Grid item xs={"auto"}>
+          <FormGenerator 
+            endpoint="courses"
+            formType="update" 
+            submitSuccessMessage='Course Edited Successfully'
+            backgroundColor='white'
+            options={{
+              course_id: {
+                label: "Course ID",
+                defaultValue: this.course_id,
+                disabled: true,
+                position: 1,
+                xs: 6,
+              },
+              course_name: {
+                label: "Course Name",
+                defaultValue: this.state.course_name,
+                position: 2,
+                xs: 6,
+              },
+              departmental: {
+                label: "Departmental",
+                defaultValue: this.state.departmental,
+                position: 3,
+                xs: 6,
+              },
+            }}
+          />
+        </Grid>
       </Grid>
     );
   }

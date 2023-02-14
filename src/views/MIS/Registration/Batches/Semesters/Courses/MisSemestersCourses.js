@@ -15,6 +15,7 @@ import CustomButton from "../../../../../../components/CustomButton";
 import CustomModal from "../../../../../../components/CustomModal";
 import ConfirmationModal from "../../../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../../../components/GoBackButton";
+import CustomCard from "../../../../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -94,9 +95,12 @@ class MisSemestersCourses extends React.Component {
       { id: "registered_students", label: "Total Students", format: (value) => value },
     ];
     return (
-      <Grid container>
+      <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
-        <Typography variant="h1" style={{ margin: "10px" }}>
+        <Grid item xs = {12}>
+      <CustomCard cardContent={
+      <Grid container>
+        <Typography variant="h2" style={{ margin: "10px" }}>
           {`Courses (${this.semester_name} | ${this.batch_name})`}
         </Typography>
         <CustomTable
@@ -136,6 +140,9 @@ class MisSemestersCourses extends React.Component {
             this.confirmationModalDestroy()
           }}
         />
+      </Grid>
+      }/>
+      </Grid>
       </Grid>
     );
   }

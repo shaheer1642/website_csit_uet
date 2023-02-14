@@ -9,6 +9,7 @@ import CustomModal from '../../../components/CustomModal';
 import * as Color from '@mui/material/colors';
 import FormGenerator from '../../../components/FormGenerator';
 import ConfirmationModal from '../../../components/ConfirmationModal';
+import CustomCard from '../../../components/CustomCard';
 
 const palletes = {
   primary: '#439CEF',
@@ -106,8 +107,9 @@ class MisEvents extends React.Component {
       { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString() }
     ];
     return (
+      <CustomCard cardContent={
       <Grid container >
-        <Typography variant="h1" style={{ margin: '10px' }}>Events</Typography>
+        <Typography variant="h2" style={{ margin: '10px' }}>Events</Typography>
         <CustomTable
           onRowClick={(event) => this.setState({ modalTitle: event.title, modalBody: event.body, modalShow: true })}
           onEditClick={(event) => this.props.navigate('update', {state: {event_id: event.event_id}})}
@@ -134,6 +136,7 @@ class MisEvents extends React.Component {
           }}
         />
       </Grid>
+      }/>
     );
   }
 }

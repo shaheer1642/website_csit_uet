@@ -103,7 +103,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
 
     return (
       <Paper sx={{ width: '100%', overflow: 'hidden', margin: '10px' }}>
-        {this.props.loadingState ? <LoadingIcon color={Color.orange[500]} /> :
+        {this.props.loadingState ? <LoadingIcon /> :
           <React.Fragment>
             <TableContainer sx={{ maxHeight: 440, backgroundColor: styles.background }}>
               <Table stickyHeader>
@@ -144,7 +144,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
                           {this.props.onEditClick || this.props.onDeleteClick?
                             <StyledTableCell key="action_buttons">
                               {this.props.onEditClick ? 
-                              <IconButton style={{ color: Color.blue[500] }} onClick={() => this.props.onEditClick(row)}><Edit /></IconButton>:<></>}
+                              <IconButton style={{ color: Color.deepPurple[500] }} onClick={() => this.props.onEditClick(row)}><Edit /></IconButton>:<></>}
                               {this.props.onDeleteClick ?
                               <IconButton style={{ color: Color.red[500] }} onClick={() => this.props.onDeleteClick(row)}><Delete /></IconButton>:<></>}
                             </StyledTableCell> : <></>
