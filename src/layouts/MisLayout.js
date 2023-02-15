@@ -17,6 +17,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { Grid } from '@mui/material';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import * as Icon from '@mui/icons-material';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
@@ -101,6 +103,7 @@ function MisLayout() {
   const theme = useTheme();
   const navigate = useNavigate()
   const [open, setOpen] = React.useState(false);
+  const [currentMenu, setCurrentMenu] = React.useState('home');
   const [socketConnecting, setSocketConnecting] = React.useState(true);
 
   useEffect(() => {
@@ -173,26 +176,27 @@ function MisLayout() {
                   user.user_type == 'admin' ? 
                   (
                     <React.Fragment>
-                    <ListItem button component={Link} to="" disablePadding sx={{ display: 'block' }}>
-                      <ListItemButton
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                        }}
-                      >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Icon.Home />
-                        </ListItemIcon>
-                        <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0 }} />
-                      </ListItemButton>
-                    </ListItem>
+                          <ListItem button component={Link} to="" disablePadding sx={{ display: 'block' }}>
+                            <ListItemButton
+                              sx={{
+                                minHeight: 48,
+                                justifyContent: open ? 'initial' : 'center',
+                                px: 2.5,
+                              }}
+                              onClick={() => setCurrentMenu('home')}
+                            >
+                            <ListItemIcon
+                              sx={{
+                                minWidth: 0,
+                                mr: open ? 3 : 'auto',
+                                justifyContent: 'center',
+                              }}
+                            >
+                              <Icon.Home style={{color: currentMenu == 'home' ? Color.deepPurple[500] : undefined}}/>
+                            </ListItemIcon>
+                            <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'home' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                            </ListItemButton>
+                          </ListItem>
                     <ListItem button component={Link} to="events" disablePadding sx={{ display: 'block' }}>
                       <ListItemButton
                         sx={{
@@ -200,6 +204,7 @@ function MisLayout() {
                           justifyContent: open ? 'initial' : 'center',
                           px: 2.5,
                         }}
+                        onClick={() => setCurrentMenu('events')}
                       >
                         <ListItemIcon
                           sx={{
@@ -208,9 +213,9 @@ function MisLayout() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Icon.Campaign />
+                          <Icon.Campaign style={{color: currentMenu == 'events' ? Color.deepPurple[500] : undefined}}/>
                         </ListItemIcon>
-                        <ListItemText primary='Events' sx={{ opacity: open ? 1 : 0 }} />
+                        <ListItemText primary='Events' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'events' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
                     </ListItem>
                     <ListItem button component={Link} to="batches" disablePadding sx={{ display: 'block' }}>
@@ -220,6 +225,7 @@ function MisLayout() {
                           justifyContent: open ? 'initial' : 'center',
                           px: 2.5,
                         }}
+                        onClick={() => setCurrentMenu('batches')}
                       >
                         <ListItemIcon
                           sx={{
@@ -228,9 +234,9 @@ function MisLayout() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Icon.ManageAccounts/>
+                          <Icon.ManageAccounts style={{color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined}}/>
                         </ListItemIcon>
-                        <ListItemText primary='Management' sx={{ opacity: open ? 1 : 0 }} />
+                        <ListItemText primary='Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
                     </ListItem>
                     <ListItem button component={Link} to="teachers" disablePadding sx={{ display: 'block' }}>
@@ -240,6 +246,7 @@ function MisLayout() {
                           justifyContent: open ? 'initial' : 'center',
                           px: 2.5,
                         }}
+                        onClick={() => setCurrentMenu('teachers')}
                       >
                         <ListItemIcon
                           sx={{
@@ -248,9 +255,9 @@ function MisLayout() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Icon.School />
+                          <Icon.School  style={{color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined}}/>
                         </ListItemIcon>
-                        <ListItemText primary='Teachers' sx={{ opacity: open ? 1 : 0 }} />
+                        <ListItemText primary='Teachers' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
                     </ListItem>
                     <ListItem button component={Link} to="courses" disablePadding sx={{ display: 'block' }}>
@@ -260,6 +267,7 @@ function MisLayout() {
                           justifyContent: open ? 'initial' : 'center',
                           px: 2.5,
                         }}
+                        onClick={() => setCurrentMenu('courses')}
                       >
                         <ListItemIcon
                           sx={{
@@ -268,9 +276,9 @@ function MisLayout() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Icon.Book/>
+                          <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
                         </ListItemIcon>
-                        <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0 }} />
+                        <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
                     </ListItem>
                     </React.Fragment>
@@ -283,6 +291,7 @@ function MisLayout() {
                           justifyContent: open ? 'initial' : 'center',
                           px: 2.5,
                         }}
+                        onClick={() => setCurrentMenu('courses')}
                       >
                         <ListItemIcon
                           sx={{
@@ -291,9 +300,9 @@ function MisLayout() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Icon.Book/>
+                          <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
                         </ListItemIcon>
-                        <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0 }} />
+                        <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
                     </ListItem>
                     </React.Fragment>
