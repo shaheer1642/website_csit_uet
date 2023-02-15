@@ -10,6 +10,7 @@ import * as Color from '@mui/material/colors';
 import FormGenerator from '../../../components/FormGenerator';
 import ConfirmationModal from '../../../components/ConfirmationModal';
 import CustomCard from '../../../components/CustomCard';
+import LoadingIcon from '../../../components/LoadingIcon';
 
 const palletes = {
   primary: '#439CEF',
@@ -35,6 +36,8 @@ class MisEvents extends React.Component {
     super(props);
     this.state = {
       eventsArr: [],
+      loadingEvents: true,
+
       modalTitle: '',
       modalBody: '',
       modalShow: false,
@@ -49,7 +52,8 @@ class MisEvents extends React.Component {
     socket.emit('events/fetch', {}, (res) => {
       if (res.code == 200) {
         return this.setState({
-          eventsArr: res.data
+          eventsArr: res.data,
+          loadingEvents: false
         })
       }
     })
@@ -111,6 +115,7 @@ class MisEvents extends React.Component {
       <Grid container >
         <Typography variant="h2" style={{ margin: '10px' }}>Events</Typography>
         <CustomTable
+          loadingState={this.state.loadingEvents}
           onRowClick={(event) => this.setState({ modalTitle: event.title, modalBody: event.body, modalShow: true })}
           onEditClick={(event) => this.props.navigate('update', {state: {event_id: event.event_id}})}
           onDeleteClick={(event) => {

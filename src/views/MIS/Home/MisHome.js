@@ -3,6 +3,7 @@ import React from 'react';
 import {Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField} from '@mui/material';
 import {AccountCircle, Password, Visibility, VisibilityOff} from '@mui/icons-material';
 import { socket } from '../../../websocket/socket';
+import * as Color from "@mui/material/colors";
 
 const palletes = {
   primary: '#439CEF',
@@ -33,7 +34,7 @@ export default class MisHome extends React.Component {
   render() {
     return (
       <div >
-        <Typography style={{color: palletes.primary}} variant="h4">
+        <Typography style={{color: Color.deepPurple[500]}} variant="h2">
           Admin Dashboard Under Construction
         </Typography>
       </div>
