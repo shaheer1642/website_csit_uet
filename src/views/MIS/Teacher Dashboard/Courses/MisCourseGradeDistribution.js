@@ -256,7 +256,7 @@ class MisGradeDistribution extends React.Component {
                   const key = Object.keys(this.state.semesterCourse.grade_distribution.sessional.division)[index]
                   return (
                     key == 'assignments' ? 
-                    <React.Fragment>
+                    <React.Fragment key={`fragment-${index}`}>
                       <Grid key={`griditem-map-${index}`} item xs={"auto"} style={{minWidth: '200px', marginLeft: '50px'}} alignItems= 'center' display={"flex"}>
                         <Checkbox
                           key={`checkbox-${index}`}
@@ -300,7 +300,7 @@ class MisGradeDistribution extends React.Component {
                       <Grid key={`griditem-map-${index + 3}`} item xs={12}></Grid>
                     </React.Fragment>
                     : key == 'quizzes' ? 
-                    <React.Fragment>
+                    <React.Fragment key={`fragment-${index}`}>
                       <Grid key={`griditem-map-${index }`} item xs={"auto"} style={{minWidth: '200px', marginLeft: '50px'}} alignItems= 'center' display={"flex"}>
                         <Checkbox
                           key={`checkbox-${index}`}
@@ -344,7 +344,7 @@ class MisGradeDistribution extends React.Component {
                       <Grid key={`griditem-map-${index + 3}`} item xs={12}></Grid>
                     </React.Fragment>
                     :
-                    <React.Fragment>
+                    <React.Fragment key={`fragment-${index}`}>
                       <Grid key={`griditem-map-${index}`} item xs={"auto"} style={{minWidth: '200px', marginLeft: '50px'}} alignItems= 'center' display={"flex"}>
                         <Checkbox
                           key={`checkbox-${index}`}
