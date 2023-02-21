@@ -90,6 +90,26 @@ const defaultStyles = {
   }
 }
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: defaultStyles.colors.headerBackgroundColor,
+    color: defaultStyles.colors.headerTextColor,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  backgroundColor: defaultStyles.colors.rowBackgroundColor,
+  '&:nth-of-type(odd)': {
+    backgroundColor: defaultStyles.colors.nthRowBackgroundColor,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
 class MisGradeMarking extends React.Component {
   constructor(props) {
     super(props);
@@ -104,6 +124,7 @@ class MisGradeMarking extends React.Component {
       
     };
     this.sem_course_id = this.props.location.state.sem_course_id
+    this.timeoutAlertRef = null;
   }
 
   componentDidMount() {
@@ -128,29 +149,23 @@ class MisGradeMarking extends React.Component {
     this.state.courseStudents.map(student => {
       const obj = {
         student_id: student.student_id,
-        finals: {
-          total: student.marking.finals?.total || 50,
-          obtained: student.marking.finals?.obtained || 0
-        },
-        mids: {
-          total: student.marking.mids?.total || 20,
-          obtained: student.marking.mids?.obtained || 0
-        },
-        mini_project: {
-          total: student.marking.mini_project?.total || 20,
-          obtained: student.marking.mini_project?.obtained || 0
-        }
+        final_term: student.marking.final_term || 0,
+        mid_term: student.marking.mid_term || 0,
       }
-      Array(this.state.semesterCourse.grade_distribution.total_assignments).fill(0).forEach((e,index) => {
-        obj[`assignment_${index + 1}`] = {
-          total: student.marking[`assignment_${index + 1}`]?.total || 5,
-          obtained: student.marking[`assignment_${index + 1}`]?.obtained || 0
-        }
-      })
-      Array(this.state.semesterCourse.grade_distribution.total_quizzes).fill(0).forEach((e,index) => {
-        obj[`quiz_${index + 1}`] = {
-          total: student.marking[`quiz_${index + 1}`]?.total || 5,
-          obtained: student.marking[`quiz_${index + 1}`]?.obtained || 0
+      Object.keys(this.state.semesterCourse.grade_distribution.sessional.division).map(key => {
+        const value = this.state.semesterCourse.grade_distribution.sessional.division[key]
+        if (value.include) {
+          if (key == 'assignments') {
+            Array(value.no_of_assignments).fill(0).forEach((e,index) => {
+              obj[`assignment_${index + 1}`] = student.marking[`assignment_${index + 1}`] || 0
+            })
+          } else if (key == 'quizzes') {
+            Array(value.no_of_quizzes).fill(0).forEach((e,index) => {
+              obj[`quiz_${index + 1}`] = student.marking[`quiz_${index + 1}`] || 0
+            })
+          } else {
+            obj[key] = student.marking[key] || 0
+          }
         }
       })
       markings.push(obj)
@@ -160,38 +175,21 @@ class MisGradeMarking extends React.Component {
     })
   }
 
-  updateMarkingsTotal = (key,value) => {
-    const marks = Number(value)
-    if (marks == NaN) return
-    const markings = this.state.markings.map(marking => {
-      return {
-        ...marking, 
-        [key]: { 
-          ...marking[key], 
-          total: marks
-        }
-      }
-    })
-    console.log(markings)
-    this.setState({
-      markings: [...markings]
-    })
-  }
-
   updateStudentMarking = (key,student_id,value) => {
     const marks = Number(value)
     if (marks == NaN || marks < 0) return
+    const grade_distribution = this.state.semesterCourse.grade_distribution
+    const total_marks = (key == 'final_term') ? grade_distribution.final_term.total_marks :
+                        (key == 'mid_term') ? grade_distribution.mid_term.total_marks :
+                        (key.match('assignment')) ? grade_distribution.sessional.division.assignments.total_marks_per_assignment :
+                        (key.match('quiz')) ? grade_distribution.sessional.division.quizzes.total_marks_per_quiz :
+                        grade_distribution.sessional.division[key].total_marks
+    if (!total_marks || marks > total_marks) return
     const markings = this.state.markings.map(marking => {
       if (student_id != marking.student_id) return marking
-      else {
-        if (marks > marking[key].total) return marking
-        else return {
-          ...marking, 
-          [key]: { 
-            ...marking[key], 
-            obtained: marks
-          }
-        }
+      else return {
+        ...marking, 
+        [key]: marks
       }
     })
     console.log(markings)
@@ -220,98 +218,47 @@ class MisGradeMarking extends React.Component {
     })
   }
 
+  timeoutAlert = () => {
+    console.log('timeoutAlert called')
+    clearTimeout(this.timeoutAlertRef)
+    this.timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 5000)
+  }
+
   render() {
-    var timeoutAlertRef = null;
-    function timeoutAlert() {
-      console.log('timeoutAlert called')
-      clearTimeout(timeoutAlertRef)
-      timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 5000)
-      console.log(timeoutAlertRef)
-    }
-    const StyledTableCell = styled(TableCell)(({ theme }) => ({
-      [`&.${tableCellClasses.head}`]: {
-        backgroundColor: defaultStyles.colors.headerBackgroundColor,
-        color: defaultStyles.colors.headerTextColor,
-      },
-      [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
-      },
-    }));
-    const StyledTableRow = styled(TableRow)(({ theme }) => ({
-      backgroundColor: defaultStyles.colors.rowBackgroundColor,
-      '&:nth-of-type(odd)': {
-        backgroundColor: defaultStyles.colors.nthRowBackgroundColor,
-      },
-      // hide last border
-      '&:last-child td, &:last-child th': {
-        border: 0,
-      },
-    }));
-    
     return (
       <Grid container>
         {this.state.loading ? <LoadingIcon /> :
-        <React.Fragment>
-          <Grid item xs={12}>
-            <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-              <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
-            </Zoom>
-          </Grid>
           <CustomCard
             cardContent={
               <Grid container rowSpacing={"20px"} columnSpacing={"20px"} style={{padding: '10px'}}>
-                <Grid item xs={12}>
+                <Grid key={`griditem-0`} item xs={12}>
                   <Typography variant="h3">
                     Students Marking
                   </Typography>
                 </Grid>
-                <Grid item xs={12}>
-
+                <Grid key={`griditem-1`} item xs={12}>
                   <TableContainer>
                     <Table size="small">
                       {/* Headers */}
                       <TableHead>
                         <StyledTableRow>
-                          <StyledTableCell align="left">
+                          <StyledTableCell key={`tablecell-header-0`} align="left">
                             Reg #
                           </StyledTableCell>
-                          <StyledTableCell align="left">
+                          <StyledTableCell key={`tablecell-header-1`} align="left">
                             Student Name
                           </StyledTableCell>
-                          <StyledTableCell align="left">
+                          <StyledTableCell key={`tablecell-header-2`} align="left">
                             Absolute Total
                           </StyledTableCell>
-                          <StyledTableCell align="left">
+                          <StyledTableCell key={`tablecell-header-3`} align="left">
                             Estimated Grade
                           </StyledTableCell>
-                          {Object.keys(this.state.markings[0] || {}).filter(key => ((key == 'student_id') || (key == 'mini_project' && !this.state.semesterCourse.grade_distribution.mini_project)) ? false : true).map((attribute) => {
+                          {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_id').map((attribute,index) => {
                             return (
-                              <StyledTableCell align="center" >
-                                <Grid container style={{minWidth: '120px'}}>
-                                  <Grid item xs={12}>
-                                    {convertUpper(attribute)}
-                                  </Grid>
-                                    <Grid item xs={6} style={{alignItems: 'center', justifyContent: 'right', display: 'flex', padding: '5px'}}>
-                                      <Typography style={{ fontSize: '15px'}}>Total:</Typography>
-                                    </Grid>
-                                    <Grid item xs={6} style={{alignItems: 'center', justifyContent: 'left', display: 'flex', padding: '5px'}}>
-                                      <TextField 
-                                        onFocus={(e) => e.target.select()} 
-                                        value={this.state.markings[0][attribute].total} 
-                                        onChange={(e) => this.updateMarkingsTotal(attribute,e.target.value)} 
-                                        sx={{
-                                          '.MuiInputBase-input': { 
-                                            fontSize: '15px', 
-                                            color: 'white' 
-                                          },
-                                          width: '50px'
-                                        }} 
-                                        type="tel" 
-                                        size="small"/>
-                                    </Grid>
-                                  </Grid>
+                              <StyledTableCell key={`tablecell-header-${index + 4}`} align="center" >
+                                {convertUpper(attribute)}
                               </StyledTableCell>
-
                             )
                           })}
                         </StyledTableRow>
@@ -321,21 +268,22 @@ class MisGradeMarking extends React.Component {
                       {this.state.courseStudents.map((student,index) => {
                         return (
                           <StyledTableRow
-                            key={index}
+                            key={`tablerow-${index}`}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                           >
-                            <StyledTableCell component="th" scope="row">
+                            <StyledTableCell key={`tablecell-0`} component="th" scope="row">
                               {student.reg_no || student.cnic}
                             </StyledTableCell>
-                            <StyledTableCell align="left">{student.student_name}</StyledTableCell>
-                            <StyledTableCell align="left">{`${student.marking.result?.absolute?.obtained_marks || 0}/${student.marking.result?.absolute?.total_marks || 0} (${student.marking.result?.absolute?.percentage || 0}%)`}</StyledTableCell>
-                            <StyledTableCell align="left">{student.marking.result?.absolute?.grade}</StyledTableCell>
-                            {Object.keys(this.state.markings[0] || {}).filter(key => ((key == 'student_id') || (key == 'mini_project' && !this.state.semesterCourse.grade_distribution.mini_project)) ? false : true).map((attribute) => {
+                            <StyledTableCell key={`tablecell-1`} align="left">{student.student_name}</StyledTableCell>
+                            <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.absolute?.obtained_marks || 0}/${student.marking.result?.absolute?.total_marks || 0} (${student.marking.result?.absolute?.percentage || 0}%)`}</StyledTableCell>
+                            <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.absolute?.grade}</StyledTableCell>
+                            {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_id').map((attribute,index) => {
                               return (
-                                <StyledTableCell align="center">
+                                <StyledTableCell key={`tablecell-${index + 4}`} align="center">
                                   <TextField 
+                                    key={`input-${student.student_id}-${index}`}
                                     onFocus={(e) => e.target.select()} 
-                                    value={this.state.markings.filter(marking => marking.student_id == student.student_id)[0][attribute].obtained} 
+                                    value={this.state.markings.filter(marking => marking.student_id == student.student_id)[0][attribute]} 
                                     onChange={(e) => this.updateStudentMarking(attribute,student.student_id,e.target.value)} sx={{'.MuiInputBase-input': { fontSize: '15px' }, width: '50px'}} 
                                     type="tel" size="small"/>
                                 </StyledTableCell>
@@ -349,8 +297,12 @@ class MisGradeMarking extends React.Component {
                     </Table>
                   </TableContainer>
                 </Grid>
-                <Grid item xs={12}></Grid>
-                <Grid item xs={"auto"}>
+                <Grid key={`griditem-2`} item xs={12}>
+                  <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
+                    <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
+                  </Zoom>
+                </Grid>
+                <Grid key={`griditem-3`} item xs={"auto"}>
                   <CustomButton 
                     label="Save"
                     onClick={() => {
@@ -359,12 +311,12 @@ class MisGradeMarking extends React.Component {
                         this.setState({
                           alertMsg: res.code == 200 ? 'Updated student markings':`${res.status}: ${res.message}`,
                           alertSeverity: res.code == 200 ? 'success':'warning'
-                        }, timeoutAlert)
+                        }, this.timeoutAlert)
                       })
                     }}
                   />
                 </Grid>
-                <Grid item xs={"auto"}>
+                <Grid key={`griditem-4`} item xs={"auto"}>
                   <CustomButton 
                     label="Reset"
                     onClick={() => this.fetchData()}
@@ -373,7 +325,6 @@ class MisGradeMarking extends React.Component {
               </Grid>
             }
           ></CustomCard>
-        </React.Fragment>
         }
       </Grid>
     );

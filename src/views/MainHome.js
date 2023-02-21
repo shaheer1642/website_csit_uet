@@ -81,7 +81,7 @@ class MainHome extends React.Component {
     return (
       <Grid container spacing={1} style={{ margin: 20 }}>
         <Grid item xs={12} md={8} lg={8}>
-          <Typography style={{ textAlign: "left" }} variant="h4">
+          <Typography style={{ textAlign: "left" }} variant="h2">
             Department Of Computer Science & Information Technology Peshawar
             Campus
           </Typography>

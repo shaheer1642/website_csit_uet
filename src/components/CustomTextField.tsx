@@ -27,6 +27,7 @@ interface IProps {
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
     onFocus?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> | undefined,
     tabIndex?: number,
+    size?: "small" | "medium",
     fontSize?: number,
     fontFamily?: string,
     inputTextColor?: string,
@@ -43,7 +44,8 @@ interface IProps {
     maxRows?: number,
     onPressEnter?: Function,
     placeholder?: string,
-    disabled?: boolean
+    disabled?: boolean,
+    range?: Array<number>
 }
 
 export default class CustomTextField extends React.Component<IProps> {
@@ -74,6 +76,7 @@ export default class CustomTextField extends React.Component<IProps> {
     return (
         <TextField
             color="primary"
+            size={this.props.size}
             disabled={this.props.disabled}
             value={this.props.value}
             placeholder={this.props.placeholder}
@@ -84,7 +87,7 @@ export default class CustomTextField extends React.Component<IProps> {
             onChange={this.props.onChange}
             onFocus={this.props.onFocus}
             type={this.props.type || 'text'}
-            inputProps={{ tabIndex: this.props.tabIndex }}
+            inputProps={{ tabIndex: this.props.tabIndex, min: this.props.range?.[0], max: this.props.range?.[1] }}
             required={this.props.required}
             multiline={this.props.multiline}
             rows={this.props.rows}

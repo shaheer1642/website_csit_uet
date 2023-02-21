@@ -185,19 +185,19 @@ class Login extends React.Component {
       <div style={styles.container}>
         <div style={styles.loginPanel}>
           <div style={styles.header}>
-            <Fade direction={'up'} in={this.state.panelToggle == 'login' ? true : false} timeout={this.state.panelToggle == 'login' ? 500 : 0} mountOnEnter unmountOnExit>
+            <Fade in={this.state.panelToggle == 'login' ? true : false} timeout={this.state.panelToggle == 'login' ? 500 : 0} mountOnEnter unmountOnExit>
               <Typography style={{ color: palletes.primary }} variant="h4">
                 Login
               </Typography>
             </Fade>
-            <Fade direction={'up'} in={this.state.panelToggle == 'reset' ? true : false} timeout={this.state.panelToggle == 'reset' ? 500 : 0} mountOnEnter unmountOnExit>
+            <Fade in={this.state.panelToggle == 'reset' ? true : false} timeout={this.state.panelToggle == 'reset' ? 500 : 0} mountOnEnter unmountOnExit>
               <Typography style={{ color: palletes.primary }} variant="h4">
                 Reset Password
               </Typography>
             </Fade>
           </div>
-          <div s>
-            <Fade direction={'up'} in={this.state.panelToggle == 'login' ? true : false} timeout={this.state.panelToggle == 'login' ? 500 : 0} mountOnEnter unmountOnExit>
+          <div>
+            <Fade in={this.state.panelToggle == 'login' ? true : false} timeout={this.state.panelToggle == 'login' ? 500 : 0} mountOnEnter unmountOnExit>
               <Grid container columnSpacing={'10px'} rowSpacing={'20px'}>
                 <Grid item xs={12}>
                   <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
@@ -248,7 +248,7 @@ class Login extends React.Component {
               </Grid>
             </Grid>
           </Fade>
-          <Fade direction={'up'} in={this.state.panelToggle == 'reset' ? true : false} timeout={this.state.panelToggle == 'reset' ? 500 : 0} mountOnEnter unmountOnExit>
+          <Fade in={this.state.panelToggle == 'reset' ? true : false} timeout={this.state.panelToggle == 'reset' ? 500 : 0} mountOnEnter unmountOnExit>
             <Grid container columnSpacing={'10px'} rowSpacing={'20px'}>
                <Grid item xs={12}>
                <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>

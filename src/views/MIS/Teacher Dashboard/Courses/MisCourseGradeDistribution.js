@@ -23,6 +23,8 @@ import { user } from "../../../../objects/User";
 import CustomCard from "../../../../components/CustomCard";
 import CustomTextField from "../../../../components/CustomTextField";
 import LoadingIcon from "../../../../components/LoadingIcon";
+import { convertUpper } from "../../../../extras/functions";
+
 
 const palletes = {
   primary: "#439CEF",
@@ -112,13 +114,26 @@ class MisGradeDistribution extends React.Component {
   }
 
   changeGradeDistribution = (key,value) => {
+    console.log('changeGradeDistribution calledd')
+    const semesterCourse = this.state.semesterCourse
+    const keys = key.split('.')
+    if (keys.length == 1)
+      semesterCourse.grade_distribution[keys[0]] = value
+    if (keys.length == 2)
+      semesterCourse.grade_distribution[keys[0]][keys[1]] = value
+    if (keys.length == 3)
+      semesterCourse.grade_distribution[keys[0]][keys[1]][keys[2]] = value
+    if (keys.length == 4)
+      semesterCourse.grade_distribution[keys[0]][keys[1]][keys[2]][keys[3]] = value
+    if (keys.length == 5)
+      semesterCourse.grade_distribution[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]] = value
+    if (keys.length == 6)
+      semesterCourse.grade_distribution[keys[0]][keys[1]][keys[2]][keys[3]][keys[4]][keys[5]] = value
+    console.log('changeGradeDistribution keys length',keys.length)
+    console.log('changeGradeDistribution new object',semesterCourse)
     this.setState({
       semesterCourse: {
-        ...this.state.semesterCourse,
-        grade_distribution: {
-          ...this.state.semesterCourse.grade_distribution,
-          [key]: key == 'mini_project' ? value : Number(value)
-        }
+        ...semesterCourse
       }
     })
   }
@@ -136,101 +151,234 @@ class MisGradeDistribution extends React.Component {
       <Grid container>
         {this.state.loadingSemesterCourse ? <LoadingIcon /> :
         <React.Fragment>
-          <Grid item xs={12}>
-            <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-              <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
-            </Zoom>
-          </Grid>
           <CustomCard
             cardContent={
-              <Grid container rowSpacing={"20px"} columnSpacing={"20px"} style={{padding: '10px'}}>
-                <Grid item xs={12}>
+              <Grid container direction={"row"} rowSpacing={"20px"} columnSpacing={"20px"} style={{padding: '10px'}}>
+                <Grid key={'griditem-0'} item xs={12}>
                   <Typography variant="h3">
                     Grade Distribution
                   </Typography>
                 </Grid>
-                <Grid item xs={"auto"}>
-                  <CustomTextField 
-                    type='number'
-                    required={true}
-                    value={this.state.semesterCourse.grade_distribution.finals}
-                    variant="filled"
-                    label="Finals %"
-                    onChange={(e) => this.changeGradeDistribution('finals',e.target.value)} 
-                    onFocus={e => {
-                      e.target.select();
-                    }}/>
+                <Grid key={'griditem-1'} item xs={"auto"} style={{minWidth: '150px'}} alignItems= 'center' display={"flex"}>
+                  <Typography variant="h4">Final Term</Typography>
                 </Grid>
-                <Grid item xs={"auto"}>
+                <Grid key={'griditem-2'} item xs={"auto"}>
                   <CustomTextField 
                     type='number'
+                    size="small"
+                    style={{width: '100px'}}
                     required={true}
-                    value={this.state.semesterCourse.grade_distribution.mids}
+                    value={this.state.semesterCourse.grade_distribution.final_term.weightage}
                     variant="filled"
-                    label="Mids %"
-                    onChange={(e) => this.changeGradeDistribution('mids',e.target.value)} 
-                    onFocus={e => {
-                      e.target.select();
-                    }}/>
-                </Grid>
-                <Grid item xs={"auto"}>
-                  <CustomTextField 
-                    type='number'
-                    required={true}
-                    value={this.state.semesterCourse.grade_distribution.sessional}
-                    variant="filled"
-                    label="Sessional %"
-                    onChange={(e) => this.changeGradeDistribution('sessional',e.target.value)} 
+                    label="Weightage %"
+                    range={[0,100]}
+                    onChange={(e) => this.changeGradeDistribution('final_term.weightage',e.target.value)} 
                     onFocus={e => {
                       e.target.select();
                     }}
-                    />
+                  />
                 </Grid>
-                <Grid item xs={"auto"}>
+                <Grid key={'griditem-3'} item xs={"auto"}>
                   <CustomTextField 
                     type='number'
+                    size="small"
+                    style={{width: '100px'}}
                     required={true}
-                    value={this.state.semesterCourse.grade_distribution.attendance}
+                    value={this.state.semesterCourse.grade_distribution.final_term.total_marks}
                     variant="filled"
-                    label="Attendance %"
-                    onChange={(e) => this.changeGradeDistribution('attendance',e.target.value)} 
+                    label="Total Marks"
+                    range={[0,100]}
+                    onChange={(e) => this.changeGradeDistribution('final_term.total_marks',e.target.value)} 
                     onFocus={e => {
                       e.target.select();
                     }}
-                    />
+                  />
                 </Grid>
-                <Grid item xs={12}></Grid>
-                <Grid item xs={"auto"}>
+                <Grid key={'griditem-4'} item xs={12}></Grid>
+                <Grid key={'griditem-5'} item xs={"auto"} style={{minWidth: '150px'}} alignItems= 'center' display={"flex"}>
+                  <Typography variant="h4">Mid Term</Typography>
+                </Grid>
+                <Grid key={'griditem-6'} item xs={"auto"}>
                   <CustomTextField 
+                    
                     type='number'
+                    size="small"
+                    style={{width: '100px'}}
                     required={true}
-                    value={this.state.semesterCourse.grade_distribution.total_assignments}
+                    value={this.state.semesterCourse.grade_distribution.mid_term.weightage}
                     variant="filled"
-                    label="Total Assignments"
-                    onChange={(e) => this.changeGradeDistribution('total_assignments',e.target.value)} 
+                    label="Weightage %"
+                    range={[0,100]}
+                    onChange={(e) => this.changeGradeDistribution('mid_term.weightage',e.target.value)} 
                     onFocus={e => {
                       e.target.select();
                     }}
-                    />
+                  />
                 </Grid>
-                <Grid item xs={"auto"}>
+                <Grid key={'griditem-7'} item xs={"auto"}>
                   <CustomTextField 
                     type='number'
+                    size="small"
+                    style={{width: '100px'}}
                     required={true}
-                    value={this.state.semesterCourse.grade_distribution.total_quizzes}
+                    value={this.state.semesterCourse.grade_distribution.mid_term.total_marks}
                     variant="filled"
-                    label="Total Quizzes"
-                    onChange={(e) => this.changeGradeDistribution('total_quizzes',e.target.value)} 
+                    label="Total Marks"
+                    range={[0,100]}
+                    onChange={(e) => this.changeGradeDistribution('mid_term.total_marks',e.target.value)} 
                     onFocus={e => {
                       e.target.select();
                     }}
-                    />
+                  />
                 </Grid>
-                <Grid item xs={"auto"}>
-                  <FormControlLabel style={{userSelect: 'none'}} control={<Checkbox checked={this.state.semesterCourse.grade_distribution.mini_project} onChange={(e) => this.changeGradeDistribution('mini_project',e.target.checked)}/>} label="Mini Project" />
+                <Grid key={'griditem-8'} item xs={12}></Grid>
+                <Grid key={'griditem-9'} item xs={"auto"} style={{minWidth: '150px'}} alignItems= 'center' display={"flex"}>
+                  <Typography variant="h4">Sessional</Typography>
                 </Grid>
-                <Grid item xs={12}></Grid>
-                <Grid item xs={"auto"}>
+                <Grid key={'griditem-10'} item xs={"auto"}>
+                  <CustomTextField 
+                    type='number'
+                    size="small"
+                    style={{width: '100px'}}
+                    required={true}
+                    value={this.state.semesterCourse.grade_distribution.sessional.weightage}
+                    variant="filled"
+                    label="Weightage %"
+                    range={[0,100]}
+                    onChange={(e) => this.changeGradeDistribution('sessional.weightage',e.target.value)} 
+                    onFocus={e => {
+                      e.target.select();
+                    }}
+                  />
+                </Grid>
+                <Grid key={'griditem-11'} item xs={12}></Grid>
+                {Object.values(this.state.semesterCourse.grade_distribution.sessional.division).map((division,index) => {
+                  const key = Object.keys(this.state.semesterCourse.grade_distribution.sessional.division)[index]
+                  return (
+                    key == 'assignments' ? 
+                    <React.Fragment>
+                      <Grid key={`griditem-map-${index}`} item xs={"auto"} style={{minWidth: '200px', marginLeft: '50px'}} alignItems= 'center' display={"flex"}>
+                        <Checkbox
+                          key={`checkbox-${index}`}
+                          checked={division.include}
+                          onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.include`,e.target.checked)}
+                        />
+                        <Typography key={`text-${index}`} variant="h6">{convertUpper(key)}</Typography>
+                      </Grid>
+                      <Grid key={`griditem-map-${index + 1}`} item xs={"auto"}>
+                        <CustomTextField 
+                          type='number'
+                          size="small"
+                          style={{width: '200px'}}
+                          required={true}
+                          value={division.total_marks_per_assignment}
+                          variant="filled"
+                          label="Total Marks Per Assignment"
+                          range={[0,100]}
+                          onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.total_marks_per_assignment`,e.target.value)} 
+                          onFocus={e => {
+                            e.target.select();
+                          }}
+                        />
+                      </Grid>
+                      <Grid key={`griditem-map-${index + 2}`} item xs={"auto"}>
+                        <CustomTextField 
+                          type='number'
+                          size="small"
+                          style={{width: '150px'}}
+                          required={true}
+                          value={division.no_of_assignments}
+                          variant="filled"
+                          label="No of Assignments"
+                          range={[0,100]}
+                          onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.no_of_assignments`,e.target.value)} 
+                          onFocus={e => {
+                            e.target.select();
+                          }}
+                        />
+                      </Grid>
+                      <Grid key={`griditem-map-${index + 3}`} item xs={12}></Grid>
+                    </React.Fragment>
+                    : key == 'quizzes' ? 
+                    <React.Fragment>
+                      <Grid key={`griditem-map-${index }`} item xs={"auto"} style={{minWidth: '200px', marginLeft: '50px'}} alignItems= 'center' display={"flex"}>
+                        <Checkbox
+                          key={`checkbox-${index}`}
+                          checked={division.include}
+                          onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.include`,e.target.checked)}
+                        />
+                        <Typography key={`text-${index}`} variant="h6">{convertUpper(key)}</Typography>
+                      </Grid>
+                      <Grid key={`griditem-map-${index + 1}`} item xs={"auto"}>
+                        <CustomTextField 
+                          type='number'
+                          size="small"
+                          style={{width: '200px'}}
+                          required={true}
+                          value={division.total_marks_per_quiz}
+                          variant="filled"
+                          label="Total Marks Per Quiz"
+                          range={[0,100]}
+                          onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.total_marks_per_quiz`,e.target.value)} 
+                          onFocus={e => {
+                            e.target.select();
+                          }}
+                        />
+                      </Grid>
+                      <Grid key={`griditem-map-${index + 2}`} item xs={"auto"}>
+                        <CustomTextField 
+                          type='number'
+                          size="small"
+                          style={{width: '150px'}}
+                          required={true}
+                          value={division.no_of_quizzes}
+                          variant="filled"
+                          label="No of Quizzes"
+                          range={[0,100]}
+                          onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.no_of_quizzes`,e.target.value)} 
+                          onFocus={e => {
+                            e.target.select();
+                          }}
+                        />
+                      </Grid>
+                      <Grid key={`griditem-map-${index + 3}`} item xs={12}></Grid>
+                    </React.Fragment>
+                    :
+                    <React.Fragment>
+                      <Grid key={`griditem-map-${index}`} item xs={"auto"} style={{minWidth: '200px', marginLeft: '50px'}} alignItems= 'center' display={"flex"}>
+                        <Checkbox
+                          key={`checkbox-${index}`}
+                          checked={division.include}
+                          onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.include`,e.target.checked)}
+                        />
+                        <Typography key={`text-${index}`} variant="h6">{convertUpper(key)}</Typography>
+                      </Grid>
+                      <Grid key={`griditem-map-${index + 1}`} item xs={"auto"}>
+                        <CustomTextField 
+                          type='number'
+                          size="small"
+                          style={{width: '100px'}}
+                          required={true}
+                          value={division.total_marks}
+                          variant="filled"
+                          label="Total Marks"
+                          range={[0,100]}
+                          onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.total_marks`,e.target.value)} 
+                          onFocus={e => {
+                            e.target.select();
+                          }}
+                        />
+                      </Grid>
+                      <Grid key={`griditem-map-${index + 2}`} item xs={12}></Grid>
+                    </React.Fragment>
+                  )
+                })}
+                <Grid key={`griditem-12`} item xs={12}>
+                  <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
+                    <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
+                  </Zoom>
+                </Grid>
+                <Grid key={`griditem-13`} item xs={"auto"}>
                   <CustomButton 
                     label="Save"
                     onClick={() => {
@@ -244,7 +392,7 @@ class MisGradeDistribution extends React.Component {
                     }}
                   />
                 </Grid>
-                <Grid item xs={"auto"}>
+                <Grid key={`griditem-14`} item xs={"auto"}>
                   <CustomButton 
                     label="Reset"
                     onClick={() => this.fetchSemesterCourse()}
