@@ -25,7 +25,7 @@ import CustomTextField from "../../../../components/CustomTextField";
 import LoadingIcon from "../../../../components/LoadingIcon";
 import MisCourseGradeDistribution from "./MisCourseGradeDistribution";
 import MisCourseGradeMarking from "./MisCourseGradeMarking";
-
+import MisCourseAttendance from "./MisCourseAttendance";
 
 const palletes = {
   primary: "#439CEF",
@@ -95,10 +95,13 @@ class MisCourseGradeManagement extends React.Component {
           </Typography>
         </Grid>
         <Grid item xs={12}>
-        <MisCourseGradeDistribution />
+          <MisCourseGradeDistribution />
         </Grid>
         <Grid item xs={12}>
-        <MisCourseGradeMarking />
+          <MisCourseGradeMarking />
+        </Grid>
+        <Grid item xs={12}>
+          <MisCourseAttendance />
         </Grid>
       </Grid>
     );

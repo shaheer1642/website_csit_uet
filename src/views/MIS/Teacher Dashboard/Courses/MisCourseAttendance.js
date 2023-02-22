@@ -110,14 +110,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-class MisGradeMarking extends React.Component {
+class MisCourseAttendance extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      semesterCourse: {},
       courseStudents: [],
       loading: true,
-      markings: [],
+      attendances: [],
 
       alertMsg: '',
       alertSeverity: 'warning'
@@ -144,57 +143,37 @@ class MisGradeMarking extends React.Component {
       this.fetchData()
   }
 
-  generateMarkings = () => {
-    const markings = []
+  generateAttendances = () => {
+    const attendances = []
     this.state.courseStudents.map(student => {
       const obj = {
         student_id: student.student_id,
-        final_term: student.marking.final_term || 0,
-        mid_term: student.marking.mid_term || 0,
       }
-      Object.keys(this.state.semesterCourse.grade_distribution.sessional.division).map(key => {
-        const value = this.state.semesterCourse.grade_distribution.sessional.division[key]
-        if (value.include) {
-          if (key == 'assignments') {
-            Array(value.no_of_assignments).fill(0).forEach((e,index) => {
-              obj[`assignment_${index + 1}`] = student.marking[`assignment_${index + 1}`] || 0
-            })
-          } else if (key == 'quizzes') {
-            Array(value.no_of_quizzes).fill(0).forEach((e,index) => {
-              obj[`quiz_${index + 1}`] = student.marking[`quiz_${index + 1}`] || 0
-            })
-          } else {
-            obj[key] = student.marking[key] || 0
-          }
-        }
+      Array(16).fill(0).forEach((e,index) => {
+        obj[`week${index+1}`] = student.attendance[`week${index+1}`] || ''
       })
-      markings.push(obj)
+      attendances.push(obj)
     })
+    console.log('generateAttendances',attendances)
     this.setState({
-      markings: [...markings]
+      attendances: [...attendances],
+      loading: false
     })
   }
 
-  updateStudentMarking = (key,student_id,value) => {
-    const marks = Number(value)
-    if (marks == NaN || marks < 0) return
-    const grade_distribution = this.state.semesterCourse.grade_distribution
-    const total_marks = (key == 'final_term') ? grade_distribution.final_term.total_marks :
-                        (key == 'mid_term') ? grade_distribution.mid_term.total_marks :
-                        (key.match('assignment')) ? grade_distribution.sessional.division.assignments.total_marks_per_assignment :
-                        (key.match('quiz')) ? grade_distribution.sessional.division.quizzes.total_marks_per_quiz :
-                        grade_distribution.sessional.division[key].total_marks
-    if (!total_marks || marks > total_marks) return
-    const markings = this.state.markings.map(marking => {
-      if (student_id != marking.student_id) return marking
+  updateStudentAttendace = (key,student_id,value) => {
+    value = value.toUpperCase()
+    if (value != 'A' && value != 'P' && value != 'L') return
+    const attendances = this.state.attendances.map(attendance => {
+      if (student_id != attendance.student_id) return attendance
       else return {
-        ...marking, 
-        [key]: marks
+        ...attendance, 
+        [key]: value
       }
     })
-    console.log(markings)
+    console.log(attendances)
     this.setState({
-      markings: [...markings]
+      attendances: [...attendances]
     })
   }
 
@@ -202,17 +181,11 @@ class MisGradeMarking extends React.Component {
     this.setState({
       loading: true
     }, () => {
-      socket.emit("semestersCourses/fetch", {sem_course_id: this.sem_course_id}, (res1) => {
-        if (res1.code == 200) {
-          socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res2) => {
-            if (res2.code == 200) {
-              return this.setState({
-                semesterCourse: res1.data[0],
-                courseStudents: res2.data,
-                loading: false,
-              }, () => this.generateMarkings());
-            }
-          });
+      socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res2) => {
+        if (res2.code == 200) {
+          return this.setState({
+            courseStudents: res2.data,
+          }, () => this.generateAttendances());
         }
       });
     })
@@ -233,7 +206,7 @@ class MisGradeMarking extends React.Component {
               <Grid container rowSpacing={"20px"} columnSpacing={"20px"} style={{padding: '10px'}}>
                 <Grid key={`griditem-0`} item xs={12}>
                   <Typography variant="h3">
-                    Students Marking
+                    Students Attendance
                   </Typography>
                 </Grid>
                 <Grid key={`griditem-1`} item xs={12}>
@@ -249,15 +222,12 @@ class MisGradeMarking extends React.Component {
                             Student Name
                           </StyledTableCell>
                           <StyledTableCell key={`tablecell-header-2`} align="left">
-                            Absolute Total
+                            %age
                           </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-3`} align="left">
-                            Estimated Grade
-                          </StyledTableCell>
-                          {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_id').map((attribute,index) => {
+                          {Array(16).fill(0).map((e,index) => {
                             return (
                               <StyledTableCell key={`tablecell-header-${index + 4}`} align="center" >
-                                {convertUpper(attribute)}
+                                {`Week ${index + 1}`}
                               </StyledTableCell>
                             )
                           })}
@@ -275,22 +245,20 @@ class MisGradeMarking extends React.Component {
                               {student.reg_no || student.cnic}
                             </StyledTableCell>
                             <StyledTableCell key={`tablecell-1`} align="left">{student.student_name}</StyledTableCell>
-                            <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.absolute?.obtained_marks || 0}/${student.marking.result?.absolute?.total_marks || 0} (${student.marking.result?.absolute?.percentage || 0}%)`}</StyledTableCell>
-                            <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.absolute?.grade}</StyledTableCell>
-                            {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_id').map((attribute,index) => {
+                            <StyledTableCell key={`tablecell-2`} align="left">{student.attendance.percentage || 0}%</StyledTableCell>
+                            {Array(16).fill(0).map((attribute,index) => {
                               return (
                                 <StyledTableCell key={`tablecell-${index + 4}`} align="center">
-                                  {attribute == 'attendance' ? this.state.markings.filter(marking => marking.student_id == student.student_id)[0][attribute]:
+                                  {index == 7 || index == 15 ? <></>:
                                   <TextField 
+                                    autoComplete="off"
                                     key={`input-${student.student_id}-${index}`}
                                     onFocus={(e) => e.target.select()} 
-                                    value={this.state.markings.filter(marking => marking.student_id == student.student_id)[0][attribute]} 
-                                    onChange={(e) => this.updateStudentMarking(attribute,student.student_id,e.target.value)} 
-                                    sx={{'.MuiInputBase-input': { fontSize: '15px' }, width: '50px'}} 
-                                    type="tel" size="small"/>
-                                  }
+                                    value={this.state.attendances.filter(attendance => attendance.student_id == student.student_id)[0][`week${index+1}`]} 
+                                    onChange={(e) => this.updateStudentAttendace(`week${index+1}`,student.student_id,e.target.value)} 
+                                    sx={{'.MuiInputBase-input': { fontSize: '15px' }, width: '40px'}} 
+                                    type="tel" size="small"/>}
                                 </StyledTableCell>
-
                               )
                             })}
                           </StyledTableRow>
@@ -309,10 +277,10 @@ class MisGradeMarking extends React.Component {
                   <CustomButton 
                     label="Save"
                     onClick={() => {
-                      socket.emit(`studentsCourses/updateMarkings`, {sem_course_id: this.sem_course_id, markings: this.state.markings}, res => {
+                      socket.emit(`studentsCourses/updateAttendances`, {sem_course_id: this.sem_course_id, attendances: this.state.attendances}, res => {
                         console.log(res)
                         this.setState({
-                          alertMsg: res.code == 200 ? 'Updated student markings':`${res.status}: ${res.message}`,
+                          alertMsg: res.code == 200 ? 'Updated students attendance':`${res.status}: ${res.message}`,
                           alertSeverity: res.code == 200 ? 'success':'warning'
                         }, this.timeoutAlert)
                       })
@@ -334,4 +302,4 @@ class MisGradeMarking extends React.Component {
   }
 }
 
-export default withRouter(MisGradeMarking);
+export default withRouter(MisCourseAttendance);
