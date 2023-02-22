@@ -114,7 +114,9 @@ class MisGradeDistribution extends React.Component {
   }
 
   changeGradeDistribution = (key,value) => {
-    console.log('changeGradeDistribution calledd')
+    console.log('changeGradeDistribution called')
+    value = Number(value)
+    if (!value) return
     const semesterCourse = this.state.semesterCourse
     const keys = key.split('.')
     if (keys.length == 1)
