@@ -110,6 +110,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const stickyHeaderCell = {
+  position: 'sticky',
+  left: 0,
+  zIndex: 800,
+  background: defaultStyles.colors.headerBackgroundColor,
+}
+
+const stickyBodyCell = {
+  position: 'sticky',
+  left: 0,
+  zIndex: 800,
+  background: 'inherit'
+}
+
 class MisCourseAttendance extends React.Component {
   constructor(props) {
     super(props);
@@ -218,7 +232,7 @@ class MisCourseAttendance extends React.Component {
                           <StyledTableCell key={`tablecell-header-0`} align="left">
                             Reg #
                           </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-1`} align="left">
+                          <StyledTableCell key={`tablecell-header-1`} align="left" style={stickyHeaderCell}>
                             Student Name
                           </StyledTableCell>
                           <StyledTableCell key={`tablecell-header-2`} align="left">
@@ -244,7 +258,7 @@ class MisCourseAttendance extends React.Component {
                             <StyledTableCell key={`tablecell-0`} component="th" scope="row">
                               {student.reg_no || student.cnic}
                             </StyledTableCell>
-                            <StyledTableCell key={`tablecell-1`} align="left">{student.student_name}</StyledTableCell>
+                            <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
                             <StyledTableCell key={`tablecell-2`} align="left">{student.attendance.percentage || 0}%</StyledTableCell>
                             {Array(16).fill(0).map((attribute,index) => {
                               return (

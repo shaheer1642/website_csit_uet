@@ -8,7 +8,9 @@ import {
   Zoom,
   Alert,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  Radio,
+  RadioGroup
 } from "@mui/material";
 import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
@@ -115,8 +117,10 @@ class MisGradeDistribution extends React.Component {
 
   changeGradeDistribution = (key,value) => {
     console.log('changeGradeDistribution called')
-    value = Number(value)
-    if (!value) return
+    if (key != 'marking.type') {
+      value = Number(value)
+      if (!value) return
+    }
     const semesterCourse = this.state.semesterCourse
     const keys = key.split('.')
     if (keys.length == 1)
@@ -161,6 +165,34 @@ class MisGradeDistribution extends React.Component {
                     Grade Distribution
                   </Typography>
                 </Grid>
+                <Grid key={'griditem-100'} item xs={"auto"} style={{minWidth: '150px'}} alignItems= 'center' display={"flex"}>
+                  <Typography variant="h4">Marking Type</Typography>
+                </Grid>
+                <Grid key={'griditem-101'} item xs={"auto"} style={{minWidth: '150px'}} alignItems= 'center' display={"flex"}>
+                  <RadioGroup
+                    value={this.state.semesterCourse.grade_distribution.marking.type}
+                    onChange={(e) => this.changeGradeDistribution('marking.type',e.target.value)}
+                    row
+                  >
+                    <FormControlLabel value="relative" control={<Radio />} label="Relative" />
+                    <FormControlLabel value="absolute" control={<Radio />} label="Absolute" />
+                  </RadioGroup>
+                  <CustomTextField 
+                    type='number'
+                    size="small"
+                    style={{width: '120px'}}
+                    required={true}
+                    value={this.state.semesterCourse.grade_distribution.marking.average_top}
+                    variant="filled"
+                    label="Top Average %"
+                    range={[1,100]}
+                    onChange={(e) => this.changeGradeDistribution('marking.average_top',e.target.value)} 
+                    onFocus={e => {
+                      e.target.select();
+                    }}
+                  />
+                </Grid>
+                <Grid key={'griditem-102'} item xs={12}></Grid>
                 <Grid key={'griditem-1'} item xs={"auto"} style={{minWidth: '150px'}} alignItems= 'center' display={"flex"}>
                   <Typography variant="h4">Final Term</Typography>
                 </Grid>

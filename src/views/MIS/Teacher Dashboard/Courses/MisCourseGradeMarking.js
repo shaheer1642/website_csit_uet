@@ -110,6 +110,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+const stickyHeaderCell = {
+  position: 'sticky',
+  left: 0,
+  zIndex: 800,
+  background: defaultStyles.colors.headerBackgroundColor,
+}
+
+const stickyBodyCell = {
+  position: 'sticky',
+  left: 0,
+  zIndex: 800,
+  background: 'inherit'
+}
+
 class MisGradeMarking extends React.Component {
   constructor(props) {
     super(props);
@@ -245,11 +259,11 @@ class MisGradeMarking extends React.Component {
                           <StyledTableCell key={`tablecell-header-0`} align="left">
                             Reg #
                           </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-1`} align="left">
+                          <StyledTableCell key={`tablecell-header-1`} align="left" style={stickyHeaderCell}>
                             Student Name
                           </StyledTableCell>
                           <StyledTableCell key={`tablecell-header-2`} align="left">
-                            Absolute Total
+                            Result ({this.state.semesterCourse.grade_distribution.marking.type})
                           </StyledTableCell>
                           <StyledTableCell key={`tablecell-header-3`} align="left">
                             Estimated Grade
@@ -274,9 +288,9 @@ class MisGradeMarking extends React.Component {
                             <StyledTableCell key={`tablecell-0`} component="th" scope="row">
                               {student.reg_no || student.cnic}
                             </StyledTableCell>
-                            <StyledTableCell key={`tablecell-1`} align="left">{student.student_name}</StyledTableCell>
-                            <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.absolute?.obtained_marks || 0}/${student.marking.result?.absolute?.total_marks || 0} (${student.marking.result?.absolute?.percentage || 0}%)`}</StyledTableCell>
-                            <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.absolute?.grade}</StyledTableCell>
+                            <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
+                            <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0} (${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.percentage || 0}%)`}</StyledTableCell>
+                            <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
                             {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_id').map((attribute,index) => {
                               return (
                                 <StyledTableCell key={`tablecell-${index + 4}`} align="center">

@@ -87,7 +87,7 @@ class MisCourseGradeManagement extends React.Component {
 
   render() {
     return (
-      <Grid container rowSpacing={"20px"}>
+      <Grid container rowSpacing={"20px"} maxWidth='90vw'>
         <GoBackButton context={this.props.navigate}/>
         <Grid item xs={12}>
           <Typography variant="h2">
