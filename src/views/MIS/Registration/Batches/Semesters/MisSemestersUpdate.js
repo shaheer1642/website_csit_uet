@@ -84,7 +84,7 @@ class MisSemestersUpdate extends React.Component {
             position: 1,
             xs: 6,
             fieldType: 'radiobox',
-            fieldTypeOptions: ['Spring', 'Fall']
+            fieldTypeOptions: ['spring', 'fall']
           },
           semester_start_timestamp: {
             label: 'Semester Start Time',

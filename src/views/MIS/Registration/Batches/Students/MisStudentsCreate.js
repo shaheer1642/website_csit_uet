@@ -59,7 +59,7 @@ class MisStudentsCreate extends React.Component {
             position: 1,
             xs: 6,
             fieldType: 'radiobox',
-            fieldTypeOptions: ['Male', 'Female']
+            fieldTypeOptions: ['male', 'female']
           },
         }}
       />

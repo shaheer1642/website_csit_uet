@@ -236,7 +236,7 @@ function MisLayout() {
                         >
                           <Icon.ManageAccounts style={{color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined}}/>
                         </ListItemIcon>
-                        <ListItemText primary='Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        <ListItemText primary='Batch Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
                     </ListItem>
                     <ListItem button component={Link} to="teachers" disablePadding sx={{ display: 'block' }}>

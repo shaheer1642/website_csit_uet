@@ -14,7 +14,7 @@ class MisCoursesUpdate extends React.Component {
       loading: true,
       // cnic: '',
       // reg_no: '',
-      course_name: '',
+      course: {},
       // course_gender: 'Male'
     }
     this.course_id = this.props.location.state.course_id
@@ -27,8 +27,7 @@ class MisCoursesUpdate extends React.Component {
         const course = res.data[0]
         this.setState({
           loading: false,
-          course_name: course.course_name,
-          departmental: course.departmental,
+          course: course,
         })
       }
     })
@@ -48,20 +47,35 @@ class MisCoursesUpdate extends React.Component {
             options={{
               course_id: {
                 label: "Course ID",
-                defaultValue: this.course_id,
+                defaultValue: this.state.course.course_id,
                 disabled: true,
                 position: 1,
                 xs: 6,
               },
               course_name: {
-                label: "Course Name",
-                defaultValue: this.state.course_name,
+                label: "Course Title",
+                defaultValue: this.state.course.course_name,
                 position: 2,
                 xs: 6,
               },
+              course_type: {
+                label: 'Course Type',
+                defaultValue: this.state.course.course_type,
+                position: 2,
+                xs: 6,
+                fieldType: 'radiobox',
+                fieldTypeOptions: ['core', 'optional']
+              },
+              credit_hours: {
+                label: "Credit Hours",
+                defaultValue: this.state.course.credit_hours,
+                position: 3,
+                xs: 12,
+                width: '150px'
+              },
               departmental: {
                 label: "Departmental",
-                defaultValue: this.state.departmental,
+                defaultValue: this.state.course.departmental,
                 position: 3,
                 xs: 6,
               },

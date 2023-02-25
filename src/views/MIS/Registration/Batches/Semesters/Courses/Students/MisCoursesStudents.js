@@ -102,43 +102,49 @@ class MisCoursesStudents extends React.Component {
 
   render() {
     return (
-      this.state.loadingStudentsCourses ? <LoadingIcon />:
-      <CustomCard cardContent={
-      <Grid container>
+      <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
-        <Typography variant="h2" sx={{ margin: "10px" }}>
-          {`${this.course_name} (${this.semester_name} | ${this.batch_name})`}
-        </Typography>
-        <Grid item xs={12} sx={{ margin: "10px" }}>
-          <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-            <Alert variant= "outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
-          </Zoom>
-        </Grid>
-        <Grid item xs={6} sx={{ margin: "10px" }}>
-          <CustomMultiAutocomplete 
-            label="Students List" 
-            endpoint="autocomplete/batchStudents" 
-            endpointData={{batch_id: this.batch_id}} 
-            values={this.state.studentIds}
-            onChange={(e,values) => {
-              this.setState({studentIds: values.map(option => option.id)})
-            }}
-          />
-        </Grid>
         <Grid item xs={12}>
-          <CustomButton
-            sx={{ margin: "10px" }}
-            onClick={() => this.updateStudentsList()}
-            label="Save"
-          />
-          <CustomButton
-            sx={{ margin: "10px" }}
-            onClick={() => this.fetchStudentCourses()}
-            label="Reset"
-          />
+        {
+          this.state.loadingStudentsCourses ? <LoadingIcon />:
+          <CustomCard cardContent={
+            <React.Fragment>
+              <Typography variant="h2" sx={{ margin: "10px" }}>
+                {`${this.course_name} (${this.semester_name} | ${this.batch_name})`}
+              </Typography>
+              <Grid item xs={12} sx={{ margin: "10px" }}>
+                <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
+                  <Alert variant= "outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
+                </Zoom>
+              </Grid>
+              <Grid item xs={6} sx={{ margin: "10px" }}>
+                <CustomMultiAutocomplete 
+                  label="Students List" 
+                  endpoint="autocomplete/batchStudents" 
+                  endpointData={{batch_id: this.batch_id}} 
+                  values={this.state.studentIds}
+                  onChange={(e,values) => {
+                    this.setState({studentIds: values.map(option => option.id)})
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomButton
+                  sx={{ margin: "10px" }}
+                  onClick={() => this.updateStudentsList()}
+                  label="Save"
+                />
+                <CustomButton
+                  sx={{ margin: "10px" }}
+                  onClick={() => this.fetchStudentCourses()}
+                  label="Reset"
+                />
+              </Grid>
+            </React.Fragment>
+          }/>
+        }
         </Grid>
-      </Grid>
-      }/>
+        </Grid>
     );
   }
 }

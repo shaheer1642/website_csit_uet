@@ -11,6 +11,7 @@ import CustomSelect from './CustomSelect';
 import CustomMultiAutocomplete from './CustomMultiAutocomplete';
 import { abort } from 'process';
 import CustomCard from './CustomCard';
+import { convertUpper } from '../extras/functions';
 
 const palletes = {
   primary: '#439CEF',
@@ -178,7 +179,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                           <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
                             {
                               this.props.options[attribute.key]?.fieldTypeOptions.map(option => {
-                                return <FormControlLabel  value={option} control={<Radio />} label={option} />
+                                return <FormControlLabel  value={option} control={<Radio />} label={convertUpper(option)} />
                               })
                             }
                           </RadioGroup>
