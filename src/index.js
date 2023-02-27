@@ -24,16 +24,16 @@ import MisCourses from "./views/MIS/Courses/MisCourses";
 import MisCoursesCreate from "./views/MIS/Courses/MisCoursesCreate";
 import MisCoursesUpdate from "./views/MIS/Courses/MisCoursesUpdate";
 import MisStudents from "./views/MIS/Registration/Batches/Students/MisStudents";
-import MisSemesters from "./views/MIS/Registration/Batches/Semesters/MisSemesters";
+import MisSemesters from "./views/MIS/Semesters/MisSemesters";
 import MisBatchManagement from "./views/MIS/Registration/Batches/MisBatchManagement";
 import MisStudentsCreate from "./views/MIS/Registration/Batches/Students/MisStudentsCreate";
 import MisStudentsUpdate from "./views/MIS/Registration/Batches/Students/MisStudentsUpdate";
-import MisSemestersCreate from "./views/MIS/Registration/Batches/Semesters/MisSemestersCreate";
-import MisSemestersUpdate from "./views/MIS/Registration/Batches/Semesters/MisSemestersUpdate";
-import MisSemestersCourses from "./views/MIS/Registration/Batches/Semesters/Courses/MisSemestersCourses";
-import MisSemestersCoursesCreate from "./views/MIS/Registration/Batches/Semesters/Courses/MisSemestersCoursesCreate";
-import MisSemestersCoursesUpdate from "./views/MIS/Registration/Batches/Semesters/Courses/MisSemestersCoursesUpdate";
-import MisCoursesStudents from "./views/MIS/Registration/Batches/Semesters/Courses/Students/MisCoursesStudents";
+import MisSemestersCreate from "./views/MIS/Semesters/MisSemestersCreate";
+import MisSemestersUpdate from "./views/MIS/Semesters/MisSemestersUpdate";
+import MisSemestersCourses from "./views/MIS/Semesters/Courses/MisSemestersCourses";
+import MisSemestersCoursesCreate from "./views/MIS/Semesters/Courses/MisSemestersCoursesCreate";
+import MisSemestersCoursesUpdate from "./views/MIS/Semesters/Courses/MisSemestersCoursesUpdate";
+import MisCoursesStudents from "./views/MIS/Semesters/Courses/Students/MisCoursesStudents";
 import MisCourseGradeManagement from "./views/MIS/Teacher Dashboard/Courses/MisCourseGradeManagement";
 
 import MisTeachersCourses from "./views/MIS/Teacher Dashboard/Courses/MisTeachersCourses";
@@ -59,18 +59,17 @@ export default function Router() {
           <Route path="batches" element={<MisBatches/>}/>
             <Route path="batches/create" element={<MisBatchesCreate/>}/>
             <Route path="batches/update" element={<MisBatchesUpdate/>}/>
+            <Route path="batches/students" element={<MisStudents/>}/> 
+              <Route path="batches/students/create" element={<MisStudentsCreate/>}/> 
+              <Route path="batches/students/update" element={<MisStudentsUpdate/>}/> 
 
-          <Route path="batches/batchManagement" element={<MisBatchManagement/>}/>
-          <Route path="batches/batchManagement/students" element={<MisStudents/>}/> 
-            <Route path="batches/batchManagement/students/create" element={<MisStudentsCreate/>}/> 
-            <Route path="batches/batchManagement/students/update" element={<MisStudentsUpdate/>}/> 
-            <Route path="batches/batchManagement/semesters" element={<MisSemesters/>}/> 
-            <Route path="batches/batchManagement/semesters/create" element={<MisSemestersCreate/>}/> 
-            <Route path="batches/batchManagement/semesters/update" element={<MisSemestersUpdate/>}/> 
-            <Route path="batches/batchManagement/semesters/courses" element={<MisSemestersCourses/>}/> 
-            <Route path="batches/batchManagement/semesters/courses/create" element={<MisSemestersCoursesCreate/>}/> 
-            <Route path="batches/batchManagement/semesters/courses/update" element={<MisSemestersCoursesUpdate/>}/> 
-            <Route path="batches/batchManagement/semesters/courses/students" element={<MisCoursesStudents/>}/> 
+          <Route path="semesters" element={<MisSemesters/>}/> 
+            <Route path="semesters/create" element={<MisSemestersCreate/>}/> 
+            <Route path="semesters/update" element={<MisSemestersUpdate/>}/> 
+            <Route path="semesters/courses" element={<MisSemestersCourses/>}/> 
+              <Route path="semesters/courses/create" element={<MisSemestersCoursesCreate/>}/> 
+              <Route path="semesters/courses/update" element={<MisSemestersCoursesUpdate/>}/> 
+              <Route path="semesters/courses/students" element={<MisCoursesStudents/>}/> 
 
           <Route path="teachers" element={<MisTeachers/>}/>
             <Route path="teachers/create" element={<MisTeachersCreate/>}/>

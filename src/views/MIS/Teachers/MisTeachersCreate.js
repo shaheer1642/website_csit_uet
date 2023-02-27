@@ -18,7 +18,7 @@ class MisTeachersCreate extends React.Component {
           <FormGenerator
             endpoint="teachers"
             formType="create"
-            submitSuccessMessage="Teacher Created Successfully"
+            submitSuccessMessage="Instructor Created Successfully"
             backgroundColor="white"
             options={{
               cnic: {
@@ -32,7 +32,7 @@ class MisTeachersCreate extends React.Component {
                 xs: 6,
               },
               teacher_name: {
-                label: "Teacher Name",
+                label: "Instructor Name",
                 position: 1,
                 xs: 6,
               },

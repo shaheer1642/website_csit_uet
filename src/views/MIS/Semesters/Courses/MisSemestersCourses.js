@@ -8,14 +8,14 @@ import {
 } from "@mui/material";
 import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
-import { socket } from "../../../../../../websocket/socket";
-import { withRouter } from "../../../../../../withRouter";
-import CustomTable from "../../../../../../components/CustomTable";
-import CustomButton from "../../../../../../components/CustomButton";
-import CustomModal from "../../../../../../components/CustomModal";
-import ConfirmationModal from "../../../../../../components/ConfirmationModal";
-import GoBackButton from "../../../../../../components/GoBackButton";
-import CustomCard from "../../../../../../components/CustomCard";
+import { socket } from "../../../../websocket/socket";
+import { withRouter } from "../../../../withRouter";
+import CustomTable from "../../../../components/CustomTable";
+import CustomButton from "../../../../components/CustomButton";
+import CustomModal from "../../../../components/CustomModal";
+import ConfirmationModal from "../../../../components/ConfirmationModal";
+import GoBackButton from "../../../../components/GoBackButton";
+import CustomCard from "../../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -47,8 +47,6 @@ class MisSemestersCourses extends React.Component {
       confirmationModalMessage: '',
       confirmationModalExecute: () => {}
     };
-    this.batch_id = this.props.location.state.batch_id
-    this.batch_name = this.props.location.state.batch_name
     this.semester_id = this.props.location.state.semester_id
     this.semester_name = this.props.location.state.semester_name
   }
@@ -102,7 +100,7 @@ class MisSemestersCourses extends React.Component {
       <CustomCard cardContent={
       <Grid container>
         <Typography variant="h2" style={{ margin: "10px" }}>
-          {`Courses (${this.semester_name} | ${this.batch_name})`}
+          {`Courses (${this.semester_name})`}
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingSemesterCourses}

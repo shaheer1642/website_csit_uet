@@ -1,10 +1,10 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
 import React from 'react';
-import FormGenerator from '../../../../../../components/FormGenerator';
-import { socket } from '../../../../../../websocket/socket';
-import { withRouter } from '../../../../../../withRouter';
-import LoadingIcon from '../../../../../../components/LoadingIcon';
-import GoBackButton from '../../../../../../components/GoBackButton';
+import FormGenerator from '../../../../components/FormGenerator';
+import { socket } from '../../../../websocket/socket';
+import { withRouter } from '../../../../withRouter';
+import LoadingIcon from '../../../../components/LoadingIcon';
+import GoBackButton from '../../../../components/GoBackButton';
 import { Grid } from '@mui/material';
 
 class MisSemestersCoursesUpdate extends React.Component {

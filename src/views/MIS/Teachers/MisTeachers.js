@@ -119,7 +119,7 @@ class MisTeachers extends React.Component {
 
   render() {
     const columns = [
-      { id: "teacher_name", label: "Teacher Name", format: (value) => value },
+      { id: "teacher_name", label: "Instructor Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "teacher_gender", label: "Gender", format: (value) => value },
     ];
@@ -127,7 +127,7 @@ class MisTeachers extends React.Component {
       <CustomCard cardContent={
       <Grid container>
         <Typography variant="h2" style={{ margin: "10px" }}>
-          {`Teachers`}
+          {`Instructors`}
         </Typography>
         <CustomTable
           loadingState={this.state.loadingTeachers}
@@ -140,7 +140,7 @@ class MisTeachers extends React.Component {
             this.setState({
               confirmationModalShow: true,
               confirmationModalMessage:
-                "Are you sure you want to remove this teacher?",
+                "Are you sure you want to remove this instructor?",
               confirmationModalExecute: () =>
                 socket.emit("teachers/delete", {
                   teacher_id: teacher.teacher_id,

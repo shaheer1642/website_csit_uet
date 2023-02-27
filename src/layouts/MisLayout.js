@@ -239,6 +239,29 @@ function MisLayout() {
                         <ListItemText primary='Batch Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
                     </ListItem>
+
+                    <ListItem button component={Link} to="semesters" disablePadding sx={{ display: 'block' }}>
+                      <ListItemButton
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                        onClick={() => setCurrentMenu('semesters')}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Icon.CastForEducation style={{color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined}}/>
+                        </ListItemIcon>
+                        <ListItemText primary='Semester Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                      </ListItemButton>
+                    </ListItem>
+
                     <ListItem button component={Link} to="teachers" disablePadding sx={{ display: 'block' }}>
                       <ListItemButton
                         sx={{
@@ -257,7 +280,7 @@ function MisLayout() {
                         >
                           <Icon.School  style={{color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined}}/>
                         </ListItemIcon>
-                        <ListItemText primary='Teachers' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        <ListItemText primary='Instructors' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
                     </ListItem>
                     <ListItem button component={Link} to="courses" disablePadding sx={{ display: 'block' }}>

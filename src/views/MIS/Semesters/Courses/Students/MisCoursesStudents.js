@@ -8,16 +8,16 @@ import {
 } from "@mui/material";
 import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
-import { socket } from "../../../../../../../websocket/socket";
-import { withRouter } from "../../../../../../../withRouter";
-import CustomTable from "../../../../../../../components/CustomTable";
-import CustomButton from "../../../../../../../components/CustomButton";
-import CustomModal from "../../../../../../../components/CustomModal";
-import ConfirmationModal from "../../../../../../../components/ConfirmationModal";
-import GoBackButton from "../../../../../../../components/GoBackButton";
-import CustomMultiAutocomplete from "../../../../../../../components/CustomMultiAutocomplete";
-import LoadingIcon from "../../../../../../../components/LoadingIcon";
-import CustomCard from "../../../../../../../components/CustomCard";
+import { socket } from "../../../../../websocket/socket";
+import { withRouter } from "../../../../../withRouter";
+import CustomTable from "../../../../../components/CustomTable";
+import CustomButton from "../../../../../components/CustomButton";
+import CustomModal from "../../../../../components/CustomModal";
+import ConfirmationModal from "../../../../../components/ConfirmationModal";
+import GoBackButton from "../../../../../components/GoBackButton";
+import CustomMultiAutocomplete from "../../../../../components/CustomMultiAutocomplete";
+import LoadingIcon from "../../../../../components/LoadingIcon";
+import CustomCard from "../../../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -49,8 +49,6 @@ class MisCoursesStudents extends React.Component {
       alertSeverity: ''
     };
     this.sem_course_id = this.props.location.state.sem_course_id
-    this.batch_id = this.props.location.state.batch_id
-    this.batch_name = this.props.location.state.batch_name
     this.semester_name = this.props.location.state.semester_name
     this.course_name = this.props.location.state.course_name
     
@@ -110,7 +108,7 @@ class MisCoursesStudents extends React.Component {
           <CustomCard cardContent={
             <React.Fragment>
               <Typography variant="h2" sx={{ margin: "10px" }}>
-                {`${this.course_name} (${this.semester_name} | ${this.batch_name})`}
+                {`${this.course_name} (${this.semester_name})`}
               </Typography>
               <Grid item xs={12} sx={{ margin: "10px" }}>
                 <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
@@ -121,7 +119,7 @@ class MisCoursesStudents extends React.Component {
                 <CustomMultiAutocomplete 
                   label="Students List" 
                   endpoint="autocomplete/batchStudents" 
-                  endpointData={{batch_id: this.batch_id}} 
+                  endpointData={{}}
                   values={this.state.studentIds}
                   onChange={(e,values) => {
                     this.setState({studentIds: values.map(option => option.id)})

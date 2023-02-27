@@ -8,14 +8,14 @@ import {
 } from "@mui/material";
 import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
-import { socket } from "../../../../../websocket/socket";
-import { withRouter } from "../../../../../withRouter";
-import CustomTable from "../../../../../components/CustomTable";
-import CustomButton from "../../../../../components/CustomButton";
-import CustomModal from "../../../../../components/CustomModal";
-import ConfirmationModal from "../../../../../components/ConfirmationModal";
-import GoBackButton from "../../../../../components/GoBackButton";
-import CustomCard from "../../../../../components/CustomCard";
+import { socket } from "../../../websocket/socket";
+import { withRouter } from "../../../withRouter";
+import CustomTable from "../../../components/CustomTable";
+import CustomButton from "../../../components/CustomButton";
+import CustomModal from "../../../components/CustomModal";
+import ConfirmationModal from "../../../components/ConfirmationModal";
+import GoBackButton from "../../../components/GoBackButton";
+import CustomCard from "../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",
@@ -46,12 +46,10 @@ class MisSemesters extends React.Component {
       modalBody: "",
       modalShow: false,
     };
-    this.batch_id = this.props.location.state.batch_id
-    this.batch_name = this.props.location.state.batch_name
   }
 
   componentDidMount() {
-    socket.emit("semesters/fetch", {batch_id: this.batch_id}, (res) => {
+    socket.emit("semesters/fetch", {}, (res) => {
       if (res.code == 200) {
         return this.setState({
           semestersArr: res.data,
@@ -107,7 +105,6 @@ class MisSemesters extends React.Component {
 
   render() {
     const columns = [
-      { id: "semester_no", label: "Semester No", format: (value) => value },
       { id: "semester_year", label: "Year", format: (value) => value },
       { id: "semester_season", label: "Season", format: (value) => value },
       { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString() },
@@ -115,12 +112,11 @@ class MisSemesters extends React.Component {
     ];
     return (
       <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
         <Grid item xs = {12}>
       <CustomCard cardContent={
       <Grid container>
         <Typography variant="h2" style={{ margin: "10px" }}>
-          {`Semesters (${this.batch_name})`}
+          {`Semesters`}
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingSemesters}
@@ -128,9 +124,9 @@ class MisSemesters extends React.Component {
             this.props.navigate('courses', {state: {
               ...this.props.location.state, 
               semester_id: semester.semester_id, 
-              semester_name: `Semester ${semester.semester_no} - ${semester.semester_season} ${semester.semester_year}`
+              semester_name: `Semester - ${semester.semester_season} ${semester.semester_year}`
             }})}
-          onEditClick={(semester) => this.props.navigate('update', {state: {batch_id: this.batch_id, semester_id: semester.semester_id}})}
+          onEditClick={(semester) => this.props.navigate('update', {state: {semester_id: semester.semester_id}})}
           onDeleteClick={(semester) => {
             this.setState({
               confirmationModalShow: true,
@@ -143,7 +139,7 @@ class MisSemesters extends React.Component {
         />
         <CustomButton
           sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("create", {state: {batch_id: this.batch_id}})}
+          onClick={() => this.props.navigate("create")}
           label="Create New"
         />
         <CustomModal

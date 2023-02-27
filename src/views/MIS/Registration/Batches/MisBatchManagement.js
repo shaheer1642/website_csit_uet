@@ -12,7 +12,7 @@ import FormGenerator from '../../../../components/FormGenerator';
 import { Navigate } from 'react-router-dom'
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import MisStudents from './Students/MisStudents';
-import MisSemesters from './Semesters/MisSemesters';
+import MisSemesters from '../../Semesters/MisSemesters';
 import GoBackButton from '../../../../components/GoBackButton';
 
 const palletes = {
@@ -61,9 +61,6 @@ class MisBatchManagement extends React.Component {
         </Grid>
         <Grid item xs={"auto"}>
             <Button size="large" style={{ maxHeight: '30px',  minHeight: '120px', fontSize: '20px'}} variant="contained" startIcon={<Group />} onClick={() => this.props.navigate('students', {state: {batch_id: this.batch_id, batch_name: this.batch_name}})}>Student Management</Button>
-        </Grid>
-        <Grid item xs={"auto"}>
-            <Button size="large" style={{ maxHeight: '30px',  minHeight: '120px', fontSize: '20px'}} variant="contained" startIcon={<CastForEducation />} onClick={() => this.props.navigate('semesters', {state: {batch_id: this.batch_id, batch_name: this.batch_name}})}>Semester Management</Button>
         </Grid>
       </Grid>
     );

@@ -46,7 +46,7 @@ class MisTeachersUpdate extends React.Component {
         <FormGenerator 
         endpoint="teachers"
         formType="update" 
-        submitSuccessMessage='Teacher Edited Successfully'
+        submitSuccessMessage='Instructor Edited Successfully'
         backgroundColor='white'
         options={{
           teacher_id: {
@@ -70,7 +70,7 @@ class MisTeachersUpdate extends React.Component {
             xs: 6,
           },
           teacher_name: {
-            label: "Teacher Name",
+            label: "Instructor Name",
             defaultValue: this.state.teacher_name,
             position: 5,
             xs: 6,
