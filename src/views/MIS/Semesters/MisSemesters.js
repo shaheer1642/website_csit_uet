@@ -108,7 +108,8 @@ class MisSemesters extends React.Component {
       { id: "semester_year", label: "Year", format: (value) => value },
       { id: "semester_season", label: "Season", format: (value) => value },
       { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString() },
-      { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString() }
+      { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString() },
+      { id: "offered_courses", label: "Offered Courses", format: (value) => value },
     ];
     return (
       <Grid container rowSpacing={"20px"}>
@@ -120,6 +121,13 @@ class MisSemesters extends React.Component {
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingSemesters}
+          viewButtonLabel='Manage Courses'
+          onViewClick={(semester) => 
+            this.props.navigate('courses', {state: {
+              ...this.props.location.state, 
+              semester_id: semester.semester_id, 
+              semester_name: `Semester - ${semester.semester_season} ${semester.semester_year}`
+            }})}
           onRowClick={(semester) => 
             this.props.navigate('courses', {state: {
               ...this.props.location.state, 

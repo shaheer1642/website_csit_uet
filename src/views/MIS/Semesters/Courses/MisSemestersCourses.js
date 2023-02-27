@@ -104,6 +104,16 @@ class MisSemestersCourses extends React.Component {
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingSemesterCourses}
+          viewButtonLabel='Manage Students'
+          onViewClick={(semesterCourse) => 
+            this.props.navigate('students', {
+              state: {
+                sem_course_id: semesterCourse.sem_course_id, 
+                course_name: `${semesterCourse.course_id} ${semesterCourse.course_name}`,
+                ...this.props.location.state
+              }
+            })
+          }
           onRowClick={(semesterCourse) => 
             this.props.navigate('students', {
               state: {

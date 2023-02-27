@@ -35,6 +35,7 @@ interface IProps {
   style?: React.CSSProperties | undefined,
   startIcon?: React.ReactNode,
   endIcon?: React.ReactNode,
+  size?: string,
 }
 
 export default class CustomButton extends React.Component<IProps> {
@@ -58,6 +59,7 @@ export default class CustomButton extends React.Component<IProps> {
 
     return (
       <Button
+        size={this.props.size}
         color="primary"
         sx={{ ...styles, ...this.props.sx }}
         style={this.props.style}

@@ -82,7 +82,7 @@ class MisTeachersUpdate extends React.Component {
             position: 7,
             xs: 6,
             fieldType: 'radiobox',
-            fieldTypeOptions: ['Male', 'Female']
+            fieldTypeOptions: ['male', 'female']
           },
         }}
       />

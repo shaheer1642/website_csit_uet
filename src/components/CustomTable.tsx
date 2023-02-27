@@ -4,6 +4,7 @@ import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper
 import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
+import CustomButton from './CustomButton';
 
 const defaultStyles = {
   colors: {
@@ -29,6 +30,8 @@ interface column {
 interface IProps {
   rows: Array<any>,
   columns: Array<column>,
+  onViewClick?: Function,
+  viewButtonLabel?: string,
   onRowClick?: Function,
   onEditClick?: Function,
   onDeleteClick?: Function,
@@ -147,6 +150,8 @@ export default class CustomTable extends React.Component<IProps, IState> {
                               <IconButton style={{ color: Color.deepPurple[500] }} onClick={() => this.props.onEditClick(row)}><Edit /></IconButton>:<></>}
                               {this.props.onDeleteClick ?
                               <IconButton style={{ color: Color.red[500] }} onClick={() => this.props.onDeleteClick(row)}><Delete /></IconButton>:<></>}
+                              {this.props.onViewClick ? 
+                              <CustomButton fontSize={'12px'} size='small' variant='outlined' label={this.props.viewButtonLabel} onClick={() => this.props.onViewClick(row)} />:<></>}
                             </StyledTableCell> : <></>
                           }
                         </StyledTableRow >
