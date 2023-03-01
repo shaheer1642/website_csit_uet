@@ -102,6 +102,7 @@ class MisBatches extends React.Component {
       { id: 'degree_type', label: 'Degree Type', format: (value) => value },
       { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
       { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => value },
+      { id: 'registered_students', label: 'Registered Students', format: (value) => value },
     ];
     return (
       <CustomCard cardContent={
