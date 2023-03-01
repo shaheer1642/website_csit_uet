@@ -15,7 +15,6 @@ const defaultStyles = {
   */
   font: {
     size: "14px",
-    family: "Arial"
   }
 }
 
@@ -36,6 +35,7 @@ interface IProps {
   startIcon?: React.ReactNode,
   endIcon?: React.ReactNode,
   size?: string,
+  component?: React.Component
 }
 
 export default class CustomButton extends React.Component<IProps> {
@@ -60,6 +60,7 @@ export default class CustomButton extends React.Component<IProps> {
     return (
       <Button
         size={this.props.size}
+        component={this.props.component}
         color="primary"
         sx={{ ...styles, ...this.props.sx }}
         style={this.props.style}
