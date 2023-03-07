@@ -30,15 +30,12 @@ const styles = {
   },
 };
 
-class MisTeachers extends React.Component {
+class MisThesis extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loadingTeachers: true,
-      teachersArr: [],
-      modalTitle: "",
-      modalBody: "",
-      modalShow: false,
+      loadingStudentsThesis: true,
+      studentsThesisArr: [],
 
       confirmationModalShow: false,
       confirmationModalMessage: "",
@@ -47,66 +44,27 @@ class MisTeachers extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("teachers/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          teachersArr: res.data,
-          loadingTeachers: false,
-        });
-      }
-    });
-
-    socket.addEventListener(
-      "teachers/listener/insert",
-      this.teachersListenerInsert
-    );
-    socket.addEventListener(
-      "teachers/listener/update",
-      this.teachersListenerUpdate
-    );
-    socket.addEventListener(
-      "teachers/listener/delete",
-      this.teachersListenerDelete
-    );
+    this.fetchStudentsThesis()
+    socket.addEventListener("studentsThesis/listener/changed",this.teachersListenerChanged);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener(
-      "teachers/listener/insert",
-      this.teachersListenerInsert
-    );
-    socket.removeEventListener(
-      "teachers/listener/update",
-      this.teachersListenerUpdate
-    );
-    socket.removeEventListener(
-      "teachers/listener/delete",
-      this.teachersListenerDelete
-    );
+    socket.removeEventListener("studentsThesis/listener/changed",this.teachersListenerChanged);
   }
 
-  teachersListenerInsert = (data) => {
-    return this.setState({
-      teachersArr: [data, ...this.state.teachersArr],
+  fetchStudentsThesis = () => {
+    socket.emit("studentsThesis/fetch", {}, (res) => {
+      if (res.code == 200) {
+        return this.setState({
+          studentsThesisArr: res.data,
+          loadingStudentsThesis: false,
+        });
+      }
     });
-  };
-  teachersListenerUpdate = (data) => {
-    return this.setState((state) => {
-      const teachersArr = state.teachersArr.map((teacher, index) => {
-        if (teacher.teacher_id === data.teacher_id) return data;
-        else return teacher;
-      });
-      return {
-        teachersArr,
-      };
-    });
-  };
-  teachersListenerDelete = (data) => {
-    return this.setState({
-      teachersArr: this.state.teachersArr.filter(
-        (teacher) => teacher.teacher_id != data.teacher_id
-      ),
-    });
+  }
+
+  teachersListenerChanged = (data) => {
+    this.fetchStudentsThesis()
   };
 
   confirmationModalDestroy = () => {
@@ -119,47 +77,43 @@ class MisTeachers extends React.Component {
 
   render() {
     const columns = [
-      { id: "teacher_name", label: "Instructor Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
-      { id: "teacher_gender", label: "Gender", format: (value) => value },
+      { id: "reg_no", label: "Reg#", format: (value) => value },
+      { id: "student_name", label: "Student Name", format: (value) => value },
+      { id: "thesis_title", label: "Title", format: (value) => value },
+      { id: "thesis_type", label: "Type", format: (value) => value },
     ];
     return (
       <CustomCard cardContent={
       <Grid container>
         <Typography variant="h2" style={{ margin: "10px" }}>
-          {`Instructors`}
+          {`Thesis`}
         </Typography>
         <CustomTable
-          loadingState={this.state.loadingTeachers}
-          onEditClick={(teacher) =>
+          loadingState={this.state.loadingStudentsThesis}
+          onEditClick={(student_thesis) =>
             this.props.navigate("update", {
-              state: { teacher_id: teacher.teacher_id },
+              state: { student_thesis_id: student_thesis.student_thesis_id },
             })
           }
-          onDeleteClick={(teacher) => {
+          onDeleteClick={(student_thesis) => {
             this.setState({
               confirmationModalShow: true,
               confirmationModalMessage:
                 "Are you sure you want to remove this instructor?",
               confirmationModalExecute: () =>
-                socket.emit("teachers/delete", {
-                  teacher_id: teacher.teacher_id,
+                socket.emit("studentsThesis/delete", {
+                  student_thesis_id: student_thesis.student_thesis_id,
                 }),
             });
           }}
-          rows={this.state.teachersArr}
+          rows={this.state.studentsThesisArr}
           columns={columns}
         />
         <CustomButton
           sx={{ margin: "10px" }}
           onClick={() => this.props.navigate("create")}
           label="Create New"
-        />
-        <CustomModal
-          title={this.state.modalTitle}
-          body={this.state.modalBody}
-          open={this.state.modalShow}
-          onClose={() => this.setState({ modalShow: false })}
         />
         <ConfirmationModal
           open={this.state.confirmationModalShow}
@@ -177,4 +131,4 @@ class MisTeachers extends React.Component {
   }
 }
 
-export default withRouter(MisTeachers);
+export default withRouter(MisThesis);

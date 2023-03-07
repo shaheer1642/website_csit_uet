@@ -105,7 +105,7 @@ class MisTeachersCourses extends React.Component {
             this.props.navigate('grading', {
               state: {
                 sem_course_id: semesterCourse.sem_course_id,
-                course_name: `${semesterCourse.course_id} ${semesterCourse.course_name} | Batch ${semesterCourse.batch_no} Semester ${semesterCourse.semester_no}`
+                course_name: `${semesterCourse.course_id} ${semesterCourse.course_name} | ${semesterCourse.semester_season} ${semesterCourse.semester_year}`
               }
             })
           }

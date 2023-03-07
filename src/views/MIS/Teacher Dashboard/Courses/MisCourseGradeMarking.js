@@ -162,7 +162,7 @@ class MisGradeMarking extends React.Component {
     const markings = []
     this.state.courseStudents.map(student => {
       const obj = {
-        student_id: student.student_id,
+        student_batch_id: student.student_batch_id,
         final_term: student.marking.final_term || 0,
         mid_term: student.marking.mid_term || 0,
       }
@@ -189,7 +189,7 @@ class MisGradeMarking extends React.Component {
     })
   }
 
-  updateStudentMarking = (key,student_id,value) => {
+  updateStudentMarking = (key,student_batch_id,value) => {
     const marks = Number(value)
     if (marks == NaN || marks < 0) return
     const grade_distribution = this.state.semesterCourse.grade_distribution
@@ -200,7 +200,7 @@ class MisGradeMarking extends React.Component {
                         grade_distribution.sessional.division[key].total_marks
     if (!total_marks || marks > total_marks) return
     const markings = this.state.markings.map(marking => {
-      if (student_id != marking.student_id) return marking
+      if (student_batch_id != marking.student_batch_id) return marking
       else return {
         ...marking, 
         [key]: marks
@@ -268,7 +268,7 @@ class MisGradeMarking extends React.Component {
                           <StyledTableCell key={`tablecell-header-3`} align="left">
                             Estimated Grade
                           </StyledTableCell>
-                          {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_id').map((attribute,index) => {
+                          {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
                             return (
                               <StyledTableCell key={`tablecell-header-${index + 4}`} align="center" >
                                 {convertUpper(attribute)}
@@ -291,15 +291,15 @@ class MisGradeMarking extends React.Component {
                             <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
                             <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0} (${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.percentage || 0}%)`}</StyledTableCell>
                             <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
-                            {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_id').map((attribute,index) => {
+                            {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
                               return (
                                 <StyledTableCell key={`tablecell-${index + 4}`} align="center">
-                                  {attribute == 'attendance' ? this.state.markings.filter(marking => marking.student_id == student.student_id)[0][attribute]:
+                                  {attribute == 'attendance' ? this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]:
                                   <TextField 
-                                    key={`input-${student.student_id}-${index}`}
+                                    key={`input-${student.student_batch_id}-${index}`}
                                     onFocus={(e) => e.target.select()} 
-                                    value={this.state.markings.filter(marking => marking.student_id == student.student_id)[0][attribute]} 
-                                    onChange={(e) => this.updateStudentMarking(attribute,student.student_id,e.target.value)} 
+                                    value={this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]} 
+                                    onChange={(e) => this.updateStudentMarking(attribute,student.student_batch_id,e.target.value)} 
                                     sx={{'.MuiInputBase-input': { fontSize: '15px' }, width: '50px'}} 
                                     type="tel" size="small"/>
                                   }

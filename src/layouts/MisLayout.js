@@ -173,18 +173,107 @@ function MisLayout() {
             </DrawerHeader>
             <List>
                 {
-                  user.user_type == 'admin' ? 
+                  user.user_type == 'admin' || user.user_type == 'pga' ? 
                   (
                     <React.Fragment>
-                          <ListItem button component={Link} to="" disablePadding sx={{ display: 'block' }}>
-                            <ListItemButton
-                              sx={{
-                                minHeight: 48,
-                                justifyContent: open ? 'initial' : 'center',
-                                px: 2.5,
-                              }}
-                              onClick={() => setCurrentMenu('home')}
-                            >
+                      <ListItem button component={Link} to="" disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                          }}
+                          onClick={() => setCurrentMenu('home')}
+                        >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Icon.Home style={{color: currentMenu == 'home' ? Color.deepPurple[500] : undefined}}/>
+                        </ListItemIcon>
+                        <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'home' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton>
+                      </ListItem>
+
+                      <ListItem button component={Link} to="events" disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                          }}
+                          onClick={() => setCurrentMenu('events')}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Icon.Campaign style={{color: currentMenu == 'events' ? Color.deepPurple[500] : undefined}}/>
+                          </ListItemIcon>
+                          <ListItemText primary='Events' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'events' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton>
+                      </ListItem>
+
+                      <ListItem button component={Link} to="batches" disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                          }}
+                          onClick={() => setCurrentMenu('batches')}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Icon.ManageAccounts style={{color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined}}/>
+                          </ListItemIcon>
+                          <ListItemText primary='Batch Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton>
+                      </ListItem>
+
+                      <ListItem button component={Link} to="semesters" disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                          }}
+                          onClick={() => setCurrentMenu('semesters')}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Icon.CastForEducation style={{color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined}}/>
+                          </ListItemIcon>
+                          <ListItemText primary='Semester Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton>
+                      </ListItem>
+
+                      {user.user_type == 'pga' ? 
+                        <ListItem button component={Link} to="thesis" disablePadding sx={{ display: 'block' }}>
+                          <ListItemButton
+                            sx={{
+                              minHeight: 48,
+                              justifyContent: open ? 'initial' : 'center',
+                              px: 2.5,
+                            }}
+                            onClick={() => setCurrentMenu('thesis')}
+                          >
                             <ListItemIcon
                               sx={{
                                 minWidth: 0,
@@ -192,118 +281,57 @@ function MisLayout() {
                                 justifyContent: 'center',
                               }}
                             >
-                              <Icon.Home style={{color: currentMenu == 'home' ? Color.deepPurple[500] : undefined}}/>
+                              <Icon.Book style={{color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined}}/>
                             </ListItemIcon>
-                            <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'home' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                            </ListItemButton>
-                          </ListItem>
-                    <ListItem button component={Link} to="events" disablePadding sx={{ display: 'block' }}>
-                      <ListItemButton
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                        }}
-                        onClick={() => setCurrentMenu('events')}
-                      >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Icon.Campaign style={{color: currentMenu == 'events' ? Color.deepPurple[500] : undefined}}/>
-                        </ListItemIcon>
-                        <ListItemText primary='Events' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'events' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                      </ListItemButton>
-                    </ListItem>
-                    <ListItem button component={Link} to="batches" disablePadding sx={{ display: 'block' }}>
-                      <ListItemButton
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                        }}
-                        onClick={() => setCurrentMenu('batches')}
-                      >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Icon.ManageAccounts style={{color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined}}/>
-                        </ListItemIcon>
-                        <ListItemText primary='Batch Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                      </ListItemButton>
-                    </ListItem>
+                            <ListItemText primary='Thesis Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                          </ListItemButton>
+                        </ListItem> : <></>
+                      }
 
-                    <ListItem button component={Link} to="semesters" disablePadding sx={{ display: 'block' }}>
-                      <ListItemButton
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                        }}
-                        onClick={() => setCurrentMenu('semesters')}
-                      >
-                        <ListItemIcon
+                      <ListItem button component={Link} to="teachers" disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
                           sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
                           }}
+                          onClick={() => setCurrentMenu('teachers')}
                         >
-                          <Icon.CastForEducation style={{color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined}}/>
-                        </ListItemIcon>
-                        <ListItemText primary='Semester Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                      </ListItemButton>
-                    </ListItem>
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Icon.School  style={{color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined}}/>
+                          </ListItemIcon>
+                          <ListItemText primary='Instructors' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton>
+                      </ListItem>
 
-                    <ListItem button component={Link} to="teachers" disablePadding sx={{ display: 'block' }}>
-                      <ListItemButton
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                        }}
-                        onClick={() => setCurrentMenu('teachers')}
-                      >
-                        <ListItemIcon
+                      <ListItem button component={Link} to="courses" disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
                           sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
                           }}
+                          onClick={() => setCurrentMenu('courses')}
                         >
-                          <Icon.School  style={{color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined}}/>
-                        </ListItemIcon>
-                        <ListItemText primary='Instructors' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                      </ListItemButton>
-                    </ListItem>
-                    <ListItem button component={Link} to="courses" disablePadding sx={{ display: 'block' }}>
-                      <ListItemButton
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                        }}
-                        onClick={() => setCurrentMenu('courses')}
-                      >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
-                        </ListItemIcon>
-                        <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                      </ListItemButton>
-                    </ListItem>
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
+                          </ListItemIcon>
+                          <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton>
+                      </ListItem>
+
                     </React.Fragment>
                   ) : user.user_type == 'teacher' ?
                   <React.Fragment>

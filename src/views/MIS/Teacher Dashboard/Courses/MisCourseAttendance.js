@@ -159,12 +159,12 @@ class MisCourseAttendance extends React.Component {
 
   generateAttendances = () => {
     const attendances = []
-    this.state.courseStudents.map(student => {
+    this.state.courseStudents.map(studentCourse => {
       const obj = {
-        student_id: student.student_id,
+        student_batch_id: studentCourse.student_batch_id,
       }
       Array(16).fill(0).forEach((e,index) => {
-        obj[`week${index+1}`] = student.attendance[`week${index+1}`] || ''
+        obj[`week${index+1}`] = studentCourse.attendance[`week${index+1}`] || ''
       })
       attendances.push(obj)
     })
@@ -175,11 +175,11 @@ class MisCourseAttendance extends React.Component {
     })
   }
 
-  updateStudentAttendace = (key,student_id,value) => {
+  updateStudentAttendace = (key,student_batch_id,value) => {
     value = value.toUpperCase()
     if (value != 'A' && value != 'P' && value != 'L') return
     const attendances = this.state.attendances.map(attendance => {
-      if (student_id != attendance.student_id) return attendance
+      if (student_batch_id != attendance.student_batch_id) return attendance
       else return {
         ...attendance, 
         [key]: value
@@ -266,10 +266,10 @@ class MisCourseAttendance extends React.Component {
                                   {index == 7 || index == 15 ? <></>:
                                   <TextField 
                                     autoComplete="off"
-                                    key={`input-${student.student_id}-${index}`}
+                                    key={`input-${student.student_batch_id}-${index}`}
                                     onFocus={(e) => e.target.select()} 
-                                    value={this.state.attendances.filter(attendance => attendance.student_id == student.student_id)[0][`week${index+1}`]} 
-                                    onChange={(e) => this.updateStudentAttendace(`week${index+1}`,student.student_id,e.target.value)} 
+                                    value={this.state.attendances.filter(attendance => attendance.student_batch_id == student.student_batch_id)[0][`week${index+1}`]} 
+                                    onChange={(e) => this.updateStudentAttendace(`week${index+1}`,student.student_batch_id,e.target.value)} 
                                     sx={{'.MuiInputBase-input': { fontSize: '15px' }, width: '40px'}} 
                                     type="tel" size="small"/>}
                                 </StyledTableCell>

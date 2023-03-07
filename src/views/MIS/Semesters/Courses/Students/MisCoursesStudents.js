@@ -43,7 +43,7 @@ class MisCoursesStudents extends React.Component {
     super(props);
     this.state = {
       loadingStudentsCourses: true,
-      studentIds: [],
+      studentBatchIds: [],
 
       alertMsg: '',
       alertSeverity: ''
@@ -76,14 +76,14 @@ class MisCoursesStudents extends React.Component {
       if (res.code == 200) {
         return this.setState({
           loadingStudentsCourses: false,
-          studentIds: res.data.map(studentCourse => studentCourse.student_id)
+          studentBatchIds: res.data.map(studentCourse => studentCourse.student_batch_id)
         });
       }
     });
   }
 
   updateStudentsList = () => {
-    socket.emit("studentsCourses/assignStudents", {sem_course_id: this.sem_course_id, student_ids: this.state.studentIds}, (res) => {
+    socket.emit("studentsCourses/assignStudents", {sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds}, (res) => {
       console.log(`[studentsCourses/assignStudents] response`,res)
       this.setState({
         alertMsg: res.code == 200 ? 'Students list updated' : `${res.status}: ${res.message}`,
@@ -120,9 +120,9 @@ class MisCoursesStudents extends React.Component {
                   label="Students List" 
                   endpoint="autocomplete/batchStudents" 
                   endpointData={{}}
-                  values={this.state.studentIds}
+                  values={this.state.studentBatchIds}
                   onChange={(e,values) => {
-                    this.setState({studentIds: values.map(option => option.id)})
+                    this.setState({studentBatchIds: values.map(option => option.id)})
                   }}
                 />
               </Grid>
