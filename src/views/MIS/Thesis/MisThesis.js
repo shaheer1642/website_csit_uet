@@ -82,6 +82,7 @@ class MisThesis extends React.Component {
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "thesis_title", label: "Title", format: (value) => value },
       { id: "thesis_type", label: "Type", format: (value) => value },
+      { id: 'undertaking_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleDateString() }
     ];
     return (
       <CustomCard cardContent={
@@ -91,19 +92,30 @@ class MisThesis extends React.Component {
         </Typography>
         <CustomTable
           loadingState={this.state.loadingStudentsThesis}
+          onRowClick={(student_thesis) =>
+            this.props.navigate("update", {
+              state: { 
+                student_batch_id: student_thesis.student_batch_id, 
+                thesis_info: `Thesis Report | ${student_thesis.student_name} (${student_thesis.reg_no || student_thesis.cnic}) - ${student_thesis.degree_type}` 
+              },
+            })
+          }
           onEditClick={(student_thesis) =>
             this.props.navigate("update", {
-              state: { student_thesis_id: student_thesis.student_thesis_id },
+              state: { 
+                student_batch_id: student_thesis.student_batch_id, 
+                thesis_info: `Thesis Report | ${student_thesis.student_name} (${student_thesis.reg_no || student_thesis.cnic}) - ${student_thesis.degree_type}` 
+              },
             })
           }
           onDeleteClick={(student_thesis) => {
             this.setState({
               confirmationModalShow: true,
               confirmationModalMessage:
-                "Are you sure you want to remove this instructor?",
+                "Are you sure you want to remove this record?",
               confirmationModalExecute: () =>
                 socket.emit("studentsThesis/delete", {
-                  student_thesis_id: student_thesis.student_thesis_id,
+                  student_batch_id: student_thesis.student_batch_id,
                 }),
             });
           }}

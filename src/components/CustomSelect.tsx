@@ -8,10 +8,12 @@ import { socket } from '../websocket/socket';
 
 interface IProps {
     endpoint: string | undefined,
+    endpointData?: Object | undefined,
     menuItems: Array<any> | undefined,
     defaultValue: string | undefined,
     label: string,
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
+    required: boolean | undefined
 }
   
 interface IState {
@@ -31,7 +33,7 @@ export default class CustomSelect extends React.Component<IProps, IState> {
 
     componentDidMount(): void {
         if (this.props.endpoint) {
-            socket.emit(this.props.endpoint, {}, res => {
+            socket.emit(this.props.endpoint, this.props.endpointData || {}, res => {
                 if (res.code == 200) {
                     this.setState({menuItems: res.data, componentLoading: false})
                 }
@@ -44,12 +46,13 @@ export default class CustomSelect extends React.Component<IProps, IState> {
     render() {
         return (
             this.state.componentLoading ? <LoadingIcon />:
-            <FormControl fullWidth>
+            <FormControl fullWidth required={this.props.required}>
                 <InputLabel>{this.props.label}</InputLabel>
                 <Select
                     defaultValue={this.props.defaultValue || ''}
                     label={this.props.label}
                     onChange={this.props.onChange}
+                    required={this.props.required}
                 >
                     {this.state.menuItems.map(item => 
                         (<MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>)

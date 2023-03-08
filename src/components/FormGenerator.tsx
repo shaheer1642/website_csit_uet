@@ -189,9 +189,11 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                         <CustomSelect 
                           defaultValue={this.props.options[attribute.key]?.defaultValue} 
                           endpoint={this.props.options[attribute.key]?.endpoint} 
+                          endpointData={this.props.options[attribute.key]?.endpointData} 
                           menuItems={this.props.options[attribute.key]?.selectMenuItems} 
                           label={this.props.options[attribute.key]?.label}
                           onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.value)}
+                          required={attribute.required}
                         />:
                         <CustomTextField 
                           disabled={this.props.options[attribute.key]?.disabled}
@@ -211,7 +213,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                         <TextField
                           label={this.props.options[attribute.key]?.label}
                           type="date"
-                          defaultValue={new Date(this.props.options[attribute.key]?.defaultValue || null).toISOString().split('T')[0]}
+                          defaultValue={new Date(Number(this.props.options[attribute.key]?.defaultValue) || null).toISOString().split('T')[0]}
                           InputLabelProps={{
                             shrink: true,
                           }}

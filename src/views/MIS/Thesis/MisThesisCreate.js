@@ -27,7 +27,8 @@ class MisThesisCreate extends React.Component {
                 position: 1,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/batchStudents'
+                endpoint: 'autocomplete/batchStudents',
+                endpointData: {constraints: ['exclude_thesis_students']}
               },
               thesis_type: {
                 label: "Thesis Type",
