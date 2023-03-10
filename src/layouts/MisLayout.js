@@ -220,6 +220,28 @@ function MisLayout() {
                         </ListItemButton>
                       </ListItem>
 
+                      <ListItem button component={Link} to="documents" disablePadding sx={{ display: 'block' }}>
+                        <ListItemButton
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                          }}
+                          onClick={() => setCurrentMenu('documents')}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Icon.Description style={{color: currentMenu == 'documents' ? Color.deepPurple[500] : undefined}}/>
+                          </ListItemIcon>
+                          <ListItemText primary='Documents' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'documents' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton>
+                      </ListItem>
+
                       <ListItem button component={Link} to="batches" disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
                           sx={{
@@ -281,7 +303,7 @@ function MisLayout() {
                                 justifyContent: 'center',
                               }}
                             >
-                              <Icon.Book style={{color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined}}/>
+                              <Icon.Article style={{color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined}}/>
                             </ListItemIcon>
                             <ListItemText primary='Thesis Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                           </ListItemButton>

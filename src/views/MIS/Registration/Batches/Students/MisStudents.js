@@ -72,6 +72,8 @@ class MisStudent extends React.Component {
     };
     this.batch_id = this.props.location.state.batch_id
     this.batch_name = this.props.location.state.batch_name
+
+    this.timeoutAlertRef = null;
   }
 
   componentDidMount() {
