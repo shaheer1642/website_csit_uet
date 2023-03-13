@@ -9,7 +9,6 @@ import CustomTextField from './CustomTextField';
 import CustomButton from './CustomButton';
 import CustomSelect from './CustomSelect';
 import CustomMultiAutocomplete from './CustomMultiAutocomplete';
-import { abort } from 'process';
 import CustomCard from './CustomCard';
 import { convertUpper } from '../extras/functions';
 
@@ -115,6 +114,8 @@ export default class FormGenerator extends React.Component<IProps, IState> {
       alertMsg: '',
       alertSeverity: 'warning'
     };
+
+    this.timeoutAlertRef = undefined;
   }
 
   componentDidMount(): void {
@@ -148,16 +149,13 @@ export default class FormGenerator extends React.Component<IProps, IState> {
     this.setState({ formFields: { ...this.state.formFields, [key]: value } })
   }
 
+  
+  timeoutAlert = () => {
+    clearTimeout(this.timeoutAlertRef)
+    this.timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 5000)
+  }
+
   render(): React.ReactNode {
-
-    var timeoutAlertRef: ReturnType<typeof setTimeout> | undefined = undefined;
-    function timeoutAlert() {
-      console.log('timeoutAlert called')
-      clearTimeout(timeoutAlertRef)
-      timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 5000)
-      console.log(timeoutAlertRef)
-    }
-
     return (
       this.state.formLoading ? <LoadingIcon /> :
         <div>
@@ -233,13 +231,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                     this.setState({
                       alertMsg: res.code == 200 ? this.props.submitSuccessMessage:`${res.status}: ${res.message}`,
                       alertSeverity: res.code == 200 ? 'success':'warning'
-                    }, timeoutAlert)
-                    if (res.code == 200) {
-                      this.setState({
-                        alertMsg:  this.props.submitSuccessMessage,
-                        alertSeverity: 'success'
-                      }, timeoutAlert)
-                    }
+                    }, this.timeoutAlert)
                 })
                 }}
               />
