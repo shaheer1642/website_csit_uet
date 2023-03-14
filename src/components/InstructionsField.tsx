@@ -92,7 +92,7 @@ export default class InstructionsField extends React.Component<IProps> {
         this.state.instruction_obj ? 
             <Grid container rowSpacing={'5px'} style={{border: '1px solid grey',padding: '10px', borderRadius: '5px'}}>
                 <Grid item xs='auto' display='flex' alignItems={'center'}>
-                    <Typography variant='h4'>Instructions</Typography>
+                    <Typography variant='h5'>Instructions</Typography>
                 </Grid>
                 <Grid item xs='auto'>
                     {this.state.editable ?
