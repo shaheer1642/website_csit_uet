@@ -45,11 +45,11 @@ class MisThesis extends React.Component {
 
   componentDidMount() {
     this.fetchStudentsThesis()
-    socket.addEventListener("studentsThesis/listener/changed",this.teachersListenerChanged);
+    socket.addEventListener("studentsThesis/listener/changed",this.studentsThesisListenerChanged);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("studentsThesis/listener/changed",this.teachersListenerChanged);
+    socket.removeEventListener("studentsThesis/listener/changed",this.studentsThesisListenerChanged);
   }
 
   fetchStudentsThesis = () => {
@@ -63,7 +63,7 @@ class MisThesis extends React.Component {
     });
   }
 
-  teachersListenerChanged = (data) => {
+  studentsThesisListenerChanged = (data) => {
     this.fetchStudentsThesis()
   };
 

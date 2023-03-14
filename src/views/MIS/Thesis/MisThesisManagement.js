@@ -4,13 +4,14 @@ import FormGenerator from '../../../components/FormGenerator';
 import { socket } from '../../../websocket/socket';
 import { withRouter } from '../../../withRouter';
 import LoadingIcon from '../../../components/LoadingIcon';
-import { Grid, Typography, Zoom, Alert, RadioGroup, Radio, FormControlLabel, FormControl, FormLabel, Chip, TextField, Checkbox } from '@mui/material';
+import { Grid, Typography, Zoom, Alert, RadioGroup, Radio, FormControlLabel, FormControl, FormLabel, Chip, TextField, Checkbox, CircularProgress } from '@mui/material';
 import GoBackButton from '../../../components/GoBackButton';
 import CustomCard from '../../../components/CustomCard';
 import CustomTextField from '../../../components/CustomTextField';
 import CustomSelect from '../../../components/CustomSelect';
 import CustomButton from '../../../components/CustomButton';
 import CustomFilesField from '../../../components/CustomFilesField';
+import InstructionsField from '../../../components/InstructionsField';
 
 const palletes = {
   primary: '#439CEF',
@@ -59,15 +60,16 @@ const defaultStyles = {
   }
 }
 
-class MisThesisUpdate extends React.Component {
+class MisThesisManagement extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
       student_thesis: {},
+      savingChanges: false,
 
       alertMsg: '',
-      alertSeverity: 'warning'
+      alertSeverity: 'warning',
     }
     this.student_batch_id = this.props.location.state.student_batch_id
     this.thesis_info = this.props.location.state.thesis_info
@@ -79,6 +81,11 @@ class MisThesisUpdate extends React.Component {
 
   componentDidMount() {
     this.fetchStudentThesis()
+    socket.addEventListener("studentsThesis/listener/changed",this.studentsThesisListenerChanged);
+  }
+
+  componentWillUnmount() {
+    socket.removeEventListener("studentsThesis/listener/changed",this.studentsThesisListenerChanged);
   }
 
   componentDidUpdate() {
@@ -95,6 +102,10 @@ class MisThesisUpdate extends React.Component {
       }
     })
   }
+
+  studentsThesisListenerChanged = (data) => {
+    this.fetchStudentThesis()
+  };
 
   updateStudentThesis = (key, value) => {
     if (!this.updatedKeys.includes(key)) this.updatedKeys.push(key)
@@ -202,6 +213,9 @@ class MisThesisUpdate extends React.Component {
                 </Typography>
               </Grid>
               <Grid item xs={12}>
+                <InstructionsField instruction_id={1} instruction_detail_key='proposal_documents' />
+              </Grid>
+              <Grid item xs={12}>
                 <TextField
                   type="date"
                   label='BOASAR Notification Date'
@@ -236,10 +250,14 @@ class MisThesisUpdate extends React.Component {
         </Grid>
         <Grid item xs={12}>
           <CustomButton 
+            startIcon={this.state.savingChanges ? <CircularProgress size='14px'/> : undefined}
+            disabled={this.state.savingChanges ? true : false}
             label='Save changes'
             onClick={() => {
+              this.setState({savingChanges: true})
               socket.emit(`studentsThesis/update`, Object.keys(this.state.student_thesis).filter(key => this.updatedKeys.includes(key) || key == 'student_batch_id').reduce((obj, key) => {obj[key] = this.state.student_thesis[key];return obj;}, {}), res => {
                 this.setState({
+                  savingChanges: false,
                   alertMsg: res.code == 200 ? 'Saved changes!':`${res.status}: ${res.message}`,
                   alertSeverity: res.code == 200 ? 'success':'warning'
                 }, this.timeoutAlert)
@@ -255,4 +273,4 @@ class MisThesisUpdate extends React.Component {
   }
 }
 
-export default withRouter(MisThesisUpdate);
+export default withRouter(MisThesisManagement);

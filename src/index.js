@@ -38,7 +38,7 @@ import MisCourseGradeManagement from "./views/MIS/Teacher Dashboard/Courses/MisC
 import MisTeachersCourses from "./views/MIS/Teacher Dashboard/Courses/MisTeachersCourses";
 import MisThesis from "./views/MIS/Thesis/MisThesis";
 import MisThesisCreate from "./views/MIS/Thesis/MisThesisCreate";
-import MisThesisUpdate from "./views/MIS/Thesis/MisThesisUpdate";
+import MisThesisManagement from "./views/MIS/Thesis/MisThesisManagement";
 import MisDocuments from "./views/MIS/Documents/MisDocuments";
 
 export default function Router() {
@@ -84,7 +84,7 @@ export default function Router() {
 
           <Route path="thesis" element={<MisThesis/>}/>
             <Route path="thesis/create" element={<MisThesisCreate/>}/>
-            <Route path="thesis/update" element={<MisThesisUpdate/>}/>
+            <Route path="thesis/update" element={<MisThesisManagement/>}/>
 
           <Route path="documents" element={<MisDocuments/>}/>
 
