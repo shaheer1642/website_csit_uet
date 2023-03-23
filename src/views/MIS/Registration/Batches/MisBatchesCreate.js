@@ -46,7 +46,7 @@ class MisBatchesCreate extends React.Component {
               position: 3,
               xs: 6,
               fieldType: 'radiobox',
-              fieldTypeOptions: ['msc', 'phd']
+              fieldTypeOptions: ['ms', 'phd']
             },
             batch_advisor_id: {
               label: 'Batch Advisor Id',

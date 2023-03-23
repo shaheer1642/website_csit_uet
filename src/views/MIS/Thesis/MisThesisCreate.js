@@ -47,7 +47,7 @@ class MisThesisCreate extends React.Component {
                 position: 2,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/teachers'
+                endpoint: 'autocomplete/teachers',
               },
               co_supervisor_id: {
                 label: "Co-Supervisor",

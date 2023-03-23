@@ -94,6 +94,7 @@ class MisThesisManagement extends React.Component {
 
   fetchStudentThesis = () => {
     socket.emit('studentsThesis/fetch', {student_batch_id: this.student_batch_id}, (res) => {
+      console.log(res)
       if (res.code == 200) {
         this.setState({
           loading: false,
@@ -143,6 +144,7 @@ class MisThesisManagement extends React.Component {
         {/* Thesis basic info */}
         <Grid item xs={12}>
           <CustomCard
+          style={{padding: '10px'}}
           cardContent= {
             <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
               <Grid item xs={12}>
@@ -156,7 +158,7 @@ class MisThesisManagement extends React.Component {
                   onChange={(e) => this.updateStudentThesis('thesis_title',e.target.value)} />
               </Grid>
               <Grid item xs={'auto'}>
-                <FormControl>
+                <FormControl disabled>
                   <FormLabel>{'Thesis Type'}</FormLabel>
                   <RadioGroup row value={this.state.student_thesis.thesis_type} onChange={(e) => this.updateStudentThesis('thesis_type',e.target.value)}>
                     <FormControlLabel value='research' label='Research' control={<Radio />}/>
@@ -201,6 +203,7 @@ class MisThesisManagement extends React.Component {
         {/* Step 1: Proposal */}
         <Grid item xs={12}>
           <CustomCard
+          style={{padding: '10px'}}
           cardContent= {
             <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
               <Grid item xs={12}>

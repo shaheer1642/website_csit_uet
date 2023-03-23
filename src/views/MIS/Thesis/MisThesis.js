@@ -116,7 +116,7 @@ class MisThesis extends React.Component {
               confirmationModalExecute: () =>
                 socket.emit("studentsThesis/delete", {
                   student_batch_id: student_thesis.student_batch_id,
-                }),
+                }, (res) => this.fetchStudentsThesis())
             });
           }}
           rows={this.state.studentsThesisArr}

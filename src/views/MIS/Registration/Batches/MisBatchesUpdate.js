@@ -74,7 +74,7 @@ class MisBatchesUpdate extends React.Component {
             position: 2,
             xs: 6,
             fieldType: 'radiobox',
-            fieldTypeOptions: ['spring', 'fall']
+            fieldTypeOptions: ['spring', 'fall'],
           },
           degree_type: {
             label: 'Degree Type',   
@@ -82,7 +82,8 @@ class MisBatchesUpdate extends React.Component {
             position: 3,
             xs: 6,
             fieldType: 'radiobox',
-            fieldTypeOptions: ['msc', 'phd']
+            fieldTypeOptions: ['ms', 'phd'],
+            disabled: true
           },
           batch_advisor_id: {
             label: 'Batch Advisor Id',
