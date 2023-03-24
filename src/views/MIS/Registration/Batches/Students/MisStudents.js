@@ -205,6 +205,7 @@ class MisStudent extends React.Component {
           student_father_name: -1,
           student_gender: -1,
           student_address: -1,
+          student_email: -1,
         }
         headers.split(',').forEach((col,index) => {
           col = col.toLowerCase()
@@ -218,6 +219,8 @@ class MisStudent extends React.Component {
             attributes.student_father_name = index
           if (col.match('gender'))
             attributes.student_gender = index
+          if (col.match('email'))
+            attributes.student_email = index
           if (col.match('address'))
             attributes.student_address = index
         })
@@ -239,6 +242,12 @@ class MisStudent extends React.Component {
             message: 'Could not determine "Gender" column'
           }
         }
+        if (attributes.student_email == -1) {
+          return {
+            err: true,
+            message: 'Could not determine "Email" column'
+          }
+        }
         return attributes
       }
     }
@@ -256,6 +265,7 @@ class MisStudent extends React.Component {
       { id: "student_father_name", label: "Father Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "reg_no", label: "Registration No", format: (value) => value },
+      { id: "student_email", label: "Email", format: (value) => value },
       { id: "student_address", label: "Address", format: (value) => value },
       { id: "student_gender", label: "Gender", format: (value) => value },
       { id: "username", label: "Username", format: (value) => value },

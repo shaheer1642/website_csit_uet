@@ -139,7 +139,7 @@ class MisThesisManagement extends React.Component {
   render() {
     return (
       this.state.loading ? <LoadingIcon />:
-      <Grid container rowSpacing={"20px"}>
+      <Grid container rowSpacing={"20px"} columnSpacing={'10px'}>
         <GoBackButton context={this.props.navigate}/>
         {/* Thesis basic info */}
         <Grid item xs={12}>
@@ -185,14 +185,14 @@ class MisThesisManagement extends React.Component {
               </Grid>
               <Grid item xs={'auto'}>
                 <CustomTextField 
-                  value={this.state.student_thesis.internal_examiner}
+                  value={this.state.student_thesis.internal_examiner || ''}
                   variant="filled" 
                   label={'Internal Examiner'}
                   onChange={(e) => this.updateStudentThesis('internal_examiner',e.target.value)} />
               </Grid>
               <Grid item xs={'auto'}>
                 <CustomTextField 
-                  value={this.state.student_thesis.external_examiner}
+                  value={this.state.student_thesis.external_examiner || ''}
                   variant="filled" 
                   label={'External Examiner'}
                   onChange={(e) => this.updateStudentThesis('external_examiner',e.target.value)} />
@@ -200,58 +200,234 @@ class MisThesisManagement extends React.Component {
             </Grid>
           }></CustomCard>
         </Grid>
-        {/* Step 1: Proposal */}
-        <Grid item xs={12}>
-          <CustomCard
-          style={{padding: '10px'}}
-          cardContent= {
-            <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+        {
+          this.state.student_thesis.degree_type == 'ms' && this.state.student_thesis.thesis_type == 'research' ?
+            <React.Fragment>
+              {/* Phase 1: Proposal Submission */}
               <Grid item xs={12}>
-                <Typography variant='h3' display='flex' alignItems='center'>
-                  {'Proposal Submission'}  
-                  <Chip 
-                    style={{marginLeft: '10px',color: this.state.student_thesis.proposal_completed ? 'green' : 'orange', borderColor: this.state.student_thesis.proposal_completed ? 'green' : 'orange'}} 
-                    label={this.state.student_thesis.proposal_completed ? 'Completed':'In-Progress'} 
-                    variant="outlined" />
-                </Typography>
+                <CustomCard
+                style={{padding: '10px'}}
+                cardContent= {
+                  <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                    <Grid item xs={12}>
+                      <Typography variant='h3' display='flex' alignItems='center'>
+                        {'Phase 1: Proposal Submission'}  
+                        {/* <Chip 
+                          style={{marginLeft: '10px',color: this.state.student_thesis.proposal_completed ? 'green' : 'orange', borderColor: this.state.student_thesis.proposal_completed ? 'green' : 'orange'}} 
+                          label={this.state.student_thesis.proposal_completed ? 'Completed':'In-Progress'} 
+                          variant="outlined" /> */}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <InstructionsField instruction_id={1} instruction_detail_key='ms_research_proposal' />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        type="date"
+                        label='BOASAR Notification Date'
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
+                        onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp',new Date(e.target.value).getTime())} />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <CustomFilesField 
+                        label="Attached Documents" 
+                        documents={this.state.student_thesis.proposal_documents}
+                        onChange={(e) => this.fileUploadHandler('proposal_documents', e)}
+                        onDelete={(file) => this.fileDeleteHandler('proposal_documents', file)} />
+                    </Grid>
+                    {/* <Grid item xs={12}>
+                      <FormControlLabel 
+                        style={{userSelect: 'none'}}
+                        control={<Checkbox checked={this.state.student_thesis.proposal_completed} 
+                        onChange={(e) => this.updateStudentThesis('proposal_completed',e.target.checked)} />} 
+                        label={'Mark as Completed'} />
+                    </Grid> */}
+                  </Grid>
+                }></CustomCard>
               </Grid>
+              {/* Phase 2: Thesis Defense */}
               <Grid item xs={12}>
-                <InstructionsField instruction_id={1} instruction_detail_key='proposal_documents' />
+                <CustomCard
+                style={{padding: '10px'}}
+                cardContent= {
+                  <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                    <Grid item xs={12}>
+                      <Typography variant='h3' display='flex' alignItems='center'>
+                        {'Phase 2: Thesis Defense'}  
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <InstructionsField instruction_id={1} instruction_detail_key='ms_research_thesis_defense' />
+                    </Grid>
+                    <Grid item xs={'auto'}>
+                      <TextField
+                        sx={{width: '200px'}}
+                        type="date"
+                        label='Committee Notification Date'
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={this.state.student_thesis.committee_notification_timestamp ? new Date(Number(this.state.student_thesis.committee_notification_timestamp)).toISOString().split('T')[0] : null}
+                        onChange={(e) => this.updateStudentThesis('committee_notification_timestamp',new Date(e.target.value).getTime())} />
+                    </Grid>
+                    <Grid item xs={'auto'}>
+                      <TextField
+                        type="date"
+                        label='Thesis Defense Date'
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        value={this.state.student_thesis.defense_day_timestamp ? new Date(Number(this.state.student_thesis.defense_day_timestamp)).toISOString().split('T')[0] : null}
+                        onChange={(e) => this.updateStudentThesis('defense_day_timestamp',new Date(e.target.value).getTime())} />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <CustomFilesField 
+                        label="Attached Documents" 
+                        documents={this.state.student_thesis.thesis_defense_documents}
+                        onChange={(e) => this.fileUploadHandler('thesis_defense_documents', e)}
+                        onDelete={(file) => this.fileDeleteHandler('thesis_defense_documents', file)} />
+                    </Grid>
+                  </Grid>
+                }></CustomCard>
               </Grid>
+              {/* Phase 3: Post-Defense */}
               <Grid item xs={12}>
-                <TextField
-                  type="date"
-                  label='BOASAR Notification Date'
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
-                  onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp',new Date(e.target.value).getTime())} />
+                <CustomCard
+                style={{padding: '10px'}}
+                cardContent= {
+                  <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                    <Grid item xs={12}>
+                      <Typography variant='h3' display='flex' alignItems='center'>
+                        {'Phase 3: Post-Defense'}  
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <InstructionsField instruction_id={1} instruction_detail_key='ms_research_post_defense' />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <CustomFilesField 
+                        label="Attached Documents" 
+                        documents={this.state.student_thesis.post_defense_documents}
+                        onChange={(e) => this.fileUploadHandler('post_defense_documents', e)}
+                        onDelete={(file) => this.fileDeleteHandler('post_defense_documents', file)} />
+                    </Grid>
+                  </Grid>
+                }></CustomCard>
               </Grid>
-              <Grid item xs={12}>
-                <CustomFilesField 
-                  label="Attached Documents" 
-                  documents={this.state.student_thesis.proposal_documents}
-                  onChange={(e) => this.fileUploadHandler('proposal_documents', e)}
-                  onDelete={(file) => this.fileDeleteHandler('proposal_documents', file)} />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel 
-                  style={{userSelect: 'none'}}
-                  control={<Checkbox checked={this.state.student_thesis.proposal_completed} 
-                  onChange={(e) => this.updateStudentThesis('proposal_completed',e.target.checked)} />} 
-                  label={'Mark as Completed'} />
-              </Grid>
-            </Grid>
-          }></CustomCard>
-        </Grid>
-
+            </React.Fragment>
+            : 
+            this.state.student_thesis.degree_type == 'ms' && this.state.student_thesis.thesis_type == 'project' ?
+              <React.Fragment>
+                {/* Phase 1: Proposal Submission */}
+                <Grid item xs={12}>
+                  <CustomCard
+                  style={{padding: '10px'}}
+                  cardContent= {
+                    <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid item xs={12}>
+                        <Typography variant='h3' display='flex' alignItems='center'>
+                          {'Phase 1: Proposal Submission'}  
+                          {/* <Chip 
+                            style={{marginLeft: '10px',color: this.state.student_thesis.proposal_completed ? 'green' : 'orange', borderColor: this.state.student_thesis.proposal_completed ? 'green' : 'orange'}} 
+                            label={this.state.student_thesis.proposal_completed ? 'Completed':'In-Progress'} 
+                            variant="outlined" /> */}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <InstructionsField instruction_id={1} instruction_detail_key='ms_project_proposal' />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <TextField
+                          type="date"
+                          label='BOASAR Notification Date'
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
+                          onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp',new Date(e.target.value).getTime())} />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomFilesField 
+                          label="Attached Documents" 
+                          documents={this.state.student_thesis.proposal_documents}
+                          onChange={(e) => this.fileUploadHandler('proposal_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('proposal_documents', file)} />
+                      </Grid>
+                      {/* <Grid item xs={12}>
+                        <FormControlLabel 
+                          style={{userSelect: 'none'}}
+                          control={<Checkbox checked={this.state.student_thesis.proposal_completed} 
+                          onChange={(e) => this.updateStudentThesis('proposal_completed',e.target.checked)} />} 
+                          label={'Mark as Completed'} />
+                      </Grid> */}
+                    </Grid>
+                  }></CustomCard>
+                </Grid>
+                {/* Phase 2: Thesis Submission */}
+                <Grid item xs={12}>
+                  <CustomCard
+                  style={{padding: '10px'}}
+                  cardContent= {
+                    <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid item xs={12}>
+                        <Typography variant='h3' display='flex' alignItems='center'>
+                          {'Phase 2: Thesis Submission'}  
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <InstructionsField instruction_id={1} instruction_detail_key='ms_project_thesis_submission' />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomFilesField 
+                          label="Attached Documents" 
+                          documents={this.state.student_thesis.thesis_submission_documents}
+                          onChange={(e) => this.fileUploadHandler('thesis_submission_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('thesis_submission_documents', file)} />
+                      </Grid>
+                    </Grid>
+                  }></CustomCard>
+                </Grid>
+                {/* Phase 3: Post-Thesis */}
+                <Grid item xs={12}>
+                  <CustomCard
+                  style={{padding: '10px'}}
+                  cardContent= {
+                    <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid item xs={12}>
+                        <Typography variant='h3' display='flex' alignItems='center'>
+                          {'Phase 3: Post-Thesis'}  
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <InstructionsField instruction_id={1} instruction_detail_key='ms_project_post_thesis' />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomFilesField 
+                          label="Attached Documents" 
+                          documents={this.state.student_thesis.post_thesis_documents}
+                          onChange={(e) => this.fileUploadHandler('post_thesis_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('post_thesis_documents', file)} />
+                      </Grid>
+                    </Grid>
+                  }></CustomCard>
+                </Grid>
+              </React.Fragment>
+            : 
+            this.state.student_thesis.degree_type == 'phd' && this.state.student_thesis.thesis_type == 'research' ?
+            <></>
+            :
+            <></>
+        }
+        {/* Action Buttons */}
         <Grid item xs={12}>
           <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
             <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
           </Zoom>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={'auto'}>
           <CustomButton 
             startIcon={this.state.savingChanges ? <CircularProgress size='14px'/> : undefined}
             disabled={this.state.savingChanges ? true : false}
@@ -268,6 +444,12 @@ class MisThesisManagement extends React.Component {
                 this.fetchStudentThesis()
             })
             }}
+          />
+        </Grid>
+        <Grid item xs={'auto'}>
+          <CustomButton 
+            label='Reset'
+            onClick={() => this.fetchStudentThesis()}
           />
         </Grid>
       </Grid>

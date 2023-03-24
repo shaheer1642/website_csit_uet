@@ -92,7 +92,7 @@ export default class InstructionsField extends React.Component<IProps> {
         this.state.instruction_obj ? 
             <Grid container rowSpacing={'5px'} style={{border: '1px solid grey',padding: '10px', borderRadius: '5px'}}>
                 <Grid item xs='auto' display='flex' alignItems={'center'}>
-                    <Typography variant='h5'>Instructions</Typography>
+                    <Typography variant='h4'>Instructions</Typography>
                 </Grid>
                 <Grid item xs='auto'>
                     {this.state.editable ?
@@ -122,8 +122,8 @@ export default class InstructionsField extends React.Component<IProps> {
                                     onClose={() => this.setState({showDocumentsMenu: false})}
                                     anchorEl={this.state.menuEl}
                                 >
-                                    {global_documents.map(doc => 
-                                        <MenuItem onClick={() => this.addDocumentLink(doc.document_url)}>{doc.document_name}</MenuItem>
+                                    {global_documents.map((doc,index) => 
+                                        <MenuItem key={`menuitem-${index}`} onClick={() => this.addDocumentLink(doc.document_url)}>{doc.document_name}</MenuItem>
                                     )}
                                 </Menu>
                             </div>
@@ -143,17 +143,21 @@ export default class InstructionsField extends React.Component<IProps> {
                         fullWidth
                         color="primary"
                         disabled={!this.state.editable}
-                        value={this.state.instruction_obj.detail[this.props.instruction_detail_key]}
+                        value={this.state.instruction_obj.detail[this.props.instruction_detail_key] || ''}
                         variant={'outlined'}
                         onChange={this.onChange}
                         type={'text'}
                         multiline={true}
                         maxRows={10}
                         />:
-                        <Typography>
-                            {this.state.instruction_obj.detail[this.props.instruction_detail_key]?.split(' ')
-                            .map(word => getNameForUrl(word) ? <Link href={word}>{`${getNameForUrl(word)} `}</Link> : `${word} `)}
-                        </Typography>
+                        <React.Fragment>
+                            {this.state.instruction_obj.detail[this.props.instruction_detail_key]?.replace(/\r\n/g,'\n').split('\n').map((line,index) => 
+                                <Typography key={`text-${index}`}>
+                                    {line?.split(' ')
+                                    .map((word,index) => getNameForUrl(word) ? <Link key={`link-${index}`} href={word}>{`${getNameForUrl(word)} `}</Link> : `${word} `) || '\u200b'}
+                                </Typography>
+                            )}
+                        </React.Fragment>
                     }
                 </Grid>
             </Grid>

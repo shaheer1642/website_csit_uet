@@ -91,6 +91,12 @@ class MisStudentsUpdate extends React.Component {
             position: 6,
             xs: 6,
           },
+          student_email: {
+            label: "Email",
+            defaultValue: this.state.student_email,
+            position: 6,
+            xs: 6,
+          },
           student_address: {
             label: "Address",
             defaultValue: this.state.student_address,

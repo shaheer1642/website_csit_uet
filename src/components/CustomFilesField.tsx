@@ -76,6 +76,7 @@ export default class CustomFilesField extends React.Component<IProps> {
               variant="outlined"
               onClick={() => doc.document ? {} : this.state.documents[doc.document_id]?.document_url ? window.open(this.state.documents[doc.document_id]?.document_url, '_blank', 'noopener,noreferrer') : {}}
               onDelete={(e) => this.props.onDelete(index)}
+              key={`chip-${index}`}
             />
           )}
           </Stack>
