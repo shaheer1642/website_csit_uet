@@ -183,20 +183,25 @@ class MisThesisManagement extends React.Component {
                   onChange={(e) => this.updateStudentThesis('co_supervisor_id',e.target.value)}
                 />
               </Grid>
-              <Grid item xs={'auto'}>
-                <CustomTextField 
-                  value={this.state.student_thesis.internal_examiner || ''}
-                  variant="filled" 
-                  label={'Internal Examiner'}
-                  onChange={(e) => this.updateStudentThesis('internal_examiner',e.target.value)} />
-              </Grid>
-              <Grid item xs={'auto'}>
-                <CustomTextField 
-                  value={this.state.student_thesis.external_examiner || ''}
-                  variant="filled" 
-                  label={'External Examiner'}
-                  onChange={(e) => this.updateStudentThesis('external_examiner',e.target.value)} />
-              </Grid>
+              {
+                this.state.student_thesis.degree_type == 'ms' && this.state.student_thesis.thesis_type == 'research' ?
+                <React.Fragment>
+                  <Grid item xs={'auto'}>
+                    <CustomTextField 
+                      value={this.state.student_thesis.internal_examiner || ''}
+                      variant="filled" 
+                      label={'Internal Examiner'}
+                      onChange={(e) => this.updateStudentThesis('internal_examiner',e.target.value)} />
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomTextField 
+                      value={this.state.student_thesis.external_examiner || ''}
+                      variant="filled" 
+                      label={'External Examiner'}
+                      onChange={(e) => this.updateStudentThesis('external_examiner',e.target.value)} />
+                  </Grid>
+                </React.Fragment> : <></>
+              }
             </Grid>
           }></CustomCard>
         </Grid>
@@ -248,7 +253,7 @@ class MisThesisManagement extends React.Component {
                   </Grid>
                 }></CustomCard>
               </Grid>
-              {/* Phase 2: Thesis Defense */}
+              {/* Phase 2: Pre-Defense */}
               <Grid item xs={12}>
                 <CustomCard
                 style={{padding: '10px'}}
@@ -256,7 +261,7 @@ class MisThesisManagement extends React.Component {
                   <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
                     <Grid item xs={12}>
                       <Typography variant='h3' display='flex' alignItems='center'>
-                        {'Phase 2: Thesis Defense'}  
+                        {'Phase 2: Pre-Defense'}  
                       </Typography>
                     </Grid>
                     <Grid item xs={12}>
@@ -286,9 +291,9 @@ class MisThesisManagement extends React.Component {
                     <Grid item xs={12}>
                       <CustomFilesField 
                         label="Attached Documents" 
-                        documents={this.state.student_thesis.thesis_defense_documents}
-                        onChange={(e) => this.fileUploadHandler('thesis_defense_documents', e)}
-                        onDelete={(file) => this.fileDeleteHandler('thesis_defense_documents', file)} />
+                        documents={this.state.student_thesis.pre_defense_documents}
+                        onChange={(e) => this.fileUploadHandler('pre_defense_documents', e)}
+                        onDelete={(file) => this.fileDeleteHandler('pre_defense_documents', file)} />
                     </Grid>
                   </Grid>
                 }></CustomCard>
@@ -339,7 +344,7 @@ class MisThesisManagement extends React.Component {
                       <Grid item xs={12}>
                         <InstructionsField instruction_id={1} instruction_detail_key='ms_project_proposal' />
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid item xs={'auto'}>
                         <TextField
                           type="date"
                           label='BOASAR Notification Date'
@@ -348,6 +353,16 @@ class MisThesisManagement extends React.Component {
                           }}
                           value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
                           onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp',new Date(e.target.value).getTime())} />
+                      </Grid>
+                      <Grid item xs={'auto'}>
+                        <TextField
+                          type="date"
+                          label='Proposal Submission Date'
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          value={this.state.student_thesis.proposal_submission_timestamp ? new Date(Number(this.state.student_thesis.proposal_submission_timestamp)).toISOString().split('T')[0] : null}
+                          onChange={(e) => this.updateStudentThesis('proposal_submission_timestamp',new Date(e.target.value).getTime())} />
                       </Grid>
                       <Grid item xs={12}>
                         <CustomFilesField 

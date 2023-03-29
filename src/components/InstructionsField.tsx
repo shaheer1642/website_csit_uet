@@ -34,7 +34,7 @@ export default class InstructionsField extends React.Component<IProps> {
   constructor(props) {
     super(props);
     this.state = {
-        instruction_obj: undefined,
+        instruction: undefined,
         editable: false,
         showDocumentsMenu: false,
         menuEl: null
@@ -45,51 +45,47 @@ export default class InstructionsField extends React.Component<IProps> {
     this.fetchInstruction()
   }
 
-  componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<{}>, snapshot?: any): void {
-      console.log(this.state.instruction_obj)
-  }
-
   fetchInstruction = () => {
     socket.emit('instructions/fetch', {instruction_id: this.props.instruction_id}, (res) => {
       if (res.code == 200) {
         this.setState({
-            instruction_obj: res.data[0]
+            instruction: res.data[0].detail[this.props.instruction_detail_key] || ''
         })
       }
     })
   }
 
   updateInstruction = () => {
-    socket.emit('instructions/update', this.state.instruction_obj, (res) => {
+    socket.emit('instructions/update', {
+        instruction_id: this.props.instruction_id,
+        instruction_detail_key: this.props.instruction_detail_key,
+        instruction: this.state.instruction
+    }, (res) => {
       if (res.code == 200) {
         this.setState({
             editable: false,
         })
       }
       this.fetchInstruction()
-      console.log(res)
+    //   console.log(res)
     })
   }
 
   onChange = (e) => {
-    const instruction_obj = this.state.instruction_obj
-    instruction_obj.detail[this.props.instruction_detail_key] = e.target.value
     this.setState({
-        instruction_obj: {...instruction_obj}
+        instruction: e.target.value
     })
   }
 
   addDocumentLink = (url) => {
-    const instruction_obj = this.state.instruction_obj
-    instruction_obj.detail[this.props.instruction_detail_key] += ` ${url} `
     this.setState({
-        instruction_obj: {...instruction_obj}
+        instruction: `${this.state.instruction} ${url} `
     })
   }
 
   render() {
     return (
-        this.state.instruction_obj ? 
+        this.state.instruction != undefined ? 
             <Grid container rowSpacing={'5px'} style={{border: '1px solid grey',padding: '10px', borderRadius: '5px'}}>
                 <Grid item xs='auto' display='flex' alignItems={'center'}>
                     <Typography variant='h4'>Instructions</Typography>
@@ -143,7 +139,7 @@ export default class InstructionsField extends React.Component<IProps> {
                         fullWidth
                         color="primary"
                         disabled={!this.state.editable}
-                        value={this.state.instruction_obj.detail[this.props.instruction_detail_key] || ''}
+                        value={this.state.instruction}
                         variant={'outlined'}
                         onChange={this.onChange}
                         type={'text'}
@@ -151,7 +147,7 @@ export default class InstructionsField extends React.Component<IProps> {
                         maxRows={10}
                         />:
                         <React.Fragment>
-                            {this.state.instruction_obj.detail[this.props.instruction_detail_key]?.replace(/\r\n/g,'\n').split('\n').map((line,index) => 
+                            {this.state.instruction?.replace(/\r\n/g,'\n').split('\n').map((line,index) => 
                                 <Typography key={`text-${index}`}>
                                     {line?.split(' ')
                                     .map((word,index) => getNameForUrl(word) ? <Link key={`link-${index}`} href={word}>{`${getNameForUrl(word)} `}</Link> : `${word} `) || '\u200b'}
