@@ -17,7 +17,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Grid } from '@mui/material';
+import { Collapse, Grid } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import * as Icon from '@mui/icons-material';
@@ -105,6 +105,7 @@ function MisLayout() {
   const [open, setOpen] = React.useState(false);
   const [currentMenu, setCurrentMenu] = React.useState('home');
   const [socketConnecting, setSocketConnecting] = React.useState(true);
+  const [applicationsOpen, setApplicationsOpen] = React.useState(false);
 
   useEffect(() => {
     console.log('[MisLayout] componentDidMount')
@@ -176,15 +177,38 @@ function MisLayout() {
                   user.user_type == 'admin' || user.user_type == 'pga' ? 
                   (
                     <React.Fragment>
-                      <ListItem button component={Link} to="" disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                          sx={{
-                            minHeight: 48,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
-                          }}
-                          onClick={() => setCurrentMenu('home')}
-                        >
+                      <ListItemButton
+                        component={Link} 
+                        to=""
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                        onClick={() => setCurrentMenu('home')}
+                      >
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 0,
+                          mr: open ? 3 : 'auto',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Icon.Home style={{color: currentMenu == 'home' ? Color.deepPurple[500] : undefined}}/>
+                      </ListItemIcon>
+                      <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'home' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                      </ListItemButton>
+
+                      <ListItemButton
+                        component={Link} 
+                        to="events"
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                        onClick={() => setCurrentMenu('events')}
+                      >
                         <ListItemIcon
                           sx={{
                             minWidth: 0,
@@ -192,103 +216,81 @@ function MisLayout() {
                             justifyContent: 'center',
                           }}
                         >
-                          <Icon.Home style={{color: currentMenu == 'home' ? Color.deepPurple[500] : undefined}}/>
+                          <Icon.Campaign style={{color: currentMenu == 'events' ? Color.deepPurple[500] : undefined}}/>
                         </ListItemIcon>
-                        <ListItemText primary='Home' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'home' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                        </ListItemButton>
-                      </ListItem>
+                        <ListItemText primary='Events' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'events' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                      </ListItemButton>
 
-                      <ListItem button component={Link} to="events" disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
+                      <ListItemButton
+                        component={Link} 
+                        to="documents"
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                        onClick={() => setCurrentMenu('documents')}
+                      >
+                        <ListItemIcon
                           sx={{
-                            minHeight: 48,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
                           }}
-                          onClick={() => setCurrentMenu('events')}
                         >
-                          <ListItemIcon
-                            sx={{
-                              minWidth: 0,
-                              mr: open ? 3 : 'auto',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <Icon.Campaign style={{color: currentMenu == 'events' ? Color.deepPurple[500] : undefined}}/>
-                          </ListItemIcon>
-                          <ListItemText primary='Events' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'events' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                        </ListItemButton>
-                      </ListItem>
+                          <Icon.Description style={{color: currentMenu == 'documents' ? Color.deepPurple[500] : undefined}}/>
+                        </ListItemIcon>
+                        <ListItemText primary='Documents' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'documents' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                      </ListItemButton>
 
-                      <ListItem button component={Link} to="documents" disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
+                      <ListItemButton
+                        component={Link} 
+                        to="batches"
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                        onClick={() => setCurrentMenu('batches')}
+                      >
+                        <ListItemIcon
                           sx={{
-                            minHeight: 48,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
                           }}
-                          onClick={() => setCurrentMenu('documents')}
                         >
-                          <ListItemIcon
-                            sx={{
-                              minWidth: 0,
-                              mr: open ? 3 : 'auto',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <Icon.Description style={{color: currentMenu == 'documents' ? Color.deepPurple[500] : undefined}}/>
-                          </ListItemIcon>
-                          <ListItemText primary='Documents' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'documents' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                        </ListItemButton>
-                      </ListItem>
+                          <Icon.ManageAccounts style={{color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined}}/>
+                        </ListItemIcon>
+                        <ListItemText primary='Batch Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                      </ListItemButton>
 
-                      <ListItem button component={Link} to="batches" disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
+                      <ListItemButton
+                        component={Link} 
+                        to="semesters"
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                        onClick={() => setCurrentMenu('semesters')}
+                      >
+                        <ListItemIcon
                           sx={{
-                            minHeight: 48,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
                           }}
-                          onClick={() => setCurrentMenu('batches')}
                         >
-                          <ListItemIcon
-                            sx={{
-                              minWidth: 0,
-                              mr: open ? 3 : 'auto',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <Icon.ManageAccounts style={{color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined}}/>
-                          </ListItemIcon>
-                          <ListItemText primary='Batch Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                        </ListItemButton>
-                      </ListItem>
-
-                      <ListItem button component={Link} to="semesters" disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                          sx={{
-                            minHeight: 48,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
-                          }}
-                          onClick={() => setCurrentMenu('semesters')}
-                        >
-                          <ListItemIcon
-                            sx={{
-                              minWidth: 0,
-                              mr: open ? 3 : 'auto',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <Icon.CastForEducation style={{color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined}}/>
-                          </ListItemIcon>
-                          <ListItemText primary='Semester Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                        </ListItemButton>
-                      </ListItem>
+                          <Icon.CastForEducation style={{color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined}}/>
+                        </ListItemIcon>
+                        <ListItemText primary='Semester Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                      </ListItemButton>
 
                       {user.user_type == 'pga' ? 
-                        <ListItem button component={Link} to="thesis" disablePadding sx={{ display: 'block' }}>
                           <ListItemButton
+                            component={Link} 
+                            to="thesis"
                             sx={{
                               minHeight: 48,
                               justifyContent: open ? 'initial' : 'center',
@@ -306,58 +308,124 @@ function MisLayout() {
                               <Icon.Article style={{color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined}}/>
                             </ListItemIcon>
                             <ListItemText primary='Thesis Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                          </ListItemButton>
-                        </ListItem> : <></>
+                          </ListItemButton> : <></>
                       }
 
-                      <ListItem button component={Link} to="teachers" disablePadding sx={{ display: 'block' }}>
+                      <ListItemButton
+                        component={Link} 
+                        to="teachers"
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                        onClick={() => setCurrentMenu('teachers')}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Icon.School  style={{color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined}}/>
+                        </ListItemIcon>
+                        <ListItemText primary='Instructors' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                      </ListItemButton>
+
+                      <ListItemButton
+                        component={Link}
+                        to="courses"
+                        sx={{
+                          minHeight: 48,
+                          justifyContent: open ? 'initial' : 'center',
+                          px: 2.5,
+                        }}
+                        onClick={() => setCurrentMenu('courses')}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
+                        </ListItemIcon>
+                        <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                      </ListItemButton>
+
+                      <ListItemButton 
+                        component={Link}
+                        to="applications/applicationsTemplates"
+                        sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                        }}
+                        onClick={() => {
+                          setCurrentMenu('applicationsTemplates')
+                          setApplicationsOpen(!applicationsOpen)
+                        }}
+                      >
+                        <ListItemIcon
+                          sx={{
+                            minWidth: 0,
+                            mr: open ? 3 : 'auto',
+                            justifyContent: 'center',
+                        }}>
+                          <InboxIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Applications" sx={{ opacity: open ? 1 : 0, '&:hover': {color: Color.deepPurple[700]} }}/>
+                        {open ? applicationsOpen ? <Icon.ExpandLess /> : <Icon.ExpandMore /> : <></>}
+                      </ListItemButton>
+                      
+                      <Collapse in={open ? applicationsOpen : false} timeout="auto" unmountOnExit>
                         <ListItemButton
+                          component={Link}
+                          to="applications/createApplication"
                           sx={{
                             minHeight: 48,
                             justifyContent: open ? 'initial' : 'center',
                             px: 2.5,
+                            pl: 4
                           }}
-                          onClick={() => setCurrentMenu('teachers')}
+                          onClick={() => setCurrentMenu('createApplication')}
                         >
-                          <ListItemIcon
-                            sx={{
-                              minWidth: 0,
-                              mr: open ? 3 : 'auto',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <Icon.School  style={{color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined}}/>
-                          </ListItemIcon>
-                          <ListItemText primary='Instructors' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                          <ListItemText primary='Create Application' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'createApplication' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                         </ListItemButton>
-                      </ListItem>
-
-                      <ListItem button component={Link} to="courses" disablePadding sx={{ display: 'block' }}>
                         <ListItemButton
+                          component={Link}
+                          to="applications/myApplications"
                           sx={{
                             minHeight: 48,
                             justifyContent: open ? 'initial' : 'center',
                             px: 2.5,
+                            pl: 4
                           }}
-                          onClick={() => setCurrentMenu('courses')}
+                          onClick={() => setCurrentMenu('myApplications')}
                         >
-                          <ListItemIcon
-                            sx={{
-                              minWidth: 0,
-                              mr: open ? 3 : 'auto',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
-                          </ListItemIcon>
-                          <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                          <ListItemText primary='My Applications' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'myApplications' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                         </ListItemButton>
-                      </ListItem>
-
+                        <ListItemButton
+                          component={Link}
+                          to="applications/applicationsTemplates"
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                            pl: 4
+                          }}
+                          onClick={() => setCurrentMenu('applicationsTemplates')}
+                        >
+                          <ListItemText primary='Applications Templates' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'applicationsTemplates' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton>
+                      </Collapse>
+                      
                     </React.Fragment>
                   ) : user.user_type == 'teacher' ?
                   <React.Fragment>
-                    <ListItem button component={Link} to="tportal/courses" disablePadding sx={{ display: 'block' }}>
+                    <ListItemButton component={Link} to="tportal/courses" disablePadding sx={{ display: 'block' }}>
                       <ListItemButton
                         sx={{
                           minHeight: 48,
@@ -377,7 +445,7 @@ function MisLayout() {
                         </ListItemIcon>
                         <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
-                    </ListItem>
+                    </ListItemButton>
                     </React.Fragment>
                     : <></>
                 }

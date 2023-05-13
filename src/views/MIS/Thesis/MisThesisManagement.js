@@ -169,7 +169,7 @@ class MisThesisManagement extends React.Component {
               <Grid item xs={12}></Grid>
               <Grid item xs={2}>
                 <CustomSelect 
-                  defaultValue={this.state.student_thesis.supervisor_id}
+                  value={this.state.student_thesis.supervisor_id}
                   endpoint='autocomplete/teachers'
                   label='Supervisor'
                   onChange={(e) => this.updateStudentThesis('supervisor_id',e.target.value)}
@@ -177,7 +177,7 @@ class MisThesisManagement extends React.Component {
               </Grid>
               <Grid item xs={2}>
                 <CustomSelect 
-                  defaultValue={this.state.student_thesis.co_supervisor_id}
+                  value={this.state.student_thesis.co_supervisor_id}
                   endpoint='autocomplete/teachers'
                   label='Co-Supervisor'
                   onChange={(e) => this.updateStudentThesis('co_supervisor_id',e.target.value)}

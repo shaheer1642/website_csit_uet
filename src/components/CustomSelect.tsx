@@ -10,12 +10,14 @@ interface IProps {
     endpoint: string | undefined,
     endpointData?: Object | undefined,
     menuItems: Array<any> | undefined,
-    defaultValue: string | undefined,
+    value: string | undefined,
     label: string,
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
-    required: boolean | undefined
+    required: boolean | undefined,
+    sx: SxProps<Theme>
+
 }
-  
+
 interface IState {
     componentLoading: boolean,
     menuItems: Array<any>,
@@ -35,7 +37,7 @@ export default class CustomSelect extends React.Component<IProps, IState> {
         if (this.props.endpoint) {
             socket.emit(this.props.endpoint, this.props.endpointData || {}, res => {
                 if (res.code == 200) {
-                    this.setState({menuItems: res.data, componentLoading: false})
+                    this.setState({menuItems: [...this.state.menuItems, ...res.data], componentLoading: false})
                 }
             })
         } else {
@@ -46,10 +48,10 @@ export default class CustomSelect extends React.Component<IProps, IState> {
     render() {
         return (
             this.state.componentLoading ? <LoadingIcon />:
-            <FormControl fullWidth required={this.props.required}>
+            <FormControl fullWidth required={this.props.required} sx={this.props.sx}>
                 <InputLabel>{this.props.label}</InputLabel>
                 <Select
-                    defaultValue={this.props.defaultValue || ''}
+                    value={this.props.value || ''}
                     label={this.props.label}
                     onChange={this.props.onChange}
                     required={this.props.required}

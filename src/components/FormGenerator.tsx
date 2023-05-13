@@ -185,7 +185,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                         :
                       this.props.options[attribute.key]?.fieldType == 'select' ? 
                         <CustomSelect 
-                          defaultValue={this.props.options[attribute.key]?.defaultValue} 
+                          value={this.props.options[attribute.key]?.defaultValue} 
                           endpoint={this.props.options[attribute.key]?.endpoint} 
                           endpointData={this.props.options[attribute.key]?.endpointData} 
                           menuItems={this.props.options[attribute.key]?.selectMenuItems} 

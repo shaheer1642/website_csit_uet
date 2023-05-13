@@ -5,9 +5,6 @@ import * as Color from '@mui/material/colors';
 import { SxProps, Theme } from '@mui/material';
 import CustomButton from './CustomButton';
 
-const defaultStyles = {
-}
-
 interface IProps {
   open: boolean,
   message: string,
