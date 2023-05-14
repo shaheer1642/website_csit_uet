@@ -383,29 +383,29 @@ function MisLayout() {
                       <Collapse in={open ? applicationsOpen : false} timeout="auto" unmountOnExit>
                         <ListItemButton
                           component={Link}
-                          to="applications/createApplication"
+                          to="applications/submitApplication"
                           sx={{
                             minHeight: 48,
                             justifyContent: open ? 'initial' : 'center',
                             px: 2.5,
                             pl: 4
                           }}
-                          onClick={() => setCurrentMenu('createApplication')}
+                          onClick={() => setCurrentMenu('submitApplication')}
                         >
-                          <ListItemText primary='Create Application' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'createApplication' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                          <ListItemText primary='Submit Application' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'submitApplication' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                         </ListItemButton>
                         <ListItemButton
                           component={Link}
-                          to="applications/myApplications"
+                          to="applications/viewApplications"
                           sx={{
                             minHeight: 48,
                             justifyContent: open ? 'initial' : 'center',
                             px: 2.5,
                             pl: 4
                           }}
-                          onClick={() => setCurrentMenu('myApplications')}
+                          onClick={() => setCurrentMenu('viewApplications')}
                         >
-                          <ListItemText primary='My Applications' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'myApplications' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                          <ListItemText primary='My Applications' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'viewApplications' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                         </ListItemButton>
                         <ListItemButton
                           component={Link}

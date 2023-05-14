@@ -40,8 +40,11 @@ import MisThesis from "./views/MIS/Thesis/MisThesis";
 import MisThesisCreate from "./views/MIS/Thesis/MisThesisCreate";
 import MisThesisManagement from "./views/MIS/Thesis/MisThesisManagement";
 import MisDocuments from "./views/MIS/Documents/MisDocuments";
-import MisApplicationsTemplates from "./views/MIS/Applications/MisApplicationsTemplates";
-import MisApplicationsTemplatesCreateUpdate from "./views/MIS/Applications/MisApplicationsTemplatesCreateUpdate";
+import MisApplicationsTemplates from "./views/MIS/Applications/ApplicationsTemplates/MisApplicationsTemplates";
+import MisApplicationsTemplatesCreateUpdate from "./views/MIS/Applications/ApplicationsTemplates/MisApplicationsTemplatesCreateUpdate";
+import SubmitApplication from "./views/MIS/Applications/SubmitApplication";
+import SubmitApplicationDraft from "./views/MIS/Applications/SubmitApplicationDraft";
+import ViewApplications from "./views/MIS/Applications/viewApplications";
 
 export default function Router() {
   return (
@@ -93,7 +96,9 @@ export default function Router() {
           <Route path="applications/applicationsTemplates" element={<MisApplicationsTemplates/>}/>
             <Route path="applications/applicationsTemplates/create" element={<MisApplicationsTemplatesCreateUpdate/>}/>
             <Route path="applications/applicationsTemplates/update" element={<MisApplicationsTemplatesCreateUpdate/>}/>
-            {/* <Route path="applicationsTemplates" element={<MisApplicationsTemplates/>}/> */}
+          <Route path="applications/submitApplication" element={<SubmitApplication/>}/>
+            <Route path="applications/submitApplication/draft" element={<SubmitApplicationDraft/>}/>
+          <Route path="applications/viewApplications" element={<ViewApplications/>}/>
 
           <Route path="tportal/courses" element={<MisTeachersCourses />} />
           <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />

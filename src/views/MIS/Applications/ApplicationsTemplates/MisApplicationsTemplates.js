@@ -3,13 +3,13 @@ import React from "react";
 import { Grid, Typography, IconButton, ButtonGroup, Zoom, Alert, CircularProgress, Card, Box, CardContent, CardActions } from "@mui/material";
 import { DeleteOutline, Edit, Menu } from "@mui/icons-material";
 import * as Color from "@mui/material/colors";
-import { socket } from "../../../websocket/socket";
-import { withRouter } from "../../../withRouter";
-import CustomTable from "../../../components/CustomTable";
-import CustomButton from "../../../components/CustomButton";
-import CustomModal from "../../../components/CustomModal";
-import ConfirmationModal from "../../../components/ConfirmationModal";
-import CustomCard from "../../../components/CustomCard";
+import { socket } from "../../../../websocket/socket";
+import { withRouter } from "../../../../withRouter";
+import CustomTable from "../../../../components/CustomTable";
+import CustomButton from "../../../../components/CustomButton";
+import CustomModal from "../../../../components/CustomModal";
+import ConfirmationModal from "../../../../components/ConfirmationModal";
+import CustomCard from "../../../../components/CustomCard";
 
 const palletes = {
   primary: "#439CEF",

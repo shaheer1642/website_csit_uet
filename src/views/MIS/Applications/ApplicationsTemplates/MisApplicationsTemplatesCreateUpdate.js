@@ -3,18 +3,18 @@ import React from "react";
 import { Grid, Typography, IconButton, ButtonGroup, Zoom, Alert, CircularProgress, Card, Box, CardContent, CardActions, Checkbox, FormControlLabel } from "@mui/material";
 import { Add, Cancel, DeleteOutline, Menu } from "@mui/icons-material";
 import * as Color from "@mui/material/colors";
-import { socket } from "../../../websocket/socket";
-import { withRouter } from "../../../withRouter";
-import CustomTable from "../../../components/CustomTable";
-import CustomButton from "../../../components/CustomButton";
-import CustomModal from "../../../components/CustomModal";
-import ConfirmationModal from "../../../components/ConfirmationModal";
-import CustomCard from "../../../components/CustomCard";
-import CustomTextField from "../../../components/CustomTextField";
-import CustomSelect from "../../../components/CustomSelect";
+import { socket } from "../../../../websocket/socket";
+import { withRouter } from "../../../../withRouter";
+import CustomTable from "../../../../components/CustomTable";
+import CustomButton from "../../../../components/CustomButton";
+import CustomModal from "../../../../components/CustomModal";
+import ConfirmationModal from "../../../../components/ConfirmationModal";
+import CustomCard from "../../../../components/CustomCard";
+import CustomTextField from "../../../../components/CustomTextField";
+import CustomSelect from "../../../../components/CustomSelect";
 import { IndexKind } from "typescript";
-import CustomAlert from "../../../components/CustomAlert";
-import GoBackButton from "../../../components/GoBackButton";
+import CustomAlert from "../../../../components/CustomAlert";
+import GoBackButton from "../../../../components/GoBackButton";
 
 const palletes = {
   primary: "#439CEF",
@@ -106,7 +106,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
 
   addNewField = () => {
     this.setState({
-      detail_structure : [...this.state.detail_structure, {field_name: '',placeholder: '',field_type: '',required: true,multi_line: false}]
+      detail_structure : [...this.state.detail_structure, {field_name: '',field_value: '',placeholder: '',field_type: '',disabled: false,required: true,multi_line: false}]
     })
   }
 
@@ -129,26 +129,6 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
           detail_structure,
         }
     });
-  }
-
-  applicationCard = (title) => {
-    return (
-        <Card>
-            <CardContent>
-                <Typography color="text.secondary" variant='h5'>
-                    {title}
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <IconButton>
-                    <Menu />
-                </IconButton>
-                <IconButton color='error'>
-                    <DeleteOutline />
-                </IconButton>
-            </CardActions>
-        </Card>
-    )
   }
 
   submitCreateTemplate = () => {
@@ -257,11 +237,19 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
               <Grid item xs="auto">
                 <CustomTextField required label="Field Name" value={field.field_name} onChange={(e) => this.updateField('field_name',e.target.value,index)}/>
               </Grid>
-              <Grid item xs="auto">
-                <CustomTextField required label="Placeholder text" value={field.placeholder} onChange={(e) => this.updateField('placeholder',e.target.value,index)}/>
-              </Grid>
+              {field.disabled ? 
+                <Grid item xs="auto">
+                  <CustomTextField required label="Field value" value={field.field_value} onChange={(e) => this.updateField('field_value',e.target.value,index)}/>
+                </Grid> : 
+                <Grid item xs="auto">
+                  <CustomTextField required label="Placeholder text" value={field.placeholder} onChange={(e) => this.updateField('placeholder',e.target.value,index)}/>
+                </Grid>
+              }
               <Grid item xs="auto">
                 <CustomSelect sx={{minWidth: '130px'}} required label="Field Type" value={field.field_type} menuItems={[{id: 'string',label: 'Text'},{id: 'number',label: 'Number'}]} onChange={(e) => this.updateField('field_type',e.target.value,index)}/>
+              </Grid>
+              <Grid item xs="auto">
+                <FormControlLabel control={<Checkbox required checked={field.disabled} onChange={(e) => this.updateField('disabled',e.target.checked,index)}/>} label="Disabled" />
               </Grid>
               <Grid item xs="auto">
                 <FormControlLabel control={<Checkbox required checked={field.required} onChange={(e) => this.updateField('required',e.target.checked,index)}/>} label="Required" />
