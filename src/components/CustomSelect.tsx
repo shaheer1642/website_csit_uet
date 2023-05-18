@@ -14,8 +14,8 @@ interface IProps {
     label: string,
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
     required: boolean | undefined,
+    disabled: boolean | undefined,
     sx: SxProps<Theme>
-
 }
 
 interface IState {
@@ -51,6 +51,7 @@ export default class CustomSelect extends React.Component<IProps, IState> {
             <FormControl fullWidth required={this.props.required} sx={this.props.sx}>
                 <InputLabel>{this.props.label}</InputLabel>
                 <Select
+                    disabled={this.props.disabled}
                     value={this.props.value || ''}
                     label={this.props.label}
                     onChange={this.props.onChange}

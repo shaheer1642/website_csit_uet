@@ -51,7 +51,7 @@ const styles = {
   }
 }
 
-class SubmitApplicationDraft extends React.Component {
+class viewApplicationsDetail extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -63,16 +63,15 @@ class SubmitApplicationDraft extends React.Component {
       application_title: '',
       detail_structure: [],
       submit_to: '',
-      submit_to_change: false,
 
       callingApi: false
     };
-    this.template_id = this.props.location.state?.template_id
+    this.application_id = this.props.location.state?.application_id
   }
 
   componentDidMount() {
-    if (!this.template_id) this.props.navigate(-1)
-    this.fetchApplicationTemplate()
+    if (!this.application_id) this.props.navigate(-1)
+    this.fetchApplication()
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log(this.state)
@@ -85,21 +84,18 @@ class SubmitApplicationDraft extends React.Component {
   componentWillUnmount() {
   }
 
-  fetchApplicationTemplate = () => {
+  fetchApplication = () => {
     this.setState({loading: true})
-    socket.emit("applicationsTemplates/fetch", {template_id: this.template_id}, (res) => {
+    socket.emit("applications/fetch", {application_id: this.application_id}, (res) => {
       this.setState({loading: false})
       if (res.code == 200 && res.data.length == 1) {
-        const applicationTemplate = res.data[0]
-        console.log(applicationTemplate)
+        const application = res.data[0]
+        console.log(application)
         return this.setState({
-          detail_structure: applicationTemplate.detail_structure,
-          submit_to: applicationTemplate.submit_to,
-          application_title: applicationTemplate.application_title,
-          submit_to_change: applicationTemplate.submit_to ? false : true
+          detail_structure: application.detail_structure,
+          submit_to: application.submitted_to,
+          application_title: application.application_title,
         });
-      } else {
-        this.template_id = null
       }
     });
   }
@@ -119,30 +115,6 @@ class SubmitApplicationDraft extends React.Component {
     });
   }
 
-  submitApplication = () => {
-    this.setState({callingApi: true})
-    socket.emit('applications/create',{
-      application_title: this.state.application_title, 
-      detail_structure: this.state.detail_structure, 
-      submitted_by: user.user_id, 
-      submitted_to: this.state.submit_to, 
-    }, (res) => {
-      this.setState({callingApi: false})
-      if (res.code == 200) {
-        this.setState({
-          alertMsg: 'Application has been submitted!',
-          alertSeverity: 'success'
-        })
-        this.fetchApplicationTemplate()
-      } else {
-        this.setState({
-          alertMsg: `Error: ${res.message}`,
-          alertSeverity: 'warning'
-        })
-      }
-    })
-  }
-
   render() {
     return (
       this.state.loading ? <CircularProgress /> :
@@ -159,26 +131,25 @@ class SubmitApplicationDraft extends React.Component {
             }
           </Grid>
         )}
-        {this.state.submit_to_change ? 
-          <Grid item xs={12}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Typography variant='h4'>Submit to</Typography>
-              </Grid>
-              <Grid item xs={'auto'}>
-                <CustomSelect
-                  label= "Submit to"
-                  fieldType= 'select'
-                  menuItems={[{id: '',label: 'None'}]}
-                  endpoint= 'autocomplete/faculty'
-                  sx={{minWidth: '150px'}}
-                  onChange={(e) => this.setState({submit_to: e.target.value})}
-                  value={this.state.submit_to}
-                />
-              </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant='h4'>Submit to</Typography>
             </Grid>
-          </Grid> : <></>
-        }
+            <Grid item xs={'auto'}>
+              <CustomSelect
+                label= "Submit to"
+                fieldType= 'select'
+                menuItems={[{id: '',label: 'None'}]}
+                endpoint= 'autocomplete/faculty'
+                sx={{minWidth: '150px'}}
+                onChange={(e) => this.setState({submit_to: e.target.value})}
+                value={this.state.submit_to}
+                disabled={true}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
         <Grid item xs={12}>
           <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
         </Grid>
@@ -186,11 +157,11 @@ class SubmitApplicationDraft extends React.Component {
           <CustomButton 
             variant="contained" 
             label={this.state.callingApi ? <CircularProgress color="secondary" size='20px'/> : "Submit Application"} 
-            onClick={this.submitApplication}/>
+            />
         </Grid>
       </Grid>
     );
   }
 }
 
-export default withRouter(SubmitApplicationDraft);
+export default withRouter(viewApplicationsDetail);

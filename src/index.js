@@ -45,6 +45,7 @@ import MisApplicationsTemplatesCreateUpdate from "./views/MIS/Applications/Appli
 import SubmitApplication from "./views/MIS/Applications/SubmitApplication";
 import SubmitApplicationDraft from "./views/MIS/Applications/SubmitApplicationDraft";
 import ViewApplications from "./views/MIS/Applications/viewApplications";
+import ViewApplicationsDetail from "./views/MIS/Applications/viewApplicationsDetail";
 
 export default function Router() {
   return (
@@ -99,6 +100,7 @@ export default function Router() {
           <Route path="applications/submitApplication" element={<SubmitApplication/>}/>
             <Route path="applications/submitApplication/draft" element={<SubmitApplicationDraft/>}/>
           <Route path="applications/viewApplications" element={<ViewApplications/>}/>
+            <Route path="applications/viewApplications/detail" element={<ViewApplicationsDetail/>}/>
 
           <Route path="tportal/courses" element={<MisTeachersCourses />} />
           <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />

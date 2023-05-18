@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from '../../../withRouter';
 import CustomTable from '../../../components/CustomTable';
 import { user } from '../../../objects/User';
-import { CircularProgress, Grid, Typography } from '@mui/material';
+import { CircularProgress, Grid, Typography, Tabs, Tab, Card } from '@mui/material';
 import { socket } from '../../../websocket/socket';
 
 class ViewApplications extends React.Component {
@@ -10,11 +10,11 @@ class ViewApplications extends React.Component {
         super(props);
         this.state = {
             loadingApplications: false,
-            receivedApplicationsArr: [],
             submittedApplicationsArr: [],
+            receivedApplicationsArr: [],
             forwardedApplicationsArr: [],
             
-            application_type: 'submitted'
+            tabIndex: 0,
         }
     }
 
@@ -38,36 +38,63 @@ class ViewApplications extends React.Component {
                 return this.setState({
                     submittedApplicationsArr: res.data.filter(app => app.submitted_by == user?.user_id),
                     receivedApplicationsArr: res.data.filter(app => app.submitted_to == user?.user_id),
+                    forwardedApplicationsArr: res.data.filter(app => app.forwarded_to.some(user => user.user_id == user?.user_id)),
                     loadingApplications: false,
                 });
             }
         });
     }
 
-    tableColumns = [
+    tableColumns = () => [
         { id: "application_title", label: "Title", format: (value) => value },
+        {   id:  'tbd', 
+            label: this.state.tabIndex == 0 ? 'Sent to' : 
+                this.state.tabIndex == 1 ? 'Received From' : 
+                this.state.tabIndex == 2 ? 'Forwarded By' : '', 
+            format: (value) => value 
+        },
         { id: "status", label: "Status", format: (value) => value },
-        { id: "detail_structure", label: "Body", format: (value) => JSON.stringify(value) },
+        { id: "tbd", label: "Body", format: (value) => JSON.stringify(value) },
     ];
 
     render() {
         return (
             this.state.loading ? <CircularProgress /> :
-            <Grid container>
+            <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <Typography>My Applications</Typography>
+                    <Typography variant='h3'>My Applications</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <Tabs value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})} aria-label="basic tabs example">
+                        <Tab label="Submitted"/>
+                        <Tab label="Received" />
+                        <Tab label="Forwarded to me" />
+                    </Tabs>
                 </Grid>
                 <Grid item xs={12}>
                     <CustomTable
+                        maxWidth={'100%'}
                         loadingState={this.state.loadingApplications}
+                        viewButtonLabel='View Application'
+                        onRowClick={(application) =>
+                            this.props.navigate("detail", {
+                                state: { application_id: application.application_id },
+                            })
+                        }
                         onViewClick={(application) =>
                             this.props.navigate("detail", {
                                 state: { application_id: application.application_id },
                             })
                         }
-                        rows={this.state.application_type == 'received' ? this.state.receivedApplicationsArr : this.state.application_type == 'submitted' ? this.state.submittedApplicationsArr : []}
-                        columns={this.tableColumns}
+                        rows={
+                            this.state.tabIndex == 0 ? this.state.submittedApplicationsArr : 
+                            this.state.tabIndex == 1 ? this.state.receivedApplicationsArr : 
+                            this.state.tabIndex == 2 ? this.state.forwardedApplicationsArr : 
+                            []
+                        }
+                        columns={this.tableColumns()}
                     />
+                    
                 </Grid>
             </Grid>
         )

@@ -42,7 +42,8 @@ interface IProps {
   nthRowBackgroundColor?: string,
   footerTextColor?: string,
   footerBackgroundColor?: string,
-  loadingState?: boolean
+  loadingState?: boolean,
+  maxWidth?: string
 }
 
 interface IState {
@@ -105,7 +106,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
     }));
 
     return (
-      <Paper sx={{ width: '100%', overflow: 'hidden', margin: '10px' }}>
+      <Paper sx={{ overflow: 'hidden', maxWidth: this.props.maxWidth }}>
         {this.props.loadingState ? <LoadingIcon /> :
           <React.Fragment>
             <TableContainer sx={{ maxHeight: 440, backgroundColor: styles.background }}>
@@ -121,7 +122,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
                         {column.label}
                       </StyledTableCell>
                     ))}
-                    {this.props.onEditClick || this.props.onDeleteClick ?
+                    {this.props.onEditClick || this.props.onDeleteClick || this.props.onViewClick ?
                       <StyledTableCell
                         key="action_buttons"
                         align="left"
@@ -144,7 +145,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
                               </StyledTableCell>
                             );
                           })}
-                          {this.props.onEditClick || this.props.onDeleteClick?
+                          {this.props.onEditClick || this.props.onDeleteClick || this.props.onViewClick?
                             <StyledTableCell key="action_buttons">
                               {this.props.onEditClick ? 
                               <IconButton style={{ color: Color.deepPurple[500] }} onClick={() => this.props.onEditClick(row)}><Edit /></IconButton>:<></>}
