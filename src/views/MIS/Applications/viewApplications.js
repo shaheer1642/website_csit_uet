@@ -4,6 +4,7 @@ import CustomTable from '../../../components/CustomTable';
 import { user } from '../../../objects/User';
 import { CircularProgress, Grid, Typography, Tabs, Tab, Card } from '@mui/material';
 import { socket } from '../../../websocket/socket';
+import theme from '../../../theme';
 
 class ViewApplications extends React.Component {
     constructor(props) {
@@ -64,8 +65,8 @@ class ViewApplications extends React.Component {
                 <Grid item xs={12}>
                     <Typography variant='h3'>My Applications</Typography>
                 </Grid>
-                <Grid item xs={12}>
-                    <Tabs value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})} aria-label="basic tabs example">
+                <Grid item xs={'auto'}>
+                    <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})} aria-label="basic tabs example">
                         <Tab label="Submitted"/>
                         <Tab label="Received" />
                         <Tab label="Forwarded to me" />

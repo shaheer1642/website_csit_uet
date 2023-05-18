@@ -106,7 +106,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
     }));
 
     return (
-      <Paper sx={{ overflow: 'hidden', maxWidth: this.props.maxWidth }}>
+      <Paper sx={{ overflow: 'hidden', maxWidth: this.props.maxWidth, width: '100%' }}>
         {this.props.loadingState ? <LoadingIcon /> :
           <React.Fragment>
             <TableContainer sx={{ maxHeight: 440, backgroundColor: styles.background }}>
