@@ -30,8 +30,8 @@ interface column {
 interface IProps {
   rows: Array<any>,
   columns: Array<column>,
-  onViewClick?: Function,
   viewButtonLabel?: string,
+  onViewClick?: Function,
   onRowClick?: Function,
   onEditClick?: Function,
   onDeleteClick?: Function,

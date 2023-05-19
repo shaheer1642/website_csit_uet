@@ -174,8 +174,7 @@ function MisLayout() {
             </DrawerHeader>
             <List>
                 {
-                  user.user_type == 'admin' || user.user_type == 'pga' ? 
-                  (
+                  user.user_type == 'admin' || user.user_type == 'pga' || user.user_type == 'teacher' ? 
                     <React.Fragment>
                       <ListItemButton
                         component={Link} 
@@ -288,27 +287,27 @@ function MisLayout() {
                       </ListItemButton>
 
                       {user.user_type == 'pga' ? 
-                          <ListItemButton
-                            component={Link} 
-                            to="thesis"
+                        <ListItemButton
+                          component={Link} 
+                          to="thesis"
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                          }}
+                          onClick={() => setCurrentMenu('thesis')}
+                        >
+                          <ListItemIcon
                             sx={{
-                              minHeight: 48,
-                              justifyContent: open ? 'initial' : 'center',
-                              px: 2.5,
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
                             }}
-                            onClick={() => setCurrentMenu('thesis')}
                           >
-                            <ListItemIcon
-                              sx={{
-                                minWidth: 0,
-                                mr: open ? 3 : 'auto',
-                                justifyContent: 'center',
-                              }}
-                            >
-                              <Icon.Article style={{color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined}}/>
-                            </ListItemIcon>
-                            <ListItemText primary='Thesis Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                          </ListItemButton> : <></>
+                            <Icon.Article style={{color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined}}/>
+                          </ListItemIcon>
+                          <ListItemText primary='Thesis Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton> : <></>
                       }
 
                       <ListItemButton
@@ -333,27 +332,53 @@ function MisLayout() {
                         <ListItemText primary='Instructors' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                       </ListItemButton>
 
-                      <ListItemButton
-                        component={Link}
-                        to="courses"
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                        }}
-                        onClick={() => setCurrentMenu('courses')}
-                      >
-                        <ListItemIcon
+                      {user.user_type == 'pga' || user.user_type == 'admin' ? 
+                        <ListItemButton
+                          component={Link}
+                          to="courses"
                           sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
                           }}
+                          onClick={() => setCurrentMenu('courses')}
                         >
-                          <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
-                        </ListItemIcon>
-                        <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                      </ListItemButton>
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
+                          </ListItemIcon>
+                          <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton> : <></>
+                      }
+
+                      {user.user_type == 'teacher' ?
+                        <ListItemButton
+                          component={Link} 
+                          to="tportal/courses"
+                          sx={{
+                            minHeight: 48,
+                            justifyContent: open ? 'initial' : 'center',
+                            px: 2.5,
+                          }}
+                          onClick={() => setCurrentMenu('courses')}
+                        >
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 0,
+                              mr: open ? 3 : 'auto',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
+                          </ListItemIcon>
+                          <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                        </ListItemButton> : <></>
+                      }
 
                       <ListItemButton 
                         component={Link}
@@ -379,7 +404,7 @@ function MisLayout() {
                         <ListItemText primary="Applications" sx={{ opacity: open ? 1 : 0, '&:hover': {color: Color.deepPurple[700]} }}/>
                         {open ? applicationsOpen ? <Icon.ExpandLess /> : <Icon.ExpandMore /> : <></>}
                       </ListItemButton>
-                      
+
                       <Collapse in={open ? applicationsOpen : false} timeout="auto" unmountOnExit>
                         <ListItemButton
                           component={Link}
@@ -423,31 +448,7 @@ function MisLayout() {
                       </Collapse>
                       
                     </React.Fragment>
-                  ) : user.user_type == 'teacher' ?
-                  <React.Fragment>
-                    <ListItemButton component={Link} to="tportal/courses" disablePadding sx={{ display: 'block' }}>
-                      <ListItemButton
-                        sx={{
-                          minHeight: 48,
-                          justifyContent: open ? 'initial' : 'center',
-                          px: 2.5,
-                        }}
-                        onClick={() => setCurrentMenu('courses')}
-                      >
-                        <ListItemIcon
-                          sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : 'auto',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
-                        </ListItemIcon>
-                        <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                      </ListItemButton>
-                    </ListItemButton>
-                    </React.Fragment>
-                    : <></>
+                  : <></>
                 }
               <Divider />
               <ListItem disablePadding sx={{ display: 'block' }}>
@@ -472,9 +473,6 @@ function MisLayout() {
                 </ListItemButton>
               </ListItem>
             </List>
-
-
-
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: Color.grey[100], minHeight: '100vh' }}>
             <DrawerHeader />
