@@ -55,14 +55,13 @@ class SubmitApplicationDraft extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: false,
+      loading: true,
 
       alertMsg: '',
       alertSeverity: 'warning',
 
-      application_title: '',
-      detail_structure: [],
-      submit_to: '',
+      applicationTemplate: {},
+
       submit_to_change: false,
 
       callingApi: false
@@ -91,11 +90,9 @@ class SubmitApplicationDraft extends React.Component {
       this.setState({loading: false})
       if (res.code == 200 && res.data.length == 1) {
         const applicationTemplate = res.data[0]
-        console.log(applicationTemplate)
+        console.log('fetchApplicationTemplate', applicationTemplate)
         return this.setState({
-          detail_structure: applicationTemplate.detail_structure,
-          submit_to: applicationTemplate.submit_to,
-          application_title: applicationTemplate.application_title,
+          applicationTemplate: applicationTemplate,
           submit_to_change: applicationTemplate.submit_to ? false : true
         });
       } else {
@@ -105,27 +102,19 @@ class SubmitApplicationDraft extends React.Component {
   }
 
   updateField = (key,value,index) => {
-    return this.setState(state => {
-        const detail_structure = state.detail_structure.map((field, i) => {
-          if (i === index) {
-            field[key] = value
-            return field
-          }
-          else return field
-        });
-        return {
-          detail_structure,
-        }
-    });
+    var applicationTemplate = this.state.applicationTemplate
+    applicationTemplate.detail_structure[index][key] = value
+    return this.setState({
+      applicationTemplate: applicationTemplate
+    })
   }
 
   submitApplication = () => {
     this.setState({callingApi: true})
     socket.emit('applications/create',{
-      application_title: this.state.application_title, 
-      detail_structure: this.state.detail_structure, 
-      submitted_by: user.user_id, 
-      submitted_to: this.state.submit_to, 
+      application_title: this.state.applicationTemplate.application_title, 
+      detail_structure: this.state.applicationTemplate.detail_structure, 
+      submitted_to: this.state.applicationTemplate.submit_to, 
     }, (res) => {
       this.setState({callingApi: false})
       if (res.code == 200) {
@@ -149,9 +138,9 @@ class SubmitApplicationDraft extends React.Component {
       <Grid container spacing={2}>
         <GoBackButton context={this.props.navigate}/>
         <Grid item xs={12}>
-          <Typography variant='h4'>{this.state.application_title}</Typography>
+          <Typography variant='h4'>{this.state.applicationTemplate.application_title}</Typography>
         </Grid>
-        {this.state.detail_structure.map((field,index) => 
+        {this.state.applicationTemplate.detail_structure.map((field,index) => 
           <Grid item xs={field.multi_line ? 12 : 'auto'}>
             {field.field_type == 'string' ? 
               <CustomTextField multiline={field.multi_line} rows={field.multi_line ? 4 : 1} sx={{width: field.multi_line ? '80%' : undefined}} variant='filled' label={field.field_name} disabled={field.disabled} required={field.required} value={field.field_value} onChange={(e) => this.updateField('field_value',e.target.value,index)}/>
@@ -169,11 +158,14 @@ class SubmitApplicationDraft extends React.Component {
                 <CustomSelect
                   label= "Submit to"
                   fieldType= 'select'
-                  menuItems={[{id: '',label: 'None'}]}
-                  endpoint= 'autocomplete/faculty'
+                  endpoint= 'autocomplete/users'
+                  endpointData={{
+                    exclude_user_types: this.state.applicationTemplate.submit_to_type == 'teacher_only' ? ['admin','pga','student'] : ['student'],
+                    exclude_user_ids: [user?.user_id]
+                  }}
                   sx={{minWidth: '150px'}}
-                  onChange={(e) => this.setState({submit_to: e.target.value})}
-                  value={this.state.submit_to}
+                  onChange={(e,option) => this.setState({submit_to: option.id})}
+                  value={this.state.applicationTemplate.submit_to}
                 />
               </Grid>
             </Grid>

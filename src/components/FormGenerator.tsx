@@ -190,7 +190,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                           endpointData={this.props.options[attribute.key]?.endpointData} 
                           menuItems={this.props.options[attribute.key]?.selectMenuItems} 
                           label={this.props.options[attribute.key]?.label}
-                          onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.value)}
+                          onChange={(e,option) => this.handleFormFieldChange(attribute.key, option.id)}
                           required={attribute.required}
                         />:
                         <CustomTextField 

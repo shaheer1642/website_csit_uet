@@ -172,7 +172,7 @@ class MisThesisManagement extends React.Component {
                   value={this.state.student_thesis.supervisor_id}
                   endpoint='autocomplete/teachers'
                   label='Supervisor'
-                  onChange={(e) => this.updateStudentThesis('supervisor_id',e.target.value)}
+                  onChange={(e,option) => this.updateStudentThesis('supervisor_id',option.id)}
                 />
               </Grid>
               <Grid item xs={2}>
@@ -180,7 +180,7 @@ class MisThesisManagement extends React.Component {
                   value={this.state.student_thesis.co_supervisor_id}
                   endpoint='autocomplete/teachers'
                   label='Co-Supervisor'
-                  onChange={(e) => this.updateStudentThesis('co_supervisor_id',e.target.value)}
+                  onChange={(e,option) => this.updateStudentThesis('co_supervisor_id',option.id)}
                 />
               </Grid>
               {

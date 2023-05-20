@@ -106,7 +106,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
 
   addNewField = () => {
     this.setState({
-      detail_structure : [...this.state.detail_structure, {field_name: '',field_value: '',placeholder: '',field_type: '',disabled: false,required: true,multi_line: false}]
+      detail_structure : [...this.state.detail_structure, {field_name: '',field_value: '',placeholder: '',field_type: 'string',disabled: false,required: true,multi_line: false}]
     })
   }
 
@@ -200,7 +200,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
               <CustomSelect
                 label= "Degree"
                 sx={{minWidth: '150px'}}
-                onChange={(e) => this.setState({degree_type: e.target.value})}
+                onChange={(e,option) => this.setState({degree_type: option.id})}
                 menuItems={[{id: '',label: 'None'},{id: 'ms',label: 'MS'},{id: 'phd',label: 'PhD'}]}
                 value={this.state.degree_type}
               />
@@ -219,7 +219,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
                 menuItems={[{id: '',label: 'None'}]}
                 endpoint= 'autocomplete/faculty'
                 sx={{minWidth: '150px'}}
-                onChange={(e) => this.setState({submit_to: e.target.value})}
+                onChange={(e,option) => this.setState({submit_to: option.id})}
                 value={this.state.submit_to}
               />
             </Grid>
@@ -246,7 +246,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
                 </Grid>
               }
               <Grid item xs="auto">
-                <CustomSelect sx={{minWidth: '130px'}} required label="Field Type" value={field.field_type} menuItems={[{id: 'string',label: 'Text'},{id: 'number',label: 'Number'}]} onChange={(e) => this.updateField('field_type',e.target.value,index)}/>
+                <CustomSelect sx={{minWidth: '200px'}} required label="Field Type" value={field.field_type} menuItems={[{id: 'string',label: 'Text'},{id: 'number',label: 'Number'}]} onChange={(e,option) => this.updateField('field_type',option.id,index)}/>
               </Grid>
               <Grid item xs="auto">
                 <FormControlLabel control={<Checkbox required checked={field.disabled} onChange={(e) => this.updateField('disabled',e.target.checked,index)}/>} label="Disabled" />

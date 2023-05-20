@@ -19,6 +19,7 @@ import CustomAlert from "../../../components/CustomAlert";
 import GoBackButton from "../../../components/GoBackButton";
 import { user } from "../../../objects/User";
 import { convertUpper } from "../../../extras/functions";
+import { getUserNameById } from "../../../objects/Users_List";
 
 const palletes = {
   primary: "#439CEF",
@@ -144,11 +145,8 @@ class viewApplicationsDetail extends React.Component {
     this.setState({callingApi: true})
     socket.emit("applications/forward", {
       application_id: this.application_id,
-      forwarded_to: {
-        sender_id: user?.user_id,
-        receiver_id: this.state.forward_to,
-        sender_remarks: this.state.remarks
-      }
+      forward_to: this.state.forward_to,
+      remarks: this.state.remarks
     }, (res) => {
       this.setState({callingApi: false})
       if (res.code == 200) {
@@ -165,6 +163,14 @@ class viewApplicationsDetail extends React.Component {
     });
   }
 
+  getForwardersList = () => {
+    var all_forwards = []
+    this.state.application.forwarded_to.map(forward => {
+      if (forward.receiver_id == user.user_id) all_forwards.push(`${getUserNameById(forward.sender_id)} (${forward.status} by you)`)
+    })
+    return all_forwards
+  }
+
   render() {
     return (
       this.state.loading ? <CircularProgress /> :
@@ -175,10 +181,10 @@ class viewApplicationsDetail extends React.Component {
         </Grid>
         <Grid container item xs={12} marginLeft={2} spacing={1}>
           <Grid item xs={'auto'}>
-            {this.fieldComponent("Submitted by",this.state.application.submitted_by)}
+            {this.fieldComponent("Submitted by",getUserNameById(this.state.application.submitted_by))}
           </Grid>
           <Grid item xs={'auto'}>
-            {this.fieldComponent("Submitted to",this.state.application.submitted_to)}
+            {this.fieldComponent("Submitted to",getUserNameById(this.state.application.submitted_to))}
           </Grid>
           <Grid item xs={12}></Grid>
           {this.state.application.detail_structure.map((field,index) => 
@@ -188,15 +194,15 @@ class viewApplicationsDetail extends React.Component {
           )}
         </Grid>
         <Grid item xs={12}>
-          <Typography variant='h3'>Status</Typography>
+          <Typography variant='h4'>Status</Typography>
         </Grid>
         <Grid item xs={12} marginLeft={2}>
           {this.state.application.status == 'under_review' ?
             <Typography variant='body1'>
               {`Pending review from 
               ${this.state.application.forwarded_to.some(forward => forward.status == 'under_review') ? 
-              this.state.application.forwarded_to.filter(forward => forward.status == 'under_review')[0].receiver_id
-              : this.state.application.submitted_to}`}
+              getUserNameById(this.state.application.forwarded_to.filter(forward => forward.status == 'under_review')[0].receiver_id)
+              : getUserNameById(this.state.application.submitted_to)}`}
             </Typography> : <Typography variant='body1'>{convertUpper(this.state.application.status)}</Typography>
           }
         </Grid>
@@ -206,32 +212,42 @@ class viewApplicationsDetail extends React.Component {
         {this.state.application.remarks ? 
           <React.Fragment>
             <Grid item xs={12}>
-              <Typography variant='h3'>Final Remarks</Typography>
+              <Typography variant='h4'>Final Remarks</Typography>
             </Grid>
             <Grid item xs={12} marginLeft={2}>
               <Typography variant='body1'>{this.state.application.remarks}</Typography>
             </Grid>
           </React.Fragment>:<></>
         }
+        {this.state.application.forwarded_to.some(forward => forward.receiver_id == user.user_id) ? 
+          <React.Fragment>
+            <Grid item xs={12}>
+              <Typography variant='h4'>Forwarded By</Typography>
+            </Grid>
+            <Grid item xs={12} marginLeft={2}>
+                {this.getForwardersList().map(str => <Typography variant='body1'>{str}</Typography>)}
+            </Grid>
+          </React.Fragment>:<></>
+        }
         <Grid item xs={12}>
-          <Typography variant='h3'>Progress Tracking</Typography>
+          <Typography variant='h4'>Progress Tracking</Typography>
         </Grid>
         <Grid container item xs={12} marginLeft={2}>
           <Grid item xs={12}>
-            <Typography variant='body1'>Submitted by {this.state.application.submitted_by} on {new Date(Number(this.state.application.application_creation_timestamp)).toLocaleDateString()}</Typography>
+            <Typography variant='body1'>Submitted by {getUserNameById(this.state.application.submitted_by)} on {new Date(Number(this.state.application.application_creation_timestamp)).toLocaleDateString()}</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant='body1'>Received by {this.state.application.submitted_to} on {new Date(Number(this.state.application.application_creation_timestamp)).toLocaleDateString()}</Typography>
+            <Typography variant='body1'>Received by {getUserNameById(this.state.application.submitted_to)} on {new Date(Number(this.state.application.application_creation_timestamp)).toLocaleDateString()}</Typography>
           </Grid>
           {this.state.application.forwarded_to.map(forward => {
             return (
               <React.Fragment>
                 <Grid item xs={12}>
-                  <Typography variant='body1'>Forwarded to {forward.receiver_id} on {new Date(Number(forward.forward_timestamp)).toLocaleDateString()} by {forward.sender_id} with remarks "{forward.sender_remarks}"</Typography>
+                  <Typography variant='body1'>Forwarded to {getUserNameById(forward.receiver_id)} on {new Date(Number(forward.forward_timestamp)).toLocaleDateString()} by {getUserNameById(forward.sender_id)} with remarks "{forward.sender_remarks}"</Typography>
                 </Grid>
                 {forward.status != 'under_review' ? 
                 <Grid item xs={12}>
-                  <Typography variant='body1'>Marked as {forward.status} by {forward.receiver_id} on {new Date(Number(forward.completion_timestamp)).toLocaleDateString()} with remarks "{forward.receiver_remarks}"</Typography>
+                  <Typography variant='body1'>Marked as {forward.status} by {getUserNameById(forward.receiver_id)} on {new Date(Number(forward.completion_timestamp)).toLocaleDateString()} with remarks "{forward.receiver_remarks}"</Typography>
                 </Grid>:<></>
               }
               </React.Fragment>
@@ -239,7 +255,7 @@ class viewApplicationsDetail extends React.Component {
           })}
           {this.state.application.status != 'under_review' ?
             <Grid item xs={12}>
-              <Typography variant='body1'>Marked as {this.state.application.status} by {this.state.application.submitted_to} on {new Date(Number(this.state.application.application_completion_timestamp)).toLocaleDateString()}  with remarks "{this.state.application.remarks}"</Typography>
+              <Typography variant='body1'>Marked as {this.state.application.status} by {getUserNameById(this.state.application.submitted_to)} on {new Date(Number(this.state.application.application_completion_timestamp)).toLocaleDateString()}  with remarks "{this.state.application.remarks}"</Typography>
             </Grid> : <></>
           }
         </Grid>
@@ -247,12 +263,12 @@ class viewApplicationsDetail extends React.Component {
         ((this.state.application.submitted_to == user?.user_id && !(this.state.application.forwarded_to.some(forward => forward.status == 'under_review'))) || this.state.application.forwarded_to.some(forward => forward.status == 'under_review' && forward.receiver_id == user.user_id)) ?
         <React.Fragment>
           <Grid item xs={12}>
-            <Typography variant='h3'>Take Action</Typography>
+            <Typography variant='h4'>Take Action</Typography>
           </Grid>
           <Grid container item xs={12} marginLeft={2} spacing={1}>
               <Grid item xs={12}>
                 <RadioGroup row value={this.state.takeAction} onChange={(e) => this.setState({takeAction: e.target.value})}>
-                  <FormControlLabel value="completed" control={<Radio />} label="Mark as Completed" />
+                  <FormControlLabel value="approved" control={<Radio />} label="Approve Application" />
                   <FormControlLabel value="rejected" control={<Radio />} label="Reject Application" />
                   <FormControlLabel value="forward" control={<Radio />} label="Forward Application" />
                 </RadioGroup>
@@ -263,9 +279,13 @@ class viewApplicationsDetail extends React.Component {
                     required
                     label= "Forward to"
                     fieldType= 'select'
-                    endpoint= 'autocomplete/faculty'
+                    endpoint= 'autocomplete/users'
+                    endpointData={{
+                      exclude_user_types: ['student'],
+                      exclude_user_ids: [this.state.application.submitted_to, this.state.application.submitted_by, user?.user_id],
+                    }}
                     sx={{minWidth: '150px'}}
-                    onChange={(e) => this.setState({forward_to: e.target.value})}
+                    onChange={(e,option) => this.setState({forward_to: option.id})}
                     value={this.state.forward_to}
                   />
                 </Grid> : <></>

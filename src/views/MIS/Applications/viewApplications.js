@@ -5,6 +5,7 @@ import { user } from '../../../objects/User';
 import { CircularProgress, Grid, Typography, Tabs, Tab, Card } from '@mui/material';
 import { socket } from '../../../websocket/socket';
 import theme from '../../../theme';
+import { getUserNameById } from '../../../objects/Users_List';
 
 class ViewApplications extends React.Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class ViewApplications extends React.Component {
                 return this.setState({
                     submittedApplicationsArr: res.data.filter(app => app.submitted_by == user?.user_id),
                     receivedApplicationsArr: res.data.filter(app => app.submitted_to == user?.user_id),
-                    forwardedApplicationsArr: res.data.filter(app => app.forwarded_to.some(user => user.user_id == user?.user_id)),
+                    forwardedApplicationsArr: res.data.filter(app => app.forwarded_to.some(forward => forward.receiver_id == user?.user_id)),
                     loadingApplications: false,
                 });
             }
@@ -48,11 +49,12 @@ class ViewApplications extends React.Component {
 
     tableColumns = () => [
         { id: "application_title", label: "Title", format: (value) => value },
-        {   id:  'tbd', 
+        {   
+            id: this.state.tabIndex == 0 ? 'submitted_to' : 
+                this.state.tabIndex == 1 ? 'submitted_by' : '',
             label: this.state.tabIndex == 0 ? 'Sent to' : 
-                this.state.tabIndex == 1 ? 'Received From' : 
-                this.state.tabIndex == 2 ? 'Forwarded By' : '', 
-            format: (value) => value 
+                this.state.tabIndex == 1 ? 'Received From' : '',
+            format: (value) => getUserNameById(value) 
         },
         { id: "status", label: "Status", format: (value) => value },
         { id: "tbd", label: "Body", format: (value) => JSON.stringify(value) },
