@@ -43,7 +43,8 @@ interface IProps {
   footerTextColor?: string,
   footerBackgroundColor?: string,
   loadingState?: boolean,
-  maxWidth?: string
+  maxWidth?: string,
+  rowSx?: Function
 }
 
 interface IState {
@@ -136,9 +137,18 @@ export default class CustomTable extends React.Component<IProps, IState> {
                   {this.props.rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                     .map((row, index) => {
                       return (
-                        <StyledTableRow hover role="checkbox" key={index}>
+                        <TableRow hover role="checkbox" key={index} sx={((this.props.rowSx ? this.props.rowSx(row) : undefined) || {
+                          backgroundColor: this.props.rowBackgroundColor || defaultStyles.colors.rowBackgroundColor,
+                          '&:nth-of-type(odd)': {
+                            backgroundColor: this.props.nthRowBackgroundColor || defaultStyles.colors.nthRowBackgroundColor,
+                          },
+                          // hide last border
+                          '&:last-child td, &:last-child th': {
+                            border: 0,
+                          },
+                      })}>
                           {this.props.columns.map((column, index) => {
-                            const value = row[column.id];
+                            const value = column.valueFunc ? column.valueFunc(row) : row[column.id];
                             return (
                               <StyledTableCell onClick={() => this.props.onRowClick ? this.props.onRowClick(row) : {}} key={index} align={column.align}>
                                 {column.format ? column.format(value) : value}
@@ -155,7 +165,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
                               <CustomButton fontSize={'12px'} size='small' variant='outlined' label={this.props.viewButtonLabel} onClick={() => this.props.onViewClick(row)} />:<></>}
                             </StyledTableCell> : <></>
                           }
-                        </StyledTableRow >
+                        </TableRow >
                       );
                     })}
                 </TableBody>

@@ -10,6 +10,7 @@ import CustomButton from "../../../../components/CustomButton";
 import CustomModal from "../../../../components/CustomModal";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import CustomCard from "../../../../components/CustomCard";
+import { user } from "../../../../objects/User";
 
 const palletes = {
   primary: "#439CEF",
@@ -41,7 +42,7 @@ class MisApplicationsTemplates extends React.Component {
   }
 
   fetchApplicationsTemplates = () => {
-    socket.emit("applicationsTemplates/fetch", {}, (res) => {
+    socket.emit("applicationsTemplates/fetch", {restrict_visibility: false}, (res) => {
       if (res.code == 200) {
         return this.setState({
           applicationsTemplatesArr: res.data,

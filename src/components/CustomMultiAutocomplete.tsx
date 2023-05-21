@@ -48,6 +48,7 @@ export default class CustomMultiAutocomplete extends React.Component<IProps, ISt
         return (
             this.state.componentLoading ? <LoadingIcon />:
             <Autocomplete
+                disableClearable
                 multiple
                 options={this.state.menuItems}
                 disableCloseOnSelect

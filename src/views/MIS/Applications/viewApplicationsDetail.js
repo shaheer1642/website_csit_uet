@@ -1,7 +1,7 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from "react";
 import { Grid, Typography, IconButton, ButtonGroup, Zoom, Alert, CircularProgress, 
-  Card, Box, CardContent, CardActions, Checkbox, FormControlLabel, TextField, RadioGroup, Radio
+  Card, Box, CardContent, CardActions, Checkbox, FormControlLabel, TextField, RadioGroup, Radio, Modal
 } from "@mui/material";
 import { Add, Cancel, DeleteOutline, Menu } from "@mui/icons-material";
 import * as Color from "@mui/material/colors";
@@ -26,35 +26,6 @@ const palletes = {
   secondary: "#FFFFFF",
 };
 
-const styles = {
-  alertBox: {
-    warning: {
-      width: '100%',
-      borderRadius: 0,
-      color: palletes.alertWarning, // text color
-      borderColor: palletes.alertWarning,
-      my: '10px',
-      py: "5px",
-      px: "10px",
-      '& .MuiAlert-icon': {
-        color: palletes.alertWarning, // icon color
-      },
-    },
-    success: {
-      width: '100%',
-      borderRadius: 0,
-      color: palletes.alertSuccess, // text color
-      borderColor: palletes.alertSuccess,
-      my: '10px',
-      py: "5px",
-      px: "10px",
-      '& .MuiAlert-icon': {
-        color: palletes.alertSuccess, // icon color
-      },
-    }
-  }
-}
-
 class viewApplicationsDetail extends React.Component {
   constructor(props) {
     super(props);
@@ -69,7 +40,9 @@ class viewApplicationsDetail extends React.Component {
       alertSeverity: 'warning',
 
       takeAction: '',
-      remarks: ''
+      remarks: '',
+
+      applicantDetailModalOpen: false
     };
     this.application_id = this.props.location.state?.application_id
   }
@@ -177,7 +150,7 @@ class viewApplicationsDetail extends React.Component {
       <Grid container spacing={2}>
         <GoBackButton context={this.props.navigate}/>
         <Grid item xs={12}>
-          <Typography variant='h4'>{this.state.application.application_title}</Typography>
+          <Typography variant='h4'>#{this.state.application.serial} {this.state.application.application_title}</Typography>
         </Grid>
         <Grid container item xs={12} marginLeft={2} spacing={1}>
           <Grid item xs={'auto'}>
@@ -230,7 +203,7 @@ class viewApplicationsDetail extends React.Component {
           </React.Fragment>:<></>
         }
         <Grid item xs={12}>
-          <Typography variant='h4'>Progress Tracking</Typography>
+          <Typography variant='h4'>Progress Tracking Logs</Typography>
         </Grid>
         <Grid container item xs={12} marginLeft={2}>
           <Grid item xs={12}>
@@ -299,6 +272,32 @@ class viewApplicationsDetail extends React.Component {
           </Grid>
         </React.Fragment> : <></>
         }
+        {this.state.application.submitted_by != user.user_id ? 
+          <Grid item xs={12}>
+            <CustomButton label="View Applicant Detail" variant="outlined" onClick={() => this.setState({applicantDetailModalOpen: true})} />
+          </Grid> :<></>
+        }
+        <CustomModal
+          open={this.state.applicantDetailModalOpen}
+          onClose={() => this.setState({ applicantDetailModalOpen: false })}
+        >
+          <Grid container spacing={5}>
+            {this.state.application.applicant_detail.map((info) => {
+              return Object.keys(info).filter(key => !['user_id'].includes(key)).map(key => {
+                return (
+                  <Grid container item xs={'auto'}>
+                    <Grid item xs={12}>
+                      <Typography variant='h5'>{convertUpper(key)}</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Typography variant='body1'>{info[key]}</Typography>
+                    </Grid>
+                  </Grid>
+                )
+              })
+            })}
+          </Grid>
+        </CustomModal>
       </Grid>
     );
   }

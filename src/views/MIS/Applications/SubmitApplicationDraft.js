@@ -177,6 +177,7 @@ class SubmitApplicationDraft extends React.Component {
         <Grid item xs={'auto'}>
           <CustomButton 
             variant="contained" 
+            disabled={this.state.callingApi ? true : false}
             label={this.state.callingApi ? <CircularProgress color="secondary" size='20px'/> : "Submit Application"} 
             onClick={this.submitApplication}/>
         </Grid>

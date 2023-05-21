@@ -15,6 +15,7 @@ import CustomSelect from "../../../../components/CustomSelect";
 import { IndexKind } from "typescript";
 import CustomAlert from "../../../../components/CustomAlert";
 import GoBackButton from "../../../../components/GoBackButton";
+import CustomMultiAutocomplete from "../../../../components/CustomMultiAutocomplete";
 
 const palletes = {
   primary: "#439CEF",
@@ -64,6 +65,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
       detail_structure: [],
       degree_type: '',
       submit_to: '',
+      visibility: [],
 
       callingApi: false
     };
@@ -87,7 +89,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
 
   fetchApplicationTemplate = () => {
     this.setState({loading: true})
-    socket.emit("applicationsTemplates/fetch", {template_id: this.template_id}, (res) => {
+    socket.emit("applicationsTemplates/fetch", {template_id: this.template_id, restrict_visibility: false}, (res) => {
       this.setState({loading: false})
       if (res.code == 200 && res.data.length == 1) {
         const applicationTemplate = res.data[0]
@@ -96,7 +98,8 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
           detail_structure: applicationTemplate.detail_structure,
           submit_to: applicationTemplate.submit_to,
           degree_type: applicationTemplate.degree_type,
-          application_title: applicationTemplate.application_title
+          application_title: applicationTemplate.application_title,
+          visibility: applicationTemplate.visibility
         });
       } else {
         this.template_id = null
@@ -137,7 +140,8 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
       detail_structure: this.state.detail_structure, 
       degree_type: this.state.degree_type, 
       submit_to: this.state.submit_to, 
-      application_title: this.state.application_title
+      application_title: this.state.application_title,
+      visibility: this.state.visibility
     }, (res) => {
       this.setState({callingApi: false})
       if (res.code == 200) {
@@ -161,7 +165,8 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
       detail_structure: this.state.detail_structure, 
       degree_type: this.state.degree_type, 
       submit_to: this.state.submit_to, 
-      application_title: this.state.application_title
+      application_title: this.state.application_title,
+      visibility: this.state.visibility
     }, (res) => {
       this.setState({callingApi: false})
       console.log(res)
@@ -215,12 +220,28 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
             <Grid item xs={'auto'}>
               <CustomSelect
                 label= "Received by"
-                fieldType= 'select'
                 menuItems={[{id: '',label: 'None'}]}
                 endpoint= 'autocomplete/faculty'
                 sx={{minWidth: '150px'}}
                 onChange={(e,option) => this.setState({submit_to: option.id})}
                 value={this.state.submit_to}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={'auto'}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant='h4'>Visibility</Typography>
+            </Grid>
+            <Grid item xs={'auto'} sx={{minWidth: '200px'}}>
+              <CustomMultiAutocomplete 
+                label= "Visibility"
+                menuItems={[{id: 'admin',label: 'Admin'},{id: 'pga',label: 'PGA'},{id: 'student',label: 'Students'},{id: 'teacher',label: 'Instructors'}]}
+                values={this.state.visibility}
+                onChange={(e,values) => {
+                  this.setState({visibility: values.map(option => option.id)})
+                }}
               />
             </Grid>
           </Grid>
@@ -271,6 +292,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
         <Grid item xs={'auto'}>
           <CustomButton 
             variant="contained" 
+            disabled={this.state.callingApi ? true : false}
             label={this.state.callingApi ? <CircularProgress size='20px' color="secondary"/> : this.template_id ? "Save changes" : "Create Template"} 
             onClick={this.template_id ? this.submitUpdateTemplate : this.submitCreateTemplate}/>
         </Grid>

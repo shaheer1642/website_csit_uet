@@ -6,6 +6,7 @@ import { CircularProgress, Grid, Typography, Tabs, Tab, Card } from '@mui/materi
 import { socket } from '../../../websocket/socket';
 import theme from '../../../theme';
 import { getUserNameById } from '../../../objects/Users_List';
+import * as Color from "@mui/material/colors";
 
 class ViewApplications extends React.Component {
     constructor(props) {
@@ -36,6 +37,7 @@ class ViewApplications extends React.Component {
     fetchApplications = () => {
         this.setState({loadingApplications: true})
         socket.emit("applications/fetch", {}, (res) => {
+            console.log(res)
             if (res.code == 200) {
                 return this.setState({
                     submittedApplicationsArr: res.data.filter(app => app.submitted_by == user?.user_id),
@@ -48,6 +50,7 @@ class ViewApplications extends React.Component {
     }
 
     tableColumns = () => [
+        { id: "serial", label: "S #", format: (value) => value },
         { id: "application_title", label: "Title", format: (value) => value },
         {   
             id: this.state.tabIndex == 0 ? 'submitted_to' : 
@@ -56,8 +59,11 @@ class ViewApplications extends React.Component {
                 this.state.tabIndex == 1 ? 'Received From' : '',
             format: (value) => getUserNameById(value) 
         },
-        { id: "status", label: "Status", format: (value) => value },
-        { id: "tbd", label: "Body", format: (value) => JSON.stringify(value) },
+        { id: "status", label: "Status", format: (value) => value, valueFunc: (row) => {
+            if (this.state.tabIndex == 2)
+                return row.forwarded_to.filter(forward => forward.receiver_id == user.user_id).pop().status
+            else return row.status
+        } },
     ];
 
     render() {
@@ -67,13 +73,15 @@ class ViewApplications extends React.Component {
                 <Grid item xs={12}>
                     <Typography variant='h3'>My Applications</Typography>
                 </Grid>
-                <Grid item xs={'auto'}>
-                    <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})} aria-label="basic tabs example">
-                        <Tab label="Submitted"/>
-                        <Tab label="Received" />
-                        <Tab label="Forwarded to me" />
-                    </Tabs>
-                </Grid>
+                {['admin','pga','teacher'].includes(user.user_type) ?
+                    <Grid item xs={'auto'}>
+                        <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})} aria-label="basic tabs example">
+                            <Tab label="Submitted"/>
+                            <Tab label="Received" />
+                            <Tab label="Forwarded to me" />
+                        </Tabs>
+                    </Grid> : <></>
+                }
                 <Grid item xs={12}>
                     <CustomTable
                         maxWidth={'100%'}
@@ -96,6 +104,14 @@ class ViewApplications extends React.Component {
                             []
                         }
                         columns={this.tableColumns()}
+                        rowSx={(row) => {
+                            const status = this.state.tabIndex == 2 ? row.forwarded_to.filter(forward => forward.receiver_id == user.user_id).pop().status : row.status 
+                            return status == 'approved' ? {
+                                backgroundColor: Color.green[100]
+                            } : status == 'rejected' ? {
+                                backgroundColor: Color.red[100]
+                            } : undefined
+                        }}
                     />
                     
                 </Grid>
