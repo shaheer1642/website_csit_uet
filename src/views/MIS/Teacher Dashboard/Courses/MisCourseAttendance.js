@@ -23,7 +23,7 @@ import {
   Collapse,
   CircularProgress
 } from "@mui/material";
-import { Add, Cancel, Delete, Edit, ExpandLess, ExpandMore, Remove, Replay, Settings, Update } from '@mui/icons-material';
+import { Add, AddOutlined, Cancel, Delete, Edit, ExpandLess, ExpandMore, Remove, Replay, Settings, Update } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
 import { socket } from "../../../../websocket/socket";
 import { withRouter } from "../../../../withRouter";
@@ -192,6 +192,16 @@ class MisCourseAttendance extends React.Component {
     })
   }
 
+  removeLastWeek = () => {
+    const attendances = this.state.attendances
+    attendances.forEach((obj,index) => {
+      delete attendances[index][`week${Object.keys(obj).filter(k => k.startsWith('week')).length}`]
+    })
+    this.setState({
+      attendances: [...attendances],
+    })
+  }
+
   editWeekClassDate = (week,classIndex,newTimestamp) => {
     console.log('editWeekClassDate',week,classIndex,newTimestamp)
     const attendances = this.state.attendances
@@ -267,16 +277,22 @@ class MisCourseAttendance extends React.Component {
       const obj = {
         student_batch_id: studentCourse.student_batch_id,
       }
-      Array(16).fill(0).forEach((e,index) => {
-        obj[`week${index+1}`] = {
-          classes: studentCourse.attendance[`week${index+1}`]?.classes || [{
-            attendance: '',
-            remarks: '',
-            cancelled: false,
-            timestamp: new Date().getTime()
-          }]
-        }
-      })
+      if (Object.keys(studentCourse.attendance).some(k => k.startsWith('week'))) {
+        Object.keys(studentCourse.attendance).filter(k => k.startsWith('week')).forEach((week,index) => {
+          obj[week] = studentCourse.attendance[week]
+        })
+      } else {
+        Array(16).fill(0).forEach((e,index) => {
+          obj[`week${index+1}`] = {
+            classes: [{
+              attendance: '',
+              remarks: '',
+              cancelled: false,
+              timestamp: new Date().getTime()
+            }]
+          }
+        })
+      }
       attendances.push(obj)
     })
     console.log('generateAttendances',attendances)
@@ -326,10 +342,20 @@ class MisCourseAttendance extends React.Component {
       <React.Fragment>
         <Grid item xs={"auto"}>
           <CustomButton 
+            color='success'
             label="Add Week"
             variant="outlined"
             startIcon={<Add/>}
             onClick={this.addWeek}
+          />
+        </Grid>
+        <Grid item xs={"auto"}>
+          <CustomButton 
+            color='error'
+            label="Remove Last Week"
+            variant="outlined"
+            startIcon={<Remove/>}
+            onClick={this.removeLastWeek}
           />
         </Grid>
         <Grid item xs={12}></Grid>
@@ -403,11 +429,11 @@ class MisCourseAttendance extends React.Component {
                               {Object.keys(this.state.attendances[0]).filter(k => k.startsWith('week')).map((week,index) => {
                                 return (
                                   <StyledTableCell colSpan={this.state.attendances[0][week].classes.length} align='center' sx={{borderLeft: 1}}>
-                                    {`Week ${index + 1}`}
+                                    {`Week ${week.split('week')[1]}`}
                                     {this.state.showSettings ? 
                                       <Tooltip title='Add class'>
-                                        <IconButton sx={{color: 'secondary.light'}} onClick={() => this.addClassInWeek(`week${index + 1}`)}><Add /></IconButton>
-                                      </Tooltip> :<></>
+                                        <IconButton sx={{color: 'secondary.light'}} onClick={() => this.addClassInWeek(`week${index + 1}`)}><AddOutlined /></IconButton>
+                                      </Tooltip> : <></>
                                     }
                                   </StyledTableCell>
                                 )
@@ -419,7 +445,6 @@ class MisCourseAttendance extends React.Component {
                               <StyledTableCell></StyledTableCell>
                               {Object.keys(this.state.attendances[0]).filter(k => k.startsWith('week')).map((week,index) => {
                                 return this.state.attendances[0][week].classes.map((weekClass,index) => {
-                                  console.log('tablecell class',`Class ${index + 1}`)
                                   return (
                                     <StyledTableCell align='center' sx={{borderLeft: 1}}>
                                       {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString()})`}
@@ -441,16 +466,18 @@ class MisCourseAttendance extends React.Component {
                                             disabled={weekClass.cancelled}
                                             onClick={() => this.setState({cancelClassModalOpen: true, cancelClassWeek: week, cancelClassIndex: index})}
                                           />
-                                          <Tooltip title='Reset Settings'>
+                                          <Tooltip title='Reset class'>
                                             <IconButton onClick={() => this.resetWeekClass(week,index)}>
                                               <Replay />
                                             </IconButton>
                                           </Tooltip>
-                                          <Tooltip title='Remove class'>
-                                            <IconButton onClick={() => this.removeClassInWeek(week,index)} disabled={index == 0 ? true : false}>
-                                              <Cancel />
-                                            </IconButton>
-                                          </Tooltip>
+                                            <Tooltip title='Remove class'>
+                                              <span>
+                                                <IconButton onClick={() => this.removeClassInWeek(week,index)} disabled={index == 0 ? true : false}>
+                                                  <Cancel />
+                                                </IconButton>
+                                              </span>
+                                            </Tooltip>
                                         </React.Fragment> :<></>
                                       }
                                     </StyledTableCell>

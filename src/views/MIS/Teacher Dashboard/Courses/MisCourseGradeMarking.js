@@ -278,15 +278,15 @@ class MisGradeMarking extends React.Component {
                               <StyledTableCell key={`tablecell-header-2`} align="left">
                                 Result ({this.state.semesterCourse.grade_distribution.marking.type})
                               </StyledTableCell>
-                              <StyledTableCell key={`tablecell-header-2`} align="left">
+                              <StyledTableCell key={`tablecell-header-3`} align="left">
                                 Normalized (Out of 50)
                               </StyledTableCell>
-                              <StyledTableCell key={`tablecell-header-3`} align="left">
+                              <StyledTableCell key={`tablecell-header-4`} align="left">
                                 Grade ({this.state.semesterCourse.grade_distribution.marking.type})
                               </StyledTableCell>
                               {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
                                 return (
-                                  <StyledTableCell key={`tablecell-header-${index + 4}`} align="center" >
+                                  <StyledTableCell key={`tablecell-header-${index + 5}`} align="center" >
                                     {convertUpper(attribute)}
                                   </StyledTableCell>
                                 )
@@ -306,8 +306,8 @@ class MisGradeMarking extends React.Component {
                                 </StyledTableCell>
                                 <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
                                 <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0}`}</StyledTableCell>
-                                <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.normalized_obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.normalized_total_marks || 0}`}</StyledTableCell>
-                                <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
+                                <StyledTableCell key={`tablecell-3`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.normalized_obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.normalized_total_marks || 0}`}</StyledTableCell>
+                                <StyledTableCell key={`tablecell-4`} align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
                                 {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
                                   return (
                                     <StyledTableCell key={`tablecell-${index + 4}`} align="center">

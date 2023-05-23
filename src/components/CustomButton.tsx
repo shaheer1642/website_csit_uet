@@ -35,7 +35,8 @@ interface IProps {
   startIcon?: React.ReactNode,
   endIcon?: React.ReactNode,
   size?: string,
-  component?: React.Component
+  component?: React.Component,
+  color?: string
 }
 
 export default class CustomButton extends React.Component<IProps> {
@@ -61,7 +62,7 @@ export default class CustomButton extends React.Component<IProps> {
       <Button
         size={this.props.size}
         component={this.props.component}
-        color="primary"
+        color={this.props.color || "primary"}
         sx={{ ...styles, ...this.props.sx }}
         style={this.props.style}
         onClick={this.props.onClick}
