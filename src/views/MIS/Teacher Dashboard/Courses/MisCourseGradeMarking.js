@@ -18,9 +18,11 @@ import {
   TableCell,
   TextField,
   tableCellClasses,
-  styled
+  styled,
+  CircularProgress,
+  Collapse
 } from "@mui/material";
-import { Delete, Edit } from '@mui/icons-material';
+import { Delete, Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
 import { socket } from "../../../../websocket/socket";
 import { withRouter } from "../../../../withRouter";
@@ -134,8 +136,10 @@ class MisGradeMarking extends React.Component {
       markings: [],
 
       alertMsg: '',
-      alertSeverity: 'warning'
-      
+      alertSeverity: 'warning',
+
+      callingApi: false,
+      collapseOpen: false
     };
     this.sem_course_id = this.props.location.state.sem_course_id
     this.timeoutAlertRef = null;
@@ -244,102 +248,120 @@ class MisGradeMarking extends React.Component {
         {this.state.loading ? <LoadingIcon /> :
           <CustomCard
             cardContent={
-              <Grid container rowSpacing={"20px"} columnSpacing={"20px"} style={{padding: '10px'}}>
-                <Grid key={`griditem-0`} item xs={12}>
-                  <Typography variant="h3">
-                    Students Marking
-                  </Typography>
+              <React.Fragment>
+                <Grid container style={{padding: '10px'}}>
+                  <Grid item xs={'auto'}>
+                    <Typography variant="h3">
+                        Students Marking
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <IconButton onClick={() => this.setState((state) => ({collapseOpen: !state.collapseOpen}))}> 
+                      {this.state.collapseOpen ? <ExpandLess /> : <ExpandMore />}
+                    </IconButton>
+                  </Grid>
                 </Grid>
-                <Grid key={`griditem-1`} item xs={12}>
-                  <TableContainer>
-                    <Table size="small">
-                      {/* Headers */}
-                      <TableHead>
-                        <StyledTableRow>
-                          <StyledTableCell key={`tablecell-header-0`} align="left">
-                            Reg #
-                          </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-1`} align="left" style={stickyHeaderCell}>
-                            Student Name
-                          </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-2`} align="left">
-                            Result ({this.state.semesterCourse.grade_distribution.marking.type})
-                          </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-3`} align="left">
-                            Estimated Grade
-                          </StyledTableCell>
-                          {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
-                            return (
-                              <StyledTableCell key={`tablecell-header-${index + 4}`} align="center" >
-                                {convertUpper(attribute)}
+                <Collapse in={this.state.collapseOpen}>
+                  <Grid container spacing={1} style={{padding: '10px'}}>
+                    <Grid key={`griditem-1`} item xs={12}>
+                      <TableContainer>
+                        <Table size="small">
+                          {/* Headers */}
+                          <TableHead>
+                            <StyledTableRow>
+                              <StyledTableCell key={`tablecell-header-0`} align="left">
+                                Reg #
                               </StyledTableCell>
+                              <StyledTableCell key={`tablecell-header-1`} align="left" style={stickyHeaderCell}>
+                                Student Name
+                              </StyledTableCell>
+                              <StyledTableCell key={`tablecell-header-2`} align="left">
+                                Result ({this.state.semesterCourse.grade_distribution.marking.type})
+                              </StyledTableCell>
+                              <StyledTableCell key={`tablecell-header-2`} align="left">
+                                Normalized (Out of 50)
+                              </StyledTableCell>
+                              <StyledTableCell key={`tablecell-header-3`} align="left">
+                                Grade ({this.state.semesterCourse.grade_distribution.marking.type})
+                              </StyledTableCell>
+                              {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
+                                return (
+                                  <StyledTableCell key={`tablecell-header-${index + 4}`} align="center" >
+                                    {convertUpper(attribute)}
+                                  </StyledTableCell>
+                                )
+                              })}
+                            </StyledTableRow>
+                          </TableHead>
+                          {/* Rows */}
+                          <TableBody>
+                          {this.state.courseStudents.map((student,index) => {
+                            return (
+                              <StyledTableRow
+                                key={`tablerow-${index}`}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                              >
+                                <StyledTableCell key={`tablecell-0`} component="th" scope="row">
+                                  {student.reg_no || student.cnic}
+                                </StyledTableCell>
+                                <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
+                                <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0}`}</StyledTableCell>
+                                <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.normalized_obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.normalized_total_marks || 0}`}</StyledTableCell>
+                                <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
+                                {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
+                                  return (
+                                    <StyledTableCell key={`tablecell-${index + 4}`} align="center">
+                                      {attribute == 'attendance' ? this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]:
+                                      <TextField 
+                                        key={`input-${student.student_batch_id}-${index}`}
+                                        onFocus={(e) => e.target.select()} 
+                                        value={this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]} 
+                                        onChange={(e) => this.updateStudentMarking(attribute,student.student_batch_id,e.target.value)} 
+                                        sx={{'.MuiInputBase-input': { fontSize: '15px' }, width: '50px'}} 
+                                        type="tel" size="small"/>
+                                      }
+                                    </StyledTableCell>
+
+                                  )
+                                })}
+                              </StyledTableRow>
                             )
                           })}
-                        </StyledTableRow>
-                      </TableHead>
-                      {/* Rows */}
-                      <TableBody>
-                      {this.state.courseStudents.map((student,index) => {
-                        return (
-                          <StyledTableRow
-                            key={`tablerow-${index}`}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                          >
-                            <StyledTableCell key={`tablecell-0`} component="th" scope="row">
-                              {student.reg_no || student.cnic}
-                            </StyledTableCell>
-                            <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
-                            <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0} (${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.percentage || 0}%)`}</StyledTableCell>
-                            <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
-                            {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
-                              return (
-                                <StyledTableCell key={`tablecell-${index + 4}`} align="center">
-                                  {attribute == 'attendance' ? this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]:
-                                  <TextField 
-                                    key={`input-${student.student_batch_id}-${index}`}
-                                    onFocus={(e) => e.target.select()} 
-                                    value={this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]} 
-                                    onChange={(e) => this.updateStudentMarking(attribute,student.student_batch_id,e.target.value)} 
-                                    sx={{'.MuiInputBase-input': { fontSize: '15px' }, width: '50px'}} 
-                                    type="tel" size="small"/>
-                                  }
-                                </StyledTableCell>
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Grid>
+                    <Grid key={`griditem-2`} item xs={12}>
+                      <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
+                        <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
+                      </Zoom>
+                    </Grid>
+                    <Grid key={`griditem-3`} item xs={"auto"}>
+                      <CustomButton 
+                        label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
+                        disabled={this.state.callingApi}
+                        onClick={() => {
+                          this.setState({callingApi: true})
+                          socket.emit(`studentsCourses/updateMarkings`, {sem_course_id: this.sem_course_id, markings: this.state.markings}, res => {
+                            this.setState({callingApi: false})
+                            this.setState({
+                              alertMsg: res.code == 200 ? 'Updated student markings':`${res.status}: ${res.message}`,
+                              alertSeverity: res.code == 200 ? 'success':'warning'
+                            }, this.timeoutAlert)
+                          })
+                        }}
 
-                              )
-                            })}
-                          </StyledTableRow>
-                        )
-                      })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Grid>
-                <Grid key={`griditem-2`} item xs={12}>
-                  <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-                    <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
-                  </Zoom>
-                </Grid>
-                <Grid key={`griditem-3`} item xs={"auto"}>
-                  <CustomButton 
-                    label="Save"
-                    onClick={() => {
-                      socket.emit(`studentsCourses/updateMarkings`, {sem_course_id: this.sem_course_id, markings: this.state.markings}, res => {
-                        console.log(res)
-                        this.setState({
-                          alertMsg: res.code == 200 ? 'Updated student markings':`${res.status}: ${res.message}`,
-                          alertSeverity: res.code == 200 ? 'success':'warning'
-                        }, this.timeoutAlert)
-                      })
-                    }}
-                  />
-                </Grid>
-                <Grid key={`griditem-4`} item xs={"auto"}>
-                  <CustomButton 
-                    label="Reset"
-                    onClick={() => this.fetchData()}
-                  />
-                </Grid>
-              </Grid>
+                      />
+                    </Grid>
+                    <Grid key={`griditem-4`} item xs={"auto"}>
+                      <CustomButton 
+                        label="Reset"
+                        onClick={() => this.fetchData()}
+                      />
+                    </Grid>
+                  </Grid>
+                </Collapse>
+              </React.Fragment>
             }
           ></CustomCard>
         }

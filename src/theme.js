@@ -11,11 +11,12 @@ const theme = responsiveFontSizes(createTheme({
     },
     secondary: { 
       main: Color.deepPurple[500], 
-      dark: Color.deepPurple[500],
-      light: Color.deepPurple[500],
+      dark: '#000000',
+      light: '#ffffff',
       contrastText: '#ffffff'
     },
-    
+    text: {
+    }
   },
   components: {
     MuiCssBaseline: {
@@ -28,7 +29,7 @@ const theme = responsiveFontSizes(createTheme({
           },
           "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
             borderRadius: 8,
-            backgroundColor: Color.deepPurple[500],
+            backgroundColor: Color.deepPurple[400],
             border: "none",
           },
           "&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
