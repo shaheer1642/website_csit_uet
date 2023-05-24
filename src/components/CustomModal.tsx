@@ -1,7 +1,8 @@
 // @ts-nocheck
 import React from 'react';
-import { Box, Modal } from '@mui/material';
+import { Box, IconButton, Modal } from '@mui/material';
 import { SxProps, Theme } from '@mui/material';
+import { Cancel, Close } from '@mui/icons-material';
 
 const containerStyle = {
   position: 'absolute' as 'absolute',
@@ -36,6 +37,7 @@ export default class CustomModal extends React.Component<IProps,IState> {
         onClose={() => this.props.onClose()}
       >
         <Box sx={{...containerStyle, ...(this.props.containerStyle || {})}}>
+          <IconButton sx={{position: 'absolute', right: 1, top: 1 }} onClick={this.props.onClose}><Cancel /></IconButton>
           {this.props.children}
         </Box>
       </Modal>

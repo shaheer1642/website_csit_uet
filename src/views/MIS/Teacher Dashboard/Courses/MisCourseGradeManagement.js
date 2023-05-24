@@ -8,7 +8,8 @@ import {
   Zoom,
   Alert,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  CircularProgress
 } from "@mui/material";
 import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
@@ -27,56 +28,16 @@ import MisCourseGradeDistribution from "./MisCourseGradeDistribution";
 import MisCourseGradeMarking from "./MisCourseGradeMarking";
 import MisCourseAttendance from "./MisCourseAttendance";
 
-const palletes = {
-  primary: "#439CEF",
-  secondary: "#FFFFFF",
-};
-
-
-const defaultStyles = {
-  container: {
-    backgroundColor: 'white',
-    background: [
-      "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
-    ],
-    display: "flex",
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: "100%",
-    height: "100%",
-  },
-  alertBox: {
-    warning: {
-      width:'100%', 
-      borderRadius: 0, 
-      color: palletes.alertWarning, // text color
-      borderColor: palletes.alertWarning, 
-      my: '10px',
-      py: "5px", 
-      px: "10px",
-      '& .MuiAlert-icon': {
-        color: palletes.alertWarning, // icon color
-      },
-    },
-    success: {
-      width:'100%', 
-      borderRadius: 0, 
-      color: palletes.alertSuccess, // text color
-      borderColor: palletes.alertSuccess, 
-      my: '10px',
-      py: "5px", 
-      px: "10px",
-      '& .MuiAlert-icon': {
-        color: palletes.alertSuccess, // icon color
-      },
-    }
-  }
-}
-
 class MisCourseGradeManagement extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      formModalOpen: false,
+      formModalHtml: '',
+      fetchingForm: ''
+    };
+    this.course_name = this.props.location.state.course_name
+    this.sem_course_id = this.props.location.state.sem_course_id
   }
 
   componentDidMount() {
@@ -85,13 +46,25 @@ class MisCourseGradeManagement extends React.Component {
   componentWillUnmount() {
   }
 
+  fetchForm = (endpoint) => {
+    this.setState({fetchingForm: endpoint})
+    socket.emit(`forms/${endpoint}`, {
+      sem_course_id: this.sem_course_id,
+    }, (res) => {
+      console.log(res)
+      this.setState({fetchingForm: ''})
+      var printWindow = window.open('', '', 'height=800,width=600');
+      printWindow.document.write(res.code == 200 ? res.data : `<html><body><p>${res.message || 'Error occured fetching form'}</p></body></html>`);
+    })
+  }
+
   render() {
     return (
       <Grid container rowSpacing={"20px"} maxWidth='90vw'>
         <GoBackButton context={this.props.navigate}/>
         <Grid item xs={12}>
           <Typography variant="h2">
-            {this.props.location.state.course_name}
+            {this.course_name}
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -102,6 +75,11 @@ class MisCourseGradeManagement extends React.Component {
         </Grid>
         <Grid item xs={12}>
           <MisCourseAttendance />
+        </Grid>
+        <Grid container item xs={12}>
+          <Grid item xs={'auto'}>
+            <CustomButton disabled={this.state.fetchingForm == 'resultFormG2A'} label={this.state.fetchingForm == 'resultFormG2A' ? <CircularProgress size='20px'/> : "Generate Form G-2A"} onClick={() => this.fetchForm('resultFormG2A')}/>
+          </Grid>
         </Grid>
       </Grid>
     );
