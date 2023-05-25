@@ -151,7 +151,8 @@ class MisCourseAttendance extends React.Component {
       cancelClassIndex: -1,
       cancelClassRemarks: '',
 
-      collapseOpen: false
+      collapseOpen: false,
+
     };
     this.sem_course_id = this.props.location.state.sem_course_id
     this.timeoutAlertRef = null;
@@ -490,6 +491,7 @@ class MisCourseAttendance extends React.Component {
                           {this.state.showSettings ? <></> :
                           <TableBody>
                           {this.state.courseStudents.map((student,studentsIndex) => {
+                            var classesCounter = -1
                             return (
                               <StyledTableRow>
                                 <StyledTableCell key={`tablecell-0`} component="th" scope="row">
@@ -497,8 +499,9 @@ class MisCourseAttendance extends React.Component {
                                 </StyledTableCell>
                                 <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
                                 <StyledTableCell key={`tablecell-2`} align="left">{student.attendance.percentage || 0}%</StyledTableCell>
-                                {Object.keys(this.state.attendances[0]).filter(k => k.startsWith('week')).map((attribute,weekIndex) => {
+                                {Object.keys(this.state.attendances[0]).filter(k => k.startsWith('week')).map((attribute,weekIndex,clas) => {
                                   return this.state.attendances.filter(attendance => attendance.student_batch_id == student.student_batch_id)[0][`week${weekIndex+1}`].classes.map((weekClass,classIndex) => {
+                                      weekClass.cancelled ? classesCounter += 0 : classesCounter += 1;
                                       return (
                                         weekClass.cancelled ? 
                                           studentsIndex != 0 ? <></> :
@@ -508,9 +511,10 @@ class MisCourseAttendance extends React.Component {
                                           :
                                           <StyledTableCell align='center'>
                                               <TextField 
-                                              tabIndex={studentsIndex + (weekIndex + classIndex) * 10}
+                                              // inputRef={(ref) => (this.inputRefs.current[(studentsIndex+1) + (weekIndex*this.state.courseStudents.length)] = ref)} 
+                                              InputProps={{ inputProps: { tabIndex: (studentsIndex+1) + (classesCounter*this.state.courseStudents.length) } }}
                                               autoComplete="off"
-                                              key={`input-${student.student_batch_id}-${weekIndex}`}
+                                              key={`input-${(studentsIndex+1) + (classesCounter*this.state.courseStudents.length)}`}
                                               onFocus={(e) => e.target.select()} 
                                               value={weekClass.attendance} 
                                               onChange={(e) => this.updateStudentAttendace(`week${weekIndex+1}`,classIndex,student.student_batch_id,e.target.value)} 

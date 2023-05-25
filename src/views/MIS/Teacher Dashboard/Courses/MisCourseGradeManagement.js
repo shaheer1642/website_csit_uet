@@ -76,9 +76,12 @@ class MisCourseGradeManagement extends React.Component {
         <Grid item xs={12}>
           <MisCourseAttendance />
         </Grid>
-        <Grid container item xs={12}>
+        <Grid container item xs={12} spacing={1}>
           <Grid item xs={'auto'}>
             <CustomButton disabled={this.state.fetchingForm == 'resultFormG2A'} label={this.state.fetchingForm == 'resultFormG2A' ? <CircularProgress size='20px'/> : "Generate Form G-2A"} onClick={() => this.fetchForm('resultFormG2A')}/>
+          </Grid>
+          <Grid item xs={'auto'}>
+            <CustomButton disabled={this.state.fetchingForm == 'resultFormG2B'} label={this.state.fetchingForm == 'resultFormG2B' ? <CircularProgress size='20px'/> : "Generate Form G-2B"} onClick={() => this.fetchForm('resultFormG2B')}/>
           </Grid>
         </Grid>
       </Grid>
