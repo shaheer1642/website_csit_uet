@@ -27,13 +27,12 @@ import LoadingIcon from "../../../../components/LoadingIcon";
 import MisCourseGradeDistribution from "./MisCourseGradeDistribution";
 import MisCourseGradeMarking from "./MisCourseGradeMarking";
 import MisCourseAttendance from "./MisCourseAttendance";
+import FormCB5 from "../../FormsGenerator/FormCB5";
 
 class MisCourseGradeManagement extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      formModalOpen: false,
-      formModalHtml: '',
       fetchingForm: ''
     };
     this.course_name = this.props.location.state.course_name
@@ -83,7 +82,11 @@ class MisCourseGradeManagement extends React.Component {
           <Grid item xs={'auto'}>
             <CustomButton disabled={this.state.fetchingForm == 'resultFormG2B'} label={this.state.fetchingForm == 'resultFormG2B' ? <CircularProgress size='20px'/> : "Generate Form G-2B"} onClick={() => this.fetchForm('resultFormG2B')}/>
           </Grid>
+          <Grid item xs={'auto'}>
+            <CustomButton disabled={this.state.fetchingForm == 'resultFormCB5'} label={this.state.fetchingForm == 'resultFormCB5' ? <CircularProgress size='20px'/> : "Generate Form CB-5"} onClick={() => this.fetchForm('resultFormCB5')}/>
+          </Grid>
         </Grid>
+        <FormCB5 open={this.state.fetchingForm == 'resultFormCB5' ? true : false} onClose={() => this.setState({fetchingForm: ''})} />
       </Grid>
     );
   }

@@ -24,6 +24,7 @@ interface IProps {
     label: string,
     value?: string,
     variant?: "standard" | "filled",
+    fullWidth?: boolean,
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
     onFocus?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> | undefined,
     tabIndex?: number,
@@ -75,6 +76,7 @@ export default class CustomTextField extends React.Component<IProps> {
 
     return (
         <TextField
+            fullWidth={this.props.fullWidth}
             color="primary"
             size={this.props.size}
             disabled={this.props.disabled}

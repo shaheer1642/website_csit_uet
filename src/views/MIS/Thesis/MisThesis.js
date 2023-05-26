@@ -82,7 +82,7 @@ class MisThesis extends React.Component {
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "thesis_title", label: "Title", format: (value) => value },
       { id: "thesis_type", label: "Type", format: (value) => value },
-      { id: 'undertaking_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleDateString() }
+      { id: 'undertaking_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}) }
     ];
     return (
       <CustomCard cardContent={

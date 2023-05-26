@@ -448,7 +448,7 @@ class MisCourseAttendance extends React.Component {
                                 return this.state.attendances[0][week].classes.map((weekClass,index) => {
                                   return (
                                     <StyledTableCell align='center' sx={{borderLeft: 1}}>
-                                      {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString()})`}
+                                      {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'})})`}
                                       {this.state.showSettings ? 
                                         <React.Fragment>
                                           <LocalizationProvider dateAdapter={AdapterDayjs}>

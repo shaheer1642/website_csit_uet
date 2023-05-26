@@ -207,20 +207,20 @@ class viewApplicationsDetail extends React.Component {
         </Grid>
         <Grid container item xs={12} marginLeft={2}>
           <Grid item xs={12}>
-            <Typography variant='body1'>Submitted by {getUserNameById(this.state.application.submitted_by)} on {new Date(Number(this.state.application.application_creation_timestamp)).toLocaleDateString()}</Typography>
+            <Typography variant='body1'>Submitted by {getUserNameById(this.state.application.submitted_by)} on {new Date(Number(this.state.application.application_creation_timestamp)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'})}</Typography>
           </Grid>
           <Grid item xs={12}>
-            <Typography variant='body1'>Received by {getUserNameById(this.state.application.submitted_to)} on {new Date(Number(this.state.application.application_creation_timestamp)).toLocaleDateString()}</Typography>
+            <Typography variant='body1'>Received by {getUserNameById(this.state.application.submitted_to)} on {new Date(Number(this.state.application.application_creation_timestamp)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'})}</Typography>
           </Grid>
           {this.state.application.forwarded_to.map(forward => {
             return (
               <React.Fragment>
                 <Grid item xs={12}>
-                  <Typography variant='body1'>Forwarded to {getUserNameById(forward.receiver_id)} on {new Date(Number(forward.forward_timestamp)).toLocaleDateString()} by {getUserNameById(forward.sender_id)} with remarks "{forward.sender_remarks}"</Typography>
+                  <Typography variant='body1'>Forwarded to {getUserNameById(forward.receiver_id)} on {new Date(Number(forward.forward_timestamp)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'})} by {getUserNameById(forward.sender_id)} with remarks "{forward.sender_remarks}"</Typography>
                 </Grid>
                 {forward.status != 'under_review' ? 
                 <Grid item xs={12}>
-                  <Typography variant='body1'>Marked as {forward.status} by {getUserNameById(forward.receiver_id)} on {new Date(Number(forward.completion_timestamp)).toLocaleDateString()} with remarks "{forward.receiver_remarks}"</Typography>
+                  <Typography variant='body1'>Marked as {forward.status} by {getUserNameById(forward.receiver_id)} on {new Date(Number(forward.completion_timestamp)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'})} with remarks "{forward.receiver_remarks}"</Typography>
                 </Grid>:<></>
               }
               </React.Fragment>
@@ -228,7 +228,7 @@ class viewApplicationsDetail extends React.Component {
           })}
           {this.state.application.status != 'under_review' ?
             <Grid item xs={12}>
-              <Typography variant='body1'>Marked as {this.state.application.status} by {getUserNameById(this.state.application.submitted_to)} on {new Date(Number(this.state.application.application_completion_timestamp)).toLocaleDateString()}  with remarks "{this.state.application.remarks}"</Typography>
+              <Typography variant='body1'>Marked as {this.state.application.status} by {getUserNameById(this.state.application.submitted_to)} on {new Date(Number(this.state.application.application_completion_timestamp)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'})}  with remarks "{this.state.application.remarks}"</Typography>
             </Grid> : <></>
           }
         </Grid>

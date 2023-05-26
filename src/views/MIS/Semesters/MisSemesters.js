@@ -107,8 +107,8 @@ class MisSemesters extends React.Component {
     const columns = [
       { id: "semester_year", label: "Year", format: (value) => value },
       { id: "semester_season", label: "Season", format: (value) => value },
-      { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString() },
-      { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString() },
+      { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}) },
+      { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}) },
       { id: "offered_courses", label: "Offered Courses", format: (value) => value },
     ];
     return (
