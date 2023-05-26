@@ -53,7 +53,7 @@ class MisCourseGradeManagement extends React.Component {
       console.log(res)
       this.setState({fetchingForm: ''})
       var printWindow = window.open('', '', 'height=800,width=600');
-      printWindow.document.write(res.code == 200 ? res.data : `<html><body><p>${res.message || 'Error occured fetching form'}</p></body></html>`);
+      printWindow.document.write(res.code == 200 ? res.data : `<html><body><p>${res.message || 'Error occured fetching form'}</p></body></html>`); 
     })
   }
 
