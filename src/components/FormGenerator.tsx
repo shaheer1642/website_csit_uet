@@ -1,7 +1,7 @@
 // @ts-nocheck 
 // @typescript-eslint/no-unused-vars
 import React from 'react';
-import { Table, TableContainer, Typography, Checkbox, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, TextField, Grid, Zoom, Alert, AlertColor, FormControlLabel, Radio, RadioGroup, FormControl, FormLabel } from '@mui/material';
+import { Table, TableContainer, Typography, Checkbox, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, TextField, Grid, Zoom, Alert, AlertColor, FormControlLabel, Radio, RadioGroup, FormControl, FormLabel, CircularProgress } from '@mui/material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
 import { socket } from '../websocket/socket';
@@ -112,7 +112,8 @@ export default class FormGenerator extends React.Component<IProps, IState> {
       schema: [],
       formFields: {},
       alertMsg: '',
-      alertSeverity: 'warning'
+      alertSeverity: 'warning',
+      callingApi: false
     };
 
     this.timeoutAlertRef = undefined;
@@ -170,7 +171,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
               return (
                 <Grid item xs={this.props.options[attribute.key]?.xs || "auto"}>
                   {
-                    attribute.type == 'string' || attribute.type == 'uuid' || attribute.type == 'number' || attribute.type == 'array' ?
+                    attribute.type == 'string' || attribute.type == 'email' || attribute.type == 'uuid' || attribute.type == 'number' || attribute.type == 'array' ?
                       this.props.options[attribute.key]?.fieldType == 'radiobox' ? 
                         <FormControl disabled={this.props.options[attribute.key]?.disabled} required={attribute.required}>
                           <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
@@ -224,15 +225,18 @@ export default class FormGenerator extends React.Component<IProps, IState> {
             })}
             <Grid item xs={12}>
               <CustomButton 
-                label={this.props.formType == 'create' ? 'Create' : 'Update'}
+                label={this.state.callingApi ? <CircularProgress size='20px' /> : this.props.formType == 'create' ? 'Create' : 'Update'}
+                disabled={this.state.callingApi}
                 onClick={() => {
+                  this.setState({callingApi: true})
                   socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
+                    this.setState({callingApi: false})
                     console.log(`[${this.props.endpoint}/${this.props.formType}] response`,res)
                     this.setState({
                       alertMsg: res.code == 200 ? this.props.submitSuccessMessage:`${res.status}: ${res.message}`,
                       alertSeverity: res.code == 200 ? 'success':'warning'
                     }, this.timeoutAlert)
-                })
+                  })
                 }}
               />
             </Grid>

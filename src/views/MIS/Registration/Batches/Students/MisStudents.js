@@ -9,7 +9,8 @@ import {
   Zoom,
   Alert,
   CircularProgress,
-  Tooltip
+  Tooltip,
+  Link
 } from "@mui/material";
 import { Delete, Edit, Info } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
@@ -145,18 +146,16 @@ class MisStudent extends React.Component {
         return alert(students_info.message)
       }
       console.log(students_info)
-
-      const promises = []
-      students_info.forEach(student => {
-        promises.push(
-          new Promise((resolve,reject) => {
-            socket.emit('students/create', {...student, batch_id: this.batch_id}, (res) => {
-              resolve(res.code == 200 ? `✔️ Added student ${student.student_name} (${student.reg_no || student.cnic})` : `❌ Error adding student ${student.student_name} (${student.reg_no || student.cnic}): ${res.message}`)
-            })
+      
+      Promise.all(
+        students_info.map(student => {
+          return new Promise((resolve,reject) => {
+              socket.emit('students/create', {...student, batch_id: this.batch_id}, (res) => {
+                resolve(res.code == 200 ? `✔️ Added student ${student.student_name} (${student.reg_no || student.cnic})` : `❌ Error adding student ${student.student_name} (${student.reg_no || student.cnic}): ${res.message}`)
+              })
           })
-        )
-      })
-      Promise.all(promises).then(responses => {
+        })
+      ).then(responses => {
         this.setState({
           alertMsg: responses.join('\n'),
           alertSeverity: 'success',
@@ -191,7 +190,7 @@ class MisStudent extends React.Component {
             }
           }
         })
-        if ((student_info.cnic || student_info.reg_no) && student_info.student_name && student_info.student_gender)
+        if ((student_info.cnic || student_info.reg_no) && student_info.student_name && student_info.student_father_name && student_info.student_gender)
           students_info.push(student_info)
       })
 
@@ -205,29 +204,22 @@ class MisStudent extends React.Component {
           student_father_name: -1,
           student_gender: -1,
           student_address: -1,
-          student_email: -1,
+          user_email: -1,
         }
         headers.split(',').forEach((col,index) => {
           col = col.toLowerCase()
-          if (col.match('cnic'))
-            attributes.cnic = index
-          if (col.match('registration'))
-            attributes.reg_no = index
-          if (col.match('name'))
-            attributes.student_name = index
-          if (col.match('father name'))
-            attributes.student_father_name = index
-          if (col.match('gender'))
-            attributes.student_gender = index
-          if (col.match('email'))
-            attributes.student_email = index
-          if (col.match('address'))
-            attributes.student_address = index
+          if (col.match(/^cnic$/)) attributes.cnic = index
+          if (col.match(/^registration$/)) attributes.reg_no = index
+          if (col.match(/^name$/)) attributes.student_name = index
+          if (col.match(/^father name$/)) attributes.student_father_name = index
+          if (col.match(/^gender$/)) attributes.student_gender = index
+          if (col.match(/^email$/)) attributes.user_email = index
+          if (col.match(/^address$/)) attributes.student_address = index
         })
         if (attributes.cnic == -1 && attributes.reg_no == -1) {
           return {
             err: true,
-            message: 'Could not determine "CNIC" or "Reg#" column'
+            message: 'Could not determine "CNIC" or "Registration" column'
           }
         }
         if (attributes.student_name == -1) {
@@ -236,16 +228,16 @@ class MisStudent extends React.Component {
             message: 'Could not determine "Name" column'
           }
         }
+        if (attributes.student_name == -1) {
+          return {
+            err: true,
+            message: 'Could not determine "Father Name" column'
+          }
+        }
         if (attributes.student_gender == -1) {
           return {
             err: true,
             message: 'Could not determine "Gender" column'
-          }
-        }
-        if (attributes.student_email == -1) {
-          return {
-            err: true,
-            message: 'Could not determine "Email" column'
           }
         }
         return attributes
@@ -265,7 +257,7 @@ class MisStudent extends React.Component {
       { id: "student_father_name", label: "Father Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "reg_no", label: "Registration No", format: (value) => value },
-      { id: "student_email", label: "Email", format: (value) => value },
+      { id: "user_email", label: "Email", format: (value) => value },
       { id: "student_address", label: "Address", format: (value) => value },
       { id: "student_gender", label: "Gender", format: (value) => value },
       { id: "username", label: "Username", format: (value) => value },
@@ -304,6 +296,7 @@ class MisStudent extends React.Component {
           onClick={() => this.props.navigate("create", {state: {batch_id: this.batch_id}})}
           label="Create New"
         />
+        <Grid item xs={12}></Grid>
         <CustomButton
           sx={{ margin: "10px" }}
           variant='contained'
@@ -315,6 +308,19 @@ class MisStudent extends React.Component {
               Upload Students List
               <input hidden accept=".csv" type="file" onChange={this.processStudentsList}/>
             </React.Fragment>
+          }
+        />
+        <CustomButton
+          sx={{ margin: "10px" }}
+          variant='outlined'
+          label={
+            <Link
+              href={process.env.PUBLIC_URL + "/templates/students-list.csv"}
+              download={"students-list.csv"}
+              style={{ textDecoration: 'none'}}
+            >
+            Download Students List Template
+            </Link>
           }
         />
         <Tooltip title="Upload a .CSV file, columns should be named: CNIC, Registration No, Name, Father Name, Gender, Address. Note: Name, gender, and cnic/reg# cannot be empty">

@@ -11,6 +11,7 @@ import FormGenerator from '../../../components/FormGenerator';
 import ConfirmationModal from '../../../components/ConfirmationModal';
 import CustomCard from '../../../components/CustomCard';
 import LoadingIcon from '../../../components/LoadingIcon';
+import { timeLocale } from '../../../objects/Time';
 
 const palletes = {
   primary: '#439CEF',
@@ -107,8 +108,8 @@ class MisEvents extends React.Component {
     const columns = [
       { id: 'title', label: 'Title', format: (value) => value },
       { id: 'body', label: 'Body', format: (value) => value },
-      { id: 'event_creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}) },
-      { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}) }
+      { id: 'event_creation_timestamp', label: 'Created At', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
+      { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) }
     ];
     return (
       <CustomCard cardContent={

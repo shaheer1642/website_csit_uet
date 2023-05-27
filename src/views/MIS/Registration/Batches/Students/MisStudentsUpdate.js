@@ -17,7 +17,8 @@ class MisStudentsUpdate extends React.Component {
       student_name: '',
       student_father_name: '',
       student_address: '',
-      student_gender: 'Male'
+      student_gender: 'Male',
+      user_email: ''
     }
     this.student_id = this.props.location.state.student_id
     this.batch_id = this.props.location.state.batch_id
@@ -36,6 +37,7 @@ class MisStudentsUpdate extends React.Component {
           student_father_name: student.student_father_name,
           student_address: student.student_address,
           student_gender: student.student_gender,
+          user_email: student.user_email,
         })
       }
     })
@@ -91,9 +93,9 @@ class MisStudentsUpdate extends React.Component {
             position: 6,
             xs: 6,
           },
-          student_email: {
+          user_email: {
             label: "Email",
-            defaultValue: this.state.student_email,
+            defaultValue: this.state.user_email,
             position: 6,
             xs: 6,
           },

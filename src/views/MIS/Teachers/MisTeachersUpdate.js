@@ -15,7 +15,8 @@ class MisTeachersUpdate extends React.Component {
       cnic: '',
       reg_no: '',
       teacher_name: '',
-      teacher_gender: 'Male'
+      teacher_gender: 'Male',
+      user_email: ''
     }
     this.teacher_id = this.props.location.state.teacher_id
   }
@@ -31,6 +32,7 @@ class MisTeachersUpdate extends React.Component {
           reg_no: teacher.reg_no,
           teacher_name: teacher.teacher_name,
           teacher_gender: teacher.teacher_gender,
+          user_email: teacher.user_email
         })
       }
     })
@@ -56,7 +58,6 @@ class MisTeachersUpdate extends React.Component {
             position: 1,
             xs: 6,
           },
-         
           cnic: {
             label: "CNIC",
             defaultValue: this.state.cnic,
@@ -75,7 +76,6 @@ class MisTeachersUpdate extends React.Component {
             position: 5,
             xs: 6,
           },
-     
           teacher_gender: {
             label: "Gender",
             defaultValue: this.state.teacher_gender,
@@ -83,6 +83,12 @@ class MisTeachersUpdate extends React.Component {
             xs: 6,
             fieldType: 'radiobox',
             fieldTypeOptions: ['male', 'female']
+          },
+          user_email: {
+            label: "Email",
+            defaultValue: this.state.user_email,
+            position: 6,
+            xs: 6,
           },
         }}
       />

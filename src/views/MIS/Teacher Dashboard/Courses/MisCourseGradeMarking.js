@@ -156,10 +156,30 @@ class MisGradeMarking extends React.Component {
     socket.removeEventListener('studentsCourses/listener/changed', this.changeListener)
   }
 
-
   changeListener = (data) => {
     if (data.sem_course_id == this.sem_course_id)
       this.fetchData()
+  }
+
+  fetchData = () => {
+    this.setState({
+      loading: true
+    }, () => {
+      socket.emit("semestersCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+        if (res.code == 200 && res.data.length == 1) {
+          const semesterCourse = res.data[0]
+          socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+            if (res.code == 200) {
+              return this.setState({
+                semesterCourse: semesterCourse,
+                courseStudents: res.data.filter(o => o.grade != 'W'),
+                loading: false,
+              }, () => this.generateMarkings());
+            }
+          });
+        }
+      });
+    })
   }
 
   generateMarkings = () => {
@@ -213,26 +233,6 @@ class MisGradeMarking extends React.Component {
     console.log(markings)
     this.setState({
       markings: [...markings]
-    })
-  }
-
-  fetchData = () => {
-    this.setState({
-      loading: true
-    }, () => {
-      socket.emit("semestersCourses/fetch", {sem_course_id: this.sem_course_id}, (res1) => {
-        if (res1.code == 200) {
-          socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res2) => {
-            if (res2.code == 200) {
-              return this.setState({
-                semesterCourse: res1.data[0],
-                courseStudents: res2.data,
-                loading: false,
-              }, () => this.generateMarkings());
-            }
-          });
-        }
-      });
     })
   }
 

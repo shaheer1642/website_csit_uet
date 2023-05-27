@@ -49,7 +49,7 @@ class MisStudentsCreate extends React.Component {
             position: 1,
             xs: 6,
           },
-          student_email: {
+          user_email: {
             label: "Email",
             position: 1,
             xs: 6,

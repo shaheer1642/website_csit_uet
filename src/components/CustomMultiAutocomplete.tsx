@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { Autocomplete, TextField, Checkbox} from '@mui/material';
+import { Autocomplete, TextField, Checkbox, Chip} from '@mui/material';
 import * as Color from '@mui/material/colors';
 import { SxProps, Theme } from '@mui/material';
 import LoadingIcon from './LoadingIcon';
@@ -67,6 +67,15 @@ export default class CustomMultiAutocomplete extends React.Component<IProps, ISt
                 renderInput={(params) => (
                     <TextField {...params} label={this.props.label}/>
                 )}
+                renderTags={(tagValue, getTagProps) =>
+                    tagValue.map((option, index) => (
+                    <Chip
+                        label={option.label}
+                        {...getTagProps({ index })}
+                        onDelete={undefined}
+                    />
+                    ))
+                }
                 onChange={this.props.onChange}
                 value={this.state.menuItems.filter(option => this.props.values?.includes(option.id))}
                 isOptionEqualToValue={(option, value) => option.id == value.id}

@@ -36,7 +36,6 @@ class MisTeachersCreate extends React.Component {
                 position: 1,
                 xs: 6,
               },
-          
               teacher_gender: {
                 label: "Gender",
                 position: 1,
@@ -44,8 +43,11 @@ class MisTeachersCreate extends React.Component {
                 fieldType: 'radiobox',
                 fieldTypeOptions: ['male', 'female']
               },
-            
-            
+              user_email: {
+                label: "Email",
+                position: 1,
+                xs: 6,
+              },
             }}
           />
         </Grid>

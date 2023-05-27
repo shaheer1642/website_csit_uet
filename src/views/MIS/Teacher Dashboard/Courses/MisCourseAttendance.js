@@ -39,6 +39,7 @@ import LoadingIcon from "../../../../components/LoadingIcon";
 import { convertUpper } from "../../../../extras/functions";
 import { DatePicker,LocalizationProvider  } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { timeLocale } from "../../../../objects/Time";
 
 const palletes = {
   primary: "#439CEF",
@@ -175,6 +176,17 @@ class MisCourseAttendance extends React.Component {
       this.fetchData()
   }
 
+  fetchData = () => {
+    this.setState({ loading: true })
+    socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+      if (res.code == 200) {
+        return this.setState({
+          courseStudents: res.data.filter(o => o.grade != 'W'),
+        }, () => this.generateAttendances(() => this.setState({ loading: false })));
+      }
+    });
+  }
+
   addWeek = () => {
     const attendances = this.state.attendances
     attendances.forEach((obj,index) => {
@@ -272,7 +284,7 @@ class MisCourseAttendance extends React.Component {
     })
   }
 
-  generateAttendances = () => {
+  generateAttendances = (callback) => {
     const attendances = []
     this.state.courseStudents.map(studentCourse => {
       const obj = {
@@ -298,9 +310,8 @@ class MisCourseAttendance extends React.Component {
     })
     console.log('generateAttendances',attendances)
     this.setState({
-      attendances: [...attendances],
-      loading: false
-    })
+      attendances: [...attendances]
+    }, () => callback ? callback() : null)
   }
 
   updateStudentAttendace = (week,classIndex,student_batch_id,value) => {
@@ -315,20 +326,6 @@ class MisCourseAttendance extends React.Component {
     })
     this.setState({
       attendances: [...attendances],
-    })
-  }
-
-  fetchData = () => {
-    this.setState({
-      loading: true
-    }, () => {
-      socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res2) => {
-        if (res2.code == 200) {
-          return this.setState({
-            courseStudents: res2.data,
-          }, () => this.generateAttendances());
-        }
-      });
     })
   }
 
@@ -448,7 +445,7 @@ class MisCourseAttendance extends React.Component {
                                 return this.state.attendances[0][week].classes.map((weekClass,index) => {
                                   return (
                                     <StyledTableCell align='center' sx={{borderLeft: 1}}>
-                                      {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'})})`}
+                                      {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString(...timeLocale)})`}
                                       {this.state.showSettings ? 
                                         <React.Fragment>
                                           <LocalizationProvider dateAdapter={AdapterDayjs}>

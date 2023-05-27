@@ -10,6 +10,7 @@ import CustomButton from "../../../components/CustomButton";
 import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
+import { timeLocale } from "../../../objects/Time";
 
 const palletes = {
   primary: "#439CEF",
@@ -82,7 +83,7 @@ class MisThesis extends React.Component {
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "thesis_title", label: "Title", format: (value) => value },
       { id: "thesis_type", label: "Type", format: (value) => value },
-      { id: 'undertaking_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}) }
+      { id: 'undertaking_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) }
     ];
     return (
       <CustomCard cardContent={

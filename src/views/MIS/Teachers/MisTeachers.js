@@ -122,6 +122,9 @@ class MisTeachers extends React.Component {
       { id: "teacher_name", label: "Instructor Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "teacher_gender", label: "Gender", format: (value) => value },
+      { id: "user_email", label: "Email", format: (value) => value },
+      { id: "username", label: "Username", format: (value) => value },
+      { id: "password", label: "Password", format: (value) => value }
     ];
     return (
       <CustomCard cardContent={

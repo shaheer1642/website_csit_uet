@@ -44,6 +44,7 @@ interface IProps {
   footerBackgroundColor?: string,
   loadingState?: boolean,
   maxWidth?: string,
+  margin?: string,
   rowSx?: Function
 }
 
@@ -107,7 +108,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
     }));
 
     return (
-      <Paper sx={{ overflow: 'hidden', maxWidth: this.props.maxWidth, width: '100%' }}>
+      <Paper sx={{ overflow: 'hidden', maxWidth: this.props.maxWidth, width: '100%', margin: this.props.margin || '10px' }}>
         {this.props.loadingState ? <LoadingIcon /> :
           <React.Fragment>
             <TableContainer sx={{ maxHeight: 440, backgroundColor: styles.background }}>

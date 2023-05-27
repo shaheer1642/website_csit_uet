@@ -293,7 +293,7 @@ function MisLayout() {
                 </ListItemButton> : <></>
               }
 
-              {['pga'].includes(user.user_type) ?
+              {['admin','pga'].includes(user.user_type) ?
                 <ListItemButton
                   component={Link} 
                   to="teachers"

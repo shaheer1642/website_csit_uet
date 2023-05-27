@@ -38,7 +38,7 @@ class MisCoursesUpdate extends React.Component {
       this.state.loading ? <LoadingIcon />:
       <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
-        <Grid item xs={"auto"}>
+        <Grid item xs={12}>
           <FormGenerator 
             endpoint="courses"
             formType="update" 

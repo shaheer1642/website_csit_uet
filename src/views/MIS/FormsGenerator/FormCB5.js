@@ -11,6 +11,7 @@ import CustomTextField from "../../../components/CustomTextField";
 import LoadingIcon from "../../../components/LoadingIcon";
 import CustomButton from "../../../components/CustomButton";
 import { convertUpper } from "../../../extras/functions";
+import { timeLocale } from "../../../objects/Time";
 
 
 class FormCB5 extends React.Component {
@@ -30,7 +31,7 @@ class FormCB5 extends React.Component {
         semester_season: '',
         semester_start: '',
         semester_end: '',
-        dated: new Date().toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}),
+        dated: new Date().toLocaleDateString(...timeLocale),
         bill_amount: '',
         designation: '',
         program: '',
@@ -62,7 +63,7 @@ class FormCB5 extends React.Component {
                 semester_season: data.semester_season,
                 semester_start: new Date(Number(data.semester_start_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
                 semester_end: new Date(Number(data.semester_end_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
-                dated: new Date().toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}),
+                dated: new Date().toLocaleDateString(...timeLocale),
             })
         }
     })
@@ -75,16 +76,16 @@ class FormCB5 extends React.Component {
               <Typography variant={'h5'}>Please input the following fields</Typography>
             </Grid>
             <Grid item xs={12}>
-              <CustomTextField fullWidth label={'Total Credit Hours'} placeholder={'54 | 72'} onChange={(e) => this.setState({total_credit_hours: e.target.value})}/>
+              <CustomTextField fullWidth label={'Total Credit Hours'} placeholder={'54 | 72'} value={this.state.total_credit_hours} onChange={(e) => this.setState({total_credit_hours: e.target.value})}/>
             </Grid>
             <Grid item xs={12}>
-              <CustomTextField fullWidth label={'Program'} placeholder={'M.Sc. | PhD'} onChange={(e) => this.setState({program: e.target.value})}/>
+              <CustomTextField fullWidth label={'Program'} placeholder={'M.Sc. | PhD'} value={this.state.program} onChange={(e) => this.setState({program: e.target.value})}/>
             </Grid>
             <Grid item xs={12}>
-              <CustomTextField fullWidth label={'Designation'} placeholder={'Professor | Associate Professor | Assistant Professor | Lecturer'} onChange={(e) => this.setState({designation: e.target.value})}/>
+              <CustomTextField fullWidth label={'Designation'} placeholder={'Professor | Associate Professor | Assistant Professor | Lecturer'} value={this.state.designation} onChange={(e) => this.setState({designation: e.target.value})}/>
             </Grid>
             <Grid item xs={12}>
-              <CustomTextField fullWidth label={'Total Bill Amount (In figure/in words)'} placeholder={'78,300/- Seventy-Eight Thousand & Three Hundred'} onChange={(e) => this.setState({bill_amount: e.target.value})}/>
+              <CustomTextField fullWidth label={'Total Bill Amount (In figure/in words)'} placeholder={'78,300/- Seventy-Eight Thousand & Three Hundred'} value={this.state.bill_amount} onChange={(e) => this.setState({bill_amount: e.target.value})}/>
             </Grid>
             <Grid item xs={'auto'}>
               <CustomButton label="Generate" variant="contained" onClick={() => this.generateForm()}/>

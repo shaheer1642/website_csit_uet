@@ -46,6 +46,7 @@ import SubmitApplication from "./views/MIS/Applications/SubmitApplication";
 import SubmitApplicationDraft from "./views/MIS/Applications/SubmitApplicationDraft";
 import ViewApplications from "./views/MIS/Applications/viewApplications";
 import ViewApplicationsDetail from "./views/MIS/Applications/viewApplicationsDetail";
+import MisCoursesStudentsUpdate from "./views/MIS/Semesters/Courses/Students/MisCoursesStudentsUpdate";
 
 export default function Router() {
   return (
@@ -79,6 +80,7 @@ export default function Router() {
               <Route path="semesters/courses/create" element={<MisSemestersCoursesCreate/>}/> 
               <Route path="semesters/courses/update" element={<MisSemestersCoursesUpdate/>}/> 
               <Route path="semesters/courses/students" element={<MisCoursesStudents/>}/> 
+                <Route path="semesters/courses/students/update" element={<MisCoursesStudentsUpdate />}/> 
 
           <Route path="teachers" element={<MisTeachers/>}/>
             <Route path="teachers/create" element={<MisTeachersCreate/>}/>

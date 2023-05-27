@@ -16,6 +16,7 @@ import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import GoBackButton from "../../../components/GoBackButton";
 import CustomCard from "../../../components/CustomCard";
+import { timeLocale } from "../../../objects/Time";
 
 const palletes = {
   primary: "#439CEF",
@@ -107,8 +108,8 @@ class MisSemesters extends React.Component {
     const columns = [
       { id: "semester_year", label: "Year", format: (value) => value },
       { id: "semester_season", label: "Season", format: (value) => value },
-      { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}) },
-      { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString('en-UK', {year: 'numeric', month: '2-digit', day: '2-digit'}) },
+      { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
+      { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
       { id: "offered_courses", label: "Offered Courses", format: (value) => value },
     ];
     return (

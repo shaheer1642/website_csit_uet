@@ -84,6 +84,7 @@ class ViewApplications extends React.Component {
                 }
                 <Grid item xs={12}>
                     <CustomTable
+                        margin={'0px'}
                         maxWidth={'100%'}
                         loadingState={this.state.loadingApplications}
                         viewButtonLabel='View Application'
