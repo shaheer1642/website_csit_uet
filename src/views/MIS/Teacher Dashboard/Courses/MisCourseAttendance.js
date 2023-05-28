@@ -135,6 +135,7 @@ class MisCourseAttendance extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      semesterCourse: {},
       courseStudents: [],
       loading: true,
       callingApi: false,
@@ -153,7 +154,6 @@ class MisCourseAttendance extends React.Component {
       cancelClassRemarks: '',
 
       collapseOpen: false,
-
     };
     this.sem_course_id = this.props.location.state.sem_course_id
     this.timeoutAlertRef = null;
@@ -178,11 +178,17 @@ class MisCourseAttendance extends React.Component {
 
   fetchData = () => {
     this.setState({ loading: true })
-    socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          courseStudents: res.data.filter(o => o.grade != 'W'),
-        }, () => this.generateAttendances(() => this.setState({ loading: false })));
+    socket.emit("semestersCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+      if (res.code == 200 && res.data.length == 1) {
+        const semesterCourse = res.data[0];
+        socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+          if (res.code == 200) {
+            return this.setState({
+              semesterCourse: semesterCourse,
+              courseStudents: res.data.filter(o => o.grade != 'W'),
+            }, () => this.generateAttendances(() => this.setState({ loading: false })));
+          }
+        });
       }
     });
   }
@@ -286,7 +292,9 @@ class MisCourseAttendance extends React.Component {
 
   generateAttendances = (callback) => {
     const attendances = []
+    console.log('courseStudents',this.state.courseStudents)
     this.state.courseStudents.map(studentCourse => {
+      console.log(studentCourse)
       const obj = {
         student_batch_id: studentCourse.student_batch_id,
       }
@@ -424,9 +432,9 @@ class MisCourseAttendance extends React.Component {
                               <StyledTableCell key={`tablecell-header-2`} align="left">
                                 %age
                               </StyledTableCell>
-                              {Object.keys(this.state.attendances[0]).filter(k => k.startsWith('week')).map((week,index) => {
+                              {Object.keys(this.state.attendances[0] || []).filter(k => k.startsWith('week')).map((week,index) => {
                                 return (
-                                  <StyledTableCell colSpan={this.state.attendances[0][week].classes.length} align='center' sx={{borderLeft: 1}}>
+                                  <StyledTableCell colSpan={this.state.attendances?.[0][week].classes.length} align='center' sx={{borderLeft: 1}}>
                                     {`Week ${week.split('week')[1]}`}
                                     {this.state.showSettings ? 
                                       <Tooltip title='Add class'>
@@ -441,11 +449,11 @@ class MisCourseAttendance extends React.Component {
                               <StyledTableCell></StyledTableCell>
                               <StyledTableCell style={stickyHeaderCell}></StyledTableCell>
                               <StyledTableCell></StyledTableCell>
-                              {Object.keys(this.state.attendances[0]).filter(k => k.startsWith('week')).map((week,index) => {
-                                return this.state.attendances[0][week].classes.map((weekClass,index) => {
+                              {Object.keys(this.state.attendances[0] || []).filter(k => k.startsWith('week')).map((week,index) => {
+                                return this.state.attendances?.[0][week].classes.map((weekClass,index) => {
                                   return (
                                     <StyledTableCell align='center' sx={{borderLeft: 1}}>
-                                      {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString(...timeLocale)})`}
+                                      {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString()})`}
                                       {this.state.showSettings ? 
                                         <React.Fragment>
                                           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -496,7 +504,7 @@ class MisCourseAttendance extends React.Component {
                                 </StyledTableCell>
                                 <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
                                 <StyledTableCell key={`tablecell-2`} align="left">{student.attendance.percentage || 0}%</StyledTableCell>
-                                {Object.keys(this.state.attendances[0]).filter(k => k.startsWith('week')).map((attribute,weekIndex,clas) => {
+                                {Object.keys(this.state.attendances[0] || {}).filter(k => k.startsWith('week')).map((attribute,weekIndex,clas) => {
                                   return this.state.attendances.filter(attendance => attendance.student_batch_id == student.student_batch_id)[0][`week${weekIndex+1}`].classes.map((weekClass,classIndex) => {
                                       weekClass.cancelled ? classesCounter += 0 : classesCounter += 1;
                                       return (
@@ -508,6 +516,7 @@ class MisCourseAttendance extends React.Component {
                                           :
                                           <StyledTableCell align='center'>
                                               <TextField 
+                                              disabled={this.state.semesterCourse.grades_locked}
                                               // inputRef={(ref) => (this.inputRefs.current[(studentsIndex+1) + (weekIndex*this.state.courseStudents.length)] = ref)} 
                                               InputProps={{ inputProps: { tabIndex: (studentsIndex+1) + (classesCounter*this.state.courseStudents.length) } }}
                                               autoComplete="off"
@@ -535,7 +544,7 @@ class MisCourseAttendance extends React.Component {
                         <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
                       </Zoom>
                     </Grid>
-                    {
+                    {this.state.semesterCourse.grades_locked ? <></> : 
                       this.state.showSettings ? this.settingsActions() :
                       <React.Fragment>
                         <Grid key={`griditem-3`} item xs={"auto"}>

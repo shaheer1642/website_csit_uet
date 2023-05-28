@@ -139,7 +139,11 @@ class MisGradeMarking extends React.Component {
       alertSeverity: 'warning',
 
       callingApi: false,
-      collapseOpen: false
+      collapseOpen: false,
+
+      confirmationModalShow: false,
+      confirmationModalMessage: "",
+      confirmationModalExecute: () => {},
     };
     this.sem_course_id = this.props.location.state.sem_course_id
     this.timeoutAlertRef = null;
@@ -162,27 +166,23 @@ class MisGradeMarking extends React.Component {
   }
 
   fetchData = () => {
-    this.setState({
-      loading: true
-    }, () => {
-      socket.emit("semestersCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
-        if (res.code == 200 && res.data.length == 1) {
-          const semesterCourse = res.data[0]
-          socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
-            if (res.code == 200) {
-              return this.setState({
-                semesterCourse: semesterCourse,
-                courseStudents: res.data.filter(o => o.grade != 'W'),
-                loading: false,
-              }, () => this.generateMarkings());
-            }
-          });
-        }
-      });
-    })
+    this.setState({ loading: true })
+    socket.emit("semestersCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+      if (res.code == 200 && res.data.length == 1) {
+        const semesterCourse = res.data[0]
+        socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+          if (res.code == 200) {
+            return this.setState({
+              semesterCourse: semesterCourse,
+              courseStudents: res.data.filter(o => o.grade != 'W'),
+            }, () => this.generateMarkings(() => this.setState({loading: false})));
+          }
+        });
+      }
+    });
   }
 
-  generateMarkings = () => {
+  generateMarkings = (callback) => {
     const markings = []
     this.state.courseStudents.map(student => {
       const obj = {
@@ -210,7 +210,7 @@ class MisGradeMarking extends React.Component {
     })
     this.setState({
       markings: [...markings]
-    })
+    }, () => callback ? callback() : null)
   }
 
   updateStudentMarking = (key,student_batch_id,value) => {
@@ -240,6 +240,15 @@ class MisGradeMarking extends React.Component {
     console.log('timeoutAlert called')
     clearTimeout(this.timeoutAlertRef)
     this.timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 5000)
+  }
+
+  lockGrades = () => {
+    socket.emit("semestersCourses/lockGrades", {sem_course_id: this.sem_course_id}, (res) => {
+      this.setState({
+        alertMsg: res.code == 200 ? 'Grades Locked' : `${res.status}: ${res.message}`,
+        alertSeverity: res.code == 200 ? 'success':'warning'
+      }, this.timeoutAlert)
+    });
   }
 
   render() {
@@ -278,8 +287,11 @@ class MisGradeMarking extends React.Component {
                               <StyledTableCell key={`tablecell-header-2`} align="left">
                                 Result ({this.state.semesterCourse.grade_distribution.marking.type})
                               </StyledTableCell>
-                              <StyledTableCell key={`tablecell-header-4`} align="left">
+                              <StyledTableCell key={`tablecell-header-3`} align="left">
                                 Grade ({this.state.semesterCourse.grade_distribution.marking.type})
+                              </StyledTableCell>
+                              <StyledTableCell key={`tablecell-header-4`} align="left">
+                                Final Grade
                               </StyledTableCell>
                               {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
                                 return (
@@ -309,11 +321,13 @@ class MisGradeMarking extends React.Component {
                                 <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
                                 <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0}`}</StyledTableCell>
                                 <StyledTableCell key={`tablecell-4`} align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
+                                <StyledTableCell key={`tablecell-4`} align="left">{student.grade}</StyledTableCell>
                                 {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
                                   return (
                                     <StyledTableCell key={`tablecell-${index + 4}`} align="center">
                                       {attribute == 'attendance' ? this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]:
                                       <TextField 
+                                        disabled={this.state.semesterCourse.grades_locked}
                                         InputProps={{ inputProps: { tabIndex: (studentsIndex+1) + (index*this.state.courseStudents.length) } }}
                                         key={`input-${(studentsIndex+1) + (index*this.state.courseStudents.length)}`}
                                         onFocus={(e) => e.target.select()} 
@@ -338,35 +352,64 @@ class MisGradeMarking extends React.Component {
                         <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
                       </Zoom>
                     </Grid>
-                    <Grid key={`griditem-3`} item xs={"auto"}>
-                      <CustomButton 
-                        label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
-                        disabled={this.state.callingApi}
-                        onClick={() => {
-                          this.setState({callingApi: true})
-                          socket.emit(`studentsCourses/updateMarkings`, {sem_course_id: this.sem_course_id, markings: this.state.markings}, res => {
-                            this.setState({callingApi: false})
-                            this.setState({
-                              alertMsg: res.code == 200 ? 'Updated student markings':`${res.status}: ${res.message}`,
-                              alertSeverity: res.code == 200 ? 'success':'warning'
-                            }, this.timeoutAlert)
-                          })
-                        }}
-
-                      />
-                    </Grid>
-                    <Grid key={`griditem-4`} item xs={"auto"}>
-                      <CustomButton 
-                        label="Reset"
-                        onClick={() => this.fetchData()}
-                      />
-                    </Grid>
+                    {this.state.semesterCourse.grades_locked ? <></> : 
+                      <React.Fragment>
+                        <Grid key={`griditem-3`} item xs={"auto"}>
+                          <CustomButton 
+                            label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
+                            disabled={this.state.callingApi}
+                            onClick={() => {
+                              this.setState({callingApi: true})
+                              socket.emit(`studentsCourses/updateMarkings`, {sem_course_id: this.sem_course_id, markings: this.state.markings}, res => {
+                                this.setState({callingApi: false})
+                                this.setState({
+                                  alertMsg: res.code == 200 ? 'Updated student markings':`${res.status}: ${res.message}`,
+                                  alertSeverity: res.code == 200 ? 'success':'warning'
+                                }, this.timeoutAlert)
+                              })
+                            }}
+    
+                          />
+                        </Grid>
+                        <Grid key={`griditem-4`} item xs={"auto"}>
+                          <CustomButton 
+                            label="Reset"
+                            onClick={() => this.fetchData()}
+                          />
+                        </Grid>
+                        <Grid key={`griditem-5`} item xs={"auto"}>
+                          <CustomButton
+                            color='error'
+                            variant="outlined"
+                            onClick={() => 
+                              this.setState({
+                                confirmationModalShow: true,
+                                confirmationModalMessage:
+                                  "Are you sure you want to lock grades? This change cannot be undone",
+                                confirmationModalExecute: () => this.lockGrades()
+                              })
+                            }
+                            label="Lock Grades"
+                          />
+                        </Grid>
+                      </React.Fragment>
+                    }
                   </Grid>
                 </Collapse>
               </React.Fragment>
             }
           ></CustomCard>
         }
+        <ConfirmationModal
+            open={this.state.confirmationModalShow}
+            message={this.state.confirmationModalMessage}
+            onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
+            onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
+            onClickYes={() => {
+              this.state.confirmationModalExecute();
+              this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })
+            }}
+        />
       </Grid>
     );
   }

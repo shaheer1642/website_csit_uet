@@ -9,6 +9,7 @@ import {
   FormControlLabel,
   Autocomplete,
   TextField,
+  CircularProgress,
 } from "@mui/material";
 import { styled, lighten, darken } from '@mui/system';
 import { Delete, Edit } from '@mui/icons-material';
@@ -63,6 +64,7 @@ class MisCoursesStudents extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      callingApi: false,
       loading: true,
       students: [],
       studentBatchIds: [],
@@ -71,7 +73,6 @@ class MisCoursesStudents extends React.Component {
       alertMsg: '',
       alertSeverity: '',
 
-      
       confirmationModalShow: false,
       confirmationModalMessage: "",
       confirmationModalExecute: () => {},
@@ -126,7 +127,9 @@ class MisCoursesStudents extends React.Component {
   }
 
   updateStudentsList = () => {
+    this.setState({callingApi: true})
     socket.emit("studentsCourses/assignStudents", {sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds}, (res) => {
+      this.setState({callingApi: false})
       console.log(`[studentsCourses/assignStudents] response`,res)
       this.setState({
         alertMsg: res.code == 200 ? 'Students list updated' : `${res.status}: ${res.message}`,
@@ -163,7 +166,7 @@ class MisCoursesStudents extends React.Component {
   }
 
   lockCourse = () => {
-    socket.emit("semestersCourses/lock", {sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds}, (res) => {
+    socket.emit("semestersCourses/lockChanges", {sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds}, (res) => {
       this.setState({
         alertMsg: res.code == 200 ? 'Course Locked' : `${res.status}: ${res.message}`,
         alertSeverity: res.code == 200 ? 'success':'warning'
@@ -195,7 +198,7 @@ class MisCoursesStudents extends React.Component {
                 {`Enrolled Students`}
               </Typography>
               {
-                this.state.semesterCourse.locked ? <></> :
+                this.state.semesterCourse.changes_locked ? <></> :
                 <Grid item xs={6} sx={{ margin: "10px" }}>
                   {this.studentsSelectMenu()}
                 </Grid>
@@ -206,7 +209,7 @@ class MisCoursesStudents extends React.Component {
                   columns={columns}
                   rows={this.state.students.filter(student => this.state.studentBatchIds.includes(student.student_batch_id))}
                   loadingState={this.state.loading}
-                  onDeleteClick={this.state.semesterCourse.locked ? undefined : (student) => {
+                  onDeleteClick={this.state.semesterCourse.changes_locked ? undefined : (student) => {
                     this.setState({
                       confirmationModalShow: true,
                       confirmationModalMessage:
@@ -245,12 +248,13 @@ class MisCoursesStudents extends React.Component {
                   <Alert variant= "outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
                 </Zoom>
               </Grid>
-                {this.state.semesterCourse.locked ? <></> : 
+                {this.state.semesterCourse.changes_locked ? <></> : 
                   <Grid item xs={12}>
                     <CustomButton
+                      disabled={this.state.callingApi}
                       sx={{ margin: "10px" }}
                       onClick={() => this.updateStudentsList()}
-                      label="Save"
+                      label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
                     />
                     <CustomButton
                       sx={{ margin: "10px" }}
@@ -286,7 +290,7 @@ class MisCoursesStudents extends React.Component {
               this.state.confirmationModalExecute();
               this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })
             }}
-          />
+        />
         </Grid>
     );
   }

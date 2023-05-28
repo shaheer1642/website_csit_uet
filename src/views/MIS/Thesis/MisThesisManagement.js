@@ -89,7 +89,6 @@ class MisThesisManagement extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log(this.state)
   }
 
   fetchStudentThesis = () => {

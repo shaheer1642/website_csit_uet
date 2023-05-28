@@ -67,10 +67,12 @@ class MisCoursesStudentsUpdate extends React.Component {
     super(props);
     this.state = {
       loading: true,
+      callingApi: false,
+
       studentCourse: {},
+
       alertMsg: '',
       alertSeverity: '',
-      callingApi: false,
       
       confirmationModalShow: false,
       confirmationModalMessage: "",
@@ -84,12 +86,20 @@ class MisCoursesStudentsUpdate extends React.Component {
     this.sem_course_id = this.props.location.state.sem_course_id
     this.student_batch_id = this.props.location.state.student_batch_id
 
-    this.timeoutAlertRef = null
+    this.alertTimeout = null
   }
 
   componentDidMount() {
     this.fetchStudentCourse();
     socket.addEventListener('studentsCourses/listener/changed', this.studentCourseListenerChanged)
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (!prevState.alertMsg && !this.state.alertMsg) return
+    clearTimeout(this.alertTimeout)
+    this.alertTimeout = setTimeout(() => {
+      this.setState({alertMsg: ''})
+    }, 3000);
   }
 
   componentWillUnmount() {
@@ -115,20 +125,12 @@ class MisCoursesStudentsUpdate extends React.Component {
   withdrawCourse = () => {
     this.setState({callingApi: true})
     socket.emit("studentsCourses/updateGrade", {sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: 'W'}, (res) => {
-      this.setState({callingApi: false})
-      if (res.code == 200) {
-        return this.setState({
-          alertMsg: res.code == 200 ? 'Course withdrawn' : `${res.status}: ${res.message}`,
-          alertSeverity: res.code == 200 ? 'success':'warning'
-        });
-      }
+      return this.setState({
+        alertMsg: res.code == 200 ? 'Course withdrawn' : `${res.status}: ${res.message}`,
+        alertSeverity: res.code == 200 ? 'success':'warning',
+        callingApi: false
+      });
     });
-  }
-  
-  timeoutAlert = () => {
-    console.log('timeoutAlert called')
-    clearTimeout(this.timeoutAlertRef)
-    this.timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 5000)
   }
 
   render() {
@@ -166,6 +168,11 @@ class MisCoursesStudentsUpdate extends React.Component {
                 </Typography>
               )}
               <Grid item xs={12} sx={{ margin: "10px" }}>
+                <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
+                  <Alert variant= "outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
+                </Zoom>
+              </Grid>
+              <Grid item xs={12} sx={{ margin: "10px" }}>
                 <CustomButton
                   variant="outlined"
                   label={this.state.callingApi ? <CircularProgress size='20px' />  : "Withdraw Course"}
@@ -180,11 +187,6 @@ class MisCoursesStudentsUpdate extends React.Component {
                     })
                   }
                 />
-              </Grid>
-              <Grid item xs={12} sx={{ margin: "10px" }}>
-                <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-                  <Alert variant= "outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
-                </Zoom>
               </Grid>
             </React.Fragment>
           }/>

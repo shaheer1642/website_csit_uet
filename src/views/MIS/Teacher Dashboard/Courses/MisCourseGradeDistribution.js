@@ -189,11 +189,12 @@ class MisGradeDistribution extends React.Component {
                         onChange={(e) => this.changeGradeDistribution('marking.type',e.target.value)}
                         row
                       >
-                        <FormControlLabel value="absolute" control={<Radio />} label="Absolute" />
-                        <FormControlLabel value="relative" control={<Radio />} label="Relative" />
+                        <FormControlLabel value="absolute" control={<Radio disabled={this.state.semesterCourse.grades_locked}/>} label="Absolute" />
+                        <FormControlLabel value="relative" control={<Radio disabled={this.state.semesterCourse.grades_locked}/>} label="Relative" />
                       </RadioGroup>
                       {this.state.semesterCourse.grade_distribution.marking.type == 'relative' ?
                         <CustomTextField 
+                          disabled={this.state.semesterCourse.grades_locked}
                           type='number'
                           size="small"
                           style={{width: '120px'}}
@@ -215,6 +216,7 @@ class MisGradeDistribution extends React.Component {
                     </Grid>
                     <Grid key={'griditem-2'} item xs={"auto"}>
                       <CustomTextField 
+                        disabled={this.state.semesterCourse.grades_locked}
                         type='number'
                         size="small"
                         style={{width: '100px'}}
@@ -231,6 +233,7 @@ class MisGradeDistribution extends React.Component {
                     </Grid>
                     <Grid key={'griditem-3'} item xs={"auto"}>
                       <CustomTextField 
+                        disabled={this.state.semesterCourse.grades_locked}
                         type='number'
                         size="small"
                         style={{width: '100px'}}
@@ -251,7 +254,7 @@ class MisGradeDistribution extends React.Component {
                     </Grid>
                     <Grid key={'griditem-6'} item xs={"auto"}>
                       <CustomTextField 
-                        
+                        disabled={this.state.semesterCourse.grades_locked}
                         type='number'
                         size="small"
                         style={{width: '100px'}}
@@ -268,6 +271,7 @@ class MisGradeDistribution extends React.Component {
                     </Grid>
                     <Grid key={'griditem-7'} item xs={"auto"}>
                       <CustomTextField 
+                        disabled={this.state.semesterCourse.grades_locked}
                         type='number'
                         size="small"
                         style={{width: '100px'}}
@@ -288,6 +292,7 @@ class MisGradeDistribution extends React.Component {
                     </Grid>
                     <Grid key={'griditem-10'} item xs={"auto"}>
                       <CustomTextField 
+                        disabled={this.state.semesterCourse.grades_locked}
                         type='number'
                         size="small"
                         style={{width: '100px'}}
@@ -310,6 +315,7 @@ class MisGradeDistribution extends React.Component {
                         <React.Fragment key={`fragment-${index}`}>
                           <Grid key={`griditem-map-${index}`} item xs={"auto"} style={{minWidth: '200px', marginLeft: '50px'}} alignItems= 'center' display={"flex"}>
                             <Checkbox
+                              disabled={this.state.semesterCourse.grades_locked}
                               key={`checkbox-${index}`}
                               checked={division.include}
                               onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.include`,e.target.checked)}
@@ -318,6 +324,7 @@ class MisGradeDistribution extends React.Component {
                           </Grid>
                           <Grid key={`griditem-map-${index + 1}`} item xs={"auto"}>
                             <CustomTextField 
+                              disabled={this.state.semesterCourse.grades_locked}
                               type='number'
                               size="small"
                               style={{width: '200px'}}
@@ -334,6 +341,7 @@ class MisGradeDistribution extends React.Component {
                           </Grid>
                           <Grid key={`griditem-map-${index + 2}`} item xs={"auto"}>
                             <CustomTextField 
+                              disabled={this.state.semesterCourse.grades_locked}
                               type='number'
                               size="small"
                               style={{width: '150px'}}
@@ -354,6 +362,7 @@ class MisGradeDistribution extends React.Component {
                         <React.Fragment key={`fragment-${index}`}>
                           <Grid key={`griditem-map-${index }`} item xs={"auto"} style={{minWidth: '200px', marginLeft: '50px'}} alignItems= 'center' display={"flex"}>
                             <Checkbox
+                              disabled={this.state.semesterCourse.grades_locked}
                               key={`checkbox-${index}`}
                               checked={division.include}
                               onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.include`,e.target.checked)}
@@ -362,6 +371,7 @@ class MisGradeDistribution extends React.Component {
                           </Grid>
                           <Grid key={`griditem-map-${index + 1}`} item xs={"auto"}>
                             <CustomTextField 
+                              disabled={this.state.semesterCourse.grades_locked}
                               type='number'
                               size="small"
                               style={{width: '200px'}}
@@ -378,6 +388,7 @@ class MisGradeDistribution extends React.Component {
                           </Grid>
                           <Grid key={`griditem-map-${index + 2}`} item xs={"auto"}>
                             <CustomTextField 
+                              disabled={this.state.semesterCourse.grades_locked}
                               type='number'
                               size="small"
                               style={{width: '150px'}}
@@ -398,6 +409,7 @@ class MisGradeDistribution extends React.Component {
                         <React.Fragment key={`fragment-${index}`}>
                           <Grid key={`griditem-map-${index}`} item xs={"auto"} style={{minWidth: '200px', marginLeft: '50px'}} alignItems= 'center' display={"flex"}>
                             <Checkbox
+                              disabled={this.state.semesterCourse.grades_locked}
                               key={`checkbox-${index}`}
                               checked={division.include}
                               onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.include`,e.target.checked)}
@@ -406,6 +418,7 @@ class MisGradeDistribution extends React.Component {
                           </Grid>
                           <Grid key={`griditem-map-${index + 1}`} item xs={"auto"}>
                             <CustomTextField 
+                              disabled={this.state.semesterCourse.grades_locked}
                               type='number'
                               size="small"
                               style={{width: '100px'}}
@@ -429,28 +442,32 @@ class MisGradeDistribution extends React.Component {
                         <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
                       </Zoom>
                     </Grid>
-                    <Grid key={`griditem-13`} item xs={"auto"}>
-                      <CustomButton 
-                        label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
-                        disabled={this.state.callingApi}
-                        onClick={() => {
-                          this.setState({callingApi: true})
-                          socket.emit(`semestersCourses/updateGradeDistribution`, {sem_course_id: this.sem_course_id, grade_distribution: this.state.semesterCourse.grade_distribution}, res => {
-                            this.setState({callingApi: false})
-                            this.setState({
-                              alertMsg: res.code == 200 ? 'Updated grade distribution':`${res.status}: ${res.message}`,
-                              alertSeverity: res.code == 200 ? 'success':'warning'
-                            }, timeoutAlert)
-                          })
-                        }}
-                      />
-                    </Grid>
-                    <Grid key={`griditem-14`} item xs={"auto"}>
-                      <CustomButton 
-                        label="Reset"
-                        onClick={() => this.fetchSemesterCourse()}
-                      />
-                    </Grid>
+                    {this.state.semesterCourse.grades_locked ? <></> : 
+                      <React.Fragment>
+                        <Grid key={`griditem-13`} item xs={"auto"}>
+                          <CustomButton 
+                            label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
+                            disabled={this.state.callingApi}
+                            onClick={() => {
+                              this.setState({callingApi: true})
+                              socket.emit(`semestersCourses/updateGradeDistribution`, {sem_course_id: this.sem_course_id, grade_distribution: this.state.semesterCourse.grade_distribution}, res => {
+                                this.setState({callingApi: false})
+                                this.setState({
+                                  alertMsg: res.code == 200 ? 'Updated grade distribution':`${res.status}: ${res.message}`,
+                                  alertSeverity: res.code == 200 ? 'success':'warning'
+                                }, timeoutAlert)
+                              })
+                            }}
+                          />
+                        </Grid>
+                        <Grid key={`griditem-14`} item xs={"auto"}>
+                          <CustomButton 
+                            label="Reset"
+                            onClick={() => this.fetchSemesterCourse()}
+                          />
+                        </Grid>
+                      </React.Fragment>
+                    }
                   </Grid>
                 </Collapse>
               </React.Fragment>
