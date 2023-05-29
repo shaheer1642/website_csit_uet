@@ -372,11 +372,11 @@ class MisCourseAttendance extends React.Component {
             onClick={() => {
               this.setState({callingApi: true})
               socket.emit(`studentsCourses/updateAttendances`, {sem_course_id: this.sem_course_id, attendances: this.state.attendances}, res => {
-                this.setState({callingApi: false})
                 this.setState({
                   alertMsg: res.code == 200 ? 'Updated students attendance':`${res.status}: ${res.message}`,
                   alertSeverity: res.code == 200 ? 'success':'warning',
-                  showSettings: false
+                  showSettings: false,
+                  callingApi: false
                 }, this.timeoutAlert)
               })
             }}

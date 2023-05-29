@@ -130,7 +130,16 @@ class MisEvents extends React.Component {
           columns={columns}
         />
         <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New" />
-        <CustomModal title={this.state.modalTitle} body={this.state.modalBody} open={this.state.modalShow} onClose={() => this.setState({ modalShow: false })} />
+        <CustomModal open={this.state.modalShow} onClose={() => this.setState({ modalShow: false })}>
+          <Grid container spacing={1}>
+            <Grid item xs={12}>
+              <Typography variant={'h2'}>{this.state.modalTitle}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography>{this.state.modalBody}</Typography>
+            </Grid>
+          </Grid>
+        </CustomModal>
         <ConfirmationModal 
           open={this.state.confirmationModalShow} 
           message={this.state.confirmationModalMessage} 

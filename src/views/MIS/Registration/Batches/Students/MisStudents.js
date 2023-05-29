@@ -74,7 +74,7 @@ class MisStudent extends React.Component {
     this.batch_id = this.props.location.state.batch_id
     this.batch_name = this.props.location.state.batch_name
 
-    this.timeoutAlertRef = null;
+    this.alertTimeout = null;
   }
 
   componentDidMount() {
@@ -96,6 +96,15 @@ class MisStudent extends React.Component {
     socket.addEventListener('students/listener/delete', this.studentsListenerDelete)
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    console.log(this.state)
+    if (!prevState.alertMsg && !this.state.alertMsg) return
+    clearTimeout(this.alertTimeout)
+    this.alertTimeout = setTimeout(() => {
+      this.setState({alertMsg: ''})
+    }, 3000);
+  }
+
   componentWillUnmount() {
     socket.removeEventListener('students/listener/insert', this.studentsListenerInsert)
     socket.removeEventListener('students/listener/update', this.studentsListenerUpdate)
@@ -103,9 +112,10 @@ class MisStudent extends React.Component {
   }
 
   studentsListenerInsert = (data) => {
-    return this.setState({
-      studentsArr: [data, ...this.state.studentsArr]
-    })
+    console.log('studentsListenerInsert called')
+    return this.setState(state => ({
+      studentsArr: [data, ...state.studentsArr]
+    }))
   }
   studentsListenerUpdate = (data) => {
     return this.setState(state => {
@@ -119,9 +129,10 @@ class MisStudent extends React.Component {
     });
   }
   studentsListenerDelete = (data) => {
-    return this.setState({
-      studentsArr: this.state.studentsArr.filter((student) => student.student_id != data.student_id)
-    })
+    console.log('studentsListenerDelete called')
+    return this.setState(state => ({
+      studentsArr: state.studentsArr.filter((student) => student.student_id != data.student_id)
+    }))
   }
   
   confirmationModalDestroy = () => {
@@ -160,7 +171,7 @@ class MisStudent extends React.Component {
           alertMsg: responses.join('\n'),
           alertSeverity: 'success',
           uploadingStudentsList: false
-        }, this.timeoutAlert)
+        })
       }).catch(console.error)
     };
     e.target.value = null
@@ -245,10 +256,13 @@ class MisStudent extends React.Component {
     }
   }
 
-  timeoutAlert = () => {
-    console.log('timeoutAlert called')
-    clearTimeout(this.timeoutAlertRef)
-    this.timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 10000)
+  deleteStudent = (student_id,batch_id) => {
+    socket.emit('students/delete', { student_id: student_id, batch_id: batch_id }, (res) => {
+      this.setState({
+        alertMsg: res.code == 200 ? 'Student removed':`${res.status}: ${res.message}`,
+        alertSeverity: res.code == 200 ? 'success':'warning',
+      })
+    })
   }
 
   render() {
@@ -280,7 +294,7 @@ class MisStudent extends React.Component {
             this.setState({
               confirmationModalShow: true,
               confirmationModalMessage: 'Are you sure you want to remove this student?',
-              confirmationModalExecute: () => socket.emit('students/delete', { student_id: student.student_id })
+              confirmationModalExecute: () => this.deleteStudent(student.student_id, this.batch_id)
             })
           }}
           rows={this.state.studentsArr}
@@ -288,7 +302,7 @@ class MisStudent extends React.Component {
         />
         <Grid item xs={12} sx={{ margin: "10px" }}>
           <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-            <Alert variant= "outlined"  severity='info' sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
+            <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
           </Zoom>
         </Grid>
         <CustomButton
@@ -323,7 +337,7 @@ class MisStudent extends React.Component {
             </Link>
           }
         />
-        <Tooltip title="Upload a .CSV file, columns should be named: CNIC, Registration No, Name, Father Name, Gender, Address. Note: Name, gender, and cnic/reg# cannot be empty">
+        <Tooltip title="Upload a .CSV file, columns should be named: CNIC, Registration, Name, Father Name, Gender, Address, Email. Note: name, father name, gender, and cnic/reg# cannot be empty">
           <IconButton>
             <Info />
           </IconButton>
