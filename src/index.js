@@ -47,6 +47,10 @@ import SubmitApplicationDraft from "./views/MIS/Applications/SubmitApplicationDr
 import ViewApplications from "./views/MIS/Applications/viewApplications";
 import ViewApplicationsDetail from "./views/MIS/Applications/viewApplicationsDetail";
 import MisCoursesStudentsUpdate from "./views/MIS/Semesters/Courses/Students/MisCoursesStudentsUpdate";
+import MisStudentCourseGradeManagement from "./views/MIS/Student Dashboard/Courses/MisStudentCourseGradeManagement";
+import MisStudentBatches from "./views/MIS/Student Dashboard/Batches/MisStudentBatches";
+import MisStudentSemesters from "./views/MIS/Student Dashboard/Semesters/MisStudentSemesters";
+import MisStudentCourses from "./views/MIS/Student Dashboard/Courses/MisStudentCourses";
 
 export default function Router() {
   return (
@@ -105,7 +109,12 @@ export default function Router() {
             <Route path="applications/viewApplications/detail" element={<ViewApplicationsDetail/>}/>
 
           <Route path="tportal/courses" element={<MisTeachersCourses />} />
-          <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />
+            <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />
+
+          <Route path="sportal/batches" element={<MisStudentBatches />} />
+          <Route path="sportal/semesters" element={<MisStudentSemesters />} />
+          <Route path="sportal/courses" element={<MisStudentCourses />} />
+            <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
         </Route>
 
       </Routes>

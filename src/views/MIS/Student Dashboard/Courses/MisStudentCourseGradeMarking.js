@@ -27,13 +27,11 @@ import * as Color from '@mui/material/colors';
 import { socket } from "../../../../websocket/socket";
 import { withRouter } from "../../../../withRouter";
 import CustomTable from "../../../../components/CustomTable";
-import CustomButton from "../../../../components/CustomButton";
 import CustomModal from "../../../../components/CustomModal";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../components/GoBackButton";
 import { user } from "../../../../objects/User";
 import CustomCard from "../../../../components/CustomCard";
-import CustomTextField from "../../../../components/CustomTextField";
 import LoadingIcon from "../../../../components/LoadingIcon";
 import { convertUpper } from "../../../../extras/functions";
 
@@ -126,7 +124,7 @@ const stickyBodyCell = {
   background: 'inherit'
 }
 
-class MisCourseGradeMarking extends React.Component {
+class MisStudentCourseGradeMarking extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -146,6 +144,7 @@ class MisCourseGradeMarking extends React.Component {
       confirmationModalExecute: () => {},
     };
     this.sem_course_id = this.props.location.state.sem_course_id
+    this.student_batch_id = this.props.location.state.student_batch_id
     this.timeoutAlertRef = null;
   }
 
@@ -170,7 +169,7 @@ class MisCourseGradeMarking extends React.Component {
     socket.emit("semestersCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
       if (res.code == 200 && res.data.length == 1) {
         const semesterCourse = res.data[0]
-        socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+        socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id}, (res) => {
           if (res.code == 200) {
             return this.setState({
               semesterCourse: semesterCourse,
@@ -284,14 +283,11 @@ class MisCourseGradeMarking extends React.Component {
                               <StyledTableCell key={`tablecell-header-1`} align="left" style={stickyHeaderCell}>
                                 Student Name
                               </StyledTableCell>
-                              <StyledTableCell key={`tablecell-header-2`} align="left">
-                                Result ({this.state.semesterCourse.grade_distribution.marking.type})
-                              </StyledTableCell>
-                              <StyledTableCell key={`tablecell-header-3`} align="left">
-                                Grade ({this.state.semesterCourse.grade_distribution.marking.type})
-                              </StyledTableCell>
                               <StyledTableCell key={`tablecell-header-4`} align="left">
                                 Final Grade
+                              </StyledTableCell>
+                              <StyledTableCell key={`tablecell-header-2`} align="left">
+                                Total
                               </StyledTableCell>
                               {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
                                 return (
@@ -315,20 +311,16 @@ class MisCourseGradeMarking extends React.Component {
                                 key={`tablerow-${studentsIndex}`}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                               >
-                                <StyledTableCell key={`tablecell-0`} component="th" scope="row">
-                                  {student.reg_no || student.cnic}
-                                </StyledTableCell>
+                                <StyledTableCell key={`tablecell-0`} component="th" scope="row">{student.reg_no || student.cnic}</StyledTableCell>
                                 <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
-                                <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0}`}</StyledTableCell>
-                                <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
                                 <StyledTableCell key={`tablecell-4`} align="left">{student.grade}</StyledTableCell>
+                                <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0}`}</StyledTableCell>
                                 {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute,index) => {
                                   return (
                                     <StyledTableCell key={`tablecell-${index + 4}`} align="center">
                                       {attribute == 'attendance' ? this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]:
                                       <TextField 
-                                        disabled={this.state.semesterCourse.grades_locked}
-                                        InputProps={{ inputProps: { tabIndex: (studentsIndex+1) + (index*this.state.courseStudents.length) } }}
+                                        InputProps={{ readOnly: true, inputProps: { tabIndex: (studentsIndex+1) + (index*this.state.courseStudents.length) } }}
                                         key={`input-${(studentsIndex+1) + (index*this.state.courseStudents.length)}`}
                                         onFocus={(e) => e.target.select()} 
                                         value={this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]} 
@@ -352,48 +344,6 @@ class MisCourseGradeMarking extends React.Component {
                         <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
                       </Zoom>
                     </Grid>
-                    {this.state.semesterCourse.grades_locked ? <></> : 
-                      <React.Fragment>
-                        <Grid key={`griditem-3`} item xs={"auto"}>
-                          <CustomButton 
-                            label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
-                            disabled={this.state.callingApi}
-                            onClick={() => {
-                              this.setState({callingApi: true})
-                              socket.emit(`studentsCourses/updateMarkings`, {sem_course_id: this.sem_course_id, markings: this.state.markings}, res => {
-                                this.setState({callingApi: false})
-                                this.setState({
-                                  alertMsg: res.code == 200 ? 'Updated student markings':`${res.status}: ${res.message}`,
-                                  alertSeverity: res.code == 200 ? 'success':'warning'
-                                }, this.timeoutAlert)
-                              })
-                            }}
-    
-                          />
-                        </Grid>
-                        <Grid key={`griditem-4`} item xs={"auto"}>
-                          <CustomButton 
-                            label="Reset"
-                            onClick={() => this.fetchData()}
-                          />
-                        </Grid>
-                        <Grid key={`griditem-5`} item xs={"auto"}>
-                          <CustomButton
-                            color='error'
-                            variant="outlined"
-                            onClick={() => 
-                              this.setState({
-                                confirmationModalShow: true,
-                                confirmationModalMessage:
-                                  "Are you sure you want to lock grades? This change cannot be undone",
-                                confirmationModalExecute: () => this.lockGrades()
-                              })
-                            }
-                            label="Lock Grades"
-                          />
-                        </Grid>
-                      </React.Fragment>
-                    }
                   </Grid>
                 </Collapse>
               </React.Fragment>
@@ -415,4 +365,4 @@ class MisCourseGradeMarking extends React.Component {
   }
 }
 
-export default withRouter(MisCourseGradeMarking);
+export default withRouter(MisStudentCourseGradeMarking);
