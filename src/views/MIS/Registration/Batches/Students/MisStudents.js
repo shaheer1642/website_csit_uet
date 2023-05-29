@@ -69,7 +69,11 @@ class MisStudent extends React.Component {
 
       uploadingStudentsList: false,
       alertMsg: '',
-      alertSeverity: 'warning'
+      alertSeverity: 'warning',
+
+      confirmationModalShow: false,
+      confirmationModalMessage: '',
+      confirmationModalExecute: () => {}
     };
     this.batch_id = this.props.location.state.batch_id
     this.batch_name = this.props.location.state.batch_name
@@ -78,24 +82,16 @@ class MisStudent extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("students/fetch", {batch_id: this.batch_id}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          studentsArr: res.data,
-          loadingStudents: false,
-
-          confirmationModalShow: false,
-          confirmationModalMessage: '',
-          confirmationModalExecute: () => {}
-        });
-      }
-    });
-
-    socket.addEventListener('students/listener/insert', this.studentsListenerInsert)
-    socket.addEventListener('students/listener/update', this.studentsListenerUpdate)
-    socket.addEventListener('students/listener/delete', this.studentsListenerDelete)
+    this.fetchData()
+    socket.addEventListener('students/listener/insert', this.changeListener)
+    socket.addEventListener('students/listener/update', this.changeListener)
+    socket.addEventListener('students/listener/delete', this.changeListener)
+    socket.addEventListener('studentsBatch/listener/insert', this.changeListener)
+    socket.addEventListener('studentsBatch/listener/update', this.changeListener)
+    socket.addEventListener('studentsBatch/listener/delete', this.changeListener)
   }
 
+  
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log(this.state)
     if (!prevState.alertMsg && !this.state.alertMsg) return
@@ -106,33 +102,31 @@ class MisStudent extends React.Component {
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('students/listener/insert', this.studentsListenerInsert)
-    socket.removeEventListener('students/listener/update', this.studentsListenerUpdate)
-    socket.removeEventListener('students/listener/delete', this.studentsListenerDelete)
+    socket.removeEventListener('students/listener/insert', this.changeListener)
+    socket.removeEventListener('students/listener/update', this.changeListener)
+    socket.removeEventListener('students/listener/delete', this.changeListener)
+    socket.removeEventListener('studentsBatch/listener/insert', this.changeListener)
+    socket.removeEventListener('studentsBatch/listener/update', this.changeListener)
+    socket.removeEventListener('studentsBatch/listener/delete', this.changeListener)
   }
 
-  studentsListenerInsert = (data) => {
-    console.log('studentsListenerInsert called')
-    return this.setState(state => ({
-      studentsArr: [data, ...state.studentsArr]
-    }))
+  changeListener = (data) => {
+    if (data.batch_id == this.batch_id) {
+      clearTimeout(this.fetchDataTimeout)
+      this.fetchDataTimeout = setTimeout(this.fetchData, 500);
+    }
   }
-  studentsListenerUpdate = (data) => {
-    return this.setState(state => {
-        const studentsArr = state.studentsArr.map((student, index) => {
-          if (student.student_id === data.student_id) return data;
-          else return student
+
+  fetchData = () => {
+    this.setState({loadingStudents: true})
+    socket.emit("students/fetch", {batch_id: this.batch_id}, (res) => {
+      this.setState({loadingStudents: false})
+      if (res.code == 200) {
+        return this.setState({
+          studentsArr: res.data,
         });
-        return {
-          studentsArr,
-        }
+      }
     });
-  }
-  studentsListenerDelete = (data) => {
-    console.log('studentsListenerDelete called')
-    return this.setState(state => ({
-      studentsArr: state.studentsArr.filter((student) => student.student_id != data.student_id)
-    }))
   }
   
   confirmationModalDestroy = () => {
