@@ -23,6 +23,7 @@ interface IProps {
   label: string,
   onChange: React.ChangeEventHandler<HTMLInputElement> | undefined,
   onDelete: Function | undefined,
+  readOnly?: boolean
 }
 
 export default class CustomFilesField extends React.Component<IProps> {
@@ -75,18 +76,20 @@ export default class CustomFilesField extends React.Component<IProps> {
               sx={defaultStyles.chip}
               variant="outlined"
               onClick={() => doc.document ? {} : this.state.documents[doc.document_id]?.document_url ? window.open(this.state.documents[doc.document_id]?.document_url, '_blank', 'noopener,noreferrer') : {}}
-              onDelete={(e) => this.props.onDelete(index)}
+              onDelete={this.props.readOnly ? undefined : (e) => this.props.onDelete(index)}
               key={`chip-${index}`}
             />
           )}
           </Stack>
         </Grid>
-        <Grid item xs={'auto'} display='flex' alignItems={'center'} style={{marginLeft:'10px'}}>
-          <IconButton sx={defaultStyles.IconButton} component="label">
-            <input hidden type="file" multiple onChange={this.props.onChange}/>
-            <UploadFile />
-          </IconButton>
-        </Grid>
+        {this.props.readOnly ? <></> :
+          <Grid item xs={'auto'} display='flex' alignItems={'center'} style={{marginLeft:'10px'}}>
+            <IconButton sx={defaultStyles.IconButton} component="label">
+              <input hidden type="file" multiple onChange={this.props.onChange}/>
+              <UploadFile />
+            </IconButton>
+          </Grid>
+        }
       </Grid>
     )
   }

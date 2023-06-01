@@ -46,7 +46,8 @@ interface IProps {
     onPressEnter?: Function,
     placeholder?: string,
     disabled?: boolean,
-    range?: Array<number>
+    range?: Array<number>,
+    readOnly?: boolean
 }
 
 export default class CustomTextField extends React.Component<IProps> {
@@ -88,10 +89,10 @@ export default class CustomTextField extends React.Component<IProps> {
             variant={this.props.variant || "standard"}
             sx= {{...styles, ...this.props.sx}}
             style= {this.props.style}
-            onChange={this.props.onChange}
+            onChange={this.props.readOnly ? undefined : this.props.onChange}
             onFocus={this.props.onFocus}
             type={this.props.type || 'text'}
-            inputProps={{ tabIndex: this.props.tabIndex, min: this.props.range?.[0], max: this.props.range?.[1] }}
+            inputProps={{ tabIndex: this.props.tabIndex, min: this.props.range?.[0], max: this.props.range?.[1], readOnly: this.props.readyOnly }}
             required={this.props.required}
             multiline={this.props.multiline}
             rows={this.props.rows}

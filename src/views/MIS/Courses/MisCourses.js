@@ -123,7 +123,7 @@ class MisCourses extends React.Component {
       { id: "course_name", label: "Course Title", format: (value) => value },
       { id: "course_type", label: "Course Type", format: (value) => value },
       { id: "credit_hours", label: "Credit Hours", format: (value) => value },
-      { id: "departmental", label: "Departmental", format: (value) => value == true ? 'Yes' : value == false ? 'No' : value },
+      { id: "department", label: "Department", format: (value) => value },
     ];
     return (
       <CustomCard cardContent={

@@ -37,10 +37,10 @@ class MisCoursesCreate extends React.Component {
                 position: 2,
                 xs: 6,
                 fieldType: 'radiobox',
-                fieldTypeOptions: ['core', 'optional']
+                fieldTypeOptions: ['core', 'elective']
               },
-              departmental: {
-                label: "Departmental",
+              department: {
+                label: "Department",
                 position: 3,
                 defaultValue: true,
                 xs: 6

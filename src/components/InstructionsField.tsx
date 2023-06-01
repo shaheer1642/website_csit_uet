@@ -27,7 +27,7 @@ const defaultStyles = {
 interface IProps {
     instruction_id: number,
     instruction_detail_key: string,
-    readonly: boolean,
+    readOnly: boolean,
 }
 
 export default class InstructionsField extends React.Component<IProps> {
@@ -124,7 +124,7 @@ export default class InstructionsField extends React.Component<IProps> {
                                 </Menu>
                             </div>
                         </ButtonGroup>:
-                        this.props.readonly ? <></>:
+                        this.props.readOnly ? <></>:
                         <Tooltip title="Edit">
                             <IconButton size='small' color='primary' onClick={() => this.setState({editable: true})}>
                                 <Edit />

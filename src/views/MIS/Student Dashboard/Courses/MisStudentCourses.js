@@ -74,7 +74,7 @@ class MisStudentCourses extends React.Component {
       { id: "course_type", label: "Course Type", format: (value) => value },
       { id: "semester_season", label: "Semester Season", format: (value) => value },
       { id: "semester_year", label: "Semester Year", format: (value) => value },
-      { id: "departmental", label: "Departmental", format: (value) => value == true ? 'Yes' : value == false ? 'No' : value },
+      { id: "department", label: "Department", format: (value) => value },
       { id: "teacher_id", label: "Teacher Name", format: (value) => getUserNameById(value) },
     ];
     if (!this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/courses'}} />

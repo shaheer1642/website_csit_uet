@@ -37,8 +37,6 @@ import CustomCard from "../../../../components/CustomCard";
 import CustomTextField from "../../../../components/CustomTextField";
 import LoadingIcon from "../../../../components/LoadingIcon";
 import { convertUpper } from "../../../../extras/functions";
-import { DatePicker,LocalizationProvider  } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { timeLocale } from "../../../../objects/Time";
 
 const palletes = {
@@ -456,15 +454,13 @@ class MisCourseAttendance extends React.Component {
                                       {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString()})`}
                                       {this.state.showSettings ? 
                                         <React.Fragment>
-                                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                            <DatePicker
-                                              onChange={(newTimestamp) => {
-                                                this.editWeekClassDate(week,index,newTimestamp)
-                                              }}
-                                              sx={{color: 'secondary.light'}}
-                                              format=""
-                                            />
-                                          </LocalizationProvider>
+                                          <TextField
+                                            type='date'
+                                            onChange={(e) => {
+                                              this.editWeekClassDate(week,index,new Date(e.target.value).getTime())
+                                            }}
+                                            sx={{color: 'secondary.light', width: '46px'}}
+                                          />
                                           <CustomButton 
                                             sx={{color: 'secondary.light', borderColor: 'secondary.light', fontSize: '10px'}} 
                                             variant='outlined' 

@@ -115,6 +115,7 @@ export default function Router() {
           <Route path="sportal/semesters" element={<MisStudentSemesters />} />
           <Route path="sportal/courses" element={<MisStudentCourses />} />
             <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
+          <Route path="sportal/thesis" element={<MisThesisManagement/>}/>
         </Route>
 
       </Routes>

@@ -89,7 +89,7 @@ class MisTeachersCourses extends React.Component {
       { id: "course_name", label: "Course Name", format: (value) => value },
       { id: "semester_season", label: "Semester Season", format: (value) => value },
       { id: "semester_year", label: "Semester Year", format: (value) => value },
-      { id: "departmental", label: "Departmental", format: (value) => value == true ? 'Yes' : value == false ? 'No' : value },
+      { id: "department", label: "Department", format: (value) => value },
       { id: "teacher_name", label: "Teacher Name", format: (value) => value },
       { id: "registered_students", label: "Total Students", format: (value) => value },
     ];

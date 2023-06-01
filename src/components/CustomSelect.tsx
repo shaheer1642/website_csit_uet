@@ -15,6 +15,7 @@ interface IProps {
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
     required: boolean | undefined,
     disabled: boolean | undefined,
+    readOnly: boolean | undefined,
     sx: SxProps<Theme>
 }
 
@@ -64,6 +65,7 @@ export default class CustomSelect extends React.Component<IProps, IState> {
         return (
             this.state.componentLoading ? <LoadingIcon />:
             <Autocomplete
+                readOnly = {this.props.readOnly}
                 disablePortal
                 options={this.state.menuItems}
                 renderInput={(params) => <TextField {...params} label={this.props.label} />}
