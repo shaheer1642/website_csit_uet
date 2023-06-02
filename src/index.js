@@ -51,6 +51,7 @@ import MisStudentCourseGradeManagement from "./views/MIS/Student Dashboard/Cours
 import MisStudentBatches from "./views/MIS/Student Dashboard/Batches/MisStudentBatches";
 import MisStudentSemesters from "./views/MIS/Student Dashboard/Semesters/MisStudentSemesters";
 import MisStudentCourses from "./views/MIS/Student Dashboard/Courses/MisStudentCourses";
+import FirebaseNotifications from "./firebase/firebase-notifications";
 
 export default function Router() {
   return (
@@ -128,5 +129,6 @@ root.render(
   <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router />
+      <FirebaseNotifications />
   </ThemeProvider>
 );

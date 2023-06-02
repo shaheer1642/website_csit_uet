@@ -6,7 +6,6 @@ socketHasConnected().then(() => {
     socket.emit('users/fetch',{},(res) => {
         console.log('usersfetch res',res)
         if (res.code == 200) {
-            users_list = 
             res.data.forEach(user => {
                 users_list[user.user_id] = user
             })
