@@ -159,9 +159,10 @@ export default class FormGenerator extends React.Component<IProps, IState> {
   render(): React.ReactNode {
     return (
       this.state.formLoading ? <LoadingIcon /> :
-        <div>
-          <CustomCard style={{padding: '20px'}} cardContent={
-          <Grid container rowSpacing={'20px'} columnSpacing={'20px'} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
+      <CustomCard 
+        style={{padding: '20px'}} 
+        cardContent={
+          <Grid container spacing={3} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
             <Grid item xs={12}>
               <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
                 <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity as AlertColor]}>{this.state.alertMsg}</Alert>
@@ -223,7 +224,8 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                 </Grid>
               )
             })}
-            <Grid item xs={12}>
+            <Grid item xs={12}></Grid>
+            <Grid item xs={'auto'}>
               <CustomButton 
                 label={this.state.callingApi ? <CircularProgress size='20px' /> : this.props.formType == 'create' ? 'Create' : 'Update'}
                 disabled={this.state.callingApi}
@@ -240,9 +242,10 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                 }}
               />
             </Grid>
-          </Grid>} />
-
-        </div>
+            {this.props.children}
+          </Grid>
+        } 
+      />
     )
   }
 }

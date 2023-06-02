@@ -1,6 +1,6 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
-import { Typography, IconButton, Button, Link, Box, TextField, Alert, Fade, Zoom, Grid } from '@mui/material';
+import { Typography, IconButton, Button, Link, Box, TextField, Alert, Fade, Zoom, Grid, CircularProgress } from '@mui/material';
 import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';
 import { socket } from '../../websocket/socket';
 import { withRouter } from '../../withRouter';
@@ -105,6 +105,7 @@ class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      callingApi: false,
       showPassword: false,
       usernameText: '',
       passwordText: '',
@@ -140,7 +141,9 @@ class Login extends React.Component {
       }, () => setTimeout(() => this.setState({ alertMsg: '' }), 3000))
     }
     //console.log(this.state.usernameText, this.state.passwordText)
+    this.setState({callingApi: true})
     socket.emit('login/auth', { username: this.state.usernameText, password: this.state.passwordText }, res => {
+      this.setState({callingApi: false})
       if (res.code == 200) {
         console.log('logged in')
         eventHandler.emit('login/auth', res.data)
@@ -168,7 +171,9 @@ class Login extends React.Component {
       }, () => setTimeout(() => this.setState({ alertMsg: '' }), 3000))
     }
     //console.log(this.state.usernameText, this.state.passwordText)
+    this.setState({callingApi: true})
     socket.emit('login/resetPassword', { username: this.state.usernameText, old_password: this.state.passwordText, new_password: this.state.newPasswordText }, res => {
+      this.setState({callingApi: false})
       if (res.code == 200) {
         console.log('passwordReset')
         this.setState({ panelToggle: 'login', alertMsg: 'Password has been reset', alertSeverity: 'success' })
@@ -241,7 +246,7 @@ class Login extends React.Component {
              
               
               <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
-                <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickLogin} tabIndex={3} label="Login" />
+                <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickLogin} tabIndex={3} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Login"} disabled={this.state.callingApi} />
               </Grid>
               <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
                 <Link href="#" style={{ marginTop: '3%', color: palletes.primary, textDecorationColor: 'white' }} onClick={() => this.setState({ panelToggle: 'reset' })}>Reset Password</Link>
@@ -303,7 +308,7 @@ class Login extends React.Component {
           
             </Grid>
             <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
-            <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickReset} tabIndex={4} label="Reset" />
+            <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickReset} tabIndex={4} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Reset"} disabled={this.state.callingApi} />
             </Grid>
             <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
             <Link href="#" style={{ marginTop: '3%', color: palletes.primary, textDecorationColor: 'white' }} onClick={() => this.setState({ panelToggle: 'login' })}>Login</Link>

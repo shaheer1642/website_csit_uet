@@ -401,14 +401,14 @@ class MisCourseGradeMarking extends React.Component {
           ></CustomCard>
         }
         <ConfirmationModal
-            open={this.state.confirmationModalShow}
-            message={this.state.confirmationModalMessage}
-            onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
-            onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
-            onClickYes={() => {
-              this.state.confirmationModalExecute();
-              this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })
-            }}
+          open={this.state.confirmationModalShow}
+          message={this.state.confirmationModalMessage}
+          onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
+          onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
+          onClickYes={() => {
+            this.state.confirmationModalExecute();
+            this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })
+          }}
         />
       </Grid>
     );

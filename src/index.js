@@ -25,7 +25,6 @@ import MisCoursesCreate from "./views/MIS/Courses/MisCoursesCreate";
 import MisCoursesUpdate from "./views/MIS/Courses/MisCoursesUpdate";
 import MisStudents from "./views/MIS/Registration/Batches/Students/MisStudents";
 import MisSemesters from "./views/MIS/Semesters/MisSemesters";
-import MisBatchManagement from "./views/MIS/Registration/Batches/MisBatchManagement";
 import MisStudentsCreate from "./views/MIS/Registration/Batches/Students/MisStudentsCreate";
 import MisStudentsUpdate from "./views/MIS/Registration/Batches/Students/MisStudentsUpdate";
 import MisSemestersCreate from "./views/MIS/Semesters/MisSemestersCreate";

@@ -122,7 +122,7 @@ function MisLayout() {
 
   useEffect(() => {
     console.log('[MisLayout] componentDidUpdate')
-    if (!user.login_token)
+    if (!user)
       navigate("/login")
   });
 

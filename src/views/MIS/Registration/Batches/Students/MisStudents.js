@@ -264,12 +264,10 @@ class MisStudent extends React.Component {
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "student_father_name", label: "Father Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
-      { id: "reg_no", label: "Registration No", format: (value) => value },
+      { id: "reg_no", label: "Reg #", format: (value) => value },
       { id: "user_email", label: "Email", format: (value) => value },
-      { id: "student_address", label: "Address", format: (value) => value },
+      { id: "student_address", label: "Home Address", format: (value) => value },
       { id: "student_gender", label: "Gender", format: (value) => value },
-      { id: "username", label: "Username", format: (value) => value },
-      { id: "password", label: "Password", format: (value) => value }
     ];
     return (
       <Grid container rowSpacing={"20px"}>
@@ -283,6 +281,7 @@ class MisStudent extends React.Component {
         </Typography>
         <CustomTable
           loadingState = {this.state.loadingStudents}
+          onRowClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
           onEditClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
           onDeleteClick={(student) => {
             this.setState({
