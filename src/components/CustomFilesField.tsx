@@ -64,9 +64,9 @@ export default class CustomFilesField extends React.Component<IProps> {
 
     return (
       this.state.loading ? <CircularProgress /> :
-      <Grid container>
+      <Grid container spacing={1}>
         <Grid item xs={12}>
-          <Typography>{this.props.label}</Typography>
+          <Typography fontWeight={'bold'}>{this.props.label}</Typography>
         </Grid>
         <Grid item xs={'auto'} display='flex' alignItems={'center'}>
           <Stack direction="row" spacing={1}>

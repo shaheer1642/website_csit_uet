@@ -43,6 +43,7 @@ class MisStudentsCreate extends React.Component {
             disabled: true,
             position: 3,
             xs: 6,
+            hidden: true,
           },
           student_father_name: {
             label: "Father Name",

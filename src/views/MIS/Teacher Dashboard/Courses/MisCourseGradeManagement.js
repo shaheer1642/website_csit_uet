@@ -28,6 +28,7 @@ import MisCourseGradeDistribution from "./MisCourseGradeDistribution";
 import MisCourseGradeMarking from "./MisCourseGradeMarking";
 import MisCourseAttendance from "./MisCourseAttendance";
 import FormCB5 from "../../FormsGenerator/FormCB5";
+import ContextInfo from "../../../../components/ContextInfo";
 
 class MisCourseGradeManagement extends React.Component {
   constructor(props) {
@@ -35,8 +36,8 @@ class MisCourseGradeManagement extends React.Component {
     this.state = {
       fetchingForm: ''
     };
-    this.course_name = this.props.location.state.course_name
     this.sem_course_id = this.props.location.state.sem_course_id
+    this.context_info = this.props.location.state.context_info
   }
 
   componentDidMount() {
@@ -61,6 +62,9 @@ class MisCourseGradeManagement extends React.Component {
     return (
       <Grid container rowSpacing={"20px"} maxWidth='90vw'>
         <GoBackButton context={this.props.navigate}/>
+        <Grid item xs={12}>
+          <ContextInfo contextInfo={this.context_info} />
+        </Grid>
         <Grid item xs={12}>
           <Typography variant="h2">
             {this.course_name}

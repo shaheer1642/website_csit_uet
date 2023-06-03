@@ -19,6 +19,7 @@ import GoBackButton from "../../../../components/GoBackButton";
 import { user } from "../../../../objects/User";
 import CustomCard from "../../../../components/CustomCard";
 import { getUserNameById } from "../../../../objects/Users_List";
+import { convertUpper } from "../../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -46,8 +47,8 @@ class MisStudentCourses extends React.Component {
       loading: true,
       studentCoursesArr: [],
     };
-    this.student_batch_id = this.props.location?.state?.student_batch_id
-    this.semester_id = this.props.location?.state?.semester_id
+    this.student_batch = this.props.location?.state?.student_batch
+    this.student_semester = this.props.location?.state?.student_semester
   }
   componentDidMount() {
     this.fetchStudentCourses();
@@ -57,7 +58,8 @@ class MisStudentCourses extends React.Component {
   }
 
   fetchStudentCourses = () => {
-    socket.emit("studentsCourses/fetch", {student_batch_id: this.student_batch_id, semester_id: this.semester_id}, (res) => {
+    if (!this.student_semester || !this.student_batch) return
+    socket.emit("studentsCourses/fetch", {student_batch_id: this.student_batch?.student_batch_id, semester_id: this.student_semester?.semester_id}, (res) => {
       if (res.code == 200) {
         return this.setState({
           studentCoursesArr: res.data,
@@ -71,14 +73,14 @@ class MisStudentCourses extends React.Component {
     const columns = [
       { id: "course_id", label: "Course ID", format: (value) => value },
       { id: "course_name", label: "Course Name", format: (value) => value },
-      { id: "course_type", label: "Course Type", format: (value) => value },
-      { id: "semester_season", label: "Semester Season", format: (value) => value },
+      { id: "course_type", label: "Course Type", format: (value) => convertUpper(value) },
+      { id: "semester_season", label: "Semester Season", format: (value) => convertUpper(value) },
       { id: "semester_year", label: "Semester Year", format: (value) => value },
       { id: "department", label: "Department", format: (value) => value },
-      { id: "teacher_id", label: "Teacher Name", format: (value) => getUserNameById(value) },
+      { id: "teacher_name", label: "Instructor", format: (value) => value },
     ];
-    if (!this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/courses'}} />
-    else if (!this.semester_id) return <Navigate to='/mis/sportal/semesters' state={{...this.props.location?.state, redirect: '/mis/sportal/courses'}} />
+    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/courses'}} />
+    else if (!this.student_semester) return <Navigate to='/mis/sportal/semesters' state={{...this.props.location?.state, redirect: '/mis/sportal/courses'}} />
     return (
       <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
@@ -93,10 +95,10 @@ class MisStudentCourses extends React.Component {
               onRowClick={(semesterCourse) => 
                 this.props.navigate('grading', {
                   state: {
-                    semester_id: this.semester_id,
-                    student_batch_id: this.student_batch_id,
+                    semester_id: this.student_batch.semester_id,
+                    student_batch_id: this.student_batch.student_batch_id,
                     sem_course_id: semesterCourse.sem_course_id,
-                    course_name: `${semesterCourse.course_id} ${semesterCourse.course_name} | ${semesterCourse.semester_season} ${semesterCourse.semester_year}`
+                    context_info: {...semesterCourse, ...this.student_semester}
                   }
                 })
               }

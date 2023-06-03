@@ -11,6 +11,7 @@ import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
 import { timeLocale } from "../../../objects/Time";
+import { convertUpper } from "../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -82,7 +83,7 @@ class MisThesis extends React.Component {
       { id: "reg_no", label: "Reg#", format: (value) => value },
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "thesis_title", label: "Title", format: (value) => value },
-      { id: "thesis_type", label: "Type", format: (value) => value },
+      { id: "thesis_type", label: "Type", format: (value) => convertUpper(value) },
       { id: 'undertaking_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) }
     ];
     return (
@@ -97,15 +98,15 @@ class MisThesis extends React.Component {
             this.props.navigate("update", {
               state: { 
                 student_batch_id: student_thesis.student_batch_id, 
-                thesis_info: `Thesis Report | ${student_thesis.student_name} (${student_thesis.reg_no || student_thesis.cnic}) - ${student_thesis.degree_type}` 
+                context_info: student_thesis
               },
             })
           }
           onEditClick={(student_thesis) =>
             this.props.navigate("update", {
               state: { 
-                student_batch_id: student_thesis.student_batch_id, 
-                thesis_info: `Thesis Report | ${student_thesis.student_name} (${student_thesis.reg_no || student_thesis.cnic}) - ${student_thesis.degree_type}` 
+                student_batch_id: student_thesis.student_batch_id,
+                context_info: student_thesis
               },
             })
           }

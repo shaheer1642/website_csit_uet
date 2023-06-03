@@ -10,6 +10,7 @@ import CustomButton from "../../../components/CustomButton";
 import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
+import { convertUpper } from "../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -119,9 +120,9 @@ class MisTeachers extends React.Component {
 
   render() {
     const columns = [
-      { id: "teacher_name", label: "Instructor Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
-      { id: "teacher_gender", label: "Gender", format: (value) => value },
+      { id: "teacher_name", label: "Instructor Name", format: (value) => value },
+      { id: "teacher_gender", label: "Gender", format: (value) => convertUpper(value) },
       { id: "user_email", label: "Email", format: (value) => value },
     ];
     return (

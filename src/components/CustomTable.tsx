@@ -5,6 +5,7 @@ import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
 import CustomButton from './CustomButton';
+import { convertUpper } from '../extras/functions';
 
 const defaultStyles = {
   colors: {

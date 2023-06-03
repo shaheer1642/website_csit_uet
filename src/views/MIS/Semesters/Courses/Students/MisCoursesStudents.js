@@ -25,6 +25,8 @@ import CustomMultiAutocomplete from "../../../../../components/CustomMultiAutoco
 import LoadingIcon from "../../../../../components/LoadingIcon";
 import CustomCard from "../../../../../components/CustomCard";
 import CustomSelect from "../../../../../components/CustomSelect";
+import ContextInfo from "../../../../../components/ContextInfo";
+import { convertUpper } from "../../../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -78,8 +80,7 @@ class MisCoursesStudents extends React.Component {
       confirmationModalExecute: () => {},
     };
     this.sem_course_id = this.props.location.state.sem_course_id
-    this.semester_name = this.props.location.state.semester_name
-    this.course_name = this.props.location.state.course_name
+    this.context_info = this.props.location.state.context_info
     
     this.timeoutAlertRef = null
   }
@@ -179,23 +180,23 @@ class MisCoursesStudents extends React.Component {
       { id: "reg_no", label: "Reg #", format: (value) => value },
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "student_father_name", label: "Father Name", format: (value) => value },
-      { id: "student_gender", label: "Gender", format: (value) => value },
+      { id: "student_gender", label: "Gender", format: (value) => convertUpper(value) },
       { id: "batch_no", label: "Batch #", format: (value) => value },
-      { id: "degree_type", label: "Degree", format: (value) => value },
+      { id: "degree_type", label: "Degree", format: (value) => convertUpper(value) },
     ];
     return (
       <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
         <Grid item xs={12}>
+          <ContextInfo contextInfo={this.context_info} />
+        </Grid>
+        <Grid item xs={12}>
         {
           this.state.loading ? <LoadingIcon />:
           <CustomCard cardContent={
             <React.Fragment>
-              <Typography variant="h2" sx={{ margin: "10px" }}>
-                {`${this.course_name} (${this.semester_name})`}
-              </Typography>
               <Typography variant="h4" sx={{ margin: "10px" }}>
-                {`Enrolled Students`}
+                Enrolled Students
               </Typography>
               {
                 this.state.semesterCourse.changes_locked ? <></> :
@@ -224,20 +225,16 @@ class MisCoursesStudents extends React.Component {
                   }}
                   onRowClick={(student) => this.props.navigate("update", {
                     state: { 
-                      course_name: this.course_name,
-                      semester_name: this.semester_name,
-                      student_info: `${student.student_name} (Batch#${student.batch_no} - ${student.degree_type})`,
                       sem_course_id: this.sem_course_id,
-                      student_batch_id: student.student_batch_id
+                      student_batch_id: student.student_batch_id,
+                      context_info: {...this.context_info, ...student}
                     },
                   })}
                   onViewClick={(student) => this.props.navigate("update", {
                     state: { 
-                      course_name: this.course_name,
-                      semester_name: this.semester_name,
-                      student_info: `${student.student_name} (Batch#${student.batch_no} - ${student.degree_type})`,
                       sem_course_id: this.sem_course_id,
-                      student_batch_id: student.student_batch_id
+                      student_batch_id: student.student_batch_id,
+                      context_info: {...this.context_info, ...student}
                     },
                   })}
                   viewButtonLabel="Edit Student Course"

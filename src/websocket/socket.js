@@ -1,6 +1,7 @@
 import {io} from 'socket.io-client';
 import * as uuid from 'uuid';
 import eventHandler from '../eventHandler';
+import { getCookie } from '../cookie_handler';
 
 if (!getCookie('login_token')) generateNewToken()
 
@@ -38,9 +39,6 @@ async function generateNewToken() {
     await socketHasConnected()
     socket.disconnect()
     socket.connect()
-}
-function getCookie(name) {
-    return document.cookie.split('; ').find((row) => row.startsWith(`${name}=`))?.split('=')[1]
 }
 
 export {

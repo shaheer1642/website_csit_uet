@@ -89,8 +89,8 @@ interface fieldOptions {
 }
 
 interface IProps {
-  formType: "create" | "update",
-  endpoint: "events",
+  formType: string,
+  endpoint: string,
   options: fieldOptions,
   submitSuccessMessage: string,
   backgroundColor?: string
@@ -164,13 +164,14 @@ export default class FormGenerator extends React.Component<IProps, IState> {
         cardContent={
           <Grid container spacing={3} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
             <Grid item xs={12}>
-              <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
-                <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity as AlertColor]}>{this.state.alertMsg}</Alert>
-              </Zoom>
+              <Typography variant='h2'>
+                {this.props.formType == 'create' ? 'Create New' : 'Update Info'}
+              </Typography>
             </Grid>
-            {this.state.schema.map(attribute => {
+            {this.state.schema.map((attribute,index) => {
               return (
-                <Grid item xs={this.props.options[attribute.key]?.xs || "auto"}>
+                this.props.options[attribute.key]?.hidden ? <></> :
+                <Grid item key={index} xs={this.props.options[attribute.key]?.xs || "auto"}>
                   {
                     attribute.type == 'string' || attribute.type == 'email' || attribute.type == 'uuid' || attribute.type == 'number' || attribute.type == 'array' ?
                       this.props.options[attribute.key]?.fieldType == 'radiobox' ? 
@@ -187,7 +188,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                         :
                       this.props.options[attribute.key]?.fieldType == 'select' ? 
                         <CustomSelect 
-                          value={this.props.options[attribute.key]?.defaultValue} 
+                          value={this.state.formFields[attribute.key]}
                           endpoint={this.props.options[attribute.key]?.endpoint} 
                           endpointData={this.props.options[attribute.key]?.endpointData} 
                           menuItems={this.props.options[attribute.key]?.selectMenuItems} 
@@ -224,7 +225,11 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                 </Grid>
               )
             })}
-            <Grid item xs={12}></Grid>
+            <Grid item xs={12}>
+              <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity as AlertColor]}>{this.state.alertMsg}</Alert>
+              </Zoom>
+            </Grid>
             <Grid item xs={'auto'}>
               <CustomButton 
                 label={this.state.callingApi ? <CircularProgress size='20px' /> : this.props.formType == 'create' ? 'Create' : 'Update'}

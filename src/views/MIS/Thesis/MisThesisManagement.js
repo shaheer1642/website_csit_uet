@@ -13,6 +13,7 @@ import CustomButton from '../../../components/CustomButton';
 import CustomFilesField from '../../../components/CustomFilesField';
 import InstructionsField from '../../../components/InstructionsField';
 import { Navigate } from 'react-router';
+import ContextInfo from '../../../components/ContextInfo';
 
 const palletes = {
   primary: '#439CEF',
@@ -72,8 +73,8 @@ class MisThesisManagement extends React.Component {
       alertMsg: '',
       alertSeverity: 'warning',
     }
-    this.student_batch_id = this.props.location.state.student_batch_id
-    this.thesis_info = this.props.location.state.thesis_info
+    this.student_batch_id = this.props.location.state.student_batch_id || this.props.location.state.student_batch?.student_batch_id
+    this.context_info = this.props.location.state.context_info
     this.student_view = this.props.location.state.student_view
 
     this.timeoutAlertRef = null
@@ -82,7 +83,6 @@ class MisThesisManagement extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.student_view)
     this.fetchStudentThesis()
     socket.addEventListener("studentsThesis/listener/changed",this.studentsThesisListenerChanged);
   }
@@ -144,6 +144,9 @@ class MisThesisManagement extends React.Component {
       Object.keys(this.state.student_thesis) == 0 ? <Typography variant='h4'>No Thesis Found</Typography> :
       <Grid container rowSpacing={"20px"} columnSpacing={'10px'}>
         <GoBackButton context={this.props.navigate}/>
+        <Grid item xs={12}>
+          <ContextInfo contextInfo={this.context_info} />
+        </Grid>
         {/* Thesis basic info */}
         <Grid item xs={12}>
           <CustomCard
@@ -151,7 +154,7 @@ class MisThesisManagement extends React.Component {
           cardContent= {
             <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
               <Grid item xs={12}>
-                <Typography variant='h3'>{this.thesis_info}</Typography>
+                <Typography variant='h3'>Thesis Report</Typography>
               </Grid>
               <Grid item xs={'auto'}>
                 <CustomTextField 

@@ -22,6 +22,8 @@ import CustomModal from "../../../../../components/CustomModal";
 import ConfirmationModal from "../../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../../components/GoBackButton";
 import CustomCard from "../../../../../components/CustomCard";
+import ContextInfo from "../../../../../components/ContextInfo";
+import { convertUpper } from "../../../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -76,7 +78,7 @@ class MisStudent extends React.Component {
       confirmationModalExecute: () => {}
     };
     this.batch_id = this.props.location.state.batch_id
-    this.batch_name = this.props.location.state.batch_name
+    this.context_info = this.props.location.state.context_info
 
     this.alertTimeout = null;
   }
@@ -261,99 +263,102 @@ class MisStudent extends React.Component {
 
   render() {
     const columns = [
-      { id: "student_name", label: "Student Name", format: (value) => value },
-      { id: "student_father_name", label: "Father Name", format: (value) => value },
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "reg_no", label: "Reg #", format: (value) => value },
+      { id: "student_name", label: "Student Name", format: (value) => value },
+      { id: "student_father_name", label: "Father Name", format: (value) => value },
       { id: "user_email", label: "Email", format: (value) => value },
       { id: "student_address", label: "Home Address", format: (value) => value },
-      { id: "student_gender", label: "Gender", format: (value) => value },
+      { id: "student_gender", label: "Gender", format: (value) => convertUpper(value) },
     ];
     return (
       <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
-        <Grid item xs = {12}>
-      <CustomCard cardContent={
-      <Grid>
-      <Grid container>
-        <Typography variant="h2" style={{ margin: "10px" }}>
-          {`Students (${this.batch_name})`}
-        </Typography>
-        <CustomTable
-          loadingState = {this.state.loadingStudents}
-          onRowClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
-          onEditClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
-          onDeleteClick={(student) => {
-            this.setState({
-              confirmationModalShow: true,
-              confirmationModalMessage: 'Are you sure you want to remove this student?',
-              confirmationModalExecute: () => this.deleteStudent(student.student_id, this.batch_id)
-            })
-          }}
-          rows={this.state.studentsArr}
-          columns={columns}
-        />
-        <Grid item xs={12} sx={{ margin: "10px" }}>
-          <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-            <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
-          </Zoom>
+        <Grid item xs={12}>
+          <ContextInfo contextInfo={this.context_info} />
         </Grid>
-        <CustomButton
-          sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("create", {state: {batch_id: this.batch_id}})}
-          label="Create New"
-        />
-        <Grid item xs={12}></Grid>
-        <CustomButton
-          sx={{ margin: "10px" }}
-          variant='contained'
-          component="label"
-          disabled={this.state.uploadingStudentsList}
-          label={
-            this.state.uploadingStudentsList ? <CircularProgress size='20px' /> :
-            <React.Fragment>
-              Upload Students List
-              <input hidden accept=".csv" type="file" onChange={this.processStudentsList}/>
-            </React.Fragment>
-          }
-        />
-        <CustomButton
-          sx={{ margin: "10px" }}
-          variant='outlined'
-          label={
-            <Link
-              href={process.env.PUBLIC_URL + "/templates/students-list.csv"}
-              download={"students-list.csv"}
-              style={{ textDecoration: 'none'}}
-            >
-            Download Students List Template
-            </Link>
-          }
-        />
-        <Tooltip title="Upload a .CSV file, columns should be named: CNIC, Registration, Name, Father Name, Gender, Address, Email. Note: name, father name, gender, and cnic/reg# cannot be empty">
-          <IconButton>
-            <Info />
-          </IconButton>
-        </Tooltip>
-        <CustomModal
-          title={this.state.modalTitle}
-          body={this.state.modalBody}
-          open={this.state.modalShow}
-          onClose={() => this.setState({ modalShow: false })}
-        />
-        <ConfirmationModal 
-          open={this.state.confirmationModalShow} 
-          message={this.state.confirmationModalMessage} 
-          onClose={() => this.confirmationModalDestroy()}
-          onClickNo={() => this.confirmationModalDestroy()}
-          onClickYes={() => {
-            this.state.confirmationModalExecute()
-            this.confirmationModalDestroy()
-          }}
-        />
-      </Grid>
-      </Grid>
-      }/>
+        <Grid item xs = {12}>
+          <CustomCard cardContent={
+          <Grid>
+          <Grid container>
+            <Typography variant="h2" style={{ margin: "10px" }}>
+              Students
+            </Typography>
+            <CustomTable
+              loadingState = {this.state.loadingStudents}
+              onRowClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
+              onEditClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
+              onDeleteClick={(student) => {
+                this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage: 'Are you sure you want to remove this student?',
+                  confirmationModalExecute: () => this.deleteStudent(student.student_id, this.batch_id)
+                })
+              }}
+              rows={this.state.studentsArr}
+              columns={columns}
+            />
+            <Grid item xs={12} sx={{ margin: "10px" }}>
+              <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
+                <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
+              </Zoom>
+            </Grid>
+            <CustomButton
+              sx={{ margin: "10px" }}
+              onClick={() => this.props.navigate("create", {state: {batch_id: this.batch_id}})}
+              label="Create New"
+            />
+            <Grid item xs={12}></Grid>
+            <CustomButton
+              sx={{ margin: "10px" }}
+              variant='contained'
+              component="label"
+              disabled={this.state.uploadingStudentsList}
+              label={
+                this.state.uploadingStudentsList ? <CircularProgress size='20px' /> :
+                <React.Fragment>
+                  Upload Students List
+                  <input hidden accept=".csv" type="file" onChange={this.processStudentsList}/>
+                </React.Fragment>
+              }
+            />
+            <CustomButton
+              sx={{ margin: "10px" }}
+              variant='outlined'
+              label={
+                <Link
+                  href={process.env.PUBLIC_URL + "/templates/students-list.csv"}
+                  download={"students-list.csv"}
+                  style={{ textDecoration: 'none'}}
+                >
+                Download Students List Template
+                </Link>
+              }
+            />
+            <Tooltip title="Upload a .CSV file, columns should be named: CNIC, Registration, Name, Father Name, Gender, Address, Email. Note: name, father name, gender, and cnic/reg# cannot be empty">
+              <IconButton>
+                <Info />
+              </IconButton>
+            </Tooltip>
+            <CustomModal
+              title={this.state.modalTitle}
+              body={this.state.modalBody}
+              open={this.state.modalShow}
+              onClose={() => this.setState({ modalShow: false })}
+            />
+            <ConfirmationModal 
+              open={this.state.confirmationModalShow} 
+              message={this.state.confirmationModalMessage} 
+              onClose={() => this.confirmationModalDestroy()}
+              onClickNo={() => this.confirmationModalDestroy()}
+              onClickYes={() => {
+                this.state.confirmationModalExecute()
+                this.confirmationModalDestroy()
+              }}
+            />
+          </Grid>
+          </Grid>
+          }/>
         </Grid>
       </Grid>
     );

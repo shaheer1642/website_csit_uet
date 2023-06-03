@@ -28,6 +28,7 @@ class MisSemestersCoursesCreate extends React.Component {
             disabled: true,
             position: 1,
             xs: 12,
+            hidden: true
           },
           teacher_id: {
             label: "Teacher",

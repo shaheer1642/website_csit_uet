@@ -17,6 +17,7 @@ import ConfirmationModal from "../../../components/ConfirmationModal";
 import GoBackButton from "../../../components/GoBackButton";
 import CustomCard from "../../../components/CustomCard";
 import { timeLocale } from "../../../objects/Time";
+import { convertUpper } from "../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -106,8 +107,8 @@ class MisSemesters extends React.Component {
 
   render() {
     const columns = [
+      { id: "semester_season", label: "Season", format: (value) => convertUpper(value) },
       { id: "semester_year", label: "Year", format: (value) => value },
-      { id: "semester_season", label: "Season", format: (value) => value },
       { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
       { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
       { id: "offered_courses", label: "Offered Courses", format: (value) => value },
@@ -127,13 +128,13 @@ class MisSemesters extends React.Component {
             this.props.navigate('courses', {state: {
               ...this.props.location.state, 
               semester_id: semester.semester_id, 
-              semester_name: `Semester - ${semester.semester_season} ${semester.semester_year}`
+              context_info: semester
             }})}
           onRowClick={(semester) => 
             this.props.navigate('courses', {state: {
               ...this.props.location.state, 
               semester_id: semester.semester_id, 
-              semester_name: `Semester - ${semester.semester_season} ${semester.semester_year}`
+              context_info: semester
             }})}
           onEditClick={(semester) => this.props.navigate('update', {state: {semester_id: semester.semester_id}})}
           onDeleteClick={(semester) => {

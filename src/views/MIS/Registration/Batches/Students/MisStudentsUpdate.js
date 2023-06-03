@@ -83,6 +83,7 @@ class MisStudentsUpdate extends React.Component {
                 disabled: true,
                 position: 1,
                 xs: 6,
+                hidden: true
               },
               batch_id: {
                 label: "Batch ID",
@@ -90,6 +91,7 @@ class MisStudentsUpdate extends React.Component {
                 disabled: true,
                 position: 2,
                 xs: 6,
+                hidden: true
               },
               cnic: {
                 label: "CNIC",

@@ -51,37 +51,42 @@ const theme = responsiveFontSizes(createTheme({
 }));
 
 theme.typography.h1 = {
-  fontFamily: 'Helvetica Neue',
+  fontFamily: '"Helvetica Neue"',
 };
-
 theme.typography.h2 = {
-  fontFamily: 'Helvetica Neue',
+  fontFamily: '"Helvetica Neue"',
 };
-
 theme.typography.h3 = {
-  fontFamily: 'Helvetica Neue',
+  fontFamily: '"Helvetica Neue"',
 };
-
 theme.typography.h4 = {
-  fontFamily: 'Helvetica Neue',
+  fontFamily: '"Helvetica Neue"',
 };
-
 theme.typography.h5 = {
-  fontFamily: 'Helvetica Neue',
+  fontFamily: '"Helvetica Neue"',
 };
-
 theme.typography.h6 = {
-  fontFamily: 'Helvetica Neue',
+  fontFamily: '"Helvetica Neue"',
 };
 
 theme.typography.body1 = {
-  fontFamily: 'Helvetica Neue'
+  fontFamily: '"Helvetica Neue"'
+};
+theme.typography.body2 = {
+  fontFamily: '"Helvetica Neue"'
+};
+
+theme.typography.subtitle1 = {
+  fontFamily: '"Helvetica Neue"',
+};
+theme.typography.subtitle2 = {
+  fontFamily: '"Helvetica Neue"'
 };
 
 theme.components.MuiTextField = {
   styleOverrides: {
     root: {
-      fontFamily: 'Helvetica Neue',
+      fontFamily: '"Helvetica Neue"',
     },
   },
 }
@@ -89,7 +94,7 @@ theme.components.MuiTextField = {
 theme.components.MuiFormLabel = {
   styleOverrides: {
     root: {
-      fontFamily: 'Helvetica Neue'
+      fontFamily: '"Helvetica Neue"'
     },
   },
 }
@@ -97,7 +102,7 @@ theme.components.MuiFormLabel = {
 theme.components.MuiLink = {
   styleOverrides: {
     root: {
-      fontFamily: 'Helvetica Neue',
+      fontFamily: '"Helvetica Neue"',
     },
   },
 }
@@ -105,7 +110,7 @@ theme.components.MuiLink = {
 theme.components.MuiButton = {
   styleOverrides: {
     root: {
-      fontFamily: 'Helvetica Neue',
+      fontFamily: '"Helvetica Neue"',
     },
   },
 }
@@ -113,7 +118,7 @@ theme.components.MuiButton = {
 theme.components.MuiTab = {
   styleOverrides: {
     root: {
-      fontFamily: 'Helvetica Neue',
+      fontFamily: '"Helvetica Neue"',
     },
   },
 }
@@ -121,7 +126,7 @@ theme.components.MuiTab = {
 theme.components.MuiList = {
   styleOverrides: {
     root: {
-      fontFamily: 'Helvetica Neue',
+      fontFamily: '"Helvetica Neue"',
     },
   },
 }

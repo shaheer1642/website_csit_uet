@@ -55,6 +55,7 @@ class MisSemestersUpdate extends React.Component {
             disabled: true,
             position: 1,
             xs: 6,
+            hidden: true
           },
           semester_year: {
             label: "Semester Year",
@@ -82,8 +83,6 @@ class MisSemestersUpdate extends React.Component {
             xs: 6,
             defaultValue: this.state.semester_end_timestamp
           },
-          
-       
         }}
       />
       </Grid>

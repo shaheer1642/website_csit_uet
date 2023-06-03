@@ -52,6 +52,7 @@ class MisEventsUpdate extends React.Component {
             disabled: true,
             position: 1,
             xs: 12,
+            hidden: true
           },
           title: {
             label: 'Title',

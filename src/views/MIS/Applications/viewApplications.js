@@ -7,6 +7,7 @@ import { socket } from '../../../websocket/socket';
 import theme from '../../../theme';
 import { getUserNameById } from '../../../objects/Users_List';
 import * as Color from "@mui/material/colors";
+import { convertUpper } from '../../../extras/functions';
 
 class ViewApplications extends React.Component {
     constructor(props) {
@@ -61,8 +62,8 @@ class ViewApplications extends React.Component {
         },
         { id: "status", label: "Status", format: (value) => value, valueFunc: (row) => {
             if (this.state.tabIndex == 2)
-                return row.forwarded_to.filter(forward => forward.receiver_id == user.user_id).pop().status
-            else return row.status
+                return convertUpper(row.forwarded_to.filter(forward => forward.receiver_id == user.user_id).pop().status)
+            else return convertUpper(row.status)
         } },
     ];
 

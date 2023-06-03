@@ -21,7 +21,7 @@ import { Collapse, Grid } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import * as Icon from '@mui/icons-material';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Navigate, Outlet, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import * as uuid from 'uuid';
 import { generateNewToken } from '../websocket/socket';
@@ -112,7 +112,9 @@ function MisLayout() {
     socketHasConnected().then(() => setSocketConnecting(false)).catch(console.error)
     socket.on('connect', SocketConnectedListener)
     socket.on('disconnect', SocketDisconnectedListener)
-
+    if (!user) navigate("/login")
+    else console.log('[MisLayout] user=',user)
+    
     return () => {
       console.log('[MisLayout] componentWillUnmount')
       socket.removeListener(SocketConnectedListener)
@@ -122,8 +124,6 @@ function MisLayout() {
 
   useEffect(() => {
     console.log('[MisLayout] componentDidUpdate')
-    if (!user)
-      navigate("/login")
   });
 
   const SocketConnectedListener = () => setSocketConnecting(false)
@@ -142,6 +142,10 @@ function MisLayout() {
     generateNewToken()
     //navigate("/login")
   }
+
+  if (!user) return (
+    <Navigate to='/login' />
+  )
 
   return (
     <React.Fragment>

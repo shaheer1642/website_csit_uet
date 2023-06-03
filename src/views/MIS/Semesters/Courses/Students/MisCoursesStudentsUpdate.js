@@ -27,6 +27,7 @@ import CustomCard from "../../../../../components/CustomCard";
 import CustomSelect from "../../../../../components/CustomSelect";
 import { getUserNameById } from "../../../../../objects/Users_List";
 import { timeLocale } from "../../../../../objects/Time";
+import ContextInfo from "../../../../../components/ContextInfo";
 
 const palletes = {
   primary: "#439CEF",
@@ -79,12 +80,9 @@ class MisCoursesStudentsUpdate extends React.Component {
       confirmationModalExecute: () => {},
     };
 
-    this.course_name = this.props.location.state.course_name
-    this.semester_name = this.props.location.state.semester_name
-    this.student_info = this.props.location.state.student_info
-
     this.sem_course_id = this.props.location.state.sem_course_id
     this.student_batch_id = this.props.location.state.student_batch_id
+    this.context_info = this.props.location.state.context_info
 
     this.alertTimeout = null
   }
@@ -146,24 +144,24 @@ class MisCoursesStudentsUpdate extends React.Component {
       <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
         <Grid item xs={12}>
+          <ContextInfo contextInfo={this.context_info} overrideIncludeKeys={['student_name','student_father_name','course_name','semester_year','semester_season']} />
+        </Grid>
+        <Grid item xs={12}>
         {
           this.state.loading ? <LoadingIcon />:
           <CustomCard cardContent={
             <React.Fragment>
               <Typography variant="h2" sx={{ margin: "10px" }}>
-                {`${this.course_name} (${this.semester_name})`}
+                Manage Student Course
               </Typography>
-              <Typography variant="h4" sx={{ margin: "10px" }}>
-                {this.student_info}
-              </Typography>
-              <Typography sx={{ margin: "10px" }}>
+              <Typography fontWeight={'bold'} sx={{ margin: "10px" }}>
                 Current Grade: {this.state.studentCourse.grade}
               </Typography>
-              <Typography variant='h5' sx={{ margin: "10px" }}>
-                Grade Logs
+              <Typography fontWeight={'bold'} sx={{ margin: "10px" }}>
+                Grade Logs:
               </Typography>
-              {this.state.studentCourse.grade_change_logs.map(log => 
-                <Typography sx={{ margin: "20px" }}>
+              {this.state.studentCourse.grade_change_logs.map((log,index) => 
+                <Typography key={index} sx={{ marginLeft: "20px" }}>
                   Grade {log.split(' ')[2]} assigned by {getUserNameById(log.split(' ')[1])} on {new Date(Number(log.split(' ')[0])).toLocaleDateString(...timeLocale)}
                 </Typography>
               )}

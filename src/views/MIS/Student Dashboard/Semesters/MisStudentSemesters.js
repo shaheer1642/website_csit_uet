@@ -11,6 +11,7 @@ import { timeLocale } from "../../../../objects/Time";
 import { user } from "../../../../objects/User";
 import { socket } from "../../../../websocket/socket";
 import GoBackButton from "../../../../components/GoBackButton";
+import { convertUpper } from "../../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -58,7 +59,7 @@ class MisStudentSemesters extends React.Component {
   render() {
     const columns = [
       { id: "semester_year", label: "Year", format: (value) => value },
-      { id: "semester_season", label: "Season", format: (value) => value },
+      { id: "semester_season", label: "Season", format: (value) => convertUpper(value) },
       { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
       { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
     ];
@@ -74,7 +75,7 @@ class MisStudentSemesters extends React.Component {
               <CustomTable
                 loadingState = {this.state.loading}
                 onRowClick={(studentSemester) => {
-                  this.props.navigate(this.props.location.state.redirect, {state: {...this.props.location?.state, semester_id: studentSemester.semester_id}})
+                  this.props.navigate(this.props.location.state.redirect, {state: {...this.props.location?.state, student_semester: studentSemester}})
                 }}
                 rows={this.state.studentSemestersArr}
                 columns={columns}

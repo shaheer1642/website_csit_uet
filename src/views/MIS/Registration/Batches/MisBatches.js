@@ -12,6 +12,7 @@ import FormGenerator from '../../../../components/FormGenerator';
 import { Navigate } from 'react-router-dom'
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import CustomCard from '../../../../components/CustomCard';
+import { convertUpper } from '../../../../extras/functions';
 
 const palletes = {
   primary: '#439CEF',
@@ -99,9 +100,10 @@ class MisBatches extends React.Component {
   render() {
     const columns = [
       { id: 'batch_no', label: 'Batch Number', format: (value) => value},
-      { id: 'degree_type', label: 'Degree Type', format: (value) => value },
+      { id: 'batch_stream', label: 'Batch Stream', format: (value) => convertUpper(value)},
+      { id: 'degree_type', label: 'Degree Type', format: (value) => convertUpper(value) },
       { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
-      { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => value },
+      { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => convertUpper(value) },
       { id: 'registered_students', label: 'Registered Students', format: (value) => value },
     ];
     return (
@@ -111,8 +113,8 @@ class MisBatches extends React.Component {
         <CustomTable 
         loadingState = {this.state.loadingBatches} 
         viewButtonLabel='Manage students'
-        onViewClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, batch_name: `Batch ${batch.batch_no} - ${batch.enrollment_season} ${batch.enrollment_year} ${batch.degree_type}`}})}
-        onRowClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, batch_name: `Batch ${batch.batch_no} - ${batch.enrollment_season} ${batch.enrollment_year} ${batch.degree_type}`}})}
+        onViewClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, context_info: batch}})}
+        onRowClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, context_info: batch}})}
         onEditClick={(batch) => this.props.navigate('update', {state: {batch_id: batch.batch_id}})}
         onDeleteClick={(batch) => {
           this.setState({

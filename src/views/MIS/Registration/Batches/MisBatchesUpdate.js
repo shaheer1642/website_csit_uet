@@ -13,6 +13,7 @@ class MisBatchesUpdate extends React.Component {
     this.state = {
       loading: true,
       batch_no: '',
+      batch_stream: '',
       joined_semester: '',
       degree_type: '',
       batch_advisor_id: ''
@@ -28,6 +29,7 @@ class MisBatchesUpdate extends React.Component {
         this.setState({
           loading: false,
           batch_no: batch.batch_no,
+          batch_stream: batch.batch_stream,
           enrollment_year: batch.enrollment_year,
           enrollment_season: batch.enrollment_season,
           degree_type: batch.degree_type,
@@ -55,12 +57,21 @@ class MisBatchesUpdate extends React.Component {
             disabled: true,
             position: 1,
             xs: 12,
+            hidden: true
           },
           batch_no: {
             label: 'Batch No',
             defaultValue: this.state.batch_no,
             position: 1,
             xs: 6
+          },
+          batch_stream: {
+            label: 'Batch Stream',
+            defaultValue: this.state.batch_stream,
+            position: 2,
+            xs: 6,
+            fieldType: 'radiobox',
+            fieldTypeOptions: ['computer_science', 'data_science','cyber_security']
           },
           enrollment_year: {
             label: 'Enrollment Year',

@@ -7,6 +7,7 @@ import CustomTable from '../../../../components/CustomTable';
 import CustomCard from '../../../../components/CustomCard';
 import { user } from '../../../../objects/User';
 import GoBackButton from '../../../../components/GoBackButton';
+import { convertUpper } from '../../../../extras/functions';
 
 const palletes = {
   primary: '#439CEF',
@@ -61,9 +62,9 @@ class MisStudentBatches extends React.Component {
   render() {
     const columns = [
       { id: 'batch_no', label: 'Batch Number', format: (value) => value},
-      { id: 'degree_type', label: 'Degree Type', format: (value) => value },
+      { id: 'degree_type', label: 'Degree Type', format: (value) => convertUpper(value) },
       { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
-      { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => value },
+      { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => convertUpper(value) },
       { id: 'registered_students', label: 'Registered Students', format: (value) => value },
     ];
     return (
@@ -73,7 +74,7 @@ class MisStudentBatches extends React.Component {
         <CustomTable 
           loadingState = {this.state.loading}
           onRowClick={(studentBatch) => {
-            this.props.navigate(this.props.location.state.redirect, {state: {...this.props.location?.state, student_batch_id: studentBatch.student_batch_id}})
+            this.props.navigate(this.props.location.state.redirect, {state: {...this.props.location?.state, student_batch: studentBatch}})
           }}
           rows={this.state.studentBatchesArr} columns={columns} />
       </Grid>

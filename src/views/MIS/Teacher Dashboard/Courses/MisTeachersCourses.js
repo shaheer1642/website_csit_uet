@@ -17,6 +17,7 @@ import ConfirmationModal from "../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../components/GoBackButton";
 import { user } from "../../../../objects/User";
 import CustomCard from "../../../../components/CustomCard";
+import { convertUpper } from "../../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -87,10 +88,10 @@ class MisTeachersCourses extends React.Component {
     const columns = [
       { id: "course_id", label: "Course ID", format: (value) => value },
       { id: "course_name", label: "Course Name", format: (value) => value },
-      { id: "semester_season", label: "Semester Season", format: (value) => value },
+      { id: "semester_season", label: "Semester Season", format: (value) => convertUpper(value) },
       { id: "semester_year", label: "Semester Year", format: (value) => value },
       { id: "department", label: "Department", format: (value) => value },
-      { id: "teacher_name", label: "Teacher Name", format: (value) => value },
+      { id: "teacher_name", label: "Instructor", format: (value) => value },
       { id: "registered_students", label: "Total Students", format: (value) => value },
     ];
     return (
@@ -105,7 +106,7 @@ class MisTeachersCourses extends React.Component {
             this.props.navigate('grading', {
               state: {
                 sem_course_id: semesterCourse.sem_course_id,
-                course_name: `${semesterCourse.course_id} ${semesterCourse.course_name} | ${semesterCourse.semester_season} ${semesterCourse.semester_year}`
+                context_info: semesterCourse
               }
             })
           }

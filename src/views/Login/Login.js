@@ -119,6 +119,7 @@ class Login extends React.Component {
   componentDidMount() {
     // check if user already logged in
     socket.emit('login/auth', {}, res => {
+      console.log('login.js res',res)
       if (res.code == 200) {
         console.log('logged in')
         eventHandler.emit('login/auth', res.data)

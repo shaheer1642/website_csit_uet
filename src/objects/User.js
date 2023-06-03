@@ -1,6 +1,6 @@
 import eventHandler from "../eventHandler"
 
-var user = {}
+var user = undefined
 
 eventHandler.on('login/auth', (user_obj) => {
     console.log('[eventHandler] login/auth',user_obj)
