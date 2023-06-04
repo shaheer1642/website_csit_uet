@@ -97,10 +97,14 @@ class MisBatchesUpdate extends React.Component {
             disabled: true
           },
           batch_advisor_id: {
-            label: 'Batch Advisor Id',
+            label: "Batch Advisor",
             defaultValue: this.state.batch_advisor_id,
-            position: 4,
-            xs: 12,
+            position: 10,
+            xs: 6,
+            fieldType: 'select',
+            endpoint: 'autocomplete/teachers',
+            endpointData: {include_roles: ['batch_advisor']},
+            selectMenuItems: [{id: '', label: 'None'}]
           },
         }}
       />

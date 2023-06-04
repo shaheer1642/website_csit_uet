@@ -15,7 +15,7 @@ class MisSemestersUpdate extends React.Component {
       semester_season:'',
       semester_start_timestamp:0,
       semester_end_timestamp:0,
-
+      semester_coordinator_id:''
     }
     this.semester_id = this.props.location.state.semester_id
   }
@@ -32,6 +32,7 @@ class MisSemestersUpdate extends React.Component {
           semester_season: semester.semester_season,
           semester_start_timestamp: Number(semester.semester_start_timestamp),
           semester_end_timestamp: Number(semester.semester_end_timestamp),
+          semester_coordinator_id: semester.semester_coordinator_id,
         })
       }
     })
@@ -82,6 +83,15 @@ class MisSemestersUpdate extends React.Component {
             position: 2,
             xs: 6,
             defaultValue: this.state.semester_end_timestamp
+          },
+          semester_coordinator_id: {
+            label: "Semester Coordinator",
+            defaultValue: this.state.semester_coordinator_id,
+            position: 10,
+            xs: 6,
+            fieldType: 'select',
+            endpoint: 'autocomplete/teachers',
+            selectMenuItems: [{id: '', label: 'None'}]
           },
         }}
       />

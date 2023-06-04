@@ -31,7 +31,8 @@ export default class ContextInfo extends React.Component<IProps> {
         'course_type',
         'teacher_name',
         'student_name',
-        'student_father_name'
+        'student_father_name',
+        'department_name'
       ]).filter(k => !this.props.omitIncludeKeys?.includes(k))
     }
 

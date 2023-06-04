@@ -56,6 +56,15 @@ class MisBatchesCreate extends React.Component {
               fieldType: 'radiobox',
               fieldTypeOptions: ['ms', 'phd']
             },
+            batch_advisor_id: {
+              label: "Batch Advisor",
+              position: 10,
+              xs: 6,
+              fieldType: 'select',
+              endpoint: 'autocomplete/teachers',
+              endpointData: {include_roles: ['batch_advisor']},
+              selectMenuItems: [{id: '', label: 'None'}]
+            },
           }}
         />
       </Grid>

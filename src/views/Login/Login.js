@@ -1,6 +1,6 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
-import { Typography, IconButton, Button, Link, Box, TextField, Alert, Fade, Zoom, Grid, CircularProgress } from '@mui/material';
+import { Typography, IconButton, Button, Link, Box, TextField, Alert, Fade, Zoom, Grid, CircularProgress, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';
 import { socket } from '../../websocket/socket';
 import { withRouter } from '../../withRouter';
@@ -112,14 +112,15 @@ class Login extends React.Component {
       newPasswordText: '',
       alertMsg: '',
       alertSeverity: "warning",
-      panelToggle: 'login'
+      panelToggle: 'login',
+      user_type: 'student'
     };
   }
 
   componentDidMount() {
     // check if user already logged in
     socket.emit('login/auth', {}, res => {
-      console.log('login.js res',res)
+      console.log('login.js res', res)
       if (res.code == 200) {
         console.log('logged in')
         eventHandler.emit('login/auth', res.data)
@@ -142,9 +143,9 @@ class Login extends React.Component {
       }, () => setTimeout(() => this.setState({ alertMsg: '' }), 3000))
     }
     //console.log(this.state.usernameText, this.state.passwordText)
-    this.setState({callingApi: true})
-    socket.emit('login/auth', { username: this.state.usernameText, password: this.state.passwordText }, res => {
-      this.setState({callingApi: false})
+    this.setState({ callingApi: true })
+    socket.emit('login/auth', { username: this.state.usernameText, password: this.state.passwordText, user_type: this.state.user_type }, res => {
+      this.setState({ callingApi: false })
       if (res.code == 200) {
         console.log('logged in')
         eventHandler.emit('login/auth', res.data)
@@ -172,9 +173,9 @@ class Login extends React.Component {
       }, () => setTimeout(() => this.setState({ alertMsg: '' }), 3000))
     }
     //console.log(this.state.usernameText, this.state.passwordText)
-    this.setState({callingApi: true})
+    this.setState({ callingApi: true })
     socket.emit('login/resetPassword', { username: this.state.usernameText, old_password: this.state.passwordText, new_password: this.state.newPasswordText }, res => {
-      this.setState({callingApi: false})
+      this.setState({ callingApi: false })
       if (res.code == 200) {
         console.log('passwordReset')
         this.setState({ panelToggle: 'login', alertMsg: 'Password has been reset', alertSeverity: 'success' })
@@ -210,122 +211,129 @@ class Login extends React.Component {
                     <Alert variant="outlined" severity={this.state.alertSeverity} sx={styles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
                   </Zoom>
                 </Grid>
-                  <Grid item xs={3} sx={{display: 'flex',justifyContent:'end', alignItems:'flex-end',}}>
-                    
-                   <AccountCircle sx={{ color: palletes.primary}} />
-                  </Grid>
-                  <Grid item xs={6} sx={{justifyContent:'start', alignContent:'center',}}>
-              
-                   <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Username" variant="standard" tabIndex={1}
-                      onPressEnter={this.handleOnClickLogin}
-                      onChange={(e) => this.setState({ usernameText: e.target.value })} /> 
-                  </Grid>
-                  <Grid item xs={3} sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
-                    
-                    
-                  </Grid>
-                
-              
-                  <Grid item xs={3} sx={{display: 'flex',justifyContent:'end', alignItems:'flex-end', }}>
-                    <Password sx={{ color: palletes.primary, }} />
-                  </Grid>
-                  <Grid item xs={6} sx={{display: 'flex',justifyContent:'start', }}>
-                    <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Password" variant="standard" tabIndex={2}
-                      onPressEnter={this.handleOnClickLogin}
-                      onChange={(e) => this.setState({ passwordText: e.target.value })}
-                      type={this.state.showPassword ? 'text' : 'password'}
-                    />
-                  </Grid>
-
-                  <Grid item xs={3} sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
-                    <IconButton
-                      onClick={(e) => this.setState({ showPassword: !this.state.showPassword })}
-                    >
-                      {this.state.showPassword ? <VisibilityOff sx={{ color: palletes.primary }} /> : <Visibility sx={{ color: palletes.primary }} />}
-                    </IconButton>
-                  </Grid>
-             
-              
-              <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
-                <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickLogin} tabIndex={3} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Login"} disabled={this.state.callingApi} />
-              </Grid>
-              <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
-                <Link href="#" style={{ marginTop: '3%', color: palletes.primary, textDecorationColor: 'white' }} onClick={() => this.setState({ panelToggle: 'reset' })}>Reset Password</Link>
-              </Grid>
-            </Grid>
-          </Fade>
-          <Fade in={this.state.panelToggle == 'reset' ? true : false} timeout={this.state.panelToggle == 'reset' ? 500 : 0} mountOnEnter unmountOnExit>
-            <Grid container columnSpacing={'10px'} rowSpacing={'20px'}>
-               <Grid item xs={12}>
-               <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
-                  <Alert variant="outlined" severity={this.state.alertSeverity} sx={styles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
-                </Zoom>
-               </Grid>
-               
-                  <Grid item xs={3} sx={{display: 'flex',justifyContent:'end', alignItems:'flex-end',}}>
-                  <AccountCircle sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
-                  </Grid>
-                  <Grid item xs={6} sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
-                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Username" inputProps={{ tabIndex: "1" }} tabIndex={1}
-            
-                    onChange={(e) => this.setState({ usernameText: e.target.value })}
-                  />
-                  </Grid>
-                 <Grid item xs={3}></Grid>
-               
-             <Grid item xs={3}  sx={{display: 'flex',justifyContent:'end', alignItems:'flex-end',}}>
-             <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
-             </Grid >
-             <Grid item xs={6}  sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
-             <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Old Password" tabIndex={2}
-                   
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'end', alignItems: 'flex-end', }}>
+                  <AccountCircle sx={{ color: palletes.primary }} />
+                </Grid>
+                <Grid item xs={6} sx={{ justifyContent: 'start', alignContent: 'center', }}>
+                  <CustomTextField 
+                    underlineColor='white' 
+                    labelColor='white' 
+                    labelFocusedColor='white' 
+                    underlineFocusedColor='white' 
+                    inputTextColor='white' 
+                    label="Username" 
+                    variant="standard" 
+                    tabIndex={1}
+                    onPressEnter={this.handleOnClickLogin}
+                    onChange={(e) => this.setState({ usernameText: e.target.value })} />
+                </Grid>
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', }}>
+                </Grid>
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'end', alignItems: 'flex-end', }}>
+                  <Password sx={{ color: palletes.primary, }} />
+                </Grid>
+                <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'start', }}>
+                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Password" variant="standard" tabIndex={2}
+                    onPressEnter={this.handleOnClickLogin}
                     onChange={(e) => this.setState({ passwordText: e.target.value })}
                     type={this.state.showPassword ? 'text' : 'password'}
                   />
-             </Grid>
-             <Grid item xs={3} sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
-             <IconButton
+                </Grid>
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', }}>
+                  <IconButton
                     onClick={(e) => this.setState({ showPassword: !this.state.showPassword })}
                   >
                     {this.state.showPassword ? <VisibilityOff sx={{ color: palletes.primary }} /> : <Visibility sx={{ color: palletes.primary }} />}
                   </IconButton>
-             </Grid>
-            <Grid item xs={3} sx={{display: 'flex',justifyContent:'end', alignItems:'flex-end',}}>
-            <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
-            </Grid>
-            <Grid item xs={6} sx={{display: 'flex',justifyContent:'center', alignItems:'flex-end',}}>
-            <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="New Password" tabIndex={3}
-               
+                </Grid>
+                {this.state.usernameText == 'admin' || this.state.usernameText == 'pga' ? <></> :
+                  <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
+                    <RadioGroup sx={{color: 'white'}} row value={this.state.user_type} onChange={(e) => this.setState({user_type: e.target.value})}>
+                      <FormControlLabel value="student" control={<Radio sx={{color: 'white','&.Mui-checked': {color: 'white'}}} />} label="Student" />
+                      <FormControlLabel value="teacher" control={<Radio sx={{color: 'white','&.Mui-checked': {color: 'white'}}} />} label="Intructor" />
+                    </RadioGroup>
+                  </Grid>
+                }
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
+                  <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickLogin} tabIndex={3} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Login"} disabled={this.state.callingApi} />
+                </Grid>
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
+                  <Link href="#" style={{ marginTop: '3%', color: palletes.primary, textDecorationColor: 'white' }} onClick={() => this.setState({ panelToggle: 'reset' })}>Reset Password</Link>
+                </Grid>
+              </Grid>
+            </Fade>
+            <Fade in={this.state.panelToggle == 'reset' ? true : false} timeout={this.state.panelToggle == 'reset' ? 500 : 0} mountOnEnter unmountOnExit>
+              <Grid container columnSpacing={'10px'} rowSpacing={'20px'}>
+                <Grid item xs={12}>
+                  <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                    <Alert variant="outlined" severity={this.state.alertSeverity} sx={styles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
+                  </Zoom>
+                </Grid>
+
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'end', alignItems: 'flex-end', }}>
+                  <AccountCircle sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
+                </Grid>
+                <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', }}>
+                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Username" inputProps={{ tabIndex: "1" }} tabIndex={1}
+
+                    onChange={(e) => this.setState({ usernameText: e.target.value })}
+                  />
+                </Grid>
+                <Grid item xs={3}></Grid>
+
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'end', alignItems: 'flex-end', }}>
+                  <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
+                </Grid >
+                <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', }}>
+                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Old Password" tabIndex={2}
+
+                    onChange={(e) => this.setState({ passwordText: e.target.value })}
+                    type={this.state.showPassword ? 'text' : 'password'}
+                  />
+                </Grid>
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', }}>
+                  <IconButton
+                    onClick={(e) => this.setState({ showPassword: !this.state.showPassword })}
+                  >
+                    {this.state.showPassword ? <VisibilityOff sx={{ color: palletes.primary }} /> : <Visibility sx={{ color: palletes.primary }} />}
+                  </IconButton>
+                </Grid>
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'end', alignItems: 'flex-end', }}>
+                  <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
+                </Grid>
+                <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', }}>
+                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="New Password" tabIndex={3}
+
                     onChange={(e) => this.setState({ newPasswordText: e.target.value })}
                     type={this.state.showPassword ? 'text' : 'password'}
                   />
-            </Grid>
-            <Grid item xs={3}  sx={{display: 'flex',justifyContent:'start', alignItems:'flex-end',}}>
-            <IconButton
+                </Grid>
+                <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', }}>
+                  <IconButton
                     onClick={(e) => this.setState({ showPassword: !this.state.showPassword })}
                   >
                     {this.state.showPassword ? <VisibilityOff sx={{ color: palletes.primary }} /> : <Visibility sx={{ color: palletes.primary }} />}
                   </IconButton>
-          
-            </Grid>
-            <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
-            <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickReset} tabIndex={4} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Reset"} disabled={this.state.callingApi} />
-            </Grid>
-            <Grid item xs={12} sx={{display: 'flex',justifyContent:'center', }}>
-            <Link href="#" style={{ marginTop: '3%', color: palletes.primary, textDecorationColor: 'white' }} onClick={() => this.setState({ panelToggle: 'login' })}>Login</Link>
-            </Grid>
-                
-             
-            
-                  
-               
-              
-            
-    
-            </Grid>
-          </Fade>
+
+                </Grid>
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
+                  <CustomButton style={{ width: '75%', marginTop: '20px' }} onClick={this.handleOnClickReset} tabIndex={4} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Reset"} disabled={this.state.callingApi} />
+                </Grid>
+                <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
+                  <Link href="#" style={{ marginTop: '3%', color: palletes.primary, textDecorationColor: 'white' }} onClick={() => this.setState({ panelToggle: 'login' })}>Login</Link>
+                </Grid>
+
+
+
+
+
+
+
+
+              </Grid>
+            </Fade>
+          </div>
         </div>
-      </div>
       </div >
     );
   }

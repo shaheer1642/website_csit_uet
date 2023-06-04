@@ -20,7 +20,7 @@ import MisBatchesUpdate from "./views/MIS/Registration/Batches/MisBatchesUpdate"
 import MisTeachers from "./views/MIS/Teachers/MisTeachers";
 import MisTeachersCreate from "./views/MIS/Teachers/MisTeachersCreate";
 import MisTeachersUpdate from "./views/MIS/Teachers/MisTeachersUpdate";
-import MisCourses from "./views/MIS/Courses/MisCourses";
+import MisCourses from "./views/MIS/Departments/MisDepartments";
 import MisCoursesCreate from "./views/MIS/Courses/MisCoursesCreate";
 import MisCoursesUpdate from "./views/MIS/Courses/MisCoursesUpdate";
 import MisStudents from "./views/MIS/Registration/Batches/Students/MisStudents";
@@ -51,6 +51,8 @@ import MisStudentBatches from "./views/MIS/Student Dashboard/Batches/MisStudentB
 import MisStudentSemesters from "./views/MIS/Student Dashboard/Semesters/MisStudentSemesters";
 import MisStudentCourses from "./views/MIS/Student Dashboard/Courses/MisStudentCourses";
 import FirebaseNotifications from "./firebase/firebase-notifications";
+import MisDepartments from "./views/MIS/Departments/MisDepartments";
+import MisDepartmentsUpdate from "./views/MIS/Departments/MisDepartmentsUpdate";
 
 export default function Router() {
   return (
@@ -69,6 +71,9 @@ export default function Router() {
           <Route path="events" element={<MisEvents />} />
             <Route path="events/create" element={<MisEventsCreate />} />
             <Route path="events/update" element={<MisEventsUpdate />} />
+
+          <Route path="departments" element={<MisDepartments/>}/>
+            <Route path="departments/update" element={<MisDepartmentsUpdate/>}/>
 
           <Route path="batches" element={<MisBatches/>}/>
             <Route path="batches/create" element={<MisBatchesCreate/>}/>

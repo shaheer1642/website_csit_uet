@@ -46,7 +46,14 @@ class MisSemestersCreate extends React.Component {
             xs: 6,
             defaultValue: new Date().getTime() + 10519200000
           },
-          
+          semester_coordinator_id: {
+            label: "Semester Coordinator",
+            position: 10,
+            xs: 6,
+            fieldType: 'select',
+            endpoint: 'autocomplete/teachers',
+            selectMenuItems: [{id: '', label: 'None'}]
+          },
         }}
       />
       </Grid>

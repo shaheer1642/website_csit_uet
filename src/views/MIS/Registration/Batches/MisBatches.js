@@ -13,6 +13,9 @@ import { Navigate } from 'react-router-dom'
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import CustomCard from '../../../../components/CustomCard';
 import { convertUpper } from '../../../../extras/functions';
+import CustomSelect from '../../../../components/CustomSelect';
+import ContextInfo from '../../../../components/ContextInfo';
+import { getUserNameById } from '../../../../objects/Users_List';
 
 const palletes = {
   primary: '#439CEF',
@@ -48,6 +51,7 @@ class MisBatches extends React.Component {
 
   componentDidMount() {
     socket.emit('batches/fetch', {}, (res) => {
+      console.log(res)
       if (res.code == 200) {
         return this.setState({
           batchesArr: res.data,
@@ -104,39 +108,55 @@ class MisBatches extends React.Component {
       { id: 'degree_type', label: 'Degree Type', format: (value) => convertUpper(value) },
       { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
       { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => convertUpper(value) },
+      { id: 'batch_advisor_id', label: 'Batch Advisor', format: (value) => getUserNameById(value) },
       { id: 'registered_students', label: 'Registered Students', format: (value) => value },
     ];
     return (
-      <CustomCard cardContent={
-      <Grid container >
-        <Typography variant="h2" style={{ margin: '10px' }}>Select Batch</Typography>
-        <CustomTable 
-        loadingState = {this.state.loadingBatches} 
-        viewButtonLabel='Manage students'
-        onViewClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, context_info: batch}})}
-        onRowClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, context_info: batch}})}
-        onEditClick={(batch) => this.props.navigate('update', {state: {batch_id: batch.batch_id}})}
-        onDeleteClick={(batch) => {
-          this.setState({
-            confirmationModalShow: true,
-            confirmationModalMessage: 'Are you sure you want to delete this batch? This will also delete all the students in the batch',
-            confirmationModalExecute: () => socket.emit('batches/delete', { batch_id: batch.batch_id })
-          })
-        }}
-        rows={this.state.batchesArr} columns={columns} />
-        <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New"/>
-        <ConfirmationModal 
-          open={this.state.confirmationModalShow} 
-          message={this.state.confirmationModalMessage} 
-          onClose={() => this.confirmationModalDestroy()}
-          onClickNo={() => this.confirmationModalDestroy()}
-          onClickYes={() => {
-            this.state.confirmationModalExecute()
-            this.confirmationModalDestroy()
-          }}
-        />
+      <Grid container rowSpacing={"20px"}>
+        <Grid item xs={12}>
+          <ContextInfo contextInfo={{department_name: 'Computer Science & Information Technology'}} />
+        </Grid>
+        <Grid item xs={12}>
+          <CustomCard cardContent={
+            <Grid container spacing={3} padding={1}>
+              <Grid item xs={12}>
+                <Typography variant="h2" >Select Batch</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <CustomTable 
+                  margin='0px'
+                  loadingState = {this.state.loadingBatches} 
+                  viewButtonLabel='Manage students'
+                  onViewClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, context_info: batch}})}
+                  onRowClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, context_info: batch}})}
+                  onEditClick={(batch) => this.props.navigate('update', {state: {batch_id: batch.batch_id}})}
+                  onDeleteClick={(batch) => {
+                    this.setState({
+                      confirmationModalShow: true,
+                      confirmationModalMessage: 'Are you sure you want to delete this batch? This will also delete all the students in the batch',
+                      confirmationModalExecute: () => socket.emit('batches/delete', { batch_id: batch.batch_id })
+                    })
+                  }}
+                  rows={this.state.batchesArr} columns={columns} 
+                />
+              </Grid>
+              <Grid item xs={'auto'}>
+                <CustomButton onClick={() => this.props.navigate('create')} label="Create New"/>
+              </Grid>
+              <ConfirmationModal 
+                open={this.state.confirmationModalShow} 
+                message={this.state.confirmationModalMessage} 
+                onClose={() => this.confirmationModalDestroy()}
+                onClickNo={() => this.confirmationModalDestroy()}
+                onClickYes={() => {
+                  this.state.confirmationModalExecute()
+                  this.confirmationModalDestroy()
+                }}
+              />
+            </Grid>
+          }/>
+        </Grid>
       </Grid>
-      }/>
     );
   }
 }

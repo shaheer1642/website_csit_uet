@@ -180,9 +180,6 @@ class viewApplicationsDetail extends React.Component {
             </Typography> : <Typography variant='body1'>{convertUpper(this.state.application.status)}</Typography>
           }
         </Grid>
-        <Grid item xs={12}>
-          <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
-        </Grid>
         {this.state.application.remarks ? 
           <React.Fragment>
             <Grid item xs={12}>
@@ -248,23 +245,21 @@ class viewApplicationsDetail extends React.Component {
                 </RadioGroup>
               </Grid>
               {this.state.takeAction == 'forward' ? 
-                <Grid item xs={'auto'}>
+                <Grid item xs={6}>
                   <CustomSelect
                     required
                     label= "Forward to"
                     fieldType= 'select'
-                    endpoint= 'autocomplete/users'
-                    endpointData={{
-                      exclude_user_types: ['student'],
-                      exclude_user_ids: [this.state.application.submitted_to, this.state.application.submitted_by, user?.user_id],
-                    }}
+                    endpoint= {['autocomplete/faculty','autocomplete/teachers']}
+                    endpointData={[{},{include_roles: ['chairman','batch_advisor','semester_coordinator']}]}
                     sx={{minWidth: '150px'}}
                     onChange={(e,option) => this.setState({forward_to: option.id})}
                     value={this.state.forward_to}
                   />
                 </Grid> : <></>
               }
-              <Grid item xs={12}>
+              <Grid item xs={12}></Grid>
+              <Grid item xs={6}>
                 <CustomTextField required variant="filled" value={this.state.remarks} onChange={(e) => this.setState({remarks: e.target.value})} label="Remarks" />
               </Grid>
               <Grid item xs={12}>
@@ -278,6 +273,9 @@ class viewApplicationsDetail extends React.Component {
             <CustomButton label="View Applicant Detail" variant="outlined" onClick={() => this.setState({applicantDetailModalOpen: true})} />
           </Grid> :<></>
         }
+        <Grid item xs={12}>
+          <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
+        </Grid>
         <CustomModal
           open={this.state.applicantDetailModalOpen}
           onClose={() => this.setState({ applicantDetailModalOpen: false })}

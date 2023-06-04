@@ -18,6 +18,8 @@ import GoBackButton from "../../../components/GoBackButton";
 import CustomCard from "../../../components/CustomCard";
 import { timeLocale } from "../../../objects/Time";
 import { convertUpper } from "../../../extras/functions";
+import ContextInfo from "../../../components/ContextInfo";
+import { getUserNameById } from "../../../objects/Users_List";
 
 const palletes = {
   primary: "#439CEF",
@@ -111,65 +113,69 @@ class MisSemesters extends React.Component {
       { id: "semester_year", label: "Year", format: (value) => value },
       { id: 'semester_start_timestamp', label: 'Starts', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
       { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
+      { id: "semester_coordinator_id", label: "Semester Coordinator", format: (value) => getUserNameById(value) },
       { id: "offered_courses", label: "Offered Courses", format: (value) => value },
     ];
     return (
       <Grid container rowSpacing={"20px"}>
+        <Grid item xs={12}>
+          <ContextInfo contextInfo={{department_name: 'Computer Science & Information Technology'}} />
+        </Grid>
         <Grid item xs = {12}>
-      <CustomCard cardContent={
-      <Grid container>
-        <Typography variant="h2" style={{ margin: "10px" }}>
-          {`Semesters`}
-        </Typography>
-        <CustomTable
-          loadingState = {this.state.loadingSemesters}
-          viewButtonLabel='Manage Courses'
-          onViewClick={(semester) => 
-            this.props.navigate('courses', {state: {
-              ...this.props.location.state, 
-              semester_id: semester.semester_id, 
-              context_info: semester
-            }})}
-          onRowClick={(semester) => 
-            this.props.navigate('courses', {state: {
-              ...this.props.location.state, 
-              semester_id: semester.semester_id, 
-              context_info: semester
-            }})}
-          onEditClick={(semester) => this.props.navigate('update', {state: {semester_id: semester.semester_id}})}
-          onDeleteClick={(semester) => {
-            this.setState({
-              confirmationModalShow: true,
-              confirmationModalMessage: 'Are you sure you want to remove this semester?',
-              confirmationModalExecute: () => socket.emit('semesters/delete', { semester_id: semester.semester_id })
-            })
-          }}
-          rows={this.state.semestersArr}
-          columns={columns}
-        />
-        <CustomButton
-          sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("create")}
-          label="Create New"
-        />
-        <CustomModal
-          title={this.state.modalTitle}
-          body={this.state.modalBody}
-          open={this.state.modalShow}
-          onClose={() => this.setState({ modalShow: false })}
-        />
-        <ConfirmationModal 
-          open={this.state.confirmationModalShow} 
-          message={this.state.confirmationModalMessage} 
-          onClose={() => this.confirmationModalDestroy()}
-          onClickNo={() => this.confirmationModalDestroy()}
-          onClickYes={() => {
-            this.state.confirmationModalExecute()
-            this.confirmationModalDestroy()
-          }}
-        />
-      </Grid>
-      }/>
+        <CustomCard cardContent={
+        <Grid container>
+          <Typography variant="h2" style={{ margin: "10px" }}>
+            Semesters
+          </Typography>
+          <CustomTable
+            loadingState = {this.state.loadingSemesters}
+            viewButtonLabel='Manage Courses'
+            onViewClick={(semester) => 
+              this.props.navigate('courses', {state: {
+                ...this.props.location.state, 
+                semester_id: semester.semester_id, 
+                context_info: semester
+              }})}
+            onRowClick={(semester) => 
+              this.props.navigate('courses', {state: {
+                ...this.props.location.state, 
+                semester_id: semester.semester_id, 
+                context_info: semester
+              }})}
+            onEditClick={(semester) => this.props.navigate('update', {state: {semester_id: semester.semester_id}})}
+            onDeleteClick={(semester) => {
+              this.setState({
+                confirmationModalShow: true,
+                confirmationModalMessage: 'Are you sure you want to remove this semester?',
+                confirmationModalExecute: () => socket.emit('semesters/delete', { semester_id: semester.semester_id })
+              })
+            }}
+            rows={this.state.semestersArr}
+            columns={columns}
+          />
+          <CustomButton
+            sx={{ margin: "10px" }}
+            onClick={() => this.props.navigate("create")}
+            label="Create New"
+          />
+          <CustomModal
+            title={this.state.modalTitle}
+            body={this.state.modalBody}
+            open={this.state.modalShow}
+            onClose={() => this.setState({ modalShow: false })}
+          />
+          <ConfirmationModal 
+            open={this.state.confirmationModalShow} 
+            message={this.state.confirmationModalMessage} 
+            onClose={() => this.confirmationModalDestroy()}
+            onClickNo={() => this.confirmationModalDestroy()}
+            onClickYes={() => {
+              this.state.confirmationModalExecute()
+              this.confirmationModalDestroy()
+            }}
+          />
+        </Grid>
+        }/>
       </Grid>
       </Grid>
     );

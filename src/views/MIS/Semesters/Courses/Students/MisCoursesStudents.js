@@ -148,7 +148,7 @@ class MisCoursesStudents extends React.Component {
   studentsSelectMenu = () => {
     const options = this.state.students
       .filter(student => !this.state.studentBatchIds.includes(student.student_batch_id))
-      .map(student => ({id: student.student_batch_id, label: `${student.student_name} (${student.reg_no || student.cnic}) - ${student.degree_type} ${student.semester_frozen ? '[Semester Frozen]' : ''}`, batch: `Batch#${student.batch_no} (${student.degree_type})`}));
+      .map(student => ({id: student.student_batch_id, label: `${student.student_name} (${student.reg_no || student.cnic}) ${student.semester_frozen ? '[Semester Frozen]' : ''}`, batch: `Batch#${student.batch_no} (${student.degree_type})`}));
     return (
       <Autocomplete
         disablePortal

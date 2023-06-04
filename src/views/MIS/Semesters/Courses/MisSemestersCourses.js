@@ -91,7 +91,7 @@ class MisSemestersCourses extends React.Component {
       { id: "course_id", label: "Course ID", format: (value) => value },
       { id: "course_name", label: "Course Title", format: (value) => value },
       { id: "credit_hours", label: "Credit Hours", format: (value) => value },
-      { id: "department", label: "Department", format: (value) => value },
+      { id: "department_name", label: "Department", format: (value) => value },
       { id: "course_type", label: "Course Type", format: (value) => convertUpper(value) },
       { id: "teacher_name", label: "Instructor Name", format: (value) => value },
       { id: "registered_students", label: "Total Students", format: (value) => value },
