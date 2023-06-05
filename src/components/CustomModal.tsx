@@ -37,7 +37,7 @@ export default class CustomModal extends React.Component<IProps,IState> {
         onClose={() => this.props.onClose()}
       >
         <Box sx={{...containerStyle, ...(this.props.containerStyle || {})}}>
-          <IconButton sx={{position: 'absolute', right: 1, top: 1 }} onClick={this.props.onClose}><Cancel /></IconButton>
+          <IconButton sx={{position: 'absolute', right: 5, top: 5 }} onClick={this.props.onClose}><Cancel /></IconButton>
           {this.props.children}
         </Box>
       </Modal>

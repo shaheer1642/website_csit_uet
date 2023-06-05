@@ -215,9 +215,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                           label={this.props.options[attribute.key]?.label}
                           type="date"
                           defaultValue={new Date(Number(this.props.options[attribute.key]?.defaultValue) || null).toISOString().split('T')[0]}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
+                          InputLabelProps={{ shrink: true, }}
                           onChange={(e) => this.handleFormFieldChange(attribute.key,new Date(e.target.value).getTime())}
                         />
                         : <Typography>Could not determine attribute type for {attribute.key}</Typography>

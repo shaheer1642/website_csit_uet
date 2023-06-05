@@ -164,7 +164,7 @@ class MisSemesters extends React.Component {
             open={this.state.modalShow}
             onClose={() => this.setState({ modalShow: false })}
           />
-          <ConfirmationModal 
+          <ConfirmationModal
             open={this.state.confirmationModalShow} 
             message={this.state.confirmationModalMessage} 
             onClose={() => this.confirmationModalDestroy()}

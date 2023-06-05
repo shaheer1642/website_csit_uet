@@ -47,7 +47,8 @@ interface IProps {
     placeholder?: string,
     disabled?: boolean,
     range?: Array<number>,
-    readOnly?: boolean
+    readOnly?: boolean,
+    InputLabelProps?: Object
 }
 
 export default class CustomTextField extends React.Component<IProps> {
@@ -86,7 +87,7 @@ export default class CustomTextField extends React.Component<IProps> {
             value={this.props.value}
             placeholder={this.props.placeholder}
             label={this.props.label} 
-            variant={this.props.variant || "standard"}
+            variant={this.props.variant || (this.props.type == 'date' ? 'outlined' : "standard")}
             sx= {{...styles, ...this.props.sx}}
             style= {this.props.style}
             onChange={this.props.readOnly ? undefined : this.props.onChange}
@@ -100,6 +101,7 @@ export default class CustomTextField extends React.Component<IProps> {
             onKeyUp={(e) => {
                 if (e.key == 'Enter') return this.props.onPressEnter ? this.props.onPressEnter() : {}
             }}
+            InputLabelProps={this.props.InputLabelProps}
         />
     )
   }

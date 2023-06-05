@@ -12,6 +12,7 @@ import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
 import { timeLocale } from "../../../objects/Time";
 import { convertUpper } from "../../../extras/functions";
+import { getUserNameById } from "../../../objects/Users_List";
 
 const palletes = {
   primary: "#439CEF",
@@ -79,11 +80,13 @@ class MisThesis extends React.Component {
 
   render() {
     const columns = [
-      { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "reg_no", label: "Reg#", format: (value) => value },
       { id: "student_name", label: "Student Name", format: (value) => value },
+      { id: "student_father_name", label: "Father Name", format: (value) => value },
+      { id: "degree_type", label: "Degree", format: (value) => convertUpper(value) },
       { id: "thesis_title", label: "Title", format: (value) => value },
       { id: "thesis_type", label: "Type", format: (value) => convertUpper(value) },
+      { id: "supervisor_id", label: "Supervisor", format: (value) => getUserNameById(value) },
       { id: 'undertaking_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) }
     ];
     return (

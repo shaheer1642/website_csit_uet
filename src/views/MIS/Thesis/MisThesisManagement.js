@@ -14,6 +14,8 @@ import CustomFilesField from '../../../components/CustomFilesField';
 import InstructionsField from '../../../components/InstructionsField';
 import { Navigate } from 'react-router';
 import ContextInfo from '../../../components/ContextInfo';
+import CustomModal from '../../../components/CustomModal';
+import MisThesisExaminers from './MisThesisExaminers';
 
 const palletes = {
   primary: '#439CEF',
@@ -72,6 +74,10 @@ class MisThesisManagement extends React.Component {
 
       alertMsg: '',
       alertSeverity: 'warning',
+
+      refreshExaminers: false,
+      thesisExaminersOpen: false,
+      thesisExaminersType: '',
     }
     this.student_batch_id = this.props.location.state.student_batch_id || this.props.location.state.student_batch?.student_batch_id
     this.context_info = this.props.location.state.context_info
@@ -137,6 +143,20 @@ class MisThesisManagement extends React.Component {
     this.timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 5000)
   }
 
+  addExaminer = (callback) => {
+    if (!this.state.thesisExaminersType) return callback ? callback() : null
+    this.setState({addingExaminer: true})
+    socket.emit('studentsThesisExaminers/create',{
+      examiner_name: this.state.addExaminerName,
+      examiner_university: this.state.addExaminerUniversity,
+      examiner_designation: this.state.addExaminerDesignation,
+      examiner_type: this.state.thesisExaminersType
+    }, (res) => {
+      this.setState({addingExaminer: false})
+      if (callback) callback()
+    })
+  }
+
   render() {
     if (this.student_view && !this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/thesis'}} />
     return (
@@ -177,39 +197,166 @@ class MisThesisManagement extends React.Component {
               <Grid item xs={2}>
                 <CustomSelect 
                   readOnly = {this.student_view}
-                  value={this.state.student_thesis.supervisor_id}
+                  menuItems={[{id: '', label: 'None'}]}
                   endpoint='autocomplete/teachers'
                   label='Supervisor'
                   onChange={(e,option) => this.updateStudentThesis('supervisor_id',option.id)}
+                  value={this.state.student_thesis.supervisor_id || ''}
                 />
               </Grid>
               <Grid item xs={2}>
                 <CustomSelect 
                   readOnly = {this.student_view}
-                  value={this.state.student_thesis.co_supervisor_id}
+                  menuItems={[{id: '', label: 'None'}]}
                   endpoint='autocomplete/teachers'
                   label='Co-Supervisor'
                   onChange={(e,option) => this.updateStudentThesis('co_supervisor_id',option.id)}
+                  value={this.state.student_thesis.co_supervisor_id || ''}
                 />
               </Grid>
               {
                 this.state.student_thesis.degree_type == 'ms' && this.state.student_thesis.thesis_type == 'research' ?
                 <React.Fragment>
                   <Grid item xs={'auto'}>
-                    <CustomTextField 
+                    <CustomSelect
                       readOnly = {this.student_view}
+                      label= "Internal Examiner"
+                      fieldType= 'select'
+                      forceCallApi={this.state.refreshExaminers ? () => this.setState({refreshExaminers: false}) : undefined}
+                      menuItems={[{id: 'add_option', label: '+ Add New'},{id: '', label: 'None'}]}
+                      endpoint= 'autocomplete/studentsThesisExaminers'
+                      endpointData={{examiner_type: 'internal_examiner'}}
+                      sx={{minWidth: '300px'}}
+                      onChange={(e,option) => {
+                        if (option.id == 'add_option') return this.setState({thesisExaminersOpen: true, thesisExaminersType: 'internal_examiner'})
+                        this.updateStudentThesis('internal_examiner',option.id)
+                      }}
                       value={this.state.student_thesis.internal_examiner || ''}
-                      variant="filled" 
-                      label={'Internal Examiner'}
-                      onChange={(e) => this.updateStudentThesis('internal_examiner',e.target.value)} />
+                    />
                   </Grid>
                   <Grid item xs={'auto'}>
-                    <CustomTextField 
+                    <CustomSelect
                       readOnly = {this.student_view}
+                      label= "External Examiner"
+                      fieldType= 'select'
+                      forceCallApi={this.state.refreshExaminers ? () => this.setState({refreshExaminers: false}) : undefined}
+                      menuItems={[{id: 'add_option', label: '+ Add New'},{id: '', label: 'None'}]}
+                      endpoint= 'autocomplete/studentsThesisExaminers'
+                      endpointData={{examiner_type: 'external_examiner'}}
+                      sx={{minWidth: '300px'}}
+                      onChange={(e,option) => {
+                        if (option.id == 'add_option') return this.setState({thesisExaminersOpen: true, thesisExaminersType: 'external_examiner'})
+                        this.updateStudentThesis('external_examiner',option.id)
+                      }}
                       value={this.state.student_thesis.external_examiner || ''}
-                      variant="filled" 
-                      label={'External Examiner'}
-                      onChange={(e) => this.updateStudentThesis('external_examiner',e.target.value)} />
+                    />
+                  </Grid>
+                </React.Fragment> : <></>
+              }
+              {
+                this.state.student_thesis.degree_type == 'phd' && this.state.student_thesis.thesis_type == 'research' ?
+                <React.Fragment>
+                  <Grid item xs={'auto'}>
+                    <CustomSelect
+                      readOnly = {this.student_view}
+                      label= "Examiner (Within Dept.)"
+                      fieldType= 'select'
+                      forceCallApi={this.state.refreshExaminers ? () => this.setState({refreshExaminers: false}) : undefined}
+                      menuItems={[{id: 'add_option', label: '+ Add New'},{id: '', label: 'None'}]}
+                      endpoint= 'autocomplete/studentsThesisExaminers'
+                      endpointData={{examiner_type: 'internal_examiner'}}
+                      sx={{minWidth: '300px'}}
+                      onChange={(e,option) => {
+                        if (option.id == 'add_option') return this.setState({thesisExaminersOpen: true, thesisExaminersType: 'internal_examiner'})
+                        this.updateStudentThesis('examiner_within_department',option.id)
+                      }}
+                      value={this.state.student_thesis.examiner_within_department || ''}
+                    />
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomSelect
+                      readOnly = {this.student_view}
+                      label= "Examiner (Outside Dept.)"
+                      fieldType= 'select'
+                      forceCallApi={this.state.refreshExaminers ? () => this.setState({refreshExaminers: false}) : undefined}
+                      menuItems={[{id: 'add_option', label: '+ Add New'},{id: '', label: 'None'}]}
+                      endpoint= 'autocomplete/studentsThesisExaminers'
+                      endpointData={{examiner_type: 'internal_examiner'}}
+                      sx={{minWidth: '300px'}}
+                      onChange={(e,option) => {
+                        if (option.id == 'add_option') return this.setState({thesisExaminersOpen: true, thesisExaminersType: 'internal_examiner'})
+                        this.updateStudentThesis('examiner_outside_department',option.id)
+                      }}
+                      value={this.state.student_thesis.examiner_outside_department || ''}
+                    />
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomSelect
+                      readOnly = {this.student_view}
+                      label= "Examiner (Outside University)"
+                      fieldType= 'select'
+                      forceCallApi={this.state.refreshExaminers ? () => this.setState({refreshExaminers: false}) : undefined}
+                      menuItems={[{id: 'add_option', label: '+ Add New'},{id: '', label: 'None'}]}
+                      endpoint= 'autocomplete/studentsThesisExaminers'
+                      endpointData={{examiner_type: 'external_examiner'}}
+                      sx={{minWidth: '300px'}}
+                      onChange={(e,option) => {
+                        if (option.id == 'add_option') return this.setState({thesisExaminersOpen: true, thesisExaminersType: 'external_examiner'})
+                        this.updateStudentThesis('examiner_outside_university',option.id)
+                      }}
+                      value={this.state.student_thesis.examiner_outside_university || ''}
+                    />
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomSelect
+                      readOnly = {this.student_view}
+                      label= "Examiner (Industry)"
+                      fieldType= 'select'
+                      forceCallApi={this.state.refreshExaminers ? () => this.setState({refreshExaminers: false}) : undefined}
+                      menuItems={[{id: 'add_option', label: '+ Add New'},{id: '', label: 'None'}]}
+                      endpoint= 'autocomplete/studentsThesisExaminers'
+                      endpointData={{examiner_type: 'external_examiner'}}
+                      sx={{minWidth: '300px'}}
+                      onChange={(e,option) => {
+                        if (option.id == 'add_option') return this.setState({thesisExaminersOpen: true, thesisExaminersType: 'external_examiner'})
+                        this.updateStudentThesis('examiner_from_industry',option.id)
+                      }}
+                      value={this.state.student_thesis.examiner_from_industry || ''}
+                    />
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomSelect
+                      readOnly = {this.student_view}
+                      label= "Foreign Thesis Evaluator 1"
+                      fieldType= 'select'
+                      forceCallApi={this.state.refreshExaminers ? () => this.setState({refreshExaminers: false}) : undefined}
+                      menuItems={[{id: 'add_option', label: '+ Add New'},{id: '', label: 'None'}]}
+                      endpoint= 'autocomplete/studentsThesisExaminers'
+                      endpointData={{examiner_type: 'foreign_examiner'}}
+                      sx={{minWidth: '300px'}}
+                      onChange={(e,option) => {
+                        if (option.id == 'add_option') return this.setState({thesisExaminersOpen: true, thesisExaminersType: 'foreign_examiner'})
+                        this.updateStudentThesis('foreign_thesis_evaluator_1',option.id)
+                      }}
+                      value={this.state.student_thesis.foreign_thesis_evaluator_1 || ''}
+                    />
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomSelect
+                      readOnly = {this.student_view}
+                      label= "Foreign Thesis Evaluator 2"
+                      fieldType= 'select'
+                      forceCallApi={this.state.refreshExaminers ? () => this.setState({refreshExaminers: false}) : undefined}
+                      menuItems={[{id: 'add_option', label: '+ Add New'},{id: '', label: 'None'}]}
+                      endpoint= 'autocomplete/studentsThesisExaminers'
+                      endpointData={{examiner_type: 'foreign_examiner'}}
+                      sx={{minWidth: '300px'}}
+                      onChange={(e,option) => {
+                        if (option.id == 'add_option') return this.setState({thesisExaminersOpen: true, thesisExaminersType: 'foreign_examiner'})
+                        this.updateStudentThesis('foreign_thesis_evaluator_2',option.id)
+                      }}
+                      value={this.state.student_thesis.foreign_thesis_evaluator_2 || ''}
+                    />
                   </Grid>
                 </React.Fragment> : <></>
               }
@@ -238,13 +385,12 @@ class MisThesisManagement extends React.Component {
                       <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='ms_research_proposal' />
                     </Grid>
                     <Grid item xs={12}>
-                      <TextField
+                      <CustomTextField
                         type="date"
+                        sx={{width: '200px'}}
+                        InputLabelProps={{ shrink: true }}
                         label='BOASAR Notification Date'
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{ readOnly: this.student_view }}
+                        readOnly={this.student_view}
                         value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
                         onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp',new Date(e.target.value).getTime())} />
                     </Grid>
@@ -252,9 +398,9 @@ class MisThesisManagement extends React.Component {
                       <CustomFilesField 
                         readOnly = {this.student_view}
                         label="Attached Documents" 
-                        documents={this.state.student_thesis.proposal_documents}
-                        onChange={(e) => this.fileUploadHandler('proposal_documents', e)}
-                        onDelete={(file) => this.fileDeleteHandler('proposal_documents', file)} />
+                        documents={this.state.student_thesis.phase_1_documents}
+                        onChange={(e) => this.fileUploadHandler('phase_1_documents', e)}
+                        onDelete={(file) => this.fileDeleteHandler('phase_1_documents', file)} />
                     </Grid>
                     {/* <Grid item xs={12}>
                       <FormControlLabel 
@@ -281,25 +427,22 @@ class MisThesisManagement extends React.Component {
                       <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='ms_research_thesis_defense' />
                     </Grid>
                     <Grid item xs={'auto'}>
-                      <TextField
-                        sx={{width: '200px'}}
+                      <CustomTextField
                         type="date"
+                        sx={{width: '200px'}}
+                        InputLabelProps={{ shrink: true }}
                         label='Committee Notification Date'
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{ readOnly: this.student_view }}
+                        readOnly={this.student_view}
                         value={this.state.student_thesis.committee_notification_timestamp ? new Date(Number(this.state.student_thesis.committee_notification_timestamp)).toISOString().split('T')[0] : null}
                         onChange={(e) => this.updateStudentThesis('committee_notification_timestamp',new Date(e.target.value).getTime())} />
                     </Grid>
                     <Grid item xs={'auto'}>
-                      <TextField
+                      <CustomTextField
                         type="date"
+                        sx={{width: '200px'}}
+                        InputLabelProps={{ shrink: true }}
                         label='Thesis Defense Date'
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{ readOnly: this.student_view }}
+                        readOnly={this.student_view}
                         value={this.state.student_thesis.defense_day_timestamp ? new Date(Number(this.state.student_thesis.defense_day_timestamp)).toISOString().split('T')[0] : null}
                         onChange={(e) => this.updateStudentThesis('defense_day_timestamp',new Date(e.target.value).getTime())} />
                     </Grid>
@@ -307,9 +450,9 @@ class MisThesisManagement extends React.Component {
                       <CustomFilesField 
                         readOnly = {this.student_view}
                         label="Attached Documents" 
-                        documents={this.state.student_thesis.pre_defense_documents}
-                        onChange={(e) => this.fileUploadHandler('pre_defense_documents', e)}
-                        onDelete={(file) => this.fileDeleteHandler('pre_defense_documents', file)} />
+                        documents={this.state.student_thesis.phase_2_documents}
+                        onChange={(e) => this.fileUploadHandler('phase_2_documents', e)}
+                        onDelete={(file) => this.fileDeleteHandler('phase_2_documents', file)} />
                     </Grid>
                   </Grid>
                 }></CustomCard>
@@ -332,9 +475,9 @@ class MisThesisManagement extends React.Component {
                       <CustomFilesField 
                         readOnly = {this.student_view}
                         label="Attached Documents" 
-                        documents={this.state.student_thesis.post_defense_documents}
-                        onChange={(e) => this.fileUploadHandler('post_defense_documents', e)}
-                        onDelete={(file) => this.fileDeleteHandler('post_defense_documents', file)} />
+                        documents={this.state.student_thesis.phase_3_documents}
+                        onChange={(e) => this.fileUploadHandler('phase_3_documents', e)}
+                        onDelete={(file) => this.fileDeleteHandler('phase_3_documents', file)} />
                     </Grid>
                   </Grid>
                 }></CustomCard>
@@ -362,24 +505,22 @@ class MisThesisManagement extends React.Component {
                         <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='ms_project_proposal' />
                       </Grid>
                       <Grid item xs={'auto'}>
-                        <TextField
+                        <CustomTextField
                           type="date"
+                          sx={{width: '200px'}}
+                          InputLabelProps={{ shrink: true }}
                           label='BOASAR Notification Date'
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          inputProps={{ readOnly: this.student_view }}
+                          readOnly={this.student_view}
                           value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
                           onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp',new Date(e.target.value).getTime())} />
                       </Grid>
                       <Grid item xs={'auto'}>
                         <TextField
                           type="date"
+                          sx={{width: '200px'}}
+                          InputLabelProps={{ shrink: true }}
                           label='Proposal Submission Date'
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          inputProps={{ readOnly: this.student_view }}
+                          readOnly={this.student_view}
                           value={this.state.student_thesis.proposal_submission_timestamp ? new Date(Number(this.state.student_thesis.proposal_submission_timestamp)).toISOString().split('T')[0] : null}
                           onChange={(e) => this.updateStudentThesis('proposal_submission_timestamp',new Date(e.target.value).getTime())} />
                       </Grid>
@@ -387,9 +528,9 @@ class MisThesisManagement extends React.Component {
                         <CustomFilesField 
                           readOnly = {this.student_view}
                           label="Attached Documents" 
-                          documents={this.state.student_thesis.proposal_documents}
-                          onChange={(e) => this.fileUploadHandler('proposal_documents', e)}
-                          onDelete={(file) => this.fileDeleteHandler('proposal_documents', file)} />
+                          documents={this.state.student_thesis.phase_1_documents}
+                          onChange={(e) => this.fileUploadHandler('phase_1_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('phase_1_documents', file)} />
                       </Grid>
                       {/* <Grid item xs={12}>
                         <FormControlLabel 
@@ -419,9 +560,9 @@ class MisThesisManagement extends React.Component {
                         <CustomFilesField 
                           readOnly = {this.student_view}
                           label="Attached Documents" 
-                          documents={this.state.student_thesis.thesis_submission_documents}
-                          onChange={(e) => this.fileUploadHandler('thesis_submission_documents', e)}
-                          onDelete={(file) => this.fileDeleteHandler('thesis_submission_documents', file)} />
+                          documents={this.state.student_thesis.phase_2_documents}
+                          onChange={(e) => this.fileUploadHandler('phase_2_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('phase_2_documents', file)} />
                       </Grid>
                     </Grid>
                   }></CustomCard>
@@ -444,9 +585,9 @@ class MisThesisManagement extends React.Component {
                         <CustomFilesField 
                           readOnly = {this.student_view}
                           label="Attached Documents" 
-                          documents={this.state.student_thesis.post_thesis_documents}
-                          onChange={(e) => this.fileUploadHandler('post_thesis_documents', e)}
-                          onDelete={(file) => this.fileDeleteHandler('post_thesis_documents', file)} />
+                          documents={this.state.student_thesis.phase_3_documents}
+                          onChange={(e) => this.fileUploadHandler('phase_3_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('phase_3_documents', file)} />
                       </Grid>
                     </Grid>
                   }></CustomCard>
@@ -454,7 +595,172 @@ class MisThesisManagement extends React.Component {
               </React.Fragment>
             : 
             this.state.student_thesis.degree_type == 'phd' && this.state.student_thesis.thesis_type == 'research' ?
-            <></>
+            <React.Fragment>
+              {/* Phase 0: Qualifying Exam */}
+              <Grid item xs={12}>
+                <CustomCard
+                  style={{padding: '10px'}}
+                  cardContent= {
+                    <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid item xs={12}>
+                        <Typography variant='h3'>{'Phase 0: Qualifying Exam'}</Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_qualifying_exam' />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomFilesField 
+                          readOnly = {this.student_view}
+                          label="Attached Documents" 
+                          documents={this.state.student_thesis.phase_0_documents}
+                          onChange={(e) => this.fileUploadHandler('phase_0_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('phase_0_documents', file)} />
+                      </Grid>
+                    </Grid>
+                  }
+                />
+              </Grid>
+              {/* Phase 1: REC-I (Proposal Defense) */}
+              <Grid item xs={12}>
+                <CustomCard
+                  style={{padding: '10px'}}
+                  cardContent= {
+                    <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid item xs={12}>
+                        <Typography variant='h3'>{'Phase 1: REC-I (Proposal Defense)'}</Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_rec_i' />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomTextField
+                          type="date"
+                          sx={{width: '200px'}}
+                          InputLabelProps={{ shrink: true }}
+                          label='BOASAR Notification Date'
+                          readOnly={this.student_view}
+                          value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
+                          onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp',new Date(e.target.value).getTime())} />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomFilesField 
+                          readOnly = {this.student_view}
+                          label="Attached Documents" 
+                          documents={this.state.student_thesis.phase_1_documents}
+                          onChange={(e) => this.fileUploadHandler('phase_1_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('phase_1_documents', file)} />
+                      </Grid>
+                    </Grid>
+                  }
+                />
+              </Grid>
+              {/* Phase 2: REC-II (Progress Report) */}
+              <Grid item xs={12}>
+                <CustomCard
+                  style={{padding: '10px'}}
+                  cardContent= {
+                    <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid item xs={12}>
+                        <Typography variant='h3'>{'Phase 2: REC-II (Progress Report)'}</Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_rec_ii' />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomFilesField 
+                          readOnly = {this.student_view}
+                          label="Attached Documents" 
+                          documents={this.state.student_thesis.phase_2_documents}
+                          onChange={(e) => this.fileUploadHandler('phase_2_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('phase_2_documents', file)} />
+                      </Grid>
+                    </Grid>
+                  }
+                />
+              </Grid>
+              {/* Phase 3: REC-III (Progress Report) */}
+              <Grid item xs={12}>
+                <CustomCard
+                  style={{padding: '10px'}}
+                  cardContent= {
+                    <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid item xs={12}>
+                        <Typography variant='h3'>{'Phase 3: REC-III (Progress Report)'}</Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_rec_iii' />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomFilesField 
+                          readOnly = {this.student_view}
+                          label="Attached Documents" 
+                          documents={this.state.student_thesis.phase_3_documents}
+                          onChange={(e) => this.fileUploadHandler('phase_3_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('phase_3_documents', file)} />
+                      </Grid>
+                    </Grid>
+                  }
+                />
+              </Grid>
+              {/* Phase 4: Pre-Defense */}
+              <Grid item xs={12}>
+                <CustomCard
+                  style={{padding: '10px'}}
+                  cardContent= {
+                    <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid item xs={12}>
+                        <Typography variant='h3'>{'Phase 4: Pre-Defense'}</Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_pre_defense' />
+                      </Grid>
+                      <Grid item xs={'auto'}>
+                        <CustomTextField
+                          type="date"
+                          sx={{width: '200px'}}
+                          InputLabelProps={{ shrink: true }}
+                          label='Thesis Defense Date'
+                          readOnly={this.student_view}
+                          value={this.state.student_thesis.defense_day_timestamp ? new Date(Number(this.state.student_thesis.defense_day_timestamp)).toISOString().split('T')[0] : null}
+                          onChange={(e) => this.updateStudentThesis('defense_day_timestamp',new Date(e.target.value).getTime())} />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomFilesField 
+                          readOnly = {this.student_view}
+                          label="Attached Documents" 
+                          documents={this.state.student_thesis.phase_4_documents}
+                          onChange={(e) => this.fileUploadHandler('phase_4_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('phase_4_documents', file)} />
+                      </Grid>
+                    </Grid>
+                  }
+                />
+              </Grid>
+              {/* Phase 5: Post-Defense */}
+              <Grid item xs={12}>
+                <CustomCard
+                  style={{padding: '10px'}}
+                  cardContent= {
+                    <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid item xs={12}>
+                        <Typography variant='h3'>{'Phase 5: Post-Defense'}</Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_post_defense' />
+                      </Grid>
+                      <Grid item xs={12}>
+                        <CustomFilesField 
+                          readOnly = {this.student_view}
+                          label="Attached Documents" 
+                          documents={this.state.student_thesis.phase_5_documents}
+                          onChange={(e) => this.fileUploadHandler('phase_5_documents', e)}
+                          onDelete={(file) => this.fileDeleteHandler('phase_5_documents', file)} />
+                      </Grid>
+                    </Grid>
+                  }
+                />
+              </Grid>
+            </React.Fragment>
             :
             <></>
         }
@@ -493,6 +799,11 @@ class MisThesisManagement extends React.Component {
             </Grid>
           </React.Fragment>
         }
+        <MisThesisExaminers 
+          open={this.state.thesisExaminersOpen}
+          examiner_type={this.state.thesisExaminersType}
+          onClose={() => this.setState({thesisExaminersOpen: false, refreshExaminers: true, thesisExaminersType: ''})}
+        />
       </Grid>
     );
   }

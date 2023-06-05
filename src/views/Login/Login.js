@@ -216,6 +216,7 @@ class Login extends React.Component {
                 </Grid>
                 <Grid item xs={6} sx={{ justifyContent: 'start', alignContent: 'center', }}>
                   <CustomTextField 
+                    variant='standard'
                     underlineColor='white' 
                     labelColor='white' 
                     labelFocusedColor='white' 
@@ -233,7 +234,7 @@ class Login extends React.Component {
                   <Password sx={{ color: palletes.primary, }} />
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'start', }}>
-                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Password" variant="standard" tabIndex={2}
+                  <CustomTextField variant='standard' underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Password" variant="standard" tabIndex={2}
                     onPressEnter={this.handleOnClickLogin}
                     onChange={(e) => this.setState({ passwordText: e.target.value })}
                     type={this.state.showPassword ? 'text' : 'password'}
@@ -274,7 +275,7 @@ class Login extends React.Component {
                   <AccountCircle sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', }}>
-                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Username" inputProps={{ tabIndex: "1" }} tabIndex={1}
+                  <CustomTextField variant='standard' underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Username" inputProps={{ tabIndex: "1" }} tabIndex={1}
 
                     onChange={(e) => this.setState({ usernameText: e.target.value })}
                   />
@@ -285,7 +286,7 @@ class Login extends React.Component {
                   <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
                 </Grid >
                 <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', }}>
-                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Old Password" tabIndex={2}
+                  <CustomTextField variant='standard' underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="Old Password" tabIndex={2}
 
                     onChange={(e) => this.setState({ passwordText: e.target.value })}
                     type={this.state.showPassword ? 'text' : 'password'}
@@ -302,7 +303,7 @@ class Login extends React.Component {
                   <Password sx={{ color: palletes.primary, mr: 1, my: 0.5, }} />
                 </Grid>
                 <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-end', }}>
-                  <CustomTextField underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="New Password" tabIndex={3}
+                  <CustomTextField variant='standard' underlineColor='white' labelColor='white' labelFocusedColor='white' underlineFocusedColor='white' inputTextColor='white' label="New Password" tabIndex={3}
 
                     onChange={(e) => this.setState({ newPasswordText: e.target.value })}
                     type={this.state.showPassword ? 'text' : 'password'}

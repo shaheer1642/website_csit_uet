@@ -16,7 +16,8 @@ interface IProps {
     required: boolean | undefined,
     disabled: boolean | undefined,
     readOnly: boolean | undefined,
-    sx: SxProps<Theme>
+    sx: SxProps<Theme>,
+    forceCallApi?: Function
 }
 
 interface IState {
@@ -30,12 +31,25 @@ export default class CustomSelect extends React.Component<IProps, IState> {
         super(props);
         this.state = {
             componentLoading: true,
-            menuItems: this.props.menuItems || []
+            menuItems: []
         };
     }
 
     componentDidMount(): void {
-        if (!this.props.endpoint) return this.setState({componentLoading: false})
+        this.callApi()
+    }
+
+    updateMenuItems = (items, callback) => {
+        this.setState({
+            menuItems: [...(this.props.menuItems || []), ...(items || [])]
+        }, () => {
+            if (callback) callback()
+        })
+    }
+
+    callApi = () => {
+        if (!this.props.endpoint) return this.updateMenuItems([], () => this.setState({componentLoading: false}))
+        this.setState({componentLoading: true})
         if (Array.isArray(this.props.endpoint)) {
             Promise.all(this.props.endpoint.map((endpoint,index) => 
                 new Promise((resolve,reject) => {
@@ -46,33 +60,22 @@ export default class CustomSelect extends React.Component<IProps, IState> {
                     })
                 }))
             ).then(responses => {
-                this.setState({menuItems: [...this.state.menuItems, ...responses.reduce((arr,res) => ([...arr,...res.data]),[])], componentLoading: false})
+                this.updateMenuItems(responses.reduce((arr,res) => ([...arr,...res.data]),[]) , () => this.setState({componentLoading: false}))
             }).catch(console.error)
         } else {
             socket.emit(this.props.endpoint, this.props.endpointData || {}, res => {
                 if (res.code == 200) {
-                    this.setState({menuItems: [...this.state.menuItems, ...res.data], componentLoading: false})
+                    this.updateMenuItems(res.data , () => this.setState({componentLoading: false}))
                 }
             })
         }
     }
-    
-//     <FormControl fullWidth required={this.props.required} sx={this.props.sx}>
-//     <InputLabel>{this.props.label}</InputLabel>
-//     <Select
-//         disabled={this.props.disabled}
-//         value={this.props.value || ''}
-//         label={this.props.label}
-//         onChange={this.props.onChange}
-//         required={this.props.required}
-//     >
-//         {this.state.menuItems.map(item => 
-//             (<MenuItem key={item.id} value={item.id}>{item.label}</MenuItem>)
-//         )}
-//     </Select>
-// </FormControl>
 
     render() {
+        if (this.props.forceCallApi) {
+            this.callApi()
+            this.props.forceCallApi()
+        }
         return (
             this.state.componentLoading ? <LoadingIcon />:
             <Autocomplete

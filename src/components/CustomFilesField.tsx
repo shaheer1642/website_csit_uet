@@ -83,7 +83,7 @@ export default class CustomFilesField extends React.Component<IProps> {
           </Stack>
         </Grid>
         {this.props.readOnly ? <></> :
-          <Grid item xs={'auto'} display='flex' alignItems={'center'} style={{marginLeft:'10px'}}>
+          <Grid item xs={'auto'} display='flex' alignItems={'center'}>
             <IconButton sx={defaultStyles.IconButton} component="label">
               <input hidden type="file" multiple onChange={this.props.onChange}/>
               <UploadFile />
