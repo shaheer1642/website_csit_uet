@@ -7,6 +7,7 @@ import { Box, IconButton, Tooltip } from '@mui/material';
 import { CancelOutlined, Check, Edit } from '@mui/icons-material';
 import { ButtonGroup } from 'reactstrap';
 import { global_documents } from '../objects/Documents';
+import { socket } from '../websocket/socket';
 
 interface IProps {
   editable?: boolean,
@@ -38,6 +39,17 @@ export default class CustomRichTextField extends React.Component<IProps, IState>
     this.setState({
       instruction: `${this.state.instruction} ${url} `
     })
+  }
+
+  uploadCallback = (file) => {
+    console.log('uploadCallback')
+    return new Promise((resolve, reject) => {
+       const data = new FormData();
+       data.append("image", file)
+       socket.emit('documents/create', {document: file, document_name: "image"}, (res) => {
+        resolve({ data: { link: res.data.document_url } });
+       })
+    });
   }
 
   render() {
@@ -108,6 +120,20 @@ export default class CustomRichTextField extends React.Component<IProps, IState>
           onEditorStateChange={this.props.onChange}
           readOnly={this.props.readOnly || !this.state.editing}
           toolbarHidden={this.props.readOnly || !this.state.editing}
+          
+          toolbar={{
+            image: {
+              uploadEnabled: true,
+              uploadCallback: this.uploadCallback,
+              previewImage: false,
+              inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
+              alt: { present: false, mandatory: false },
+              defaultSize: {
+                height: 'auto',
+                width: 'auto',
+              },
+            },
+          }}
           wrapperStyle={this.props.readOnly ? undefined : !this.state.editing ? undefined : {
             padding: '1rem',
             border: '1px solid #ccc'
