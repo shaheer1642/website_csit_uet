@@ -45,8 +45,8 @@ export default class CustomRichTextField extends React.Component<IProps, IState>
     console.log('uploadCallback')
     return new Promise((resolve, reject) => {
        const data = new FormData();
-       data.append("image", file)
-       socket.emit('documents/create', {document: file, document_name: "image"}, (res) => {
+       data.append(file.name, file)
+       socket.emit('documents/create', {document: file, document_name: file.name}, (res) => {
         resolve({ data: { link: res.data.document_url } });
        })
     });
