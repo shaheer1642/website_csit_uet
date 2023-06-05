@@ -1,0 +1,133 @@
+// @ts-nocheck
+import React from 'react';
+import { EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { Box, IconButton, Tooltip } from '@mui/material';
+import { CancelOutlined, Check, Edit } from '@mui/icons-material';
+import { ButtonGroup } from 'reactstrap';
+import { global_documents } from '../objects/Documents';
+
+interface IProps {
+  editable?: boolean,
+  readOnly?: boolean,
+  defaultEditorState: EditorState,
+  editorState: EditorState,
+  onChange: Function,
+  onSave?: Function,
+  onCancel?: Function
+}
+
+interface IState {
+}
+
+export default class CustomRichTextField extends React.Component<IProps, IState> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      editing: false,
+      showDocumentsMenu: false,
+      menuEl: null
+    };
+  }
+
+  componentDidUpdate() {
+  }
+
+  addDocumentLink = (url) => {
+    this.setState({
+      instruction: `${this.state.instruction} ${url} `
+    })
+  }
+
+  render() {
+    return (
+      <Box sx={{ position: 'relative' }}>
+        {
+          <div style={{ 
+            position: 'absolute', 
+            right: this.state.editing ? 20 : this.props.editorState.getCurrentContent().hasText() ? 5 : undefined, 
+            top: this.state.editing ? 110 : undefined, 
+            zIndex: 10 
+          }}>
+            {
+              this.props.editable ?
+                this.state.editing ?
+                  <ButtonGroup size='medium'>
+                    <Tooltip title="Save">
+                      <IconButton size='medium' color='primary' onClick={() => this.props.onSave()}>
+                        <Check fontSize='14px' />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Cancel">
+                      <IconButton size='medium' color='primary' onClick={() => this.setState({ editable: false }, () => this.props.onCancel())}>
+                        <CancelOutlined />
+                      </IconButton>
+                    </Tooltip>
+                  </ButtonGroup> :
+                  this.props.readOnly ? <></> :
+                    <Tooltip title="Edit">
+                      <IconButton size='medium' color='primary' onClick={() => this.setState({ editing: true })}>
+                        <Edit />
+                      </IconButton>
+                    </Tooltip> :
+                <></>
+            }
+          </div>
+        }
+        {/* {this.props.editable && !this.props.readOnly && !this.state.editing ? 
+            <IconButton sx={{position: 'absolute',right: this.props.editorState.getCurrentContent().hasText() ? 5 : undefined, zIndex: 10}} onClick={() => this.setState({editing: true})}>
+              <Edit fontSize='medium' sx={{color:'primary.main'}} />
+            </IconButton> : <></>}
+          {this.state.editing ? 
+            <IconButton 
+              sx={{position: 'absolute',right:80,top:120,zIndex: 10}}  
+              onClick={() => {
+                  if (this.props.onSave) this.props.onSave()
+                  this.setState({editing: false})
+                }
+              }
+            >
+              <Check fontSize='medium' sx={{color:'primary.main'}}/>
+            </IconButton> : <></>}
+          {this.state.editing ? 
+            <IconButton 
+              sx={{position: 'absolute',right:20,top:120,zIndex: 10}}  
+              onClick={() => {
+                  if (this.props.onCancel) this.props.onCancel()
+                  this.setState({editing: false})
+                }
+              }
+            >
+              <CancelOutlined fontSize='medium' sx={{color:'primary.main'}}/>
+            </IconButton> : <></>} */}
+        <Editor
+
+          defaultEditorState={this.props.defaultEditorState}
+          editorState={this.props.editorState}
+          onEditorStateChange={this.props.onChange}
+          readOnly={this.props.readOnly || !this.state.editing}
+          toolbarHidden={this.props.readOnly || !this.state.editing}
+          wrapperStyle={this.props.readOnly ? undefined : !this.state.editing ? undefined : {
+            padding: '1rem',
+            border: '1px solid #ccc'
+          }}
+          editorStyle={this.props.readOnly ? undefined : !this.state.editing ? undefined : {
+            backgroundColor: 'lightgray',
+            padding: '1rem',
+            border: '1px solid #ccc',
+            minHeight: '300px'
+          }}
+          toolbarStyle={this.props.readOnly ? undefined : !this.state.editing ? undefined : {
+            border: '1px solid #ccc'
+          }}
+          mention={{
+            separator: ' ',
+            trigger: '@',
+            suggestions: global_documents.map((doc) => ({ text: doc.document_name, value: doc.document_name, url: doc.document_url }))
+          }}
+        />
+      </Box>
+    );
+  }
+}

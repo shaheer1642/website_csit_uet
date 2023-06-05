@@ -517,28 +517,48 @@ function MisLayout() {
 
               <Divider />
 
-              <ListItem disablePadding sx={{ display: 'block' }}>
-                <ListItemButton
-                  onClick={onLogoutClick}
+              <ListItemButton
+                component={Link} 
+                to="help"
+                state={{student_view: true}}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+                onClick={() => setCurrentMenu('help')}
+              >
+                <ListItemIcon
                   sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.PowerSettingsNew style={{ color: 'Red' }} />
-                  </ListItemIcon>
-                  <ListItemText primary='Logout' sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-              </ListItem>
+                  <Icon.Help style={{color: currentMenu == 'help' ? Color.deepPurple[500] : undefined}}/>
+                </ListItemIcon>
+                <ListItemText primary='Help' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'help' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+              </ListItemButton>
 
+              <ListItemButton
+                onClick={onLogoutClick}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Icon.PowerSettingsNew style={{ color: 'Red' }} />
+                </ListItemIcon>
+                <ListItemText primary='Logout'  sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
             </List>
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: Color.grey[100], minHeight: '100vh' }}>

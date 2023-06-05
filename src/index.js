@@ -53,6 +53,7 @@ import MisStudentCourses from "./views/MIS/Student Dashboard/Courses/MisStudentC
 import FirebaseNotifications from "./firebase/firebase-notifications";
 import MisDepartments from "./views/MIS/Departments/MisDepartments";
 import MisDepartmentsUpdate from "./views/MIS/Departments/MisDepartmentsUpdate";
+import MisHelp from "./views/MIS/Help/MisHelp";
 
 export default function Router() {
   return (
@@ -117,12 +118,16 @@ export default function Router() {
             <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />
 
           <Route path="sportal/batches" element={<MisStudentBatches />} />
+          
           <Route path="sportal/semesters" element={<MisStudentSemesters />} />
+
           <Route path="sportal/courses" element={<MisStudentCourses />} />
             <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
-          <Route path="sportal/thesis" element={<MisThesisManagement/>}/>
-        </Route>
 
+          <Route path="sportal/thesis" element={<MisThesisManagement/>}/>
+
+          <Route path="help" element={<MisHelp/>}/>
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -13,7 +13,8 @@ interface IProps {
 }
 
 const defaultStyles = {
-  borderRadius: 5
+  borderRadius: 5,
+  padding: 3
 }
 
 export default class CustomCard extends React.Component<IProps> {
@@ -24,12 +25,9 @@ export default class CustomCard extends React.Component<IProps> {
     render() {
         return (
             <Card sx={{...defaultStyles, ...this.props.style}} elevation={3}>
-              <CardContent>
-                {this.props.cardContent}
-              </CardContent>
-              <CardActions>
-                {this.props.cardActions}
-              </CardActions>
+              {this.props.cardContent}
+              {this.props.cardActions}
+              {this.props.children}
             </Card>
         );
     }
