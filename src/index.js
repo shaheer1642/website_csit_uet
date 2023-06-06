@@ -54,6 +54,7 @@ import FirebaseNotifications from "./firebase/firebase-notifications";
 import MisDepartments from "./views/MIS/Departments/MisDepartments";
 import MisDepartmentsUpdate from "./views/MIS/Departments/MisDepartmentsUpdate";
 import MisHelp from "./views/MIS/Help/MisHelp";
+import MisProfile from "./views/MIS/Profile/MisProfile";
 
 export default function Router() {
   return (
@@ -68,6 +69,8 @@ export default function Router() {
         </Route>
         <Route path="/mis" element={<MisLayout />}>
           <Route index element={<MisHome />} />
+
+          <Route path="profile" element={<MisProfile />} />
 
           <Route path="events" element={<MisEvents />} />
             <Route path="events/create" element={<MisEventsCreate />} />

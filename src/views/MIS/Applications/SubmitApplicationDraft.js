@@ -74,7 +74,6 @@ class SubmitApplicationDraft extends React.Component {
     this.fetchApplicationTemplate()
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
-    console.log(this.state)
     if (!prevState.alertMsg && !this.state.alertMsg) return
     clearTimeout(this.alertTimeout)
     this.alertTimeout = setTimeout(() => {

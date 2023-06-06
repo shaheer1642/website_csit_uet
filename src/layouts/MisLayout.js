@@ -243,7 +243,7 @@ function MisLayout() {
                       justifyContent: 'center',
                     }}
                   >
-                    <Icon.ManageAccounts style={{color: currentMenu == 'departments' ? Color.deepPurple[500] : undefined}}/>
+                    <Icon.Apartment style={{color: currentMenu == 'departments' ? Color.deepPurple[500] : undefined}}/>
                   </ListItemIcon>
                   <ListItemText primary='Department Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'departments' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                 </ListItemButton> : <></>
@@ -516,6 +516,29 @@ function MisLayout() {
               </Collapse>
 
               <Divider />
+
+              <ListItemButton
+                component={Link} 
+                to="profile"
+                state={{student_view: true}}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+                onClick={() => setCurrentMenu('profile')}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Icon.AccountCircle style={{color: currentMenu == 'profile' ? Color.deepPurple[500] : undefined}}/>
+                </ListItemIcon>
+                <ListItemText primary='My Profile' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'profile' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+              </ListItemButton>
 
               <ListItemButton
                 component={Link} 

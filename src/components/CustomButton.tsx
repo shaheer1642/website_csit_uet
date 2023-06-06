@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import * as Color from '@mui/material/colors';
 import { SxProps, Theme } from '@mui/material';
 
@@ -36,7 +36,8 @@ interface IProps {
   endIcon?: React.ReactNode,
   size?: string,
   component?: React.Component,
-  color?: string
+  color?: string,
+  callingApiState?: boolean
 }
 
 export default class CustomButton extends React.Component<IProps> {
@@ -66,10 +67,10 @@ export default class CustomButton extends React.Component<IProps> {
         sx={{ ...styles, ...this.props.sx }}
         style={this.props.style}
         onClick={this.props.onClick}
-        disabled={this.props.disabled}
+        disabled={this.props.disabled || this.props.callingApiState}
         variant={this.props.variant || "contained"}
         tabIndex={this.props.tabIndex}
-        startIcon={this.props.startIcon}
+        startIcon={this.props.callingApiState ? <CircularProgress size='20px' /> : this.props.startIcon}
         endIcon={this.props.endIcon}
       >{this.props.label}</Button>
     )
