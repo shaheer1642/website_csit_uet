@@ -102,8 +102,8 @@ export default class MisProfile extends React.Component {
   }
 
   sendEmailVerificationCode = (callback) => {
-    this.setCallingApi('sendEmailVerificationCode')
     if (!this.state.userInput['new_email']) return this.setState({alertMsg: 'Invalid input', alertSeverity: 'warning'})
+    this.setCallingApi('sendEmailVerificationCode')
     socket.emit('users/sendEmailVerificationCode', {user_email: this.state.userInput['new_email']} , (res) => {
       this.setCallingApi('')
       if (res.code == 200 && callback) callback(res)
@@ -113,8 +113,8 @@ export default class MisProfile extends React.Component {
   }
 
   updateEmail = (callback) => {
-    this.setCallingApi('updateEmail')
     if (!this.state.userInput['new_email'] && !this.state.userInput['email_verification_code']) return this.setState({alertMsg: 'Invalid input', alertSeverity: 'warning'})
+    this.setCallingApi('updateEmail')
     socket.emit('users/updateEmail', {
       user_email: this.state.userInput['new_email'], 
       email_verification_code: this.state.userInput['email_verification_code']
