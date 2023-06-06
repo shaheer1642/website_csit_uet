@@ -189,7 +189,7 @@ export default class MisProfile extends React.Component {
             <Typography variant='h4'>Your email has been updated to {this.state.userInput['new_email']}!</Typography>
           </Grid>
           <Grid item xs={12}>
-            <CustomButton label='Close' onClick={() => this.setModalPanel('')}/>
+            <CustomButton label='OK' onClick={() => this.closeModal()}/>
           </Grid>
         </Grid>
       )
