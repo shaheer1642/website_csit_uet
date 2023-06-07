@@ -47,8 +47,6 @@ export default class MisProfile extends React.Component {
 
       resendCodeTimer: 0
     };
-
-    this.alertTimeout = null
   }
 
   componentDidMount() {
@@ -56,7 +54,6 @@ export default class MisProfile extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('resendcodetimer',this.state.resendCodeTimer)
     if (!prevState.alertMsg && !this.state.alertMsg) return
     clearTimeout(this.alertTimeout)
     this.alertTimeout = setTimeout(() => {
@@ -102,7 +99,7 @@ export default class MisProfile extends React.Component {
   }
 
   sendEmailVerificationCode = (callback) => {
-    if (!this.state.userInput['new_email']) return this.setState({alertMsg: 'Invalid input', alertSeverity: 'warning'})
+    if (!this.state.userInput['new_email']) return this.setState({alertMsg: 'Fields cannot be empty', alertSeverity: 'warning'})
     this.setCallingApi('sendEmailVerificationCode')
     socket.emit('users/sendEmailVerificationCode', {user_email: this.state.userInput['new_email']} , (res) => {
       this.setCallingApi('')
@@ -113,12 +110,22 @@ export default class MisProfile extends React.Component {
   }
 
   updateEmail = (callback) => {
-    if (!this.state.userInput['new_email'] && !this.state.userInput['email_verification_code']) return this.setState({alertMsg: 'Invalid input', alertSeverity: 'warning'})
+    if (!this.state.userInput['new_email'] || !this.state.userInput['email_verification_code']) return this.setState({alertMsg: 'Fields cannot be empty', alertSeverity: 'warning'})
     this.setCallingApi('updateEmail')
     socket.emit('users/updateEmail', {
       user_email: this.state.userInput['new_email'], 
       email_verification_code: this.state.userInput['email_verification_code']
     } , (res) => {
+      this.setCallingApi('')
+      if (res.code == 200 && callback) callback(res)
+      this.updateAlertMesg(res)
+    })
+  }
+
+  changePassword = (callback) => {
+    if (!this.state.userInput['current_password'] || !this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password']) return this.setState({alertMsg: 'Fields cannot be empty', alertSeverity: 'warning'})
+    this.setCallingApi('changePassword')
+    socket.emit('users/changePassword', { current_password: this.state.userInput['current_password'], new_password: this.state.userInput['new_password'] }, res => {
       this.setCallingApi('')
       if (res.code == 200 && callback) callback(res)
       this.updateAlertMesg(res)
@@ -131,6 +138,9 @@ export default class MisProfile extends React.Component {
     this.setUserInput('new_email','')
     this.setUserInput('confirm_new_email','')
     this.setUserInput('email_verification_code','')
+    this.setUserInput('current_password','')
+    this.setUserInput('new_password','')
+    this.setUserInput('confirm_new_password','')
   }
 
 
@@ -187,6 +197,45 @@ export default class MisProfile extends React.Component {
           </Grid>
           <Grid item xs={12}>
             <Typography variant='h4'>Your email has been updated to {this.state.userInput['new_email']}!</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomButton label='OK' onClick={() => this.closeModal()}/>
+          </Grid>
+        </Grid>
+      )
+    },
+    changePasswordPanel1: () => {
+      return (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant='h4'>Update Password</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTextField label='Enter Current Password' type='password' value={this.state.userInput['current_password'] || ''} onChange={(e) => this.setUserInput('current_password',e.target.value)}/>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTextField label='Enter New Password' type='password' value={this.state.userInput['new_password'] || ''} onChange={(e) => this.setUserInput('new_password',e.target.value)}/>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTextField label='Confirm New Password' type='password' value={this.state.userInput['confirm_new_password'] || ''} onChange={(e) => this.setUserInput('confirm_new_password',e.target.value)}/>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomButton label='Next' callingApiState={this.state.callingApi == 'changePassword'} onClick={() => {
+              if (this.state.userInput['new_password'] != this.state.userInput['confirm_new_password']) return this.setState({alertMsg: 'Passwords mismatch', alertSeverity: 'warning'})
+              this.changePassword(() => this.setModalPanel('changePasswordPanel2'))
+            }}/>
+          </Grid>
+        </Grid>
+      )
+    },
+    changePasswordPanel2: () => {
+      return (
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant='h4'>Update Password</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant='h4'>Your password has been updated!</Typography>
           </Grid>
           <Grid item xs={12}>
             <CustomButton label='OK' onClick={() => this.closeModal()}/>
