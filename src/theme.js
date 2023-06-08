@@ -3,20 +3,24 @@ import { createTheme, responsiveFontSizes } from '@mui/material/styles';
 
 const theme = responsiveFontSizes(createTheme({
   palette: {
+    mode: 'light',
     primary: { 
       main: Color.deepPurple[500], 
       dark: Color.deepPurple[900], 
       light: Color.deepPurple[200],
-      contrastText: '#ffffff', 
+      contrastText: '#FFFFFF', 
     },
     secondary: { 
       main: Color.deepPurple[500], 
       dark: '#000000',
-      light: '#ffffff',
-      contrastText: '#ffffff'
+      light: '#FFFFFF',
+      contrastText: '#FFFFFF'
     },
     text: {
-    }
+      primary: '#000000',
+      secondary: '#FFFFFF'
+    },
+    white: '#FFFFFF'
   },
   components: {
     MuiCssBaseline: {
