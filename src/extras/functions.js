@@ -130,4 +130,13 @@ function calcArrAvg(arr) {
     return sum / arr.length
 }
 
-module.exports = {dynamicSort,dynamicSortDesc,msToTime,msToFullTime,getRandomColor,embedScore,convertUpper,getTodayStartMs,getWeekStartMs,getMonthStartMs,calcArrAvg};
+function isEmailValid(value) {
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) return false
+    else return true
+}
+
+module.exports = {
+    dynamicSort,dynamicSortDesc,msToTime,msToFullTime,
+    getRandomColor,embedScore,convertUpper,getTodayStartMs,
+    getWeekStartMs,getMonthStartMs,calcArrAvg,isEmailValid
+};

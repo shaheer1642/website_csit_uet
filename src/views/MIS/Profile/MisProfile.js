@@ -143,7 +143,6 @@ export default class MisProfile extends React.Component {
     this.setUserInput('confirm_new_password','')
   }
 
-
   modalPanels = {
     updateEmailPanel1: () => {
       return (
