@@ -16,10 +16,6 @@ const theme = responsiveFontSizes(createTheme({
       light: '#FFFFFF',
       contrastText: '#FFFFFF'
     },
-    text: {
-      primary: '#000000',
-      secondary: '#FFFFFF'
-    },
     white: '#FFFFFF'
   },
   components: {

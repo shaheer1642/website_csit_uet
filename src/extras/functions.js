@@ -135,8 +135,17 @@ function isEmailValid(value) {
     else return true
 }
 
+function filterObjectByKeys(object,keysArr) {
+    return Object.keys(object)
+    .filter((key) => keysArr.includes(key))
+    .reduce((obj, key) => { 
+        return Object.assign(obj, { [key]: object[key] }); 
+    }, {})
+}
+
 module.exports = {
     dynamicSort,dynamicSortDesc,msToTime,msToFullTime,
     getRandomColor,embedScore,convertUpper,getTodayStartMs,
-    getWeekStartMs,getMonthStartMs,calcArrAvg,isEmailValid
+    getWeekStartMs,getMonthStartMs,calcArrAvg,isEmailValid,
+    filterObjectByKeys
 };

@@ -1,7 +1,7 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
-import {Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField} from '@mui/material';
-import {AccountCircle, Password, Visibility, VisibilityOff} from '@mui/icons-material';
+import { Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField, Autocomplete, Chip } from '@mui/material';
+import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';
 import { socket } from '../../../websocket/socket';
 import * as Color from "@mui/material/colors";
 import CustomCard from '../../../components/CustomCard';
@@ -11,6 +11,7 @@ import CustomTextField from '../../../components/CustomTextField';
 import CustomModal from '../../../components/CustomModal';
 import CustomButton from '../../../components/CustomButton';
 import CustomAlert from '../../../components/CustomAlert';
+import { convertUpper, filterObjectByKeys } from '../../../extras/functions';
 
 const palletes = {
   primary: '#439CEF',
@@ -45,7 +46,9 @@ export default class MisProfile extends React.Component {
       alertMsg: '',
       alertSeverity: '',
 
-      resendCodeTimer: 0
+      resendCodeTimer: 0,
+
+      updatedKeys: []
     };
   }
 
@@ -54,17 +57,18 @@ export default class MisProfile extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log(this.state)
     if (!prevState.alertMsg && !this.state.alertMsg) return
     clearTimeout(this.alertTimeout)
     this.alertTimeout = setTimeout(() => {
-      this.setState({alertMsg: ''})
+      this.setState({ alertMsg: '' })
     }, 3000);
   }
 
   fetchUser = () => {
     this.setCallingApi('fetchUser')
     if (!user?.user_id) return
-    socket.emit('users/fetch',{fetch_user_id: user.user_id},(res) => {
+    socket.emit('users/fetch', { fetch_user_id: user.user_id }, (res) => {
       if (res.code == 200) {
         this.setState({
           userInfo: res.data[0],
@@ -73,35 +77,42 @@ export default class MisProfile extends React.Component {
     })
   }
 
-  setCallingApi = (value) => this.setState({callingApi: value})
+  setCallingApi = (value) => this.setState({ callingApi: value })
 
-  setModalPanel = (value) => this.setState({modalPanel: value})
+  setModalPanel = (value) => this.setState({ modalPanel: value })
 
-  setUserInput = (key,value) => this.setState(state => ({userInput: {...state.userInput, [key]: value}}))
+  setUserInput = (key, value) => this.setState(state => ({ userInput: { ...state.userInput, [key]: value } }))
 
-  updateAlertMesg = (res,successMessage) => {
+  setUserInfo = (key, value) => {
+    this.setState(state => ({
+      userInfo: { ...state.userInfo, [key]: value },
+      updatedKeys: state.updatedKeys.includes(key) ? state.updatedKeys : [...state.updatedKeys, key]
+    }))
+  }
+
+  updateAlertMesg = (res, successMessage) => {
     if (res.code == 200 && !successMessage) return
     this.setState({
-      alertMsg: res.code == 200 ? successMessage ? successMessage : '' : `${res.status}: ${res.message}`,
-      alertSeverity: res.code == 200 ? successMessage ? 'success' : '' : 'warning'
+      alertMsg: res.code == 200 ? successMessage : `${res.status}: ${res.message}`,
+      alertSeverity: res.code == 200 ? 'success' : 'warning'
     })
   }
 
   resendCodeTimer = (timeout) => {
     if (timeout) {
       clearTimeout(this.resendCodeTimerRef)
-      this.setState({resendCodeTimer: timeout}, () => this.resendCodeTimer())
+      this.setState({ resendCodeTimer: timeout }, () => this.resendCodeTimer())
     } else {
       this.resendCodeTimerRef = setTimeout(() => {
-        this.setState(state => ({resendCodeTimer: state.resendCodeTimer - 1}), () => this.state.resendCodeTimer > 0 ? this.resendCodeTimer() : null)
+        this.setState(state => ({ resendCodeTimer: state.resendCodeTimer - 1 }), () => this.state.resendCodeTimer > 0 ? this.resendCodeTimer() : null)
       }, 1000);
     }
   }
 
   sendEmailVerificationCode = (callback) => {
-    if (!this.state.userInput['new_email']) return this.setState({alertMsg: 'Fields cannot be empty', alertSeverity: 'warning'})
+    if (!this.state.userInput['new_email']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('sendEmailVerificationCode')
-    socket.emit('users/sendEmailVerificationCode', {user_email: this.state.userInput['new_email']} , (res) => {
+    socket.emit('users/sendEmailVerificationCode', { user_email: this.state.userInput['new_email'] }, (res) => {
       this.setCallingApi('')
       if (res.code == 200 && callback) callback(res)
       this.updateAlertMesg(res)
@@ -110,12 +121,12 @@ export default class MisProfile extends React.Component {
   }
 
   updateEmail = (callback) => {
-    if (!this.state.userInput['new_email'] || !this.state.userInput['email_verification_code']) return this.setState({alertMsg: 'Fields cannot be empty', alertSeverity: 'warning'})
+    if (!this.state.userInput['new_email'] || !this.state.userInput['email_verification_code']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('updateEmail')
     socket.emit('users/updateEmail', {
-      user_email: this.state.userInput['new_email'], 
+      user_email: this.state.userInput['new_email'],
       email_verification_code: this.state.userInput['email_verification_code']
-    } , (res) => {
+    }, (res) => {
       this.setCallingApi('')
       if (res.code == 200 && callback) callback(res)
       this.updateAlertMesg(res)
@@ -123,7 +134,7 @@ export default class MisProfile extends React.Component {
   }
 
   changePassword = (callback) => {
-    if (!this.state.userInput['current_password'] || !this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password']) return this.setState({alertMsg: 'Fields cannot be empty', alertSeverity: 'warning'})
+    if (!this.state.userInput['current_password'] || !this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('changePassword')
     socket.emit('users/changePassword', { current_password: this.state.userInput['current_password'], new_password: this.state.userInput['new_password'] }, res => {
       this.setCallingApi('')
@@ -135,12 +146,12 @@ export default class MisProfile extends React.Component {
   closeModal = () => {
     this.setModalPanel('')
     this.fetchUser()
-    this.setUserInput('new_email','')
-    this.setUserInput('confirm_new_email','')
-    this.setUserInput('email_verification_code','')
-    this.setUserInput('current_password','')
-    this.setUserInput('new_password','')
-    this.setUserInput('confirm_new_password','')
+    this.setUserInput('new_email', '')
+    this.setUserInput('confirm_new_email', '')
+    this.setUserInput('email_verification_code', '')
+    this.setUserInput('current_password', '')
+    this.setUserInput('new_password', '')
+    this.setUserInput('confirm_new_password', '')
   }
 
   modalPanels = {
@@ -151,16 +162,16 @@ export default class MisProfile extends React.Component {
             <Typography variant='h4'>Update Email</Typography>
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField label='Enter New Email' value={this.state.userInput['new_email'] || ''} onChange={(e) => this.setUserInput('new_email',e.target.value)}/>
+            <CustomTextField label='Enter New Email' value={this.state.userInput['new_email'] || ''} onChange={(e) => this.setUserInput('new_email', e.target.value)} />
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField label='Confirm New Email' value={this.state.userInput['confirm_new_email'] || ''} onChange={(e) => this.setUserInput('confirm_new_email',e.target.value)}/>
+            <CustomTextField label='Confirm New Email' value={this.state.userInput['confirm_new_email'] || ''} onChange={(e) => this.setUserInput('confirm_new_email', e.target.value)} />
           </Grid>
           <Grid item xs={12}>
             <CustomButton label='Next' callingApiState={this.state.callingApi == 'sendEmailVerificationCode'} onClick={() => {
-              if (this.state.userInput['new_email'] != this.state.userInput['confirm_new_email']) return this.setState({alertMsg: 'Emails mismatch', alertSeverity: 'warning'})
+              if (this.state.userInput['new_email'] != this.state.userInput['confirm_new_email']) return this.setState({ alertMsg: 'Emails mismatch', alertSeverity: 'warning' })
               this.sendEmailVerificationCode(() => this.setModalPanel('updateEmailPanel2'))
-            }}/>
+            }} />
           </Grid>
         </Grid>
       )
@@ -176,14 +187,14 @@ export default class MisProfile extends React.Component {
             <Typography>Make sure to check the spam folder</Typography>
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField label='Verification code' value={this.state.userInput['email_verification_code'] || ''} onChange={(e) => this.setUserInput('email_verification_code',e.target.value)}/>
+            <CustomTextField label='Verification code' value={this.state.userInput['email_verification_code'] || ''} onChange={(e) => this.setUserInput('email_verification_code', e.target.value)} />
           </Grid>
           <Grid item xs={12}></Grid>
           <Grid item xs={'auto'}>
-            <CustomButton label='Submit' callingApiState={this.state.callingApi == 'updateEmail'} onClick={() => this.updateEmail(() => this.setModalPanel('updateEmailPanel3'))}/>
+            <CustomButton label='Submit' callingApiState={this.state.callingApi == 'updateEmail'} onClick={() => this.updateEmail(() => this.setModalPanel('updateEmailPanel3'))} />
           </Grid>
           <Grid item xs={'auto'}>
-            <CustomButton disabled={this.state.resendCodeTimer > 0} label={this.state.resendCodeTimer > 0 ? `Resend Code (${this.state.resendCodeTimer})` : 'Resend Code'} callingApiState={this.state.callingApi == 'sendEmailVerificationCode'} variant='outlined' onClick={() => this.sendEmailVerificationCode((res) => this.updateAlertMesg(res,'Code Sent'))}/>
+            <CustomButton disabled={this.state.resendCodeTimer > 0} label={this.state.resendCodeTimer > 0 ? `Resend Code (${this.state.resendCodeTimer})` : 'Resend Code'} callingApiState={this.state.callingApi == 'sendEmailVerificationCode'} variant='outlined' onClick={() => this.sendEmailVerificationCode((res) => this.updateAlertMesg(res, 'Code Sent'))} />
           </Grid>
         </Grid>
       )
@@ -198,7 +209,7 @@ export default class MisProfile extends React.Component {
             <Typography variant='h4'>Your email has been updated to {this.state.userInput['new_email']}!</Typography>
           </Grid>
           <Grid item xs={12}>
-            <CustomButton label='OK' onClick={() => this.closeModal()}/>
+            <CustomButton label='OK' onClick={() => this.closeModal()} />
           </Grid>
         </Grid>
       )
@@ -210,19 +221,19 @@ export default class MisProfile extends React.Component {
             <Typography variant='h4'>Update Password</Typography>
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField label='Enter Current Password' type='password' value={this.state.userInput['current_password'] || ''} onChange={(e) => this.setUserInput('current_password',e.target.value)}/>
+            <CustomTextField label='Enter Current Password' type='password' value={this.state.userInput['current_password'] || ''} onChange={(e) => this.setUserInput('current_password', e.target.value)} />
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField label='Enter New Password' type='password' value={this.state.userInput['new_password'] || ''} onChange={(e) => this.setUserInput('new_password',e.target.value)}/>
+            <CustomTextField label='Enter New Password' type='password' value={this.state.userInput['new_password'] || ''} onChange={(e) => this.setUserInput('new_password', e.target.value)} />
           </Grid>
           <Grid item xs={12}>
-            <CustomTextField label='Confirm New Password' type='password' value={this.state.userInput['confirm_new_password'] || ''} onChange={(e) => this.setUserInput('confirm_new_password',e.target.value)}/>
+            <CustomTextField label='Confirm New Password' type='password' value={this.state.userInput['confirm_new_password'] || ''} onChange={(e) => this.setUserInput('confirm_new_password', e.target.value)} />
           </Grid>
           <Grid item xs={12}>
             <CustomButton label='Next' callingApiState={this.state.callingApi == 'changePassword'} onClick={() => {
-              if (this.state.userInput['new_password'] != this.state.userInput['confirm_new_password']) return this.setState({alertMsg: 'Passwords mismatch', alertSeverity: 'warning'})
+              if (this.state.userInput['new_password'] != this.state.userInput['confirm_new_password']) return this.setState({ alertMsg: 'Passwords mismatch', alertSeverity: 'warning' })
               this.changePassword(() => this.setModalPanel('changePasswordPanel2'))
-            }}/>
+            }} />
           </Grid>
         </Grid>
       )
@@ -237,42 +248,111 @@ export default class MisProfile extends React.Component {
             <Typography variant='h4'>Your password has been updated!</Typography>
           </Grid>
           <Grid item xs={12}>
-            <CustomButton label='OK' onClick={() => this.closeModal()}/>
+            <CustomButton label='OK' onClick={() => this.closeModal()} />
           </Grid>
         </Grid>
       )
     },
   }
 
+  areas_of_interest = [
+    'Computer Science',
+    'Data Science',
+  ];
+
+  teacherFields = () => {
+    return (
+      <React.Fragment>
+        <Grid item xs={6}>
+          <Autocomplete
+            multiple
+            options={this.areas_of_interest}
+            value={this.state.userInfo.areas_of_interest || []}
+            freeSolo
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+              ))
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Areas of interest"
+                placeholder="Field"
+                color='primary'
+              />
+            )}
+            onChange={(e, values) => this.setUserInfo('areas_of_interest', values.map(value => convertUpper(value)))}
+          />
+        </Grid>
+      </React.Fragment>
+    )
+  }
+
+  saveChanges = () => {
+    this.setCallingApi('saveChanges')
+    socket.emit(
+      this.state.userInfo.user_type == 'teacher' ? 'teachers/update' : '',
+      {
+        ...filterObjectByKeys(this.state.userInfo,this.state.updatedKeys),
+        teacher_id: this.state.userInfo.user_id
+      },
+      (res) => {
+        console.log(res)
+        this.setCallingApi('')
+        this.updateAlertMesg(res, 'Saved changes!')
+        this.setState({ updatedKeys: [] })
+        this.fetchUser()
+      }
+    )
+  }
+
+  resetChanges = () => {
+    this.setState({ updatedKeys: [] })
+    this.fetchUser()
+  }
+
   render() {
     return (
       this.state.callingApi == 'fetchUser' ? <LoadingIcon /> :
-      <CustomCard>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Typography variant='h2'>My Profile</Typography>
+        <CustomCard>
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Typography variant='h2'>My Profile</Typography>
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomTextField readOnly variant='filled' label='Name' value={this.state.userInfo.name} />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomTextField readOnly variant='filled' label='Email' value={this.state.userInfo.user_email || 'Not found'} />
+            </Grid>
+            <Grid item xs={12}></Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton label='Update Email' onClick={() => this.setModalPanel('updateEmailPanel1')} />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton label='Change Password' onClick={() => this.setModalPanel('changePasswordPanel1')} />
+            </Grid>
+            <Grid item xs={12}></Grid>
+            {this.state.userInfo.user_type == 'teacher' ? this.teacherFields() : <></>}
+            <Grid item xs={12}>
+              <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton disabled={this.state.updatedKeys.length == 0} label='Save changes' onClick={this.saveChanges} callingApiState={this.state.callingApi == 'saveChanges'} />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton label='Reset' variant='outlined' onClick={this.resetChanges} />
+            </Grid>
           </Grid>
-          <Grid item xs={'auto'}>
-            <CustomTextField readOnly variant='filled' label='Name' value={this.state.userInfo.name}/>
-          </Grid>
-          <Grid item xs={'auto'}>
-            <CustomTextField readOnly variant='filled' label='Email' value={this.state.userInfo.user_email || 'Not found'}/>
-          </Grid>
-          <Grid item xs={12}></Grid>
-          <Grid item xs={'auto'}>
-            <CustomButton label='Update Email' onClick={() => this.setModalPanel('updateEmailPanel1')} />
-          </Grid>
-          <Grid item xs={'auto'}>
-            <CustomButton label='Change Password' onClick={() => this.setModalPanel('changePasswordPanel1')} />
-          </Grid>
-        </Grid>
-        <CustomModal open={this.state.modalPanel != ''} onClose={() => this.closeModal()}>
-          <Grid item xs={12}>
-            <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
-          </Grid>
-          {this.modalPanels[this.state.modalPanel] ? this.modalPanels[this.state.modalPanel]() : <></>}
-        </CustomModal>
-      </CustomCard>
+          <CustomModal open={this.state.modalPanel != ''} onClose={() => this.closeModal()}>
+            <Grid item xs={12}>
+              <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
+            </Grid>
+            {this.modalPanels[this.state.modalPanel] ? this.modalPanels[this.state.modalPanel]() : <></>}
+          </CustomModal>
+        </CustomCard>
     );
   }
 }
