@@ -1,7 +1,7 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
-import { Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField, Autocomplete, Chip } from '@mui/material';
-import { AccountCircle, Password, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField, Autocomplete, Chip, CircularProgress, Icon } from '@mui/material';
+import { AccountCircle, ArrowUpward, Edit, Password, Upload, Visibility, VisibilityOff } from '@mui/icons-material';
 import { socket } from '../../../websocket/socket';
 import * as Color from "@mui/material/colors";
 import CustomCard from '../../../components/CustomCard';
@@ -12,6 +12,8 @@ import CustomModal from '../../../components/CustomModal';
 import CustomButton from '../../../components/CustomButton';
 import CustomAlert from '../../../components/CustomAlert';
 import { convertUpper, filterObjectByKeys } from '../../../extras/functions';
+import './MisProfile.css';
+import "font-awesome/css/font-awesome.css";
 
 const palletes = {
   primary: '#439CEF',
@@ -48,12 +50,16 @@ export default class MisProfile extends React.Component {
 
       resendCodeTimer: 0,
 
-      updatedKeys: []
+      updatedKeys: [],
+
+      areasOfInterest: []
     };
+    this.avatarInputRef = React.createRef(null)
   }
 
   componentDidMount() {
     this.fetchUser()
+    this.autocompleteAreasOfInterest()
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -63,6 +69,12 @@ export default class MisProfile extends React.Component {
     this.alertTimeout = setTimeout(() => {
       this.setState({ alertMsg: '' })
     }, 3000);
+  }
+
+  autocompleteAreasOfInterest = () => {
+    socket.emit('autocomplete/areasOfInterest', {}, (res) => {
+      if (res.code == 200) this.setState({ areasOfInterest: res.data })
+    })
   }
 
   fetchUser = () => {
@@ -255,38 +267,65 @@ export default class MisProfile extends React.Component {
     },
   }
 
-  areas_of_interest = [
-    'Computer Science',
-    'Data Science',
-  ];
-
   teacherFields = () => {
     return (
       <React.Fragment>
-        <Grid item xs={6}>
-          <Autocomplete
-            multiple
-            options={this.areas_of_interest}
-            value={this.state.userInfo.areas_of_interest || []}
-            freeSolo
-            renderTags={(value, getTagProps) =>
-              value.map((option, index) => (
-                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-              ))
-            }
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant="outlined"
-                label="Areas of interest"
-                placeholder="Field"
-                color='primary'
-              />
-            )}
-            onChange={(e, values) => this.setUserInfo('areas_of_interest', values.map(value => convertUpper(value)))}
-          />
+        <Grid item container xs={6} spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant='h4'>Areas of Interest</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Autocomplete
+              loading={this.state.areasOfInterest.length == 0}
+              multiple
+              options={this.state.areasOfInterest}
+              value={this.state.userInfo.areas_of_interest || []}
+              freeSolo
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => (
+                  <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                ))
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  label=""
+                  placeholder="Search or add new"
+                  color='primary'
+                />
+              )}
+              onChange={(e, values) => this.setUserInfo('areas_of_interest', values.map(value => convertUpper(value)))}
+            />
+          </Grid>
+        </Grid>
+        <Grid item container xs={6} spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant='h4'>Digital Signature</Typography>
+          </Grid>
+          {this.state.userInfo.digital_signature ?
+            <Grid item xs={12}>
+              <img src={this.state.userInfo.digital_signature ? typeof this.state.userInfo.digital_signature == 'object' ? URL.createObjectURL(this.state.userInfo.digital_signature) : this.state.userInfo.digital_signature : ''} alt="image" width={'150px'} />
+            </Grid> : <></>
+          }
+          <Grid item xs={12}>
+            <input accept="image/*" type='file' id="imgInp" onChange={(e) => this.setUserInfo('digital_signature', e.target.files[0])} />
+          </Grid>
         </Grid>
       </React.Fragment>
+    )
+  }
+
+  updateAvatar = (file) => {
+    this.setCallingApi('updateAvatar')
+    socket.emit(
+      'users/updateAvatar',
+      { avatar: file },
+      (res) => {
+        this.setCallingApi('')
+        this.updateAlertMesg(res, 'Avatar updated!')
+        this.fetchUser()
+      }
     )
   }
 
@@ -295,15 +334,15 @@ export default class MisProfile extends React.Component {
     socket.emit(
       this.state.userInfo.user_type == 'teacher' ? 'teachers/update' : '',
       {
-        ...filterObjectByKeys(this.state.userInfo,this.state.updatedKeys),
+        ...filterObjectByKeys(this.state.userInfo, this.state.updatedKeys),
         teacher_id: this.state.userInfo.user_id
       },
       (res) => {
-        console.log(res)
         this.setCallingApi('')
         this.updateAlertMesg(res, 'Saved changes!')
         this.setState({ updatedKeys: [] })
         this.fetchUser()
+        this.autocompleteAreasOfInterest()
       }
     )
   }
@@ -320,6 +359,19 @@ export default class MisProfile extends React.Component {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Typography variant='h2'>My Profile</Typography>
+            </Grid>
+            <Grid item xs={12} display='flex' justifyContent={'center'} alignItems={'center'} flexDirection={'column'} spacing={2}>
+              {this.state.callingApi == 'updateAvatar' ? <CircularProgress /> :
+                <React.Fragment>
+                  <div class="avatar-wrapper">
+                    <img class="profile-pic" src={this.state.userInfo.avatar} alt="Avatar" />
+                    <div class="upload-button" onClick={() => this.avatarInputRef.current.click()} style={{alignItems: 'center'}}>
+		                  <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+                    </div>
+                    <input ref={this.avatarInputRef} class="file-upload" type="file" accept="image/*" onChange={(e) => this.updateAvatar(e.target.files[0])} />
+                  </div>
+                </React.Fragment>
+              }
             </Grid>
             <Grid item xs={'auto'}>
               <CustomTextField readOnly variant='filled' label='Name' value={this.state.userInfo.name} />

@@ -56,6 +56,7 @@ class Login extends React.Component {
       
       activePanel: 'loginPanel',
       resendCodeTimer: 0,
+
     };
   }
 
