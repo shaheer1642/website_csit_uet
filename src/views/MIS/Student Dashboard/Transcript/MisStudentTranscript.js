@@ -21,6 +21,7 @@ import CustomCard from "../../../../components/CustomCard";
 import { getUserNameById } from "../../../../objects/Users_List";
 import { convertUpper } from "../../../../extras/functions";
 import LoadingIcon from "../../../../components/LoadingIcon";
+import jsPDF from "jspdf";
 
 const palletes = {
   primary: "#439CEF",
@@ -69,14 +70,24 @@ class MisStudentTranscript extends React.Component {
     });
   }
 
+  downloadPDF = () => {
+    var printWindow = window.open('', '', 'height=800,width=600');
+    printWindow.document.write(this.state.studentTranscript);
+    setTimeout(() => {
+      printWindow.print()
+    }, 1000);
+  }
+
   render() {
     if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/transcript'}} />
     return (
       this.state.loading ? <LoadingIcon /> :
       <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
-        <Grid item xs = {12}>
-          <div dangerouslySetInnerHTML={{__html: this.state.studentTranscript}} />
+        <Grid item xs={12}>
+          <CustomButton label='Print & Download' onClick={this.downloadPDF} />
+        </Grid>
+        <Grid item xs={12}>
+          <div dangerouslySetInnerHTML={{__html: this.state.studentTranscript.replace('<button class="noprint" type="button" onClick="print()">Print Form</button>','')}} />
         </Grid>
       </Grid>
     );
