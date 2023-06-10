@@ -359,6 +359,13 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                       </React.Fragment> : <></>
                   }
+                  <Grid item xs={12}>
+                    <CustomButton
+                      label = 'Grade Management'
+                      variant='outlined'
+                      onClick={() => this.props.navigate('/mis/thesis/grading', {state: this.props.location.state})}
+                    />
+                  </Grid>
                 </Grid>
               </CustomCard>
             </Grid>

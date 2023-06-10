@@ -98,7 +98,7 @@ class MisThesis extends React.Component {
           <CustomTable
             loadingState={this.state.loadingStudentsThesis}
             onRowClick={(student_thesis) =>
-              this.props.navigate("update", {
+              this.props.navigate("manage", {
                 state: {
                   student_batch_id: student_thesis.student_batch_id,
                   context_info: student_thesis
@@ -106,7 +106,7 @@ class MisThesis extends React.Component {
               })
             }
             onEditClick={(student_thesis) =>
-              this.props.navigate("update", {
+              this.props.navigate("manage", {
                 state: {
                   student_batch_id: student_thesis.student_batch_id,
                   context_info: student_thesis
@@ -126,6 +126,11 @@ class MisThesis extends React.Component {
             }}
             rows={this.state.studentsThesisArr}
             columns={columns}
+            rowSx={(row) => {
+              return row.grade == 'S' ? {
+                  backgroundColor: Color.green[100]
+              } : undefined
+            }}
           />
           <CustomButton
             sx={{ margin: "10px" }}

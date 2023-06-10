@@ -57,6 +57,7 @@ import MisHelp from "./views/MIS/Help/MisHelp";
 import MisProfile from "./views/MIS/Profile/MisProfile";
 import MisStudentTranscript from "./views/MIS/Student Dashboard/Transcript/MisStudentTranscript";
 import MisStudentPerformance from "./views/MIS/StudentPerformance/MisStudentPerformance";
+import MisThesisGrading from "./views/MIS/Thesis/MisThesisGrading";
 
 export default function Router() {
   return (
@@ -107,7 +108,8 @@ export default function Router() {
 
           <Route path="thesis" element={<MisThesis/>}/>
             <Route path="thesis/create" element={<MisThesisCreate/>}/>
-            <Route path="thesis/update" element={<MisThesisManagement/>}/>
+            <Route path="thesis/manage" element={<MisThesisManagement/>}/>
+            <Route path="thesis/grading" element={<MisThesisGrading/>}/>
 
           <Route path="documents" element={<MisDocuments/>}/>
 
