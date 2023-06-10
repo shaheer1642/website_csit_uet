@@ -14,8 +14,6 @@ const defaultStyles = {
 export default class CustomCard extends React.Component<IProps> {
     constructor(props) {
       super(props);
-      if (this.props.cardContent) throw Error('cardContent is deprecated')
-      if (this.props.cardActions) throw Error('cardActions is deprecated')
     }
 
     render() {
