@@ -442,6 +442,30 @@ function MisLayout() {
                 </ListItemButton> : <></>
               }
 
+              {['student'].includes(user.user_type) ?
+                <ListItemButton
+                  component={Link} 
+                  to="sportal/transcript"
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }}
+                  onClick={() => setCurrentMenu('transcript')}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon.Article style={{color: currentMenu == 'transcript' ? Color.deepPurple[500] : undefined}}/>
+                  </ListItemIcon>
+                  <ListItemText primary='Transcript' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'transcript' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                </ListItemButton> : <></>
+              }
+
               <ListItemButton 
                 component={Link}
                 to="applications/viewApplications"

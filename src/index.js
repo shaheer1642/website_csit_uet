@@ -55,6 +55,7 @@ import MisDepartments from "./views/MIS/Departments/MisDepartments";
 import MisDepartmentsUpdate from "./views/MIS/Departments/MisDepartmentsUpdate";
 import MisHelp from "./views/MIS/Help/MisHelp";
 import MisProfile from "./views/MIS/Profile/MisProfile";
+import MisStudentTranscript from "./views/MIS/Student Dashboard/Transcript/MisStudentTranscript";
 
 export default function Router() {
   return (
@@ -128,6 +129,8 @@ export default function Router() {
             <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
 
           <Route path="sportal/thesis" element={<MisThesisManagement/>}/>
+
+          <Route path="sportal/transcript" element={<MisStudentTranscript />} />
 
           <Route path="help" element={<MisHelp/>}/>
         </Route>

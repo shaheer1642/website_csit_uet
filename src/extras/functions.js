@@ -101,9 +101,9 @@ function embedScore(text) {
 }
 
 function convertUpper(str) {
+    if (typeof str != 'string') return str
     if (str.toLowerCase() == 'ms') return 'MS'
     if (str.toLowerCase() == 'phd') return 'PhD'
-    if (typeof str != 'string') return str
     return str.replace(/_/g, " ").replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase())
 }
 
@@ -143,9 +143,9 @@ function filterObjectByKeys(object,keysArr) {
     }, {})
 }
 
-module.exports = {
+export {
     dynamicSort,dynamicSortDesc,msToTime,msToFullTime,
     getRandomColor,embedScore,convertUpper,getTodayStartMs,
     getWeekStartMs,getMonthStartMs,calcArrAvg,isEmailValid,
     filterObjectByKeys
-};
+}

@@ -8,7 +8,6 @@ import { socket } from '../websocket/socket';
 import CustomTextField from './CustomTextField';
 import CustomButton from './CustomButton';
 import CustomSelect from './CustomSelect';
-import CustomMultiAutocomplete from './CustomMultiAutocomplete';
 import CustomCard from './CustomCard';
 import { convertUpper } from '../extras/functions';
 
