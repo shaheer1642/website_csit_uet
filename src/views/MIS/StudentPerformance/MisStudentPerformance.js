@@ -6,12 +6,13 @@ import {
 import { withRouter } from "../../../withRouter";
 import CustomTextField from "../../../components/CustomTextField";
 import CustomButton from "../../../components/CustomButton";
-import { ArrowBack, ArrowRight } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, ArrowRight } from "@mui/icons-material";
 import { socket } from "../../../websocket/socket";
 import CustomAlert from "../../../components/CustomAlert";
 import { Navigate } from "react-router";
 import MisStudentTranscript from "../Student Dashboard/Transcript/MisStudentTranscript";
 import GoBackButton from "../../../components/GoBackButton";
+import ContextInfo from "../../../components/ContextInfo";
 
 class MisStudentPerformance extends React.Component {
   constructor(props) {
@@ -22,7 +23,9 @@ class MisStudentPerformance extends React.Component {
       studentTranscript: undefined,
 
       alertMsg: '',
-      alertSeverity: ''
+      alertSeverity: '',
+
+      callingApi: ''
     };
     this.student_batch = this.props.location?.state?.student_batch
   }
@@ -43,13 +46,15 @@ class MisStudentPerformance extends React.Component {
 
   fetchStudent = () => {
     if (!this.state.findUser) return this.updateAlertMsg('Field cannot be blank')
+    this.setState({callingApi: 'fetchStudent'})
     socket.emit('students/fetch', { reg_no: this.state.findUser }, (res) => {
-      console.log(res)
+      this.setState({callingApi: ''})
       if (res.code == 200 && res.data.length > 0) {
         this.setState({student: res.data[0]})
       } else {
+        this.setState({callingApi: 'fetchStudent'})
         socket.emit('students/fetch', { cnic: this.state.findUser }, (res) => {
-          console.log(res)
+          this.setState({callingApi: ''})
           if (res.code == 200 && res.data.length > 0) {
             this.setState({student: res.data[0]})
           } else {
@@ -83,15 +88,15 @@ class MisStudentPerformance extends React.Component {
   panels = {
     findUser: () => {
       return (
-        <Grid container rowSpacing={"20px"}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity}/>
           </Grid>
-          <Grid item xs={12}>
-            <CustomTextField value={this.state.findUser} onChange={(e) => this.setState({findUser: e.target.value})} label={`Enter Student's Reg# or CNIC`} variant="outlined" />
+          <Grid item xs={'auto'}>
+            <CustomTextField onPressEnter={this.fetchStudent} value={this.state.findUser} onChange={(e) => this.setState({findUser: e.target.value})} label={`Enter Student's Reg# or CNIC`} variant="outlined" />
           </Grid>
-          <Grid item xs={12}>
-            <CustomButton label={<ArrowRight />} onClick={this.fetchStudent}/>
+          <Grid item xs={'auto'} display={'flex'} alignItems={'center'}>
+            <CustomButton callingApiState={this.state.callingApi == 'fetchStudent'} label={<ArrowForward />} onClick={this.fetchStudent}/>
           </Grid>
         </Grid>
       )
@@ -104,6 +109,9 @@ class MisStudentPerformance extends React.Component {
               this.student_batch = undefined
               this.forceUpdate()
             }} />
+          </Grid>
+          <Grid item xs={12}>
+            <ContextInfo contextInfo={this.student_batch} />
           </Grid>
           <Grid item xs={12}>
             <MisStudentTranscript student_batch={this.student_batch} />

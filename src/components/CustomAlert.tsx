@@ -65,9 +65,10 @@ export default class CustomAlert extends React.Component<IProps, IState> {
     
     render() {
         return (
+            this.props.message ?
             <Zoom in={this.props.message == '' ? false : true} unmountOnExit mountOnEnter>
               <Alert variant="outlined" severity={this.props.severity || 'warning'} sx={styles.alertBox[this.props.severity || 'warning']}>{this.props.message}</Alert>
-            </Zoom>
+            </Zoom> : <></>
         )
     }
 }
