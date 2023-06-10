@@ -3,25 +3,12 @@ import React from "react";
 import { Navigate } from 'react-router-dom'
 import {
   Grid,
-  Typography,
-  IconButton,
-  ButtonGroup
 } from "@mui/material";
-import { Delete, Edit } from '@mui/icons-material';
-import * as Color from '@mui/material/colors';
 import { socket } from "../../../../websocket/socket";
 import { withRouter } from "../../../../withRouter";
-import CustomTable from "../../../../components/CustomTable";
 import CustomButton from "../../../../components/CustomButton";
-import CustomModal from "../../../../components/CustomModal";
-import ConfirmationModal from "../../../../components/ConfirmationModal";
-import GoBackButton from "../../../../components/GoBackButton";
-import { user } from "../../../../objects/User";
-import CustomCard from "../../../../components/CustomCard";
-import { getUserNameById } from "../../../../objects/Users_List";
-import { convertUpper } from "../../../../extras/functions";
 import LoadingIcon from "../../../../components/LoadingIcon";
-import jsPDF from "jspdf";
+import { user } from "../../../../objects/User";
 
 const palletes = {
   primary: "#439CEF",
@@ -49,7 +36,7 @@ class MisStudentTranscript extends React.Component {
       loading: true,
       studentTranscript: undefined,
     };
-    this.student_batch = this.props.location?.state?.student_batch
+    this.student_batch = this.props.location?.state?.student_batch || this.props.student_batch
   }
   componentDidMount() {
     this.fetchStudenTranscript();
@@ -60,6 +47,7 @@ class MisStudentTranscript extends React.Component {
 
   fetchStudenTranscript = () => {
     if (!this.student_batch) return
+    this.setState({loading: true})
     socket.emit("forms/studentTranscript", {student_batch_id: this.student_batch?.student_batch_id}, (res) => {
       if (res.code == 200) {
         return this.setState({
@@ -79,7 +67,7 @@ class MisStudentTranscript extends React.Component {
   }
 
   render() {
-    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/transcript'}} />
+    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/transcript', student_id: user?.user_id}} />
     return (
       this.state.loading ? <LoadingIcon /> :
       <Grid container rowSpacing={"20px"}>

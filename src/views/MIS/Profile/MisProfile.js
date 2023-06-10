@@ -63,7 +63,6 @@ export default class MisProfile extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log(this.state)
     if (!prevState.alertMsg && !this.state.alertMsg) return
     clearTimeout(this.alertTimeout)
     this.alertTimeout = setTimeout(() => {

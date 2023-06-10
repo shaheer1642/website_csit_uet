@@ -16,6 +16,7 @@ import { Navigate } from 'react-router';
 import ContextInfo from '../../../components/ContextInfo';
 import CustomModal from '../../../components/CustomModal';
 import MisThesisExaminers from './MisThesisExaminers';
+import { user } from '../../../objects/User';
 
 const palletes = {
   primary: '#439CEF',
@@ -158,7 +159,7 @@ class MisThesisManagement extends React.Component {
   }
 
   render() {
-    if (this.student_view && !this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/sportal/thesis' }} />
+    if (this.student_view && !this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/sportal/thesis', student_id: user?.user_id }} />
     return (
       this.state.loading ? <LoadingIcon /> :
         Object.keys(this.state.student_thesis) == 0 ? <Typography variant='h4'>No Thesis Found</Typography> :

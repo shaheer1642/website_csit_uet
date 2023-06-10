@@ -35,10 +35,11 @@ class MisStudentBatches extends React.Component {
       studentBatchesArr: [],
       loading: true,
     };
+    this.student_id = this.props.location?.state?.student_id
   }
 
   componentDidMount() {
-    socket.emit('students/fetch', {student_id: user.user_id}, (res) => {
+    socket.emit('students/fetch', {student_id: this.student_id}, (res) => {
       if (res.code == 200) {
         return this.setState({
           studentBatchesArr: res.data,
