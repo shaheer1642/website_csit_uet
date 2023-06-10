@@ -1,15 +1,9 @@
 // @ts-nocheck
 import React from 'react';
-import Spinner from 'react-bootstrap/Spinner';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import * as Color from '@mui/material/colors';
-import { Card, CardContent, CardActions } from '@mui/material';
+import { Card } from '@mui/material';
 
 interface IProps {
-    color?: string | undefined,
     style?: React.CSSProperties | undefined,
-    cardContent: any,
-    cardActions: any
 }
 
 const defaultStyles = {
@@ -20,13 +14,13 @@ const defaultStyles = {
 export default class CustomCard extends React.Component<IProps> {
     constructor(props) {
       super(props);
+      if (this.props.cardContent) throw Error('cardContent is deprecated')
+      if (this.props.cardActions) throw Error('cardActions is deprecated')
     }
 
     render() {
         return (
             <Card sx={{...defaultStyles, ...this.props.style}} elevation={3}>
-              {this.props.cardContent}
-              {this.props.cardActions}
               {this.props.children}
             </Card>
         );

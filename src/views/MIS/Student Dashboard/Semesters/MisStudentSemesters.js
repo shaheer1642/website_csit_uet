@@ -42,7 +42,7 @@ class MisStudentSemesters extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("semesters/fetch", {student_id: user.user_id}, (res) => {
+    socket.emit("semesters/fetch", { student_id: user.user_id }, (res) => {
       console.log(res)
       if (res.code == 200) {
         return this.setState({
@@ -65,23 +65,23 @@ class MisStudentSemesters extends React.Component {
     ];
     return (
       <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
-        <Grid item xs = {12}>
-          <CustomCard cardContent={
+        <GoBackButton context={this.props.navigate} />
+        <Grid item xs={12}>
+          <CustomCard>
             <Grid container>
               <Typography variant="h2" style={{ margin: "10px" }}>
                 Select Semester
               </Typography>
               <CustomTable
-                loadingState = {this.state.loading}
+                loadingState={this.state.loading}
                 onRowClick={(studentSemester) => {
-                  this.props.navigate(this.props.location.state.redirect, {state: {...this.props.location?.state, student_semester: studentSemester}})
+                  this.props.navigate(this.props.location.state.redirect, { state: { ...this.props.location?.state, student_semester: studentSemester } })
                 }}
                 rows={this.state.studentSemestersArr}
                 columns={columns}
               />
             </Grid>
-          }/>
+          </CustomCard>
         </Grid>
       </Grid>
     );

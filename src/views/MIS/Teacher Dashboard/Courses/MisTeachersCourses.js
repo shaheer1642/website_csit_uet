@@ -47,7 +47,7 @@ class MisTeachersCourses extends React.Component {
 
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     };
   }
 
@@ -64,9 +64,9 @@ class MisTeachersCourses extends React.Component {
   semestersCoursesListenerChanged = (data) => {
     this.fetchSemesterCourses()
   }
-  
+
   fetchSemesterCourses = () => {
-    socket.emit("semestersCourses/fetch", {teacher_id: user.user_id}, (res) => {
+    socket.emit("semestersCourses/fetch", { teacher_id: user.user_id }, (res) => {
       if (res.code == 200) {
         return this.setState({
           semestersCoursesArr: res.data,
@@ -75,12 +75,12 @@ class MisTeachersCourses extends React.Component {
       }
     });
   }
-  
+
   confirmationModalDestroy = () => {
     this.setState({
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     })
   }
 
@@ -95,26 +95,26 @@ class MisTeachersCourses extends React.Component {
       { id: "registered_students", label: "Total Students", format: (value) => value },
     ];
     return (
-      <CustomCard cardContent={
-      <Grid container >
-        <Typography variant="h2" style={{ margin: "10px" }}>
-          Select Course
-        </Typography>
-        <CustomTable
-          loadingState = {this.state.loadingSemesterCourses}
-          onRowClick={(semesterCourse) => 
-            this.props.navigate('grading', {
-              state: {
-                sem_course_id: semesterCourse.sem_course_id,
-                context_info: semesterCourse
-              }
-            })
-          }
-          rows={this.state.semestersCoursesArr}
-          columns={columns}
-        />
+      <CustomCard>
+        <Grid container >
+          <Typography variant="h2" style={{ margin: "10px" }}>
+            Select Course
+          </Typography>
+          <CustomTable
+            loadingState={this.state.loadingSemesterCourses}
+            onRowClick={(semesterCourse) =>
+              this.props.navigate('grading', {
+                state: {
+                  sem_course_id: semesterCourse.sem_course_id,
+                  context_info: semesterCourse
+                }
+              })
+            }
+            rows={this.state.semestersCoursesArr}
+            columns={columns}
+          />
         </Grid>
-      }/>
+      </CustomCard>
     );
   }
 }

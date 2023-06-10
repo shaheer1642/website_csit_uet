@@ -33,24 +33,24 @@ const palletes = {
 const defaultStyles = {
   alertBox: {
     warning: {
-      width:'100%', 
-      borderRadius: 0, 
+      width: '100%',
+      borderRadius: 0,
       color: palletes.alertWarning, // text color
-      borderColor: palletes.alertWarning, 
+      borderColor: palletes.alertWarning,
       my: '10px',
-      py: "5px", 
+      py: "5px",
       px: "10px",
       '& .MuiAlert-icon': {
         color: palletes.alertWarning, // icon color
       },
     },
     success: {
-      width:'100%', 
-      borderRadius: 0, 
+      width: '100%',
+      borderRadius: 0,
       color: palletes.alertSuccess, // text color
-      borderColor: palletes.alertSuccess, 
+      borderColor: palletes.alertSuccess,
       my: '10px',
-      py: "5px", 
+      py: "5px",
       px: "10px",
       '& .MuiAlert-icon': {
         color: palletes.alertSuccess, // icon color
@@ -75,7 +75,7 @@ class MisStudent extends React.Component {
 
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     };
     this.batch_id = this.props.location.state.batch_id
     this.context_info = this.props.location.state.context_info
@@ -93,13 +93,13 @@ class MisStudent extends React.Component {
     socket.addEventListener('studentsBatch/listener/delete', this.changeListener)
   }
 
-  
+
   componentDidUpdate(prevProps, prevState, snapshot) {
     console.log(this.state)
     if (!prevState.alertMsg && !this.state.alertMsg) return
     clearTimeout(this.alertTimeout)
     this.alertTimeout = setTimeout(() => {
-      this.setState({alertMsg: ''})
+      this.setState({ alertMsg: '' })
     }, 3000);
   }
 
@@ -120,9 +120,9 @@ class MisStudent extends React.Component {
   }
 
   fetchData = () => {
-    this.setState({loadingStudents: true})
-    socket.emit("students/fetch", {batch_id: this.batch_id}, (res) => {
-      this.setState({loadingStudents: false})
+    this.setState({ loadingStudents: true })
+    socket.emit("students/fetch", { batch_id: this.batch_id }, (res) => {
+      this.setState({ loadingStudents: false })
       if (res.code == 200) {
         return this.setState({
           studentsArr: res.data,
@@ -130,22 +130,22 @@ class MisStudent extends React.Component {
       }
     });
   }
-  
+
   confirmationModalDestroy = () => {
     this.setState({
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     })
   }
 
   processStudentsList = async (e) => {
-    this.setState({uploadingStudentsList: true})
+    this.setState({ uploadingStudentsList: true })
     console.log('file changed')
     e.preventDefault()
     const reader = new FileReader()
     reader.readAsText(e.target.files[0])
-    reader.onload = async (e) => { 
+    reader.onload = async (e) => {
       const text = (e.target.result)
       console.log(text)
       const students_info = studentListCsvToJson(text)
@@ -153,13 +153,13 @@ class MisStudent extends React.Component {
         return alert(students_info.message)
       }
       console.log(students_info)
-      
+
       Promise.all(
         students_info.map(student => {
-          return new Promise((resolve,reject) => {
-              socket.emit('students/create', {...student, batch_id: this.batch_id}, (res) => {
-                resolve(res.code == 200 ? `✔️ Added student ${student.student_name} (${student.reg_no || student.cnic})` : `❌ Error adding student ${student.student_name} (${student.reg_no || student.cnic}): ${res.message}`)
-              })
+          return new Promise((resolve, reject) => {
+            socket.emit('students/create', { ...student, batch_id: this.batch_id }, (res) => {
+              resolve(res.code == 200 ? `✔️ Added student ${student.student_name} (${student.reg_no || student.cnic})` : `❌ Error adding student ${student.student_name} (${student.reg_no || student.cnic}): ${res.message}`)
+            })
           })
         })
       ).then(responses => {
@@ -213,7 +213,7 @@ class MisStudent extends React.Component {
           student_address: -1,
           user_email: -1,
         }
-        headers.split(',').forEach((col,index) => {
+        headers.split(',').forEach((col, index) => {
           col = col.toLowerCase()
           if (col.match(/^cnic$/)) attributes.cnic = index
           if (col.match(/^registration$/)) attributes.reg_no = index
@@ -252,11 +252,11 @@ class MisStudent extends React.Component {
     }
   }
 
-  deleteStudent = (student_id,batch_id) => {
+  deleteStudent = (student_id, batch_id) => {
     socket.emit('students/delete', { student_id: student_id, batch_id: batch_id }, (res) => {
       this.setState({
-        alertMsg: res.code == 200 ? 'Student removed':`${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success':'warning',
+        alertMsg: res.code == 200 ? 'Student removed' : `${res.status}: ${res.message}`,
+        alertSeverity: res.code == 200 ? 'success' : 'warning',
       })
     })
   }
@@ -273,92 +273,90 @@ class MisStudent extends React.Component {
     ];
     return (
       <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
+        <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <ContextInfo contextInfo={this.context_info} />
         </Grid>
-        <Grid item xs = {12}>
-          <CustomCard cardContent={
-          <Grid>
-          <Grid container>
-            <Typography variant="h2" style={{ margin: "10px" }}>
-              Students
-            </Typography>
-            <CustomTable
-              loadingState = {this.state.loadingStudents}
-              onRowClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
-              onEditClick={(student) => this.props.navigate('update', {state: {batch_id: this.batch_id, student_id: student.student_id}})}
-              onDeleteClick={(student) => {
-                this.setState({
-                  confirmationModalShow: true,
-                  confirmationModalMessage: 'Are you sure you want to remove this student?',
-                  confirmationModalExecute: () => this.deleteStudent(student.student_id, this.batch_id)
-                })
-              }}
-              rows={this.state.studentsArr}
-              columns={columns}
-            />
-            <Grid item xs={12} sx={{ margin: "10px" }}>
-              <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-                <Alert variant= "outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
-              </Zoom>
+        <Grid item xs={12}>
+          <CustomCard>
+            <Grid container>
+              <Typography variant="h2" style={{ margin: "10px" }}>
+                Students
+              </Typography>
+              <CustomTable
+                loadingState={this.state.loadingStudents}
+                onRowClick={(student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } })}
+                onEditClick={(student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } })}
+                onDeleteClick={(student) => {
+                  this.setState({
+                    confirmationModalShow: true,
+                    confirmationModalMessage: 'Are you sure you want to remove this student?',
+                    confirmationModalExecute: () => this.deleteStudent(student.student_id, this.batch_id)
+                  })
+                }}
+                rows={this.state.studentsArr}
+                columns={columns}
+              />
+              <Grid item xs={12} sx={{ margin: "10px" }}>
+                <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                  <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
+                </Zoom>
+              </Grid>
+              <CustomButton
+                sx={{ margin: "10px" }}
+                onClick={() => this.props.navigate("create", { state: { batch_id: this.batch_id } })}
+                label="Create New"
+              />
+              <Grid item xs={12}></Grid>
+              <CustomButton
+                sx={{ margin: "10px" }}
+                variant='contained'
+                component="label"
+                disabled={this.state.uploadingStudentsList}
+                label={
+                  this.state.uploadingStudentsList ? <CircularProgress size='20px' /> :
+                    <React.Fragment>
+                      Upload Students List
+                      <input hidden accept=".csv" type="file" onChange={this.processStudentsList} />
+                    </React.Fragment>
+                }
+              />
+              <CustomButton
+                sx={{ margin: "10px" }}
+                variant='outlined'
+                label={
+                  <Link
+                    href={process.env.PUBLIC_URL + "/templates/students-list.csv"}
+                    download={"students-list.csv"}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    Download Students List Template
+                  </Link>
+                }
+              />
+              <Tooltip title="Upload a .CSV file, columns should be named: CNIC, Registration, Name, Father Name, Gender, Address, Email. Note: name, father name, gender, and cnic/reg# cannot be empty">
+                <IconButton>
+                  <Info />
+                </IconButton>
+              </Tooltip>
+              <CustomModal
+                title={this.state.modalTitle}
+                body={this.state.modalBody}
+                open={this.state.modalShow}
+                onClose={() => this.setState({ modalShow: false })}
+              />
+              <ConfirmationModal
+                open={this.state.confirmationModalShow}
+                message={this.state.confirmationModalMessage}
+                onClose={() => this.confirmationModalDestroy()}
+                onClickNo={() => this.confirmationModalDestroy()}
+                onClickYes={() => {
+                  this.state.confirmationModalExecute()
+                  this.confirmationModalDestroy()
+                }}
+              />
             </Grid>
-            <CustomButton
-              sx={{ margin: "10px" }}
-              onClick={() => this.props.navigate("create", {state: {batch_id: this.batch_id}})}
-              label="Create New"
-            />
-            <Grid item xs={12}></Grid>
-            <CustomButton
-              sx={{ margin: "10px" }}
-              variant='contained'
-              component="label"
-              disabled={this.state.uploadingStudentsList}
-              label={
-                this.state.uploadingStudentsList ? <CircularProgress size='20px' /> :
-                <React.Fragment>
-                  Upload Students List
-                  <input hidden accept=".csv" type="file" onChange={this.processStudentsList}/>
-                </React.Fragment>
-              }
-            />
-            <CustomButton
-              sx={{ margin: "10px" }}
-              variant='outlined'
-              label={
-                <Link
-                  href={process.env.PUBLIC_URL + "/templates/students-list.csv"}
-                  download={"students-list.csv"}
-                  style={{ textDecoration: 'none'}}
-                >
-                Download Students List Template
-                </Link>
-              }
-            />
-            <Tooltip title="Upload a .CSV file, columns should be named: CNIC, Registration, Name, Father Name, Gender, Address, Email. Note: name, father name, gender, and cnic/reg# cannot be empty">
-              <IconButton>
-                <Info />
-              </IconButton>
-            </Tooltip>
-            <CustomModal
-              title={this.state.modalTitle}
-              body={this.state.modalBody}
-              open={this.state.modalShow}
-              onClose={() => this.setState({ modalShow: false })}
-            />
-            <ConfirmationModal 
-              open={this.state.confirmationModalShow} 
-              message={this.state.confirmationModalMessage} 
-              onClose={() => this.confirmationModalDestroy()}
-              onClickNo={() => this.confirmationModalDestroy()}
-              onClickYes={() => {
-                this.state.confirmationModalExecute()
-                this.confirmationModalDestroy()
-              }}
-            />
-          </Grid>
-          </Grid>
-          }/>
+          </CustomCard>
         </Grid>
       </Grid>
     );

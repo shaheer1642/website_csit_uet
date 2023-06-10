@@ -13,6 +13,7 @@ import { Navigate } from "react-router";
 import MisStudentTranscript from "../Student Dashboard/Transcript/MisStudentTranscript";
 import GoBackButton from "../../../components/GoBackButton";
 import ContextInfo from "../../../components/ContextInfo";
+import CustomCard from "../../../components/CustomCard";
 
 class MisStudentPerformance extends React.Component {
   constructor(props) {
@@ -46,17 +47,17 @@ class MisStudentPerformance extends React.Component {
 
   fetchStudent = () => {
     if (!this.state.findUser) return this.updateAlertMsg('Field cannot be blank')
-    this.setState({callingApi: 'fetchStudent'})
+    this.setState({ callingApi: 'fetchStudent' })
     socket.emit('students/fetch', { reg_no: this.state.findUser }, (res) => {
-      this.setState({callingApi: ''})
+      this.setState({ callingApi: '' })
       if (res.code == 200 && res.data.length > 0) {
-        this.setState({student: res.data[0]})
+        this.setState({ student: res.data[0] })
       } else {
-        this.setState({callingApi: 'fetchStudent'})
+        this.setState({ callingApi: 'fetchStudent' })
         socket.emit('students/fetch', { cnic: this.state.findUser }, (res) => {
-          this.setState({callingApi: ''})
+          this.setState({ callingApi: '' })
           if (res.code == 200 && res.data.length > 0) {
-            this.setState({student: res.data[0]})
+            this.setState({ student: res.data[0] })
           } else {
             this.updateAlertMsg('Could not find that student')
           }
@@ -67,7 +68,7 @@ class MisStudentPerformance extends React.Component {
 
   fetchStudenTranscript = () => {
     if (!this.student_batch) return
-    socket.emit("forms/studentTranscript", {student_batch_id: this.student_batch?.student_batch_id}, (res) => {
+    socket.emit("forms/studentTranscript", { student_batch_id: this.student_batch?.student_batch_id }, (res) => {
       if (res.code == 200) {
         return this.setState({
           studentTranscript: res.data
@@ -77,7 +78,7 @@ class MisStudentPerformance extends React.Component {
   }
 
   updateAlertMsg = (res, message) => {
-    if (typeof res == 'string') return this.setState({alertMsg: res, alertSeverity: 'warning'})
+    if (typeof res == 'string') return this.setState({ alertMsg: res, alertSeverity: 'warning' })
     if (res.code == 200 && !message) return
     this.setState({
       alertMsg: res.code == 200 ? message : message || `${res.status}: ${res.message}`,
@@ -90,13 +91,13 @@ class MisStudentPerformance extends React.Component {
       return (
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity}/>
+            <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
           </Grid>
           <Grid item xs={'auto'}>
-            <CustomTextField onPressEnter={this.fetchStudent} value={this.state.findUser} onChange={(e) => this.setState({findUser: e.target.value})} label={`Enter Student's Reg# or CNIC`} variant="outlined" />
+            <CustomTextField onPressEnter={this.fetchStudent} value={this.state.findUser} onChange={(e) => this.setState({ findUser: e.target.value })} label={`Enter Student's Reg# or CNIC`} variant="outlined" />
           </Grid>
           <Grid item xs={'auto'} display={'flex'} alignItems={'center'}>
-            <CustomButton callingApiState={this.state.callingApi == 'fetchStudent'} label={<ArrowForward />} onClick={this.fetchStudent}/>
+            <CustomButton callingApiState={this.state.callingApi == 'fetchStudent'} label={<ArrowForward />} onClick={this.fetchStudent} />
           </Grid>
         </Grid>
       )
@@ -123,9 +124,9 @@ class MisStudentPerformance extends React.Component {
 
   render() {
     return (
-      !this.student_batch ? 
-        !this.state.student ? this.panels.findUser():
-        <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/studentPerformance', student_id: this.state.student.student_id}} /> :
+      !this.student_batch ?
+        !this.state.student ? this.panels.findUser() :
+          <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/studentPerformance', student_id: this.state.student.student_id }} /> :
         this.panels.performance()
     );
   }

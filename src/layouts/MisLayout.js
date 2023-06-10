@@ -387,7 +387,7 @@ function MisLayout() {
                       justifyContent: 'center',
                     }}
                   >
-                    <Icon.Book style={{color: currentMenu == 'studentPerformance' ? Color.deepPurple[500] : undefined}}/>
+                    <Icon.QueryStats style={{color: currentMenu == 'studentPerformance' ? Color.deepPurple[500] : undefined}}/>
                   </ListItemIcon>
                   <ListItemText primary='Student Performance' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'studentPerformance' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                 </ListItemButton> : <></>
@@ -484,7 +484,7 @@ function MisLayout() {
                       justifyContent: 'center',
                     }}
                   >
-                    <Icon.Article style={{color: currentMenu == 'transcript' ? Color.deepPurple[500] : undefined}}/>
+                    <Icon.Summarize style={{color: currentMenu == 'transcript' ? Color.deepPurple[500] : undefined}}/>
                   </ListItemIcon>
                   <ListItemText primary='Transcript' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'transcript' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                 </ListItemButton> : <></>

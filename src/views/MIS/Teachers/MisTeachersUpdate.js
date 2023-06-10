@@ -22,8 +22,8 @@ class MisTeachersUpdate extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit('teachers/fetch', {teacher_id: this.teacher_id}, (res) => {
-      console.log('[teachers/fetch] response:',res)
+    socket.emit('teachers/fetch', { teacher_id: this.teacher_id }, (res) => {
+      console.log('[teachers/fetch] response:', res)
       if (res.code == 200) {
         const teacher = res.data[0]
         this.setState({
@@ -40,61 +40,66 @@ class MisTeachersUpdate extends React.Component {
 
   render() {
     return (
-      this.state.loading ? <LoadingIcon />:
-      <Grid container rowSpacing={"20px"}>
-      <GoBackButton context={this.props.navigate}/>
-        <Grid item xs={12}>
-
-        <FormGenerator 
-        endpoint="teachers"
-        formType="update" 
-        submitSuccessMessage='Instructor Edited Successfully'
-        backgroundColor='white'
-        options={{
-          teacher_id: {
-            label: "Teacher ID",
-            defaultValue: this.teacher_id,
-            disabled: true,
-            position: 1,
-            xs: 6,
-            hidden: true
-          },
-          cnic: {
-            label: "CNIC",
-            defaultValue: this.state.cnic,
-            position: 3,
-            xs: 6,
-          },
-          reg_no: {
-            label: "Registration No",
-            defaultValue: this.state.reg_no,
-            position: 4,
-            xs: 6,
-          },
-          teacher_name: {
-            label: "Instructor Name",
-            defaultValue: this.state.teacher_name,
-            position: 5,
-            xs: 6,
-          },
-          teacher_gender: {
-            label: "Gender",
-            defaultValue: this.state.teacher_gender,
-            position: 7,
-            xs: 6,
-            fieldType: 'radiobox',
-            fieldTypeOptions: ['male', 'female']
-          },
-          user_email: {
-            label: "Email",
-            defaultValue: this.state.user_email,
-            position: 6,
-            xs: 6,
-          },
-        }}
-      />
+      this.state.loading ? <LoadingIcon /> :
+        <Grid container rowSpacing={"20px"}>
+          <GoBackButton context={this.props.navigate} />
+          <Grid item xs={12}>
+            <FormGenerator
+              endpoint="teachers"
+              formType="update"
+              submitSuccessMessage='Instructor Edited Successfully'
+              backgroundColor='white'
+              options={{
+                teacher_id: {
+                  label: "Teacher ID",
+                  defaultValue: this.teacher_id,
+                  disabled: true,
+                  position: 1,
+                  xs: 6,
+                  hidden: true
+                },
+                cnic: {
+                  label: "CNIC",
+                  defaultValue: this.state.cnic,
+                  position: 3,
+                  xs: 6,
+                },
+                reg_no: {
+                  label: "Registration No",
+                  defaultValue: this.state.reg_no,
+                  position: 4,
+                  xs: 6,
+                },
+                teacher_name: {
+                  label: "Instructor Name",
+                  defaultValue: this.state.teacher_name,
+                  position: 5,
+                  xs: 6,
+                },
+                teacher_gender: {
+                  label: "Gender",
+                  defaultValue: this.state.teacher_gender,
+                  position: 7,
+                  xs: 6,
+                  fieldType: 'radiobox',
+                  fieldTypeOptions: ['male', 'female']
+                },
+                user_email: {
+                  label: "Email",
+                  defaultValue: this.state.user_email,
+                  position: 6,
+                  xs: 6,
+                },
+                digital_signature: {
+                  hidden: true
+                },
+                areas_of_interest: {
+                  hidden: true
+                },
+              }}
+            />
+          </Grid>
         </Grid>
-      </Grid>
 
     );
   }

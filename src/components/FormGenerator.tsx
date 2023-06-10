@@ -74,6 +74,8 @@ interface fieldOptions {
     width: string | undefined,
     /**Whether this field is editable*/
     disabled: boolean | undefined,
+    /**Whether to hide this field*/
+    hidden: boolean | undefined,
     /**field type. i.e. text, radiobox, checkbox (requires additional attributes for options)*/
     fieldType: string | undefined
     /**options for chosen field type, if any*/
@@ -158,10 +160,8 @@ export default class FormGenerator extends React.Component<IProps, IState> {
   render(): React.ReactNode {
     return (
       this.state.formLoading ? <LoadingIcon /> :
-      <CustomCard 
-        style={{padding: '20px'}} 
-        cardContent={
-          <Grid container spacing={3} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
+      <CustomCard>
+        <Grid container spacing={3} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
             <Grid item xs={12}>
               <Typography variant='h2'>
                 {this.props.formType == 'create' ? 'Create New' : 'Update Info'}
@@ -246,8 +246,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
             </Grid>
             {this.props.children}
           </Grid>
-        } 
-      />
+      </CustomCard>
     )
   }
 }

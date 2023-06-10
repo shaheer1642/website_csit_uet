@@ -127,7 +127,7 @@ class MisCourses extends React.Component {
       { id: "department", label: "Department", format: (value) => value },
     ];
     return (
-      <CustomCard cardContent={
+      <CustomCard>
         <Grid container>
           <Typography variant="h2" style={{ margin: "10px" }}>
             {`Courses`}
@@ -173,7 +173,7 @@ class MisCourses extends React.Component {
             }}
           />
         </Grid>
-      } />
+      </CustomCard>
     );
   }
 }

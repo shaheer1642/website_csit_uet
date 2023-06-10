@@ -39,7 +39,7 @@ class MisStudentBatches extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit('students/fetch', {student_id: this.student_id}, (res) => {
+    socket.emit('students/fetch', { student_id: this.student_id }, (res) => {
       if (res.code == 200) {
         if (res.data.length == 1) return this.redirect(res.data[0])
         return this.setState({
@@ -52,37 +52,37 @@ class MisStudentBatches extends React.Component {
 
   componentWillUnmount() {
   }
-  
+
   confirmationModalDestroy = () => {
     this.setState({
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     })
   }
 
   redirect = (studentBatch) => {
-    this.props.navigate(this.props.location.state.redirect, {state: {...this.props.location?.state, student_batch: studentBatch}})
+    this.props.navigate(this.props.location.state.redirect, { state: { ...this.props.location?.state, student_batch: studentBatch } })
   }
 
   render() {
     const columns = [
-      { id: 'batch_no', label: 'Batch Number', format: (value) => value},
+      { id: 'batch_no', label: 'Batch Number', format: (value) => value },
       { id: 'degree_type', label: 'Degree Type', format: (value) => convertUpper(value) },
       { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
       { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => convertUpper(value) },
       { id: 'registered_students', label: 'Registered Students', format: (value) => value },
     ];
     return (
-      <CustomCard cardContent={
-      <Grid container >
-        <Typography variant="h2" style={{ margin: '10px' }}>Select Batch</Typography>
-        <CustomTable 
-          loadingState = {this.state.loading}
-          onRowClick={this.redirect}
-          rows={this.state.studentBatchesArr} columns={columns} />
-      </Grid>
-      }/>
+      <CustomCard>
+        <Grid container>
+          <Typography variant="h2" style={{ margin: '10px' }}>Select Batch</Typography>
+          <CustomTable
+            loadingState={this.state.loading}
+            onRowClick={this.redirect}
+            rows={this.state.studentBatchesArr} columns={columns} />
+        </Grid>
+      </CustomCard>
     );
   }
 }

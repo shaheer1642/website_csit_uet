@@ -67,7 +67,7 @@ class MisDepartments extends React.Component {
       { id: "chairman_id", label: "Chairman", format: (value) => getUserNameById(value) },
     ];
     return (
-      <CustomCard cardContent={
+      <CustomCard>
         <Grid container>
           <Typography variant="h2" style={{ margin: "10px" }}>
             Departments
@@ -83,7 +83,7 @@ class MisDepartments extends React.Component {
             columns={columns}
           />
         </Grid>
-      } />
+      </CustomCard>
     );
   }
 }

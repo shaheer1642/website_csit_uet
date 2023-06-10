@@ -74,10 +74,10 @@ class MisCoursesStudentsUpdate extends React.Component {
 
       alertMsg: '',
       alertSeverity: '',
-      
+
       confirmationModalShow: false,
       confirmationModalMessage: "",
-      confirmationModalExecute: () => {},
+      confirmationModalExecute: () => { },
     };
 
     this.sem_course_id = this.props.location.state.sem_course_id
@@ -96,7 +96,7 @@ class MisCoursesStudentsUpdate extends React.Component {
     if (!prevState.alertMsg && !this.state.alertMsg) return
     clearTimeout(this.alertTimeout)
     this.alertTimeout = setTimeout(() => {
-      this.setState({alertMsg: ''})
+      this.setState({ alertMsg: '' })
     }, 3000);
   }
 
@@ -109,8 +109,8 @@ class MisCoursesStudentsUpdate extends React.Component {
   }
 
   fetchStudentCourse = () => {
-    this.setState({loading: true})
-    socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id}, (res) => {
+    this.setState({ loading: true })
+    socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id }, (res) => {
       if (res.code == 200 && res.data.length == 1) {
         return this.setState({
           studentCourse: res.data[0],
@@ -121,11 +121,11 @@ class MisCoursesStudentsUpdate extends React.Component {
   }
 
   withdrawCourse = () => {
-    this.setState({callingApi: true})
-    socket.emit("studentsCourses/updateGrade", {sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: 'W'}, (res) => {
+    this.setState({ callingApi: true })
+    socket.emit("studentsCourses/updateGrade", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: 'W' }, (res) => {
       return this.setState({
         alertMsg: res.code == 200 ? 'Course withdrawn' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success':'warning',
+        alertSeverity: res.code == 200 ? 'success' : 'warning',
         callingApi: false
       });
     });
@@ -142,65 +142,63 @@ class MisCoursesStudentsUpdate extends React.Component {
     ];
     return (
       <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
+        <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
-          <ContextInfo contextInfo={this.context_info} overrideIncludeKeys={['student_name','student_father_name','course_name','semester_year','semester_season']} />
+          <ContextInfo contextInfo={this.context_info} overrideIncludeKeys={['student_name', 'student_father_name', 'course_name', 'semester_year', 'semester_season']} />
         </Grid>
         <Grid item xs={12}>
-        {
-          this.state.loading ? <LoadingIcon />:
-          <CustomCard cardContent={
-            <React.Fragment>
-              <Typography variant="h2" sx={{ margin: "10px" }}>
-                Manage Student Course
-              </Typography>
-              <Typography fontWeight={'bold'} sx={{ margin: "10px" }}>
-                Current Grade: {this.state.studentCourse.grade}
-              </Typography>
-              <Typography fontWeight={'bold'} sx={{ margin: "10px" }}>
-                Grade Logs:
-              </Typography>
-              {this.state.studentCourse.grade_change_logs.map((log,index) => 
-                <Typography key={index} sx={{ marginLeft: "20px" }}>
-                  Grade {log.split(' ')[2]} assigned by {getUserNameById(log.split(' ')[1])} on {new Date(Number(log.split(' ')[0])).toLocaleDateString(...timeLocale)}
+          {
+            this.state.loading ? <LoadingIcon /> :
+              <CustomCard>
+                <Typography variant="h2" sx={{ margin: "10px" }}>
+                  Manage Student Course
                 </Typography>
-              )}
-              <Grid item xs={12} sx={{ margin: "10px" }}>
-                <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-                  <Alert variant= "outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
-                </Zoom>
-              </Grid>
-              <Grid item xs={12} sx={{ margin: "10px" }}>
-                <CustomButton
-                  variant="outlined"
-                  label={this.state.callingApi ? <CircularProgress size='20px' />  : "Withdraw Course"}
-                  disabled={this.state.callingApi || this.state.studentCourse.grade == 'W'}
-                  color="error"
-                  onClick={() => 
-                    this.setState({
-                      confirmationModalShow: true,
-                      confirmationModalMessage:
-                        "Are you sure you want to withdraw the course for this student?",
-                      confirmationModalExecute: () => this.withdrawCourse()
-                    })
-                  }
-                />
-              </Grid>
-            </React.Fragment>
-          }/>
-        }
+                <Typography fontWeight={'bold'} sx={{ margin: "10px" }}>
+                  Current Grade: {this.state.studentCourse.grade}
+                </Typography>
+                <Typography fontWeight={'bold'} sx={{ margin: "10px" }}>
+                  Grade Logs:
+                </Typography>
+                {this.state.studentCourse.grade_change_logs.map((log, index) =>
+                  <Typography key={index} sx={{ marginLeft: "20px" }}>
+                    Grade {log.split(' ')[2]} assigned by {getUserNameById(log.split(' ')[1])} on {new Date(Number(log.split(' ')[0])).toLocaleDateString(...timeLocale)}
+                  </Typography>
+                )}
+                <Grid item xs={12} sx={{ margin: "10px" }}>
+                  <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                    <Alert variant="outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
+                  </Zoom>
+                </Grid>
+                <Grid item xs={12} sx={{ margin: "10px" }}>
+                  <CustomButton
+                    variant="outlined"
+                    label={this.state.callingApi ? <CircularProgress size='20px' /> : "Withdraw Course"}
+                    disabled={this.state.callingApi || this.state.studentCourse.grade == 'W'}
+                    color="error"
+                    onClick={() =>
+                      this.setState({
+                        confirmationModalShow: true,
+                        confirmationModalMessage:
+                          "Are you sure you want to withdraw the course for this student?",
+                        confirmationModalExecute: () => this.withdrawCourse()
+                      })
+                    }
+                  />
+                </Grid>
+              </CustomCard>
+          }
         </Grid>
         <ConfirmationModal
-            open={this.state.confirmationModalShow}
-            message={this.state.confirmationModalMessage}
-            onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
-            onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
-            onClickYes={() => {
-              this.state.confirmationModalExecute();
-              this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })
-            }}
-          />
-        </Grid>
+          open={this.state.confirmationModalShow}
+          message={this.state.confirmationModalMessage}
+          onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
+          onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
+          onClickYes={() => {
+            this.state.confirmationModalExecute();
+            this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })
+          }}
+        />
+      </Grid>
     );
   }
 }

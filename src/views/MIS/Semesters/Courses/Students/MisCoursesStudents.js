@@ -77,11 +77,11 @@ class MisCoursesStudents extends React.Component {
 
       confirmationModalShow: false,
       confirmationModalMessage: "",
-      confirmationModalExecute: () => {},
+      confirmationModalExecute: () => { },
     };
     this.sem_course_id = this.props.location.state.sem_course_id
     this.context_info = this.props.location.state.context_info
-    
+
     this.timeoutAlertRef = null
   }
 
@@ -100,14 +100,14 @@ class MisCoursesStudents extends React.Component {
     if (data.sem_course_id == this.sem_course_id)
       this.fetchStudentCourses()
   }
-  
+
   fetchStudentCourses = () => {
     console.log('[fetchStudentCourses] called')
-    this.setState({loading: true})
-    socket.emit("semestersCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+    this.setState({ loading: true })
+    socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
       if (res.code == 200 && res.data.length == 1) {
         const semesterCourse = res.data[0]
-        socket.emit("studentsCourses/fetch", {sem_course_id: this.sem_course_id}, (res) => {
+        socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
           if (res.code == 200) {
             const studentBatchIds = res.data.map(studentCourse => studentCourse.student_batch_id)
             socket.emit("students/fetch", {}, (res) => {
@@ -128,33 +128,33 @@ class MisCoursesStudents extends React.Component {
   }
 
   updateStudentsList = () => {
-    this.setState({callingApi: true})
-    socket.emit("studentsCourses/assignStudents", {sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds}, (res) => {
-      this.setState({callingApi: false})
-      console.log(`[studentsCourses/assignStudents] response`,res)
+    this.setState({ callingApi: true })
+    socket.emit("studentsCourses/assignStudents", { sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds }, (res) => {
+      this.setState({ callingApi: false })
+      console.log(`[studentsCourses/assignStudents] response`, res)
       this.setState({
         alertMsg: res.code == 200 ? 'Students list updated' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success':'warning'
+        alertSeverity: res.code == 200 ? 'success' : 'warning'
       }, this.timeoutAlert)
     });
   }
-  
+
   timeoutAlert = () => {
     console.log('timeoutAlert called')
     clearTimeout(this.timeoutAlertRef)
-    this.timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 5000)
+    this.timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 5000)
   }
 
   studentsSelectMenu = () => {
     const options = this.state.students
       .filter(student => !this.state.studentBatchIds.includes(student.student_batch_id))
-      .map(student => ({id: student.student_batch_id, label: `${student.student_name} (${student.reg_no || student.cnic}) ${student.semester_frozen ? '[Semester Frozen]' : ''}`, batch: `Batch#${student.batch_no} (${student.degree_type})`}));
+      .map(student => ({ id: student.student_batch_id, label: `${student.student_name} (${student.reg_no || student.cnic}) ${student.semester_frozen ? '[Semester Frozen]' : ''}`, batch: `Batch#${student.batch_no} (${student.degree_type})` }));
     return (
       <Autocomplete
         disablePortal
         options={options.sort((a, b) => b.batch.localeCompare(a.batch))}
         renderInput={(params) => <TextField {...params} label={"Add Student"} />}
-        onChange={(e,option) => option.id ? this.setState(state => ({studentBatchIds: [...state.studentBatchIds, option.id]})) : null}
+        onChange={(e, option) => option.id ? this.setState(state => ({ studentBatchIds: [...state.studentBatchIds, option.id] })) : null}
         renderGroup={(params) => (
           <li key={params.key}>
             <GroupHeader>{params.group}</GroupHeader>
@@ -167,10 +167,10 @@ class MisCoursesStudents extends React.Component {
   }
 
   lockCourse = () => {
-    socket.emit("semestersCourses/lockChanges", {sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds}, (res) => {
+    socket.emit("semestersCourses/lockChanges", { sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds }, (res) => {
       this.setState({
         alertMsg: res.code == 200 ? 'Course Locked' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success':'warning'
+        alertSeverity: res.code == 200 ? 'success' : 'warning'
       }, this.timeoutAlert)
     });
   }
@@ -186,66 +186,65 @@ class MisCoursesStudents extends React.Component {
     ];
     return (
       <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
+        <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <ContextInfo contextInfo={this.context_info} />
         </Grid>
         <Grid item xs={12}>
-        {
-          this.state.loading ? <LoadingIcon />:
-          <CustomCard cardContent={
-            <React.Fragment>
-              <Typography variant="h4" sx={{ margin: "10px" }}>
-                Enrolled Students
-              </Typography>
-              {
-                this.state.semesterCourse.changes_locked ? <></> :
-                <Grid item xs={6} sx={{ margin: "10px" }}>
-                  {this.studentsSelectMenu()}
+          {
+            this.state.loading ? <LoadingIcon /> :
+              <CustomCard>
+                <Typography variant="h4" sx={{ margin: "10px" }}>
+                  Enrolled Students
+                </Typography>
+                {
+                  this.state.semesterCourse.changes_locked ? <></> :
+                    <Grid item xs={6} sx={{ margin: "10px" }}>
+                      {this.studentsSelectMenu()}
+                    </Grid>
+                }
+                <Grid item xs={12} style={{ margin: '10px' }}>
+                  <CustomTable
+                    margin="0px"
+                    columns={columns}
+                    rows={this.state.students.filter(student => this.state.studentBatchIds.includes(student.student_batch_id))}
+                    loadingState={this.state.loading}
+                    onDeleteClick={this.state.semesterCourse.changes_locked ? undefined : (student) => {
+                      this.setState({
+                        confirmationModalShow: true,
+                        confirmationModalMessage:
+                          "Are you sure you want to remove this student?",
+                        confirmationModalExecute: () =>
+                          this.setState(state => {
+                            return {
+                              studentBatchIds: state.studentBatchIds.filter(student_batch_id => student_batch_id != student.student_batch_id)
+                            }
+                          })
+                      });
+                    }}
+                    onRowClick={(student) => this.props.navigate("update", {
+                      state: {
+                        sem_course_id: this.sem_course_id,
+                        student_batch_id: student.student_batch_id,
+                        context_info: { ...this.context_info, ...student }
+                      },
+                    })}
+                    onViewClick={(student) => this.props.navigate("update", {
+                      state: {
+                        sem_course_id: this.sem_course_id,
+                        student_batch_id: student.student_batch_id,
+                        context_info: { ...this.context_info, ...student }
+                      },
+                    })}
+                    viewButtonLabel="Edit Student Course"
+                  />
                 </Grid>
-              }
-              <Grid item xs={12} style={{margin: '10px'}}>
-                <CustomTable 
-                  margin="0px"
-                  columns={columns}
-                  rows={this.state.students.filter(student => this.state.studentBatchIds.includes(student.student_batch_id))}
-                  loadingState={this.state.loading}
-                  onDeleteClick={this.state.semesterCourse.changes_locked ? undefined : (student) => {
-                    this.setState({
-                      confirmationModalShow: true,
-                      confirmationModalMessage:
-                        "Are you sure you want to remove this student?",
-                      confirmationModalExecute: () =>
-                        this.setState(state => {
-                          return {
-                            studentBatchIds: state.studentBatchIds.filter(student_batch_id => student_batch_id != student.student_batch_id)
-                          }
-                        })
-                    });
-                  }}
-                  onRowClick={(student) => this.props.navigate("update", {
-                    state: { 
-                      sem_course_id: this.sem_course_id,
-                      student_batch_id: student.student_batch_id,
-                      context_info: {...this.context_info, ...student}
-                    },
-                  })}
-                  onViewClick={(student) => this.props.navigate("update", {
-                    state: { 
-                      sem_course_id: this.sem_course_id,
-                      student_batch_id: student.student_batch_id,
-                      context_info: {...this.context_info, ...student}
-                    },
-                  })}
-                  viewButtonLabel="Edit Student Course"
-                />
-              </Grid>
-              <Grid item xs={12} sx={{ margin: "10px" }}>
-                <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-                  <Alert variant= "outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
-                </Zoom>
-              </Grid>
-                {this.state.semesterCourse.changes_locked ? <></> : 
+                <Grid item xs={12} sx={{ margin: "10px" }}>
+                  <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                    <Alert variant="outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
+                  </Zoom>
+                </Grid>
+                {this.state.semesterCourse.changes_locked ? <></> :
                   <Grid item xs={12}>
                     <CustomButton
                       disabled={this.state.callingApi}
@@ -262,7 +261,7 @@ class MisCoursesStudents extends React.Component {
                       color='error'
                       variant="outlined"
                       sx={{ margin: "10px" }}
-                      onClick={() => 
+                      onClick={() =>
                         this.setState({
                           confirmationModalShow: true,
                           confirmationModalMessage:
@@ -274,21 +273,20 @@ class MisCoursesStudents extends React.Component {
                     />
                   </Grid>
                 }
-            </React.Fragment>
-          }/>
-        }
+              </CustomCard>
+          }
         </Grid>
         <ConfirmationModal
-            open={this.state.confirmationModalShow}
-            message={this.state.confirmationModalMessage}
-            onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
-            onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
-            onClickYes={() => {
-              this.state.confirmationModalExecute();
-              this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })
-            }}
+          open={this.state.confirmationModalShow}
+          message={this.state.confirmationModalMessage}
+          onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
+          onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
+          onClickYes={() => {
+            this.state.confirmationModalExecute();
+            this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })
+          }}
         />
-        </Grid>
+      </Grid>
     );
   }
 }

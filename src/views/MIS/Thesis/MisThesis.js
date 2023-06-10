@@ -42,17 +42,17 @@ class MisThesis extends React.Component {
 
       confirmationModalShow: false,
       confirmationModalMessage: "",
-      confirmationModalExecute: () => {},
+      confirmationModalExecute: () => { },
     };
   }
 
   componentDidMount() {
     this.fetchStudentsThesis()
-    socket.addEventListener("studentsThesis/listener/changed",this.studentsThesisListenerChanged);
+    socket.addEventListener("studentsThesis/listener/changed", this.studentsThesisListenerChanged);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("studentsThesis/listener/changed",this.studentsThesisListenerChanged);
+    socket.removeEventListener("studentsThesis/listener/changed", this.studentsThesisListenerChanged);
   }
 
   fetchStudentsThesis = () => {
@@ -74,7 +74,7 @@ class MisThesis extends React.Component {
     this.setState({
       confirmationModalShow: false,
       confirmationModalMessage: "",
-      confirmationModalExecute: () => {},
+      confirmationModalExecute: () => { },
     });
   };
 
@@ -90,60 +90,60 @@ class MisThesis extends React.Component {
       { id: 'undertaking_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) }
     ];
     return (
-      <CustomCard cardContent={
-      <Grid container>
-        <Typography variant="h2" style={{ margin: "10px" }}>
-          {`Thesis`}
-        </Typography>
-        <CustomTable
-          loadingState={this.state.loadingStudentsThesis}
-          onRowClick={(student_thesis) =>
-            this.props.navigate("update", {
-              state: { 
-                student_batch_id: student_thesis.student_batch_id, 
-                context_info: student_thesis
-              },
-            })
-          }
-          onEditClick={(student_thesis) =>
-            this.props.navigate("update", {
-              state: { 
-                student_batch_id: student_thesis.student_batch_id,
-                context_info: student_thesis
-              },
-            })
-          }
-          onDeleteClick={(student_thesis) => {
-            this.setState({
-              confirmationModalShow: true,
-              confirmationModalMessage:
-                "Are you sure you want to remove this record?",
-              confirmationModalExecute: () =>
-                socket.emit("studentsThesis/delete", {
+      <CustomCard>
+        <Grid container>
+          <Typography variant="h2" style={{ margin: "10px" }}>
+            {`Thesis`}
+          </Typography>
+          <CustomTable
+            loadingState={this.state.loadingStudentsThesis}
+            onRowClick={(student_thesis) =>
+              this.props.navigate("update", {
+                state: {
                   student_batch_id: student_thesis.student_batch_id,
-                }, (res) => this.fetchStudentsThesis())
-            });
-          }}
-          rows={this.state.studentsThesisArr}
-          columns={columns}
-        />
-        <CustomButton
-          sx={{ margin: "10px" }}
-          onClick={() => this.props.navigate("create")}
-          label="Create New"
-        />
-        <ConfirmationModal
-          open={this.state.confirmationModalShow}
-          message={this.state.confirmationModalMessage}
-          onClose={() => this.confirmationModalDestroy()}
-          onClickNo={() => this.confirmationModalDestroy()}
-          onClickYes={() => {
-            this.state.confirmationModalExecute();
-            this.confirmationModalDestroy();
-          }}
-        />
-      </Grid>
-      } />
+                  context_info: student_thesis
+                },
+              })
+            }
+            onEditClick={(student_thesis) =>
+              this.props.navigate("update", {
+                state: {
+                  student_batch_id: student_thesis.student_batch_id,
+                  context_info: student_thesis
+                },
+              })
+            }
+            onDeleteClick={(student_thesis) => {
+              this.setState({
+                confirmationModalShow: true,
+                confirmationModalMessage:
+                  "Are you sure you want to remove this record?",
+                confirmationModalExecute: () =>
+                  socket.emit("studentsThesis/delete", {
+                    student_batch_id: student_thesis.student_batch_id,
+                  }, (res) => this.fetchStudentsThesis())
+              });
+            }}
+            rows={this.state.studentsThesisArr}
+            columns={columns}
+          />
+          <CustomButton
+            sx={{ margin: "10px" }}
+            onClick={() => this.props.navigate("create")}
+            label="Create New"
+          />
+          <ConfirmationModal
+            open={this.state.confirmationModalShow}
+            message={this.state.confirmationModalMessage}
+            onClose={() => this.confirmationModalDestroy()}
+            onClickNo={() => this.confirmationModalDestroy()}
+            onClickYes={() => {
+              this.state.confirmationModalExecute();
+              this.confirmationModalDestroy();
+            }}
+          />
+        </Grid>
+      </CustomCard>
     );
   }
 }

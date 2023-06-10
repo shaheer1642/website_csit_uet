@@ -19,24 +19,24 @@ const palletes = {
 const defaultStyles = {
   alertBox: {
     warning: {
-      width:'100%', 
-      borderRadius: 0, 
+      width: '100%',
+      borderRadius: 0,
       color: palletes.alertWarning, // text color
-      borderColor: palletes.alertWarning, 
+      borderColor: palletes.alertWarning,
       my: '10px',
-      py: "5px", 
+      py: "5px",
       px: "10px",
       '& .MuiAlert-icon': {
         color: palletes.alertWarning, // icon color
       },
     },
     success: {
-      width:'100%', 
-      borderRadius: 0, 
+      width: '100%',
+      borderRadius: 0,
       color: palletes.alertSuccess, // text color
-      borderColor: palletes.alertSuccess, 
+      borderColor: palletes.alertSuccess,
       my: '10px',
-      py: "5px", 
+      py: "5px",
       px: "10px",
       '& .MuiAlert-icon': {
         color: palletes.alertSuccess, // icon color
@@ -55,7 +55,7 @@ class MisDocuments extends React.Component {
 
       confirmationModalShow: false,
       confirmationModalMessage: "",
-      confirmationModalExecute: () => {},
+      confirmationModalExecute: () => { },
 
       alertMsg: '',
       alertSeverity: 'warning'
@@ -65,11 +65,11 @@ class MisDocuments extends React.Component {
 
   componentDidMount() {
     this.fetchDocuments()
-    socket.addEventListener("documents/listener/changed",this.fetchDocuments);
+    socket.addEventListener("documents/listener/changed", this.fetchDocuments);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("documents/listener/changed",this.fetchDocuments);
+    socket.removeEventListener("documents/listener/changed", this.fetchDocuments);
   }
 
   fetchDocuments = () => {
@@ -84,14 +84,14 @@ class MisDocuments extends React.Component {
   }
 
   uploadDocuments = async (e) => {
-    this.setState({uploadingDocuments: true})
-    console.log('file changed',e.target.files)
+    this.setState({ uploadingDocuments: true })
+    console.log('file changed', e.target.files)
     e.preventDefault()
     const promises = []
     Array.from(e.target.files).forEach(file => {
       promises.push(
-        new Promise((resolve,reject) => {
-          socket.emit('documents/create', {document: file, document_name: file.name}, (res) => {
+        new Promise((resolve, reject) => {
+          socket.emit('documents/create', { document: file, document_name: file.name }, (res) => {
             resolve(res.code == 200 ? `✔️ Uploaded file ${file.name}` : `❌ Error uploaded file ${file.name}: ${res.message}`)
           })
         })
@@ -111,74 +111,74 @@ class MisDocuments extends React.Component {
     this.setState({
       confirmationModalShow: false,
       confirmationModalMessage: "",
-      confirmationModalExecute: () => {},
+      confirmationModalExecute: () => { },
     });
   };
 
   timeoutAlert = () => {
     clearTimeout(this.timeoutAlertRef)
-    this.timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 10000)
+    this.timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 10000)
   }
 
   render() {
     const columns = [
       { id: "document_name", label: "File Name", format: (value) => value },
-      { id: "document_url", label: "URL", format: (value) =>  <a href={value} class="active">{value}</a> },
+      { id: "document_url", label: "URL", format: (value) => <a href={value} class="active">{value}</a> },
       { id: 'document_creation_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleString() }
     ];
     return (
-      <CustomCard cardContent={
-      <Grid container>
-        <Typography variant="h2" style={{ margin: "10px" }}>
-          {`Documents`}
-        </Typography>
-        <CustomTable
-          loadingState={this.state.loadingDocuments}
-          onDeleteClick={(document) => {
-            this.setState({
-              confirmationModalShow: true,
-              confirmationModalMessage:
-                "Are you sure you want to remove this document?",
-              confirmationModalExecute: () =>
-                socket.emit("documents/delete", {
-                  document_id: document.document_id,
-                }),
-            });
-          }}
-          rows={this.state.documentsArr}
-          columns={columns}
-        />
-        <Grid item xs={12} sx={{ margin: "10px" }}>
-          <Zoom in={this.state.alertMsg == '' ? false:true} unmountOnExit mountOnEnter>
-            <Alert variant= "outlined"  severity='info' sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
-          </Zoom>
+      <CustomCard>
+        <Grid container>
+          <Typography variant="h2" style={{ margin: "10px" }}>
+            {`Documents`}
+          </Typography>
+          <CustomTable
+            loadingState={this.state.loadingDocuments}
+            onDeleteClick={(document) => {
+              this.setState({
+                confirmationModalShow: true,
+                confirmationModalMessage:
+                  "Are you sure you want to remove this document?",
+                confirmationModalExecute: () =>
+                  socket.emit("documents/delete", {
+                    document_id: document.document_id,
+                  }),
+              });
+            }}
+            rows={this.state.documentsArr}
+            columns={columns}
+          />
+          <Grid item xs={12} sx={{ margin: "10px" }}>
+            <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+              <Alert variant="outlined" severity='info' sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
+            </Zoom>
+          </Grid>
+          <CustomButton
+            sx={{ margin: "10px" }}
+            variant='contained'
+            component="label"
+            disabled={this.state.uploadingDocuments}
+            label={
+              this.state.uploadingDocuments ? <CircularProgress size='20px' /> :
+                <React.Fragment>
+                  Upload Documents
+                  <input multiple hidden type="file" onChange={this.uploadDocuments} />
+                </React.Fragment>
+            }
+            startIcon={<UploadFile />}
+          />
+          <ConfirmationModal
+            open={this.state.confirmationModalShow}
+            message={this.state.confirmationModalMessage}
+            onClose={() => this.confirmationModalDestroy()}
+            onClickNo={() => this.confirmationModalDestroy()}
+            onClickYes={() => {
+              this.state.confirmationModalExecute();
+              this.confirmationModalDestroy();
+            }}
+          />
         </Grid>
-        <CustomButton
-          sx={{ margin: "10px" }}
-          variant='contained'
-          component="label"
-          disabled={this.state.uploadingDocuments}
-          label={
-            this.state.uploadingDocuments ? <CircularProgress size='20px' /> :
-            <React.Fragment>
-              Upload Documents
-              <input multiple hidden type="file" onChange={this.uploadDocuments}/>
-            </React.Fragment>
-          }
-          startIcon={<UploadFile />}
-        />
-        <ConfirmationModal
-          open={this.state.confirmationModalShow}
-          message={this.state.confirmationModalMessage}
-          onClose={() => this.confirmationModalDestroy()}
-          onClickNo={() => this.confirmationModalDestroy()}
-          onClickYes={() => {
-            this.state.confirmationModalExecute();
-            this.confirmationModalDestroy();
-          }}
-        />
-      </Grid>
-      } />
+      </CustomCard>
     );
   }
 }

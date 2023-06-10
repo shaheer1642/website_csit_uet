@@ -170,7 +170,7 @@ class MisThesisManagement extends React.Component {
             </Grid>
             {/* Thesis basic info */}
             <Grid item xs={12}>
-              <CustomCard style={{ padding: 3 }}>
+              <CustomCard>
                 <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
                   <Grid item xs={12}>
                     <Typography variant='h3'>Thesis Report</Typography>

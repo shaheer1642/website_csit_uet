@@ -59,7 +59,7 @@ class MisStudentCourses extends React.Component {
 
   fetchStudentCourses = () => {
     if (!this.student_semester || !this.student_batch) return
-    socket.emit("studentsCourses/fetch", {student_batch_id: this.student_batch?.student_batch_id, semester_id: this.student_semester?.semester_id}, (res) => {
+    socket.emit("studentsCourses/fetch", { student_batch_id: this.student_batch?.student_batch_id, semester_id: this.student_semester?.semester_id }, (res) => {
       if (res.code == 200) {
         return this.setState({
           studentCoursesArr: res.data,
@@ -79,34 +79,34 @@ class MisStudentCourses extends React.Component {
       { id: "department_name", label: "Department", format: (value) => value },
       { id: "teacher_name", label: "Instructor", format: (value) => value },
     ];
-    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/courses'}} />
-    else if (!this.student_semester) return <Navigate to='/mis/sportal/semesters' state={{...this.props.location?.state, redirect: '/mis/sportal/courses'}} />
+    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses', student_id: user?.user_id }} />
+    else if (!this.student_semester) return <Navigate to='/mis/sportal/semesters' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses' }} />
     return (
       <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
-        <Grid item xs = {12}>
-          <CustomCard cardContent={
-          <Grid container >
-            <Typography variant="h2" style={{ margin: "10px" }}>
-              Select Course
-            </Typography>
-            <CustomTable
-              loadingState = {this.state.loading}
-              onRowClick={(semesterCourse) => 
-                this.props.navigate('grading', {
-                  state: {
-                    semester_id: this.student_batch.semester_id,
-                    student_batch_id: this.student_batch.student_batch_id,
-                    sem_course_id: semesterCourse.sem_course_id,
-                    context_info: {...semesterCourse, ...this.student_semester}
-                  }
-                })
-              }
-              rows={this.state.studentCoursesArr}
-              columns={columns}
-            />
+        <GoBackButton context={this.props.navigate} />
+        <Grid item xs={12}>
+          <CustomCard>
+            <Grid container>
+              <Typography variant="h2" style={{ margin: "10px" }}>
+                Select Course
+              </Typography>
+              <CustomTable
+                loadingState={this.state.loading}
+                onRowClick={(semesterCourse) =>
+                  this.props.navigate('grading', {
+                    state: {
+                      semester_id: this.student_batch.semester_id,
+                      student_batch_id: this.student_batch.student_batch_id,
+                      sem_course_id: semesterCourse.sem_course_id,
+                      context_info: { ...semesterCourse, ...this.student_semester }
+                    }
+                  })
+                }
+                rows={this.state.studentCoursesArr}
+                columns={columns}
+              />
             </Grid>
-          }/>
+          </CustomCard>
         </Grid>
       </Grid>
     );

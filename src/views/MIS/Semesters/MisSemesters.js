@@ -61,7 +61,7 @@ class MisSemesters extends React.Component {
 
           confirmationModalShow: false,
           confirmationModalMessage: '',
-          confirmationModalExecute: () => {}
+          confirmationModalExecute: () => { }
         });
       }
     });
@@ -84,13 +84,13 @@ class MisSemesters extends React.Component {
   }
   semestersListenerUpdate = (data) => {
     return this.setState(state => {
-        const semestersArr = state.semestersArr.map((semester, index) => {
-          if (semester.semester_id === data.semester_id) return data;
-          else return semester
-        });
-        return {
-          semestersArr,
-        }
+      const semestersArr = state.semestersArr.map((semester, index) => {
+        if (semester.semester_id === data.semester_id) return data;
+        else return semester
+      });
+      return {
+        semestersArr,
+      }
     });
   }
   semestersListenerDelete = (data) => {
@@ -98,12 +98,12 @@ class MisSemesters extends React.Component {
       semestersArr: this.state.semestersArr.filter((semester) => semester.semester_id != data.semester_id)
     })
   }
-  
+
   confirmationModalDestroy = () => {
     this.setState({
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     })
   }
 
@@ -119,64 +119,68 @@ class MisSemesters extends React.Component {
     return (
       <Grid container rowSpacing={"20px"}>
         <Grid item xs={12}>
-          <ContextInfo contextInfo={{department_name: 'Computer Science & Information Technology'}} />
+          <ContextInfo contextInfo={{ department_name: 'Computer Science & Information Technology' }} />
         </Grid>
-        <Grid item xs = {12}>
-        <CustomCard cardContent={
-        <Grid container>
-          <Typography variant="h2" style={{ margin: "10px" }}>
-            Semesters
-          </Typography>
-          <CustomTable
-            loadingState = {this.state.loadingSemesters}
-            viewButtonLabel='Manage Courses'
-            onViewClick={(semester) => 
-              this.props.navigate('courses', {state: {
-                ...this.props.location.state, 
-                semester_id: semester.semester_id, 
-                context_info: semester
-              }})}
-            onRowClick={(semester) => 
-              this.props.navigate('courses', {state: {
-                ...this.props.location.state, 
-                semester_id: semester.semester_id, 
-                context_info: semester
-              }})}
-            onEditClick={(semester) => this.props.navigate('update', {state: {semester_id: semester.semester_id}})}
-            onDeleteClick={(semester) => {
-              this.setState({
-                confirmationModalShow: true,
-                confirmationModalMessage: 'Are you sure you want to remove this semester?',
-                confirmationModalExecute: () => socket.emit('semesters/delete', { semester_id: semester.semester_id })
-              })
-            }}
-            rows={this.state.semestersArr}
-            columns={columns}
-          />
-          <CustomButton
-            sx={{ margin: "10px" }}
-            onClick={() => this.props.navigate("create")}
-            label="Create New"
-          />
-          <CustomModal
-            title={this.state.modalTitle}
-            body={this.state.modalBody}
-            open={this.state.modalShow}
-            onClose={() => this.setState({ modalShow: false })}
-          />
-          <ConfirmationModal
-            open={this.state.confirmationModalShow} 
-            message={this.state.confirmationModalMessage} 
-            onClose={() => this.confirmationModalDestroy()}
-            onClickNo={() => this.confirmationModalDestroy()}
-            onClickYes={() => {
-              this.state.confirmationModalExecute()
-              this.confirmationModalDestroy()
-            }}
-          />
+        <Grid item xs={12}>
+          <CustomCard>
+            <Grid container>
+              <Typography variant="h2" style={{ margin: "10px" }}>
+                Semesters
+              </Typography>
+              <CustomTable
+                loadingState={this.state.loadingSemesters}
+                viewButtonLabel='Manage Courses'
+                onViewClick={(semester) =>
+                  this.props.navigate('courses', {
+                    state: {
+                      ...this.props.location.state,
+                      semester_id: semester.semester_id,
+                      context_info: semester
+                    }
+                  })}
+                onRowClick={(semester) =>
+                  this.props.navigate('courses', {
+                    state: {
+                      ...this.props.location.state,
+                      semester_id: semester.semester_id,
+                      context_info: semester
+                    }
+                  })}
+                onEditClick={(semester) => this.props.navigate('update', { state: { semester_id: semester.semester_id } })}
+                onDeleteClick={(semester) => {
+                  this.setState({
+                    confirmationModalShow: true,
+                    confirmationModalMessage: 'Are you sure you want to remove this semester?',
+                    confirmationModalExecute: () => socket.emit('semesters/delete', { semester_id: semester.semester_id })
+                  })
+                }}
+                rows={this.state.semestersArr}
+                columns={columns}
+              />
+              <CustomButton
+                sx={{ margin: "10px" }}
+                onClick={() => this.props.navigate("create")}
+                label="Create New"
+              />
+              <CustomModal
+                title={this.state.modalTitle}
+                body={this.state.modalBody}
+                open={this.state.modalShow}
+                onClose={() => this.setState({ modalShow: false })}
+              />
+              <ConfirmationModal
+                open={this.state.confirmationModalShow}
+                message={this.state.confirmationModalMessage}
+                onClose={() => this.confirmationModalDestroy()}
+                onClickNo={() => this.confirmationModalDestroy()}
+                onClickYes={() => {
+                  this.state.confirmationModalExecute()
+                  this.confirmationModalDestroy()
+                }}
+              />
+            </Grid>
+          </CustomCard>
         </Grid>
-        }/>
-      </Grid>
       </Grid>
     );
   }

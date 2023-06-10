@@ -45,7 +45,7 @@ class MisBatches extends React.Component {
 
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     };
   }
 
@@ -78,13 +78,13 @@ class MisBatches extends React.Component {
   }
   batchesListenerUpdate = (data) => {
     return this.setState(state => {
-        const batchesArr = state.batchesArr.map((batch, index) => {
-          if (batch.batch_id === data.batch_id) return data;
-          else return batch
-        });
-        return {
-          batchesArr,
-        }
+      const batchesArr = state.batchesArr.map((batch, index) => {
+        if (batch.batch_id === data.batch_id) return data;
+        else return batch
+      });
+      return {
+        batchesArr,
+      }
     });
   }
   batchesListenerDelete = (data) => {
@@ -92,19 +92,19 @@ class MisBatches extends React.Component {
       batchesArr: this.state.batchesArr.filter((batch) => batch.batch_id != data.batch_id)
     })
   }
-  
+
   confirmationModalDestroy = () => {
     this.setState({
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     })
   }
 
   render() {
     const columns = [
-      { id: 'batch_no', label: 'Batch Number', format: (value) => value},
-      { id: 'batch_stream', label: 'Batch Stream', format: (value) => convertUpper(value)},
+      { id: 'batch_no', label: 'Batch Number', format: (value) => value },
+      { id: 'batch_stream', label: 'Batch Stream', format: (value) => convertUpper(value) },
       { id: 'degree_type', label: 'Degree Type', format: (value) => convertUpper(value) },
       { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
       { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => convertUpper(value) },
@@ -114,22 +114,22 @@ class MisBatches extends React.Component {
     return (
       <Grid container rowSpacing={"20px"}>
         <Grid item xs={12}>
-          <ContextInfo contextInfo={{department_name: 'Computer Science & Information Technology'}} />
+          <ContextInfo contextInfo={{ department_name: 'Computer Science & Information Technology' }} />
         </Grid>
         <Grid item xs={12}>
-          <CustomCard cardContent={
+          <CustomCard>
             <Grid container spacing={3} padding={1}>
               <Grid item xs={12}>
                 <Typography variant="h2" >Select Batch</Typography>
               </Grid>
               <Grid item xs={12}>
-                <CustomTable 
+                <CustomTable
                   margin='0px'
-                  loadingState = {this.state.loadingBatches} 
+                  loadingState={this.state.loadingBatches}
                   viewButtonLabel='Manage students'
-                  onViewClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, context_info: batch}})}
-                  onRowClick={(batch) => this.props.navigate('students', {state: {batch_id: batch.batch_id, context_info: batch}})}
-                  onEditClick={(batch) => this.props.navigate('update', {state: {batch_id: batch.batch_id}})}
+                  onViewClick={(batch) => this.props.navigate('students', { state: { batch_id: batch.batch_id, context_info: batch } })}
+                  onRowClick={(batch) => this.props.navigate('students', { state: { batch_id: batch.batch_id, context_info: batch } })}
+                  onEditClick={(batch) => this.props.navigate('update', { state: { batch_id: batch.batch_id } })}
                   onDeleteClick={(batch) => {
                     this.setState({
                       confirmationModalShow: true,
@@ -137,15 +137,15 @@ class MisBatches extends React.Component {
                       confirmationModalExecute: () => socket.emit('batches/delete', { batch_id: batch.batch_id })
                     })
                   }}
-                  rows={this.state.batchesArr} columns={columns} 
+                  rows={this.state.batchesArr} columns={columns}
                 />
               </Grid>
               <Grid item xs={'auto'}>
-                <CustomButton onClick={() => this.props.navigate('create')} label="Create New"/>
+                <CustomButton onClick={() => this.props.navigate('create')} label="Create New" />
               </Grid>
-              <ConfirmationModal 
-                open={this.state.confirmationModalShow} 
-                message={this.state.confirmationModalMessage} 
+              <ConfirmationModal
+                open={this.state.confirmationModalShow}
+                message={this.state.confirmationModalMessage}
                 onClose={() => this.confirmationModalDestroy()}
                 onClickNo={() => this.confirmationModalDestroy()}
                 onClickYes={() => {
@@ -154,7 +154,7 @@ class MisBatches extends React.Component {
                 }}
               />
             </Grid>
-          }/>
+          </CustomCard>
         </Grid>
       </Grid>
     );

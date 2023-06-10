@@ -45,7 +45,7 @@ class MisEvents extends React.Component {
 
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     };
   }
 
@@ -65,7 +65,7 @@ class MisEvents extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log('MisEvents Updated',this.state)
+    console.log('MisEvents Updated', this.state)
   }
 
   componentWillUnmount() {
@@ -81,13 +81,13 @@ class MisEvents extends React.Component {
   }
   eventsListenerUpdate = (data) => {
     return this.setState(state => {
-        const eventsArr = state.eventsArr.map((event, index) => {
-          if (event.event_id === data.event_id) return data;
-          else return event
-        });
-        return {
-          eventsArr,
-        }
+      const eventsArr = state.eventsArr.map((event, index) => {
+        if (event.event_id === data.event_id) return data;
+        else return event
+      });
+      return {
+        eventsArr,
+      }
     });
   }
   eventsListenerDelete = (data) => {
@@ -100,10 +100,10 @@ class MisEvents extends React.Component {
     this.setState({
       confirmationModalShow: false,
       confirmationModalMessage: '',
-      confirmationModalExecute: () => {}
+      confirmationModalExecute: () => { }
     })
   }
-  
+
   render() {
     const columns = [
       { id: 'title', label: 'Title', format: (value) => value },
@@ -112,46 +112,46 @@ class MisEvents extends React.Component {
       { id: 'event_expiry_timestamp', label: 'Expires', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) }
     ];
     return (
-      <CustomCard cardContent={
-      <Grid container >
-        <Typography variant="h2" style={{ margin: '10px' }}>Events</Typography>
-        <CustomTable
-          loadingState={this.state.loadingEvents}
-          onRowClick={(event) => this.setState({ modalTitle: event.title, modalBody: event.body, modalShow: true })}
-          onEditClick={(event) => this.props.navigate('update', {state: {event_id: event.event_id}})}
-          onDeleteClick={(event) => {
-            this.setState({
-              confirmationModalShow: true,
-              confirmationModalMessage: 'Are you sure you want to delete this event?',
-              confirmationModalExecute: () => socket.emit('events/delete', { event_id: event.event_id })
-            })
-          }}
-          rows={this.state.eventsArr}
-          columns={columns}
-        />
-        <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New" />
-        <CustomModal open={this.state.modalShow} onClose={() => this.setState({ modalShow: false })}>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <Typography variant={'h2'}>{this.state.modalTitle}</Typography>
+      <CustomCard>
+        <Grid container >
+          <Typography variant="h2" style={{ margin: '10px' }}>Events</Typography>
+          <CustomTable
+            loadingState={this.state.loadingEvents}
+            onRowClick={(event) => this.setState({ modalTitle: event.title, modalBody: event.body, modalShow: true })}
+            onEditClick={(event) => this.props.navigate('update', { state: { event_id: event.event_id } })}
+            onDeleteClick={(event) => {
+              this.setState({
+                confirmationModalShow: true,
+                confirmationModalMessage: 'Are you sure you want to delete this event?',
+                confirmationModalExecute: () => socket.emit('events/delete', { event_id: event.event_id })
+              })
+            }}
+            rows={this.state.eventsArr}
+            columns={columns}
+          />
+          <CustomButton sx={{ margin: '10px' }} onClick={() => this.props.navigate('create')} label="Create New" />
+          <CustomModal open={this.state.modalShow} onClose={() => this.setState({ modalShow: false })}>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <Typography variant={'h2'}>{this.state.modalTitle}</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography>{this.state.modalBody}</Typography>
+              </Grid>
             </Grid>
-            <Grid item xs={12}>
-              <Typography>{this.state.modalBody}</Typography>
-            </Grid>
-          </Grid>
-        </CustomModal>
-        <ConfirmationModal 
-          open={this.state.confirmationModalShow} 
-          message={this.state.confirmationModalMessage} 
-          onClose={() => this.confirmationModalDestroy()}
-          onClickNo={() => this.confirmationModalDestroy()}
-          onClickYes={() => {
-            this.state.confirmationModalExecute()
-            this.confirmationModalDestroy()
-          }}
-        />
-      </Grid>
-      }/>
+          </CustomModal>
+          <ConfirmationModal
+            open={this.state.confirmationModalShow}
+            message={this.state.confirmationModalMessage}
+            onClose={() => this.confirmationModalDestroy()}
+            onClickNo={() => this.confirmationModalDestroy()}
+            onClickYes={() => {
+              this.state.confirmationModalExecute()
+              this.confirmationModalDestroy()
+            }}
+          />
+        </Grid>
+      </CustomCard>
     );
   }
 }
