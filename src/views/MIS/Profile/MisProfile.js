@@ -123,7 +123,7 @@ export default class MisProfile extends React.Component {
   sendEmailVerificationCode = (callback) => {
     if (!this.state.userInput['new_email']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('sendEmailVerificationCode')
-    socket.emit('users/sendEmailVerificationCode', { user_email: this.state.userInput['new_email'] }, (res) => {
+    socket.emit('users/sendEmailVerificationCode', { user_email: this.state.userInput['new_email'], user_id: user.user_id }, (res) => {
       this.setCallingApi('')
       if (res.code == 200 && callback) callback(res)
       this.updateAlertMesg(res)
