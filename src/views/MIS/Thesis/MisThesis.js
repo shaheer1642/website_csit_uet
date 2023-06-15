@@ -129,7 +129,9 @@ class MisThesis extends React.Component {
             rowSx={(row) => {
               return row.grade == 'S' ? {
                   backgroundColor: Color.green[100]
-              } : undefined
+              } : row.grade == 'U' ? {
+                backgroundColor: Color.red[100]
+            } : undefined
             }}
           />
           <CustomButton

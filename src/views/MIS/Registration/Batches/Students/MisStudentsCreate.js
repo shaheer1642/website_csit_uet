@@ -29,43 +29,55 @@ class MisStudentsCreate extends React.Component {
           },
           reg_no: {
             label: "Registration No",
-            position: 1,
+            position: 2,
             xs: 6,
           },
           student_name: {
             label: "Student Name",
-            position: 1,
+            position: 3,
             xs: 6,
           },
           batch_id: {
             label: "Batch ID",
             defaultValue: this.batch_id,
             disabled: true,
-            position: 3,
+            position: 4,
             xs: 6,
             hidden: true,
           },
           student_father_name: {
             label: "Father Name",
-            position: 1,
-            xs: 6,
-          },
-          user_email: {
-            label: "Email",
-            position: 1,
-            xs: 6,
-          },
-          student_address: {
-            label: "Address",
-            position: 1,
+            position: 5,
             xs: 6,
           },
           student_gender: {
             label: "Gender",
-            position: 1,
+            position: 6,
             xs: 6,
             fieldType: 'radiobox',
             fieldTypeOptions: ['male', 'female']
+          },
+          student_admission_status: {
+            label: "Admission Status",
+            position: 7,
+            xs: 6,
+            fieldType: 'radiobox',
+            fieldTypeOptions: ['open_merit', 'rationalized']
+          },
+          user_email: {
+            label: "Email",
+            position: 8,
+            xs: 6,
+          },
+          student_contact_no: {
+            label: "Contact #",
+            position: 9,
+            xs: 6,
+          },
+          student_address: {
+            label: "Address",
+            position: 10,
+            xs: 6,
           },
         }}
       />

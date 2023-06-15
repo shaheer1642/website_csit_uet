@@ -605,6 +605,36 @@ class MisThesisManagement extends React.Component {
                             <Grid item xs={12} marginLeft={'20px'}>
                               <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_qualifying_exam' />
                             </Grid>
+                            <Grid item xs={'auto'}>
+                              <CustomTextField
+                                type="date"
+                                sx={{ width: '200px' }}
+                                InputLabelProps={{ shrink: true }}
+                                label='QE Notification Date'
+                                readOnly={this.student_view}
+                                value={this.state.student_thesis.qe_notification_timestamp ? new Date(Number(this.state.student_thesis.qe_notification_timestamp)).toISOString().split('T')[0] : null}
+                                onChange={(e) => this.updateStudentThesis('qe_notification_timestamp', new Date(e.target.value).getTime())} />
+                            </Grid>
+                            <Grid item xs={'auto'}>
+                              <CustomTextField
+                                type="date"
+                                sx={{ width: '200px' }}
+                                InputLabelProps={{ shrink: true }}
+                                label='REC Notification Date'
+                                readOnly={this.student_view}
+                                value={this.state.student_thesis.rec_notification_timestamp ? new Date(Number(this.state.student_thesis.rec_notification_timestamp)).toISOString().split('T')[0] : null}
+                                onChange={(e) => this.updateStudentThesis('rec_notification_timestamp', new Date(e.target.value).getTime())} />
+                            </Grid>
+                            <Grid item xs={'auto'}>
+                              <CustomTextField
+                                type="date"
+                                sx={{ width: '200px' }}
+                                InputLabelProps={{ shrink: true }}
+                                label='BOASAR Notification Date'
+                                readOnly={this.student_view}
+                                value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
+                                onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp', new Date(e.target.value).getTime())} />
+                            </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
                                 readOnly={this.student_view}
@@ -629,15 +659,15 @@ class MisThesisManagement extends React.Component {
                             <Grid item xs={12} marginLeft={'20px'}>
                               <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_rec_i' />
                             </Grid>
-                            <Grid item xs={12}>
+                            <Grid item xs={'auto'}>
                               <CustomTextField
                                 type="date"
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
-                                label='BOASAR Notification Date'
+                                label='Meeting Date'
                                 readOnly={this.student_view}
-                                value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
-                                onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp', new Date(e.target.value).getTime())} />
+                                value={this.state.student_thesis.rec_i_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_i_meeting_timestamp)).toISOString().split('T')[0] : null}
+                                onChange={(e) => this.updateStudentThesis('rec_i_meeting_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
@@ -663,6 +693,16 @@ class MisThesisManagement extends React.Component {
                             <Grid item xs={12} marginLeft={'20px'}>
                               <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_rec_ii' />
                             </Grid>
+                            <Grid item xs={'auto'}>
+                              <CustomTextField
+                                type="date"
+                                sx={{ width: '200px' }}
+                                InputLabelProps={{ shrink: true }}
+                                label='Meeting Date'
+                                readOnly={this.student_view}
+                                value={this.state.student_thesis.rec_ii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_ii_meeting_timestamp)).toISOString().split('T')[0] : null}
+                                onChange={(e) => this.updateStudentThesis('rec_ii_meeting_timestamp', new Date(e.target.value).getTime())} />
+                            </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
                                 readOnly={this.student_view}
@@ -686,6 +726,16 @@ class MisThesisManagement extends React.Component {
                             </Grid>
                             <Grid item xs={12} marginLeft={'20px'}>
                               <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_rec_iii' />
+                            </Grid>
+                            <Grid item xs={'auto'}>
+                              <CustomTextField
+                                type="date"
+                                sx={{ width: '200px' }}
+                                InputLabelProps={{ shrink: true }}
+                                label='Meeting Date'
+                                readOnly={this.student_view}
+                                value={this.state.student_thesis.rec_iii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_iii_meeting_timestamp)).toISOString().split('T')[0] : null}
+                                onChange={(e) => this.updateStudentThesis('rec_iii_meeting_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField

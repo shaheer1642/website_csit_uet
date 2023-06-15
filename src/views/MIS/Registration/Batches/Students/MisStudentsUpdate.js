@@ -21,6 +21,8 @@ class MisStudentsUpdate extends React.Component {
       student_father_name: '',
       student_address: '',
       student_gender: 'Male',
+      student_admission_status: '',
+      student_contact_no: '',
       user_email: '',
       student: undefined,
 
@@ -50,6 +52,8 @@ class MisStudentsUpdate extends React.Component {
           student_father_name: student.student_father_name,
           student_address: student.student_address,
           student_gender: student.student_gender,
+          student_admission_status: student.student_admission_status,
+          student_contact_no: student.student_contact_no,
           user_email: student.user_email,
           student: student
         })
@@ -117,18 +121,6 @@ class MisStudentsUpdate extends React.Component {
                 position: 6,
                 xs: 6,
               },
-              user_email: {
-                label: "Email",
-                defaultValue: this.state.user_email,
-                position: 6,
-                xs: 6,
-              },
-              student_address: {
-                label: "Address",
-                defaultValue: this.state.student_address,
-                position: 7,
-                xs: 6,
-              },
               student_gender: {
                 label: "Gender",
                 defaultValue: this.state.student_gender,
@@ -136,6 +128,32 @@ class MisStudentsUpdate extends React.Component {
                 xs: 6,
                 fieldType: 'radiobox',
                 fieldTypeOptions: ['male', 'female']
+              },
+              student_admission_status: {
+                label: "Admission Status",
+                defaultValue: this.state.student_admission_status,
+                position: 8,
+                xs: 6,
+                fieldType: 'radiobox',
+                fieldTypeOptions: ['open_merit', 'rationalized']
+              },
+              user_email: {
+                label: "Email",
+                defaultValue: this.state.user_email,
+                position: 9,
+                xs: 6,
+              },
+              student_contact_no: {
+                label: "Contact #",
+                defaultValue: this.state.student_contact_no,
+                position: 10,
+                xs: 6,
+              },
+              student_address: {
+                label: "Address",
+                defaultValue: this.state.student_address,
+                position: 11,
+                xs: 6,
               },
             }}
           >

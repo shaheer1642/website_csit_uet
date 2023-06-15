@@ -126,7 +126,7 @@ class MisThesisGrading extends React.Component {
 
   updateGrade = () => {
     this.setState({ callingApi: 'updateGrade' })
-    socket.emit('studentsThesis/updateGrade', { student_batch_id: this.student_batch_id, grade: this.state.student_thesis.grade }, (res) => {
+    socket.emit('studentsThesis/updateGrade', { student_batch_id: this.student_batch_id, grade: this.state.student_thesis.grade, completion_timestamp: this.state.student_thesis.completion_timestamp }, (res) => {
       this.setState({ callingApi: '' })
       this.updateAlertMsg({ apiRes: res, successMsg: 'Grade Assigned!' })
       this.fetchStudentThesis()
@@ -170,6 +170,16 @@ class MisThesisGrading extends React.Component {
                       menuItems={[{ id: 'N', label: 'Audit (N)' }, { id: 'S', label: 'Satisfactory (S)' }, { id: 'U', label: 'Unsatisfactory (U)' }, { id: 'I', label: 'Incomplete (I)' },]}
                       onChange={(e, option) => this.setState(state => ({ student_thesis: { ...state.student_thesis, grade: option?.id || 'N' } }))}
                     />
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomTextField
+                      type="date"
+                      sx={{ width: '200px' }}
+                      InputLabelProps={{ shrink: true }}
+                      label='Completion Date'
+                      readOnly={this.student_view}
+                      value={this.state.student_thesis.completion_timestamp ? new Date(Number(this.state.student_thesis.completion_timestamp)).toISOString().split('T')[0] : null}
+                      onChange={(e) => this.setState({ student_thesis: { ...this.state.student_thesis, completion_timestamp: new Date(e.target.value).getTime() } })} />
                   </Grid>
                   <Grid item xs={12}>
                     <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
