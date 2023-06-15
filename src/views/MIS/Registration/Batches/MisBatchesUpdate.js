@@ -33,6 +33,7 @@ class MisBatchesUpdate extends React.Component {
           enrollment_year: batch.enrollment_year,
           enrollment_season: batch.enrollment_season,
           degree_type: batch.degree_type,
+          batch_expiration_timestamp: batch.batch_expiration_timestamp,
           batch_advisor_id: batch.batch_advisor_id
         })
       }
@@ -62,13 +63,13 @@ class MisBatchesUpdate extends React.Component {
           batch_no: {
             label: 'Batch No',
             defaultValue: this.state.batch_no,
-            position: 1,
+            position: 2,
             xs: 6
           },
           batch_stream: {
             label: 'Batch Stream',
             defaultValue: this.state.batch_stream,
-            position: 2,
+            position: 3,
             xs: 6,
             fieldType: 'radiobox',
             fieldTypeOptions: ['computer_science', 'data_science','cyber_security']
@@ -76,13 +77,13 @@ class MisBatchesUpdate extends React.Component {
           enrollment_year: {
             label: 'Enrollment Year',
             defaultValue: this.state.enrollment_year,
-            position: 1,
+            position: 4,
             xs: 6
           },
           enrollment_season: {
             label: 'Enrollment Season',
             defaultValue: this.state.enrollment_season,
-            position: 2,
+            position: 5,
             xs: 6,
             fieldType: 'radiobox',
             fieldTypeOptions: ['spring', 'fall'],
@@ -90,16 +91,22 @@ class MisBatchesUpdate extends React.Component {
           degree_type: {
             label: 'Degree Type',   
             defaultValue: this.state.degree_type,
-            position: 3,
+            position: 6,
             xs: 6,
             fieldType: 'radiobox',
             fieldTypeOptions: ['ms', 'phd'],
             disabled: true
           },
+          batch_expiration_timestamp: {
+            label: 'Degree Expiry',
+            defaultValue: this.state.batch_expiration_timestamp,
+            position: 7,
+            xs: 6,
+          },
           batch_advisor_id: {
             label: "Batch Advisor",
             defaultValue: this.state.batch_advisor_id,
-            position: 10,
+            position: 8,
             xs: 6,
             fieldType: 'select',
             endpoint: 'autocomplete/teachers',

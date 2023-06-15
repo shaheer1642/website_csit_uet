@@ -56,9 +56,15 @@ class MisBatchesCreate extends React.Component {
               fieldType: 'radiobox',
               fieldTypeOptions: ['ms', 'phd']
             },
+            batch_expiration_timestamp: {
+              label: 'Degree Expiry',
+              defaultValue: new Date().getTime() + 126227704000,
+              position: 6,
+              xs: 6,
+            },
             batch_advisor_id: {
               label: "Batch Advisor",
-              position: 10,
+              position: 7,
               xs: 6,
               fieldType: 'select',
               endpoint: 'autocomplete/teachers',

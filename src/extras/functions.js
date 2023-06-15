@@ -143,9 +143,14 @@ function filterObjectByKeys(object,keysArr) {
     }, {})
 }
 
+function convertTimestampToSeasonYear(ts) {
+    ts = Number(ts)
+    return `${new Date(ts).getMonth() < 7 ? 'Spring' : 'Fall'} ${new Date(ts).getFullYear()}`
+}
+
 export {
     dynamicSort,dynamicSortDesc,msToTime,msToFullTime,
     getRandomColor,embedScore,convertUpper,getTodayStartMs,
     getWeekStartMs,getMonthStartMs,calcArrAvg,isEmailValid,
-    filterObjectByKeys
+    filterObjectByKeys,convertTimestampToSeasonYear
 }

@@ -12,7 +12,7 @@ import FormGenerator from '../../../../components/FormGenerator';
 import { Navigate } from 'react-router-dom'
 import ConfirmationModal from '../../../../components/ConfirmationModal';
 import CustomCard from '../../../../components/CustomCard';
-import { convertUpper } from '../../../../extras/functions';
+import { convertTimestampToSeasonYear, convertUpper } from '../../../../extras/functions';
 import CustomSelect from '../../../../components/CustomSelect';
 import ContextInfo from '../../../../components/ContextInfo';
 import { getUserNameById } from '../../../../objects/Users_List';
@@ -108,6 +108,7 @@ class MisBatches extends React.Component {
       { id: 'degree_type', label: 'Degree Type', format: (value) => convertUpper(value) },
       { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
       { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => convertUpper(value) },
+      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value) },
       { id: 'batch_advisor_id', label: 'Batch Advisor', format: (value) => getUserNameById(value) },
       { id: 'registered_students', label: 'Registered Students', format: (value) => value },
     ];
@@ -138,6 +139,11 @@ class MisBatches extends React.Component {
                     })
                   }}
                   rows={this.state.batchesArr} columns={columns}
+                  rowSx={(row) => {
+                    return row.batch_expiration_timestamp < new Date().getTime() ? {
+                        backgroundColor: Color.red[100]
+                    } : undefined
+                  }}
                 />
               </Grid>
               <Grid item xs={'auto'}>
