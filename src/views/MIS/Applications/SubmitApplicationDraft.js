@@ -16,6 +16,7 @@ import { IndexKind } from "typescript";
 import CustomAlert from "../../../components/CustomAlert";
 import GoBackButton from "../../../components/GoBackButton";
 import { user } from "../../../objects/User";
+import RenderCustomTemplates from "./ApplicationsTemplates/RenderCustomTemplates";
 
 const palletes = {
   primary: "#439CEF",
@@ -131,6 +132,16 @@ class SubmitApplicationDraft extends React.Component {
     })
   }
 
+  renderCustomTemplate = (application_title) => {
+    if (application_title.toLowerCase() == 'course withdrawal') {
+      return (
+        <React.Fragment>
+          
+        </React.Fragment>
+      )
+    }
+  }
+
   render() {
     return (
       this.state.loading ? <CircularProgress /> :
@@ -139,36 +150,43 @@ class SubmitApplicationDraft extends React.Component {
         <Grid item xs={12}>
           <Typography variant='h4'>{this.state.applicationTemplate.application_title}</Typography>
         </Grid>
-        {this.state.applicationTemplate.detail_structure.map((field,index) => 
-          <Grid item xs={field.multi_line ? 12 : 'auto'}>
-            {field.field_type == 'string' ? 
-              <CustomTextField multiline={field.multi_line} rows={field.multi_line ? 4 : 1} sx={{width: field.multi_line ? '80%' : undefined}} variant='filled' label={field.field_name} disabled={field.disabled} required={field.required} value={field.field_value} onChange={(e) => this.updateField('field_value',e.target.value,index)}/>
-              : 'Ehllo'
-            }
-          </Grid>
-        )}
-        {this.state.submit_to_change ? 
+        {this.state.applicationTemplate.is_custom ? 
           <Grid item xs={12}>
-            <Grid container spacing={2}>
+            <RenderCustomTemplates applicationTemplate={this.state.applicationTemplate} onChange={(applicationTemplate) => this.setState({applicationTemplate: applicationTemplate})} /> 
+          </Grid> :
+          <React.Fragment>
+            {this.state.applicationTemplate.detail_structure.map((field,index) => 
+              <Grid item xs={field.multi_line ? 12 : 'auto'}>
+                {field.field_type == 'string' ? 
+                  <CustomTextField multiline={field.multi_line} rows={field.multi_line ? 4 : 1} fullWidth={field.multi_line} placeholder={field.placeholder} variant='filled' label={field.field_name} disabled={field.disabled} required={field.required} value={field.field_value} onChange={(e) => this.updateField('field_value',e.target.value,index)}/>
+                  : 'Field type could not be determined'
+                }
+              </Grid>
+            )}
+            {this.state.submit_to_change ? 
               <Grid item xs={12}>
-                <Typography variant='h4'>Submit to</Typography>
-              </Grid>
-              <Grid item xs={'auto'}>
-                <CustomSelect
-                  label= "Submit to"
-                  fieldType= 'select'
-                  endpoint= 'autocomplete/users'
-                  endpointData={{
-                    exclude_user_types: this.state.applicationTemplate.submit_to_type == 'teacher_only' ? ['admin','pga','student'] : ['student'],
-                    exclude_user_ids: [user?.user_id]
-                  }}
-                  sx={{minWidth: '150px'}}
-                  onChange={(e,option) => this.setState({submit_to: option.id})}
-                  value={this.state.applicationTemplate.submit_to}
-                />
-              </Grid>
-            </Grid>
-          </Grid> : <></>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography variant='h4'>Submit to</Typography>
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomSelect
+                      label= "Submit to"
+                      fieldType= 'select'
+                      endpoint= 'autocomplete/users'
+                      endpointData={{
+                        exclude_user_types: this.state.applicationTemplate.submit_to_type == 'teacher_only' ? ['admin','pga','student'] : ['student'],
+                        exclude_user_ids: [user?.user_id]
+                      }}
+                      sx={{minWidth: '150px'}}
+                      onChange={(e,option) => this.setState({submit_to: option.id})}
+                      value={this.state.applicationTemplate.submit_to}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid> : <></>
+            }
+          </React.Fragment>
         }
         <Grid item xs={12}>
           <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />

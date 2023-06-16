@@ -79,10 +79,10 @@ class MisApplicationsTemplates extends React.Component {
                 </Typography>
             </CardContent>
             <CardActions>
-                <IconButton onClick={() => this.updateApplicationTemplate(applicationTemplate)}>
-                    <Edit color="info"/>
+                <IconButton color="info" onClick={() => this.updateApplicationTemplate(applicationTemplate)} disabled={!applicationTemplate.editable}>
+                    <Edit/>
                 </IconButton>
-                <IconButton color='error' onClick={() => this.deleteApplicationTemplate(applicationTemplate)}>
+                <IconButton color='error' onClick={() => this.deleteApplicationTemplate(applicationTemplate)} disabled={!applicationTemplate.deletable}>
                     <DeleteOutline />
                 </IconButton>
             </CardActions>
