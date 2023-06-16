@@ -14,7 +14,7 @@ class MisStudentsUpdate extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      callingApi: false,
+      callingApi: '',
       cnic: '',
       reg_no: '',
       student_name: '',
@@ -62,9 +62,23 @@ class MisStudentsUpdate extends React.Component {
   }
 
   semesterFreeze = () => {
-    this.setState({callingApi: true})
-    socket.emit('students/freezeSemester',{student_batch_id: this.state.student.student_batch_id, semester_frozen: !this.state.student.semester_frozen}, (res) => {
-      this.setState({callingApi: false})
+    this.setState({callingApi: 'semesterFreeze'})
+    socket.emit('students/freezeSemester',{
+      student_batch_id: this.state.student.student_batch_id, 
+      semester_frozen: !this.state.student.semester_frozen
+    }, (res) => {
+      this.setState({callingApi: ''})
+      this.fetchData()
+    })
+  }
+
+  cancelAdmission = () => {
+    this.setState({callingApi: 'cancelAdmission'})
+    socket.emit('students/cancelAdmission',{
+      student_batch_id: this.state.student.student_batch_id, 
+      admission_cancelled: !this.state.student.admission_cancelled
+    }, (res) => {
+      this.setState({callingApi: ''})
       this.fetchData()
     })
   }
@@ -160,14 +174,27 @@ class MisStudentsUpdate extends React.Component {
             <Grid item xs={'auto'}>
               <CustomButton 
                 color={this.state.student.semester_frozen ? 'success' : 'error'} 
-                label={this.state.callingApi ? <CircularProgress size='20px' /> : this.state.student.semester_frozen ? 'Unfreeze Semester' : 'Freeze Semester'} 
+                callingApiState={this.state.callingApi == 'semesterFreeze'}
+                label={this.state.student.semester_frozen ? 'Unfreeze Semester' : 'Freeze Semester'} 
                 variant='outlined'
                 onClick={() => this.setState({
                   confirmationModalShow: true,
                   confirmationModalMessage: `Are you sure you want to ${ this.state.student.semester_frozen ? 'unfreeze' : 'freeze'} semester for this student?`,
                   confirmationModalExecute: () => this.semesterFreeze()
                 })}
-                disabled={this.state.callingApi}
+              />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton 
+                color={this.state.student.admission_cancelled ? 'success' : 'error'} 
+                callingApiState={this.state.callingApi == 'cancelAdmission'}
+                label={this.state.student.admission_cancelled ? 'Uncancel Admission' : 'Cancel Admission'} 
+                variant='outlined'
+                onClick={() => this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage: `Are you sure you want to ${ this.state.student.admission_cancelled ? 'uncancel' : 'cancel'} admission for this student?`,
+                  confirmationModalExecute: () => this.cancelAdmission()
+                })}
               />
             </Grid>
           </FormGenerator>

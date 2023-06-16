@@ -71,6 +71,7 @@ class MisCoursesStudents extends React.Component {
       students: [],
       studentBatchIds: [],
       semesterCourse: {},
+      studentsCourses: [],
 
       alertMsg: '',
       alertSeverity: '',
@@ -109,7 +110,8 @@ class MisCoursesStudents extends React.Component {
         const semesterCourse = res.data[0]
         socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
           if (res.code == 200) {
-            const studentBatchIds = res.data.map(studentCourse => studentCourse.student_batch_id)
+            const studentsCourses = res.data
+            const studentBatchIds = studentsCourses.map(studentCourse => studentCourse.student_batch_id)
             socket.emit("students/fetch", {}, (res) => {
               if (res.code == 200) {
                 const students = res.data
@@ -117,6 +119,7 @@ class MisCoursesStudents extends React.Component {
                   students: students,
                   semesterCourse: semesterCourse,
                   studentBatchIds: studentBatchIds,
+                  studentsCourses: studentsCourses,
                   loading: false,
                 });
               }
@@ -148,11 +151,17 @@ class MisCoursesStudents extends React.Component {
   studentsSelectMenu = () => {
     const options = this.state.students
       .filter(student => !this.state.studentBatchIds.includes(student.student_batch_id))
-      .map(student => ({ id: student.student_batch_id, label: `${student.student_name} (${student.reg_no || student.cnic}) ${student.semester_frozen ? '[Semester Frozen]' : ''}`, batch: `Batch#${student.batch_no} (${student.degree_type})` }));
+      .map(student => ({ 
+        id: student.student_batch_id, 
+        label: `${student.student_name} (${student.reg_no || student.cnic}) ${student.admission_cancelled ? '[Admission Cancelled]' : student.semester_frozen ? '[Semester Frozen]' : ''}`, 
+        batch: `Batch#${student.batch_no.toString().padStart(2,'0')} (${student.degree_type})`,
+        disabled: student.admission_cancelled || student.semester_frozen
+      }));
     return (
       <Autocomplete
         disablePortal
         options={options.sort((a, b) => b.batch.localeCompare(a.batch))}
+        getOptionDisabled={(option) => option.disabled}
         renderInput={(params) => <TextField {...params} label={"Add Student"} />}
         onChange={(e, option) => option.id ? this.setState(state => ({ studentBatchIds: [...state.studentBatchIds, option.id] })) : null}
         renderGroup={(params) => (
@@ -178,6 +187,7 @@ class MisCoursesStudents extends React.Component {
   render() {
     const columns = [
       { id: "reg_no", label: "Reg #", format: (value) => value },
+      { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "student_father_name", label: "Father Name", format: (value) => value },
       { id: "student_gender", label: "Gender", format: (value) => convertUpper(value) },
@@ -236,6 +246,11 @@ class MisCoursesStudents extends React.Component {
                         context_info: { ...this.context_info, ...student }
                       },
                     })}
+                    rowSx={(student) => {
+                      return this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.grade == 'W' ) ? {
+                        backgroundColor: Color.red[100]
+                      } : undefined
+                    }}
                     viewButtonLabel="Edit Student Course"
                   />
                 </Grid>
