@@ -225,7 +225,7 @@ class Login extends React.Component {
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
               <RadioGroup sx={{ color: 'white' }} row value={this.state.userInput['user_type']} onChange={(e) => this.setUserInput('user_type',e.target.value)}>
                 <FormControlLabel value="student" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Student" />
-                <FormControlLabel value="teacher" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Intructor" />
+                <FormControlLabel value="teacher" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Instructor" />
               </RadioGroup>
             </Grid>
           }
@@ -268,7 +268,7 @@ class Login extends React.Component {
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
               <RadioGroup sx={{ color: 'white' }} row value={this.state.userInput['user_type']} onChange={(e) => this.setUserInput('user_type',e.target.value)}>
                 <FormControlLabel value="student" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Student" />
-                <FormControlLabel value="teacher" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Intructor" />
+                <FormControlLabel value="teacher" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Instructor" />
               </RadioGroup>
             </Grid>
           }

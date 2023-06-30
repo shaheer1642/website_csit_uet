@@ -1,7 +1,7 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
-import { Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField, Autocomplete, Chip, CircularProgress, Icon } from '@mui/material';
-import { AccountCircle, ArrowUpward, Edit, Password, Upload, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Grid, Typography, InputAdornment, InputLabel, FormControl, IconButton, Button, Link, FilledInput, Box, TextField, Autocomplete, Chip, CircularProgress, Icon, Tooltip } from '@mui/material';
+import { AccountCircle, ArrowUpward, Edit, Info, Password, Upload, Visibility, VisibilityOff } from '@mui/icons-material';
 import { socket } from '../../../websocket/socket';
 import * as Color from "@mui/material/colors";
 import CustomCard from '../../../components/CustomCard';
@@ -298,13 +298,20 @@ export default class MisProfile extends React.Component {
             />
           </Grid>
         </Grid>
-        <Grid item container xs={6} spacing={2}>
-          <Grid item xs={12}>
+        <Grid item container xs={6} rowSpacing={2}>
+          <Grid item xs={'auto'}>
             <Typography variant='h4'>Digital Signature</Typography>
+          </Grid>
+          <Grid item xs={'auto'}>
+            <Tooltip title="Make sure your signature does not have extra empty spaces around it. The size of your signature on forms will appear the same as shown here">
+              <IconButton size='small'>
+                <Info />
+              </IconButton>
+            </Tooltip>
           </Grid>
           {this.state.userInfo.digital_signature ?
             <Grid item xs={12}>
-              <img src={this.state.userInfo.digital_signature ? typeof this.state.userInfo.digital_signature == 'object' ? URL.createObjectURL(this.state.userInfo.digital_signature) : this.state.userInfo.digital_signature : ''} alt="image" width={'150px'} />
+              <img src={this.state.userInfo.digital_signature ? typeof this.state.userInfo.digital_signature == 'object' ? URL.createObjectURL(this.state.userInfo.digital_signature) : this.state.userInfo.digital_signature : ''} alt="image" width={'40px'} />
             </Grid> : <></>
           }
           <Grid item xs={12}>

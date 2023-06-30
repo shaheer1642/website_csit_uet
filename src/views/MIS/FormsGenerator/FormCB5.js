@@ -21,6 +21,7 @@ class FormCB5 extends React.Component {
         loading: true,
 
         instructor_name: '',
+        digital_signature: undefined,
         department: 'CS & IT',
         department_full: 'Computer Science and Information Technology (CS & IT)',
         course_no: '',
@@ -56,6 +57,7 @@ class FormCB5 extends React.Component {
             const data = res.data[0]
             this.setState({
                 instructor_name: data.teacher_name,
+                digital_signature: data.digital_signature,
                 course_no: data.course_id,
                 course_title: data.course_name,
                 credit_hours: data.credit_hours,
@@ -153,11 +155,14 @@ class FormCB5 extends React.Component {
           The Result on official Form G-2B is attached herewith complete in all respects.<br>
           The Honorarium Bill for Rs. ${this.htmlFunctions.formatUnderlined(this.state.bill_amount)} for teaching the above-mentioned course for its full duration is being submitted herewith for payment.        
         </p>
-        <p style="text-align:left;">
+        <p style="text-align:left; ${this.state.digital_signature ? 'position: relative; padding-top: 20px; padding-bottom: 20px;' : '' }">
             Dated: ${this.state.dated}
             <span style="float:right;">
                 ${this.htmlFunctions.formatUnderlined('&nbsp;'.repeat(20))}
             </span>
+            ${this.state.digital_signature ? `
+                <img style="position: absolute; right: 50; top: 0" src='${this.state.digital_signature}' width="40px"/>
+            `:''}
         </p>
         <p align="right">
           (Please sign herein full)
