@@ -133,6 +133,7 @@ class MisThesis extends React.Component {
                 backgroundColor: Color.red[100]
             } : undefined
             }}
+            footerText='Green = Satifactory Grade\nRed = Unsatisfactory Grade'
           />
           <CustomButton
             sx={{ margin: "10px" }}

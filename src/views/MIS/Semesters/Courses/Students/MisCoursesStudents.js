@@ -153,9 +153,9 @@ class MisCoursesStudents extends React.Component {
       .filter(student => !this.state.studentBatchIds.includes(student.student_batch_id))
       .map(student => ({ 
         id: student.student_batch_id, 
-        label: `${student.student_name} (${student.reg_no || student.cnic}) ${student.admission_cancelled ? '[Admission Cancelled]' : student.semester_frozen ? '[Semester Frozen]' : ''}`, 
-        batch: `Batch#${student.batch_no.toString().padStart(2,'0')} (${student.degree_type})`,
-        disabled: student.admission_cancelled || student.semester_frozen
+        label: `${student.student_name} (${student.reg_no || student.cnic}) ${student.degree_completed ? '[Graduated]' : student.admission_cancelled ? '[Admission Cancelled]' : student.semester_frozen ? '[Semester Frozen]' : ''}`.trim(), 
+        batch: `Batch#${student.batch_no.toString().padStart(2,'0')} (${student.degree_type}) ${student.batch_expiration_timestamp <= new Date().getTime() ? '[Time Barred]' : ''}`.trim(),
+        disabled: student.degree_completed || student.admission_cancelled || student.semester_frozen
       }));
     return (
       <Autocomplete
@@ -251,6 +251,7 @@ class MisCoursesStudents extends React.Component {
                         backgroundColor: Color.red[100]
                       } : undefined
                     }}
+                    footerText="Red = Course Withdrawn"
                     viewButtonLabel="Edit Student Course"
                   />
                 </Grid>

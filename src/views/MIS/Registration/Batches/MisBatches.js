@@ -144,6 +144,7 @@ class MisBatches extends React.Component {
                         backgroundColor: Color.red[100]
                     } : undefined
                   }}
+                  footerText='Red = Time barred'
                 />
               </Grid>
               <Grid item xs={'auto'}>

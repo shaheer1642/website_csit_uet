@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, IconButton } from '@mui/material';
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, IconButton, Typography, Grid } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
@@ -45,7 +45,8 @@ interface IProps {
   loadingState?: boolean,
   maxWidth?: string,
   margin?: string,
-  rowSx?: Function
+  rowSx?: Function,
+  footerText: string
 }
 
 interface IState {
@@ -182,6 +183,11 @@ export default class CustomTable extends React.Component<IProps, IState> {
               onPageChange={this.handleChangePage}
               onRowsPerPageChange={this.handleChangeRowsPerPage}
             />
+            {this.props.footerText ? 
+              <Grid container marginLeft={2} marginBottom={1} flexDirection={'column'}>
+                {this.props.footerText.split('\\n').map(text => <Typography>{text}</Typography>)}
+              </Grid> : <></>
+            }
           </React.Fragment>
         }
       </Paper>

@@ -114,6 +114,7 @@ class ViewApplications extends React.Component {
                                 backgroundColor: Color.red[100]
                             } : undefined
                         }}
+                        footerText='Green = Approved\nRed = Rejected'
                     />
                     
                 </Grid>

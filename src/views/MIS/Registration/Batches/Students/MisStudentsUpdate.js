@@ -61,6 +61,17 @@ class MisStudentsUpdate extends React.Component {
     })
   }
 
+  degreeComplete = () => {
+    this.setState({callingApi: 'degreeComplete'})
+    socket.emit('students/completeDegree',{
+      student_batch_id: this.state.student.student_batch_id, 
+      degree_completed: !this.state.student.degree_completed
+    }, (res) => {
+      this.setState({callingApi: ''})
+      this.fetchData()
+    })
+  }
+
   semesterFreeze = () => {
     this.setState({callingApi: 'semesterFreeze'})
     socket.emit('students/freezeSemester',{
@@ -170,9 +181,24 @@ class MisStudentsUpdate extends React.Component {
                 xs: 6,
               },
             }}
-          >
+            >
             <Grid item xs={'auto'}>
               <CustomButton 
+                disabled={this.state.student.semester_frozen || this.state.student.admission_cancelled}
+                color={this.state.student.degree_completed ? 'error' : 'success'} 
+                callingApiState={this.state.callingApi == 'degreeComplete'}
+                label={this.state.student.degree_completed ? 'Mark Degree Incomplete' : 'Mark Degree Completed'} 
+                variant='outlined'
+                onClick={() => this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage: `Are you sure you want to mark degree as ${ this.state.student.degree_completed ? 'incomplete' : 'completed'} for this student?`,
+                  confirmationModalExecute: () => this.degreeComplete()
+                })}
+              />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton 
+                disabled={this.state.student.degree_completed || this.state.student.admission_cancelled}
                 color={this.state.student.semester_frozen ? 'success' : 'error'} 
                 callingApiState={this.state.callingApi == 'semesterFreeze'}
                 label={this.state.student.semester_frozen ? 'Unfreeze Semester' : 'Freeze Semester'} 
@@ -186,6 +212,7 @@ class MisStudentsUpdate extends React.Component {
             </Grid>
             <Grid item xs={'auto'}>
               <CustomButton 
+                disabled={this.state.student.degree_completed}
                 color={this.state.student.admission_cancelled ? 'success' : 'error'} 
                 callingApiState={this.state.callingApi == 'cancelAdmission'}
                 label={this.state.student.admission_cancelled ? 'Uncancel Admission' : 'Cancel Admission'} 

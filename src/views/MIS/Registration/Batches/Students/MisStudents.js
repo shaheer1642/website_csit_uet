@@ -297,7 +297,10 @@ class MisStudent extends React.Component {
                 rows={this.state.studentsArr}
                 columns={columns}
                 rowSx={(student) => {
-                  return student.admission_cancelled ? {
+                  return student.degree_completed ? {
+                    backgroundColor: Color.green[100]
+                  }
+                  : student.admission_cancelled ? {
                     backgroundColor: Color.red[100]
                   }
                   : student.semester_frozen ? {
@@ -305,6 +308,7 @@ class MisStudent extends React.Component {
                   }
                   : undefined
                 }}
+                footerText="Green = Degree Completed\nYellow = Semester Frozen\nRed = Admission Cancelled"
               />
               <Grid item xs={12} sx={{ margin: "10px" }}>
                 <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
