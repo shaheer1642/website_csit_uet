@@ -1,6 +1,6 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from 'react';
-import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button, ButtonGroup, IconButton } from '@mui/material';
+import { Grid, Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, Typography, Button, ButtonGroup, IconButton, Tabs, Tab } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import { socket } from '../../../../websocket/socket';
 import { withRouter } from '../../../../withRouter';
@@ -42,6 +42,7 @@ class MisBatches extends React.Component {
     this.state = {
       batchesArr: [],
       loadingBatches: true,
+      tabIndex: 0,
 
       confirmationModalShow: false,
       confirmationModalMessage: '',
@@ -106,8 +107,8 @@ class MisBatches extends React.Component {
       { id: 'batch_no', label: 'Batch Number', format: (value) => value },
       { id: 'batch_stream', label: 'Batch Stream', format: (value) => convertUpper(value) },
       { id: 'degree_type', label: 'Degree Type', format: (value) => convertUpper(value) },
-      { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
       { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => convertUpper(value) },
+      { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
       { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value) },
       { id: 'batch_advisor_id', label: 'Batch Advisor', format: (value) => getUserNameById(value) },
       { id: 'registered_students', label: 'Registered Students', format: (value) => value },
@@ -122,6 +123,12 @@ class MisBatches extends React.Component {
             <Grid container spacing={3} padding={1}>
               <Grid item xs={12}>
                 <Typography variant="h2" >Select Batch</Typography>
+              </Grid>
+              <Grid item xs={'auto'}>
+                <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})}>
+                  <Tab label="MS"/>
+                  <Tab label="PhD" />
+                </Tabs>
               </Grid>
               <Grid item xs={12}>
                 <CustomTable
@@ -138,7 +145,8 @@ class MisBatches extends React.Component {
                       confirmationModalExecute: () => socket.emit('batches/delete', { batch_id: batch.batch_id })
                     })
                   }}
-                  rows={this.state.batchesArr} columns={columns}
+                  rows={this.state.batchesArr.filter(batch => (this.state.tabIndex == 0 && batch.degree_type == 'ms') || (this.state.tabIndex == 1 && batch.degree_type == 'phd'))} 
+                  columns={columns}
                   rowSx={(row) => {
                     return row.batch_expiration_timestamp < new Date().getTime() ? {
                         backgroundColor: Color.red[100]

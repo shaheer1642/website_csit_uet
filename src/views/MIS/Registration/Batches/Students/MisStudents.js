@@ -191,13 +191,33 @@ class MisStudent extends React.Component {
             if (attribute) {
               if (key == 'student_gender') {
                 student_info[key] = (attribute == 'm' || attribute == 'male') ? 'male' : (attribute == 'f' || attribute == 'female') ? 'female' : null
+              } else if (key == 'student_admission_status') {
+                student_info[key] = (
+                    attribute == 'open' || 
+                    attribute == 'open_merit' || 
+                    attribute == 'open merit' || 
+                    attribute == 'open merit basis' || 
+                    attribute == 'open basis'
+                  ) ? 'open_merit' : (
+                    attribute == 'rationalize' || 
+                    attribute == 'rationalized' ||
+                    attribute == 'rationalize basis' || 
+                    attribute == 'rationalized basis' || 
+                    attribute == 'rationalized_basis'
+                  ) ? 'rationalized' : (
+                    attribute == 'afghan' || 
+                    attribute == 'afghan student' || 
+                    attribute == 'afghan_student'
+                  ) ? 'afghan_student' : null
+              } else if (key == 'student_name' || key == 'student_father_name') {
+                student_info[key] = convertUpper(attribute.toLowerCase())
               } else {
                 student_info[key] = attribute
               }
             }
           }
         })
-        if ((student_info.cnic || student_info.reg_no) && student_info.student_name && student_info.student_father_name && student_info.student_gender)
+        if ((student_info.cnic || student_info.reg_no) && student_info.student_name && student_info.student_father_name)
           students_info.push(student_info)
       })
 
@@ -205,46 +225,44 @@ class MisStudent extends React.Component {
 
       function headerIndices(headers) {
         const attributes = {
-          cnic: -1,
           reg_no: -1,
+          cnic: -1,
           student_name: -1,
           student_father_name: -1,
           student_gender: -1,
-          student_address: -1,
+          student_admission_status: -1,
           user_email: -1,
+          student_contact_no: -1,
+          student_address: -1,
         }
         headers.split(',').forEach((col, index) => {
-          col = col.toLowerCase()
+          col = col.toLowerCase().replace(/\*/g,'')
+          if (col.match(/^registration$/) || col.match(/^reg_no$/)) attributes.reg_no = index
           if (col.match(/^cnic$/)) attributes.cnic = index
-          if (col.match(/^registration$/)) attributes.reg_no = index
-          if (col.match(/^name$/)) attributes.student_name = index
-          if (col.match(/^father name$/)) attributes.student_father_name = index
+          if (col.match(/^name$/) || col.match(/^student_name$/)) attributes.student_name = index
+          if (col.match(/^father_name$/)) attributes.student_father_name = index
           if (col.match(/^gender$/)) attributes.student_gender = index
+          if (col.match(/^admission_status$/)) attributes.student_admission_status = index
           if (col.match(/^email$/)) attributes.user_email = index
+          if (col.match(/^contact_no$/)) attributes.student_contact_no = index
           if (col.match(/^address$/)) attributes.student_address = index
         })
-        if (attributes.cnic == -1 && attributes.reg_no == -1) {
+        if (attributes.cnic == -1 || attributes.reg_no == -1) {
           return {
             err: true,
-            message: 'Could not determine "CNIC" or "Registration" column'
+            message: 'Could not determine "CNIC" or "Reg No" column'
           }
         }
         if (attributes.student_name == -1) {
           return {
             err: true,
-            message: 'Could not determine "Name" column'
+            message: 'Could not determine "Student Name" column'
           }
         }
-        if (attributes.student_name == -1) {
+        if (attributes.student_father_name == -1) {
           return {
             err: true,
             message: 'Could not determine "Father Name" column'
-          }
-        }
-        if (attributes.student_gender == -1) {
-          return {
-            err: true,
-            message: 'Could not determine "Gender" column'
           }
         }
         return attributes

@@ -160,7 +160,7 @@ class MisStudentsUpdate extends React.Component {
                 position: 8,
                 xs: 6,
                 fieldType: 'radiobox',
-                fieldTypeOptions: ['open_merit', 'rationalized']
+                fieldTypeOptions: ['open_merit', 'rationalized','afghan_student']
               },
               user_email: {
                 label: "Email",

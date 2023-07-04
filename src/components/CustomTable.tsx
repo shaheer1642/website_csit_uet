@@ -59,7 +59,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       page: 0,
-      rowsPerPage: 10,
+      rowsPerPage: 25,
     };
   }
 
@@ -175,7 +175,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
             </TableContainer>
             <TablePagination
               sx={styles.tablePagination}
-              rowsPerPageOptions={[10, 25, 100]}
+              rowsPerPageOptions={[25, 50, 100]}
               component="div"
               count={this.props.rows.length}
               rowsPerPage={this.state.rowsPerPage}
