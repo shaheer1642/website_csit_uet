@@ -1,7 +1,7 @@
 // @ts-nocheck
 import React from 'react';
-import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, IconButton, Typography, Grid } from '@mui/material';
-import { Delete, Edit } from '@mui/icons-material';
+import { Table, TableContainer, TableHead, TableCell, TableRow, TableBody, Paper, TablePagination, tableCellClasses, styled, IconButton, Typography, Grid, TextField, InputAdornment } from '@mui/material';
+import { Delete, Edit, Search } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
 import CustomButton from './CustomButton';
@@ -52,6 +52,7 @@ interface IProps {
 interface IState {
   page: number,
   rowsPerPage: number,
+  searchText: string
 }
 
 export default class CustomTable extends React.Component<IProps, IState> {
@@ -60,6 +61,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
     this.state = {
       page: 0,
       rowsPerPage: 25,
+      searchText: ''
     };
   }
 
@@ -112,6 +114,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
       <Paper sx={{ overflow: 'hidden', maxWidth: this.props.maxWidth, width: '100%', margin: this.props.margin || '10px' }}>
         {this.props.loadingState ? <LoadingIcon /> :
           <React.Fragment>
+            <TextField InputProps={{ startAdornment: ( <InputAdornment position="start"> <Search /> </InputAdornment> ), }} label='Search' size='small' variant='filled' fullWidth onChange={(e) => this.setState({searchText: e.target.value})}/>
             <TableContainer sx={{ maxHeight: 440, backgroundColor: styles.background }}>
               <Table stickyHeader>
                 <TableHead>
@@ -136,7 +139,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
                   </StyledTableRow >
                 </TableHead>
                 <TableBody>
-                  {this.props.rows.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                  {this.props.rows.filter(row => !this.state.searchText ? true : Object.values(row).some(val => val?.toString().toLowerCase().includes(this.state.searchText))).slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                     .map((row, index) => {
                       return (
                         <TableRow hover role="checkbox" key={index} sx={((this.props.rowSx ? this.props.rowSx(row) : undefined) || {

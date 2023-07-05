@@ -365,7 +365,7 @@ class MisStudent extends React.Component {
                   </Link>
                 }
               />
-              <Tooltip title="Upload a .CSV file, columns should be named: CNIC, Registration, Name, Father Name, Gender, Address, Email. Note: name, father name, gender, and cnic/reg# cannot be empty">
+              <Tooltip title="Download the .csv template to add students using excel. Starred colums cannot be left empty. Either CNIC or Reg# should be filled">
                 <IconButton>
                   <Info />
                 </IconButton>

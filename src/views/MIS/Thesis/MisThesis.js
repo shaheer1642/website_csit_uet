@@ -1,6 +1,6 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from "react";
-import { Grid, Typography, IconButton, ButtonGroup } from "@mui/material";
+import { Grid, Typography, IconButton, ButtonGroup, Tab, Tabs } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import * as Color from "@mui/material/colors";
 import { socket } from "../../../websocket/socket";
@@ -11,7 +11,7 @@ import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
 import { timeLocale } from "../../../objects/Time";
-import { convertUpper } from "../../../extras/functions";
+import { convertTimestampToSeasonYear, convertUpper } from "../../../extras/functions";
 import { getUserNameById } from "../../../objects/Users_List";
 
 const palletes = {
@@ -39,6 +39,7 @@ class MisThesis extends React.Component {
     this.state = {
       loadingStudentsThesis: true,
       studentsThesisArr: [],
+      tabIndex: 0,
 
       confirmationModalShow: false,
       confirmationModalMessage: "",
@@ -87,14 +88,22 @@ class MisThesis extends React.Component {
       { id: "thesis_title", label: "Title", format: (value) => value },
       { id: "thesis_type", label: "Type", format: (value) => convertUpper(value) },
       { id: "supervisor_id", label: "Supervisor", format: (value) => getUserNameById(value) },
-      { id: 'undertaking_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) }
+      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value) },
     ];
     return (
       <CustomCard>
         <Grid container>
-          <Typography variant="h2" style={{ margin: "10px" }}>
-            {`Thesis`}
-          </Typography>
+          <Grid item xs={12}>
+            <Typography variant="h2" style={{ margin: "10px" }}>
+              {`Thesis`}
+            </Typography>
+          </Grid>
+          <Grid item xs={'auto'} style={{ margin: "10px" }}>
+            <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})}>
+              <Tab label="MS"/>
+              <Tab label="PhD" />
+            </Tabs>
+          </Grid>
           <CustomTable
             loadingState={this.state.loadingStudentsThesis}
             onRowClick={(student_thesis) =>
@@ -124,16 +133,18 @@ class MisThesis extends React.Component {
                   }, (res) => this.fetchStudentsThesis())
               });
             }}
-            rows={this.state.studentsThesisArr}
+            rows={this.state.studentsThesisArr.filter(thesis => (this.state.tabIndex == 0 && thesis.degree_type == 'ms') || (this.state.tabIndex == 1 && thesis.degree_type == 'phd'))}
             columns={columns}
             rowSx={(row) => {
               return row.grade == 'S' ? {
                   backgroundColor: Color.green[100]
               } : row.grade == 'U' ? {
+                backgroundColor: Color.yellow[100]
+              } : row.batch_expiration_timestamp < new Date().getTime() ? {
                 backgroundColor: Color.red[100]
             } : undefined
             }}
-            footerText='Green = Satifactory Grade\nRed = Unsatisfactory Grade'
+            footerText='Green = Satifactory Grade\nYellow = Unsatisfactory Grade\nRed = Time barred'
           />
           <CustomButton
             sx={{ margin: "10px" }}

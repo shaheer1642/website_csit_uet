@@ -20,7 +20,7 @@ import MisBatchesUpdate from "./views/MIS/Registration/Batches/MisBatchesUpdate"
 import MisTeachers from "./views/MIS/Teachers/MisTeachers";
 import MisTeachersCreate from "./views/MIS/Teachers/MisTeachersCreate";
 import MisTeachersUpdate from "./views/MIS/Teachers/MisTeachersUpdate";
-import MisCourses from "./views/MIS/Departments/MisDepartments";
+import MisCourses from "./views/MIS/Courses/MisCourses";
 import MisCoursesCreate from "./views/MIS/Courses/MisCoursesCreate";
 import MisCoursesUpdate from "./views/MIS/Courses/MisCoursesUpdate";
 import MisStudents from "./views/MIS/Registration/Batches/Students/MisStudents";

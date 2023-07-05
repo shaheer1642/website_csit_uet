@@ -192,6 +192,13 @@ class MisThesisManagement extends React.Component {
                       </RadioGroup>
                     </FormControl>
                   </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomTextField
+                      readOnly={true}
+                      value={this.state.student_thesis.grade}
+                      variant="filled"
+                      label={'Grade'} />
+                  </Grid>
                   <Grid item xs={12}></Grid>
                   <Grid item xs={2}>
                     <CustomSelect
@@ -359,13 +366,15 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                       </React.Fragment> : <></>
                   }
-                  <Grid item xs={12}>
-                    <CustomButton
-                      label = 'Grade Management'
-                      variant='outlined'
-                      onClick={() => this.props.navigate('/mis/thesis/grading', {state: this.props.location.state})}
-                    />
-                  </Grid>
+                  {user.user_type == 'pga' ? 
+                    <Grid item xs={12}>
+                      <CustomButton
+                        label = 'Grade Management'
+                        variant='outlined'
+                        onClick={() => this.props.navigate('/mis/thesis/grading', {state: this.props.location.state})}
+                      />
+                    </Grid> : <></>
+                  }
                 </Grid>
               </CustomCard>
             </Grid>
@@ -635,6 +644,16 @@ class MisThesisManagement extends React.Component {
                                 value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
+                            <Grid item xs={'auto'}>
+                              <CustomTextField
+                                type="date"
+                                sx={{ width: '200px' }}
+                                InputLabelProps={{ shrink: true }}
+                                label='FE Notification Date'
+                                readOnly={this.student_view}
+                                value={this.state.student_thesis.fe_notification_timestamp ? new Date(Number(this.state.student_thesis.fe_notification_timestamp)).toISOString().split('T')[0] : null}
+                                onChange={(e) => this.updateStudentThesis('fe_notification_timestamp', new Date(e.target.value).getTime())} />
+                            </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
                                 readOnly={this.student_view}
@@ -664,7 +683,7 @@ class MisThesisManagement extends React.Component {
                                 type="date"
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
-                                label='Meeting Date'
+                                label='REC-I Meeting Date'
                                 readOnly={this.student_view}
                                 value={this.state.student_thesis.rec_i_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_i_meeting_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('rec_i_meeting_timestamp', new Date(e.target.value).getTime())} />
@@ -698,7 +717,7 @@ class MisThesisManagement extends React.Component {
                                 type="date"
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
-                                label='Meeting Date'
+                                label='REC-II Meeting Date'
                                 readOnly={this.student_view}
                                 value={this.state.student_thesis.rec_ii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_ii_meeting_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('rec_ii_meeting_timestamp', new Date(e.target.value).getTime())} />
@@ -732,7 +751,7 @@ class MisThesisManagement extends React.Component {
                                 type="date"
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
-                                label='Meeting Date'
+                                label='REC-III Meeting Date'
                                 readOnly={this.student_view}
                                 value={this.state.student_thesis.rec_iii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_iii_meeting_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('rec_iii_meeting_timestamp', new Date(e.target.value).getTime())} />

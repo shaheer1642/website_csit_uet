@@ -88,12 +88,21 @@ export default class CustomTextField extends React.Component<IProps> {
             placeholder={this.props.placeholder}
             label={this.props.label} 
             variant={this.props.variant || (this.props.type == 'date' ? 'outlined' : "standard")}
-            sx= {{...styles, ...this.props.sx}}
+            sx= {{
+                ...styles, 
+                width: this.props.value && this.props.value.length > 20 ? `${this.props.value.length * 8}px` : undefined,
+                ...this.props.sx
+            }}
             style= {this.props.style}
             onChange={this.props.readOnly ? undefined : this.props.onChange}
             onFocus={this.props.onFocus}
             type={this.props.type || 'text'}
-            inputProps={{ tabIndex: this.props.tabIndex, min: this.props.range?.[0], max: this.props.range?.[1], readOnly: this.props.readyOnly }}
+            inputProps={{ 
+                tabIndex: this.props.tabIndex, 
+                min: this.props.range?.[0], 
+                max: this.props.range?.[1], 
+                readOnly: this.props.readyOnly,
+            }}
             required={this.props.required}
             multiline={this.props.multiline}
             rows={this.props.rows}
