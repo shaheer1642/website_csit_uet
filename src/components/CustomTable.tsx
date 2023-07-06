@@ -114,7 +114,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
       <Paper sx={{ overflow: 'hidden', maxWidth: this.props.maxWidth, width: '100%', margin: this.props.margin || '10px' }}>
         {this.props.loadingState ? <LoadingIcon /> :
           <React.Fragment>
-            <TextField InputProps={{ startAdornment: ( <InputAdornment position="start"> <Search /> </InputAdornment> ), }} label='Search' size='small' variant='filled' fullWidth onChange={(e) => this.setState({searchText: e.target.value})}/>
+            <TextField InputProps={{ startAdornment: ( <InputAdornment position="start"> <Search /> </InputAdornment> ), }} label='Search' size='small' variant='filled' fullWidth onChange={(e) => this.setState({searchText: e.target.value, page: 0})}/>
             <TableContainer sx={{ maxHeight: 440, backgroundColor: styles.background }}>
               <Table stickyHeader>
                 <TableHead>
