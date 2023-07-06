@@ -124,7 +124,7 @@ class MisCourses extends React.Component {
       { id: "course_name", label: "Course Title", format: (value) => value },
       { id: "course_type", label: "Course Type", format: (value) => convertUpper(value) },
       { id: "credit_hours", label: "Credit Hours", format: (value) => value },
-      { id: "department", label: "Department", format: (value) => value },
+      { id: "department_name", label: "Department", format: (value) => value },
     ];
     return (
       <CustomCard>
