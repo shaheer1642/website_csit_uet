@@ -68,12 +68,14 @@ class MisCoursesStudentsUpdate extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      callingApi: false,
+      callingApi: '',
 
       studentCourse: {},
 
       alertMsg: '',
       alertSeverity: '',
+
+      updatedGrade: '',
 
       confirmationModalShow: false,
       confirmationModalMessage: "",
@@ -120,13 +122,24 @@ class MisCoursesStudentsUpdate extends React.Component {
     });
   }
 
+  updateGrade = () => {
+    this.setState({ callingApi: 'updateGrade' })
+    socket.emit("studentsCourses/updateGrade", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: this.state.updatedGrade }, (res) => {
+      return this.setState({
+        alertMsg: res.code == 200 ? 'Grade Updated' : `${res.status}: ${res.message}`,
+        alertSeverity: res.code == 200 ? 'success' : 'warning',
+        callingApi: ''
+      });
+    });
+  }
+
   withdrawCourse = () => {
-    this.setState({ callingApi: true })
+    this.setState({ callingApi: 'withdrawCourse' })
     socket.emit("studentsCourses/updateGrade", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: 'W' }, (res) => {
       return this.setState({
         alertMsg: res.code == 200 ? 'Course withdrawn' : `${res.status}: ${res.message}`,
         alertSeverity: res.code == 200 ? 'success' : 'warning',
-        callingApi: false
+        callingApi: ''
       });
     });
   }
@@ -141,7 +154,7 @@ class MisCoursesStudentsUpdate extends React.Component {
       { id: "degree_type", label: "Degree", format: (value) => value },
     ];
     return (
-      <Grid container rowSpacing={"20px"}>
+      <Grid container spacing={2}>
         <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <ContextInfo contextInfo={this.context_info} overrideIncludeKeys={['student_name', 'student_father_name', 'course_name', 'semester_year', 'semester_season']} />
@@ -150,40 +163,77 @@ class MisCoursesStudentsUpdate extends React.Component {
           {
             this.state.loading ? <LoadingIcon /> :
               <CustomCard>
-                <Typography variant="h2" sx={{ margin: "10px" }}>
-                  Manage Student Course
-                </Typography>
-                <Typography fontWeight={'bold'} sx={{ margin: "10px" }}>
-                  Current Grade: {this.state.studentCourse.grade}
-                </Typography>
-                <Typography fontWeight={'bold'} sx={{ margin: "10px" }}>
-                  Grade Logs:
-                </Typography>
-                {this.state.studentCourse.grade_change_logs.map((log, index) =>
-                  <Typography key={index} sx={{ marginLeft: "20px" }}>
-                    Grade {log.split(' ')[2]} assigned by {getUserNameById(log.split(' ')[1])} on {new Date(Number(log.split(' ')[0])).toLocaleDateString(...timeLocale)}
-                  </Typography>
-                )}
-                <Grid item xs={12} sx={{ margin: "10px" }}>
-                  <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
-                    <Alert variant="outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
-                  </Zoom>
-                </Grid>
-                <Grid item xs={12} sx={{ margin: "10px" }}>
-                  <CustomButton
-                    variant="outlined"
-                    label={this.state.callingApi ? <CircularProgress size='20px' /> : "Withdraw Course"}
-                    disabled={this.state.callingApi || this.state.studentCourse.grade == 'W'}
-                    color="error"
-                    onClick={() =>
-                      this.setState({
-                        confirmationModalShow: true,
-                        confirmationModalMessage:
-                          "Are you sure you want to withdraw the course for this student?",
-                        confirmationModalExecute: () => this.withdrawCourse()
-                      })
-                    }
-                  />
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Typography variant="h2">
+                      Manage Student Course
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography fontWeight={'bold'}>
+                      Current Grade: {this.state.studentCourse.grade}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography fontWeight={'bold'}>
+                      Grade Logs:
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    {this.state.studentCourse.grade_change_logs.map((log, index) =>
+                      <Typography key={index} sx={{ marginLeft: "20px" }}>
+                        Grade {log.split(' ')[2]} assigned by {getUserNameById(log.split(' ')[1])} on {new Date(Number(log.split(' ')[0])).toLocaleDateString(...timeLocale)}
+                      </Typography>
+                    )}
+                  </Grid>
+                  <Grid item xs={6}>
+                    <CustomSelect
+                      sx={{ minWidth: '250px' }}
+                      required
+                      label="Change Grade"
+                      value={this.state.updatedGrade || this.state.studentCourse.grade}
+                      menuItems={[
+                        { id: 'A', label: 'A' }, 
+                        { id: 'A-', label: 'A-' }, 
+                        { id: 'B+', label: 'B+' }, 
+                        { id: 'B', label: 'B' }, 
+                        { id: 'B-', label: 'B-' }, 
+                        { id: 'C+', label: 'C+' }, 
+                        { id: 'C', label: 'C' }, 
+                        { id: 'C-', label: 'C-' }, 
+                        { id: 'D+', label: 'D+' }, 
+                        { id: 'D', label: 'D' }, 
+                        { id: 'F', label: 'F' }, 
+                        { id: 'I', label: 'I' }, 
+                      ]}
+                      onChange={(e, option) => this.setState({updatedGrade: option.id})}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                      <Alert variant="outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
+                    </Zoom>
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomButton label='Assign Grade' callingApiState={this.state.callingApi == 'updateGrade'} onClick={this.updateGrade} />
+                  </Grid>
+                  <Grid item xs={'auto'}>
+                    <CustomButton
+                      variant="outlined"
+                      callingApiState={this.state.callingApi == 'withdrawCourse'}
+                      label={"Withdraw Course"}
+                      disabled={this.state.studentCourse.grade == 'W'}
+                      color="error"
+                      onClick={() =>
+                        this.setState({
+                          confirmationModalShow: true,
+                          confirmationModalMessage:
+                            "Are you sure you want to withdraw the course for this student?",
+                          confirmationModalExecute: () => this.withdrawCourse()
+                        })
+                      }
+                    />
+                  </Grid>
                 </Grid>
               </CustomCard>
           }

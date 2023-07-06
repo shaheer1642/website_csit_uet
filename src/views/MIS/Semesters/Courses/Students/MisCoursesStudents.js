@@ -190,7 +190,6 @@ class MisCoursesStudents extends React.Component {
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "student_father_name", label: "Father Name", format: (value) => value },
-      { id: "student_gender", label: "Gender", format: (value) => convertUpper(value) },
       { id: "batch_no", label: "Batch #", format: (value) => value },
       { id: "degree_type", label: "Degree", format: (value) => convertUpper(value) },
     ];
@@ -249,9 +248,11 @@ class MisCoursesStudents extends React.Component {
                     rowSx={(student) => {
                       return this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.grade == 'W' ) ? {
                         backgroundColor: Color.red[100]
+                      } : this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.is_repeat) ? {
+                        backgroundColor: Color.yellow[100]
                       } : undefined
                     }}
-                    footerText="Red = Course Withdrawn"
+                    footerText="Red = Course Withdrawn\nYellow = Repeater"
                     viewButtonLabel="Edit Student Course"
                   />
                 </Grid>

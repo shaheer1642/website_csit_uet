@@ -23,8 +23,8 @@ export default class ContextInfo extends React.Component<IProps> {
         'enrollment_season',
         'enrollment_year',
         'degree_type',
-        'semester_year',
         'semester_season',
+        'semester_year',
         'course_name',
         'credit_hours',
         'department',
@@ -41,7 +41,7 @@ export default class ContextInfo extends React.Component<IProps> {
             this.props.contextInfo ? 
             <Card elevation={3} sx={{padding: '20px', borderRadius: 0}}>
               <Grid container spacing={3} justifyContent={'space-evenly'}>
-                {Object.keys(this.props.contextInfo).filter(k => this.includeKeys.includes(k)).map(key => {
+                {this.includeKeys.filter(k => Object.keys(this.props.contextInfo).includes(k)).map(key => {
                   return (
                     <Grid container item xs={'auto'} direction={'row'} spacing={1}>
                       <Grid item>
