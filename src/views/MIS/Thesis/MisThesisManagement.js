@@ -200,7 +200,7 @@ class MisThesisManagement extends React.Component {
                       label={'Grade'} />
                   </Grid>
                   <Grid item xs={12}></Grid>
-                  <Grid item xs={2}>
+                  <Grid item xs={'auto'}>
                     <CustomSelect
                       readOnly={this.student_view}
                       menuItems={[{ id: '', label: 'None' }]}
@@ -210,7 +210,7 @@ class MisThesisManagement extends React.Component {
                       value={this.state.student_thesis.supervisor_id || ''}
                     />
                   </Grid>
-                  <Grid item xs={2}>
+                  <Grid item xs={'auto'}>
                     <CustomSelect
                       readOnly={this.student_view}
                       menuItems={[{ id: '', label: 'None' }]}

@@ -72,6 +72,7 @@ export default class CustomSelect extends React.Component<IProps, IState> {
     }
 
     render() {
+        const width = this.props.value ? this.state.menuItems.filter(option => option.id == this.props.value)?.[0]?.label.length * 12 : undefined
         if (this.props.forceCallApi) {
             this.callApi()
             this.props.forceCallApi()
@@ -86,7 +87,7 @@ export default class CustomSelect extends React.Component<IProps, IState> {
                 onChange={this.props.onChange}
                 required={this.props.required}
                 value={this.state.menuItems.filter(option => option.id == this.props.value)[0]}
-                sx={{...this.props.sx}}
+                sx={{minWidth: width && width > 200 ? `${width}px` : `200px`,...this.props.sx}}
             />
         )
     }
