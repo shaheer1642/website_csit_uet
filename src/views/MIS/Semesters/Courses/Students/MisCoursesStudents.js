@@ -153,7 +153,7 @@ class MisCoursesStudents extends React.Component {
       .filter(student => !this.state.studentBatchIds.includes(student.student_batch_id))
       .map(student => ({ 
         id: student.student_batch_id, 
-        label: `${student.student_name} (${student.reg_no || student.cnic}) ${student.degree_completed ? '[Graduated]' : student.admission_cancelled ? '[Admission Cancelled]' : student.semester_frozen ? '[Semester Frozen]' : ''}`.trim(), 
+        label: `${student.student_name} (${student.reg_no || student.cnic}) - ${student.total_credit_hours || 0} CH | ${student.total_core_courses || 0} Cores | ${student.total_elective_courses || 0} Electives ${student.degree_completed ? '[Graduated]' : student.admission_cancelled ? '[Admission Cancelled]' : student.semester_frozen ? '[Semester Frozen]' : ''}`.trim(), 
         batch: `Batch#${student.batch_no.toString().padStart(2,'0')} (${student.degree_type}) ${student.batch_expiration_timestamp <= new Date().getTime() ? '[Time Barred]' : ''}`.trim(),
         disabled: student.degree_completed || student.admission_cancelled || student.semester_frozen
       }));
@@ -186,7 +186,7 @@ class MisCoursesStudents extends React.Component {
 
   render() {
     const columns = [
-      { id: "reg_no", label: "Reg #", format: (value) => value },
+      { id: "reg_no", label: "Reg #", format: (value) => value?.toUpperCase() },
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "student_father_name", label: "Father Name", format: (value) => value },

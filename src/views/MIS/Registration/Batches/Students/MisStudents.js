@@ -282,7 +282,7 @@ class MisStudent extends React.Component {
   render() {
     const columns = [
       { id: "cnic", label: "CNIC", format: (value) => value },
-      { id: "reg_no", label: "Reg #", format: (value) => value },
+      { id: "reg_no", label: "Reg #", format: (value) => value?.toUpperCase() },
       { id: "student_name", label: "Student Name", format: (value) => value },
       { id: "student_father_name", label: "Father Name", format: (value) => value },
       { id: "user_email", label: "Email", format: (value) => value },
