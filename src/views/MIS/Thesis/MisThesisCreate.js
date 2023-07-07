@@ -40,7 +40,7 @@ class MisThesisCreate extends React.Component {
               thesis_title: {
                 label: "Thesis Title",
                 position: 1,
-                xs: 6,
+                xs: 12,
               },
               supervisor_id: {
                 label: "Supervisor",
@@ -54,7 +54,7 @@ class MisThesisCreate extends React.Component {
                 position: 2,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/teachers'
+                endpoint: 'autocomplete/studentsThesisExaminers'
               },
             }}
           />

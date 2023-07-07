@@ -80,7 +80,7 @@ class MisStudentCourses extends React.Component {
       { id: "teacher_name", label: "Instructor", format: (value) => value },
     ];
     if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses', student_id: user?.user_id }} />
-    else if (!this.student_semester) return <Navigate to='/mis/sportal/semesters' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses' }} />
+    else if (!this.student_semester) return <Navigate to='/mis/sportal/semesters' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses', student_batch_id: this.student_batch?.student_batch_id }} />
     return (
       <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate} />

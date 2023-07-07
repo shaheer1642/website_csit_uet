@@ -156,7 +156,7 @@ class SubmitApplicationDraft extends React.Component {
           </Grid> :
           <React.Fragment>
             {this.state.applicationTemplate.detail_structure.map((field,index) => 
-              <Grid item xs={field.multi_line ? 12 : 'auto'}>
+              <Grid item xs={field.multi_line ? 12 : 6}>
                 {field.field_type == 'string' ? 
                   <CustomTextField multiline={field.multi_line} rows={field.multi_line ? 4 : 1} fullWidth={field.multi_line} placeholder={field.placeholder} variant='filled' label={field.field_name} disabled={field.disabled} required={field.required} value={field.field_value} onChange={(e) => this.updateField('field_value',e.target.value,index)}/>
                   : 'Field type could not be determined'

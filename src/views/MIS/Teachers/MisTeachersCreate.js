@@ -28,25 +28,32 @@ class MisTeachersCreate extends React.Component {
               },
               reg_no: {
                 label: "Registration No",
-                position: 1,
+                position: 2,
                 xs: 6,
               },
               teacher_name: {
                 label: "Instructor Name",
-                position: 1,
+                position: 3,
                 xs: 6,
               },
               teacher_gender: {
                 label: "Gender",
-                position: 1,
+                position: 4,
                 xs: 6,
                 fieldType: 'radiobox',
                 fieldTypeOptions: ['male', 'female']
               },
               user_email: {
                 label: "Email",
-                position: 1,
+                position: 5,
                 xs: 6,
+              },
+              teacher_department_id: {
+                label: "Department",
+                position: 6,
+                xs: 6,
+                fieldType: 'select',
+                endpoint: 'autocomplete/departments',
               },
             }}
           />

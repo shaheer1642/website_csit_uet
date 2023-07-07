@@ -297,10 +297,59 @@ function MisLayout() {
                 </ListItemButton> : <></>
               }
 
-              {['pga'].includes(user.user_type) ? 
+              {['teacher'].includes(user.user_type) ?
                 <ListItemButton
                   component={Link} 
-                  to="thesis"
+                  to="tportal/courses"
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }}
+                  onClick={() => setCurrentMenu('courses')}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
+                  </ListItemIcon>
+                  <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                </ListItemButton> : <></>
+              }
+              
+              {['student'].includes(user.user_type) ?
+                <ListItemButton
+                  component={Link} 
+                  to="sportal/courses"
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }}
+                  onClick={() => setCurrentMenu('courses')}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
+                  </ListItemIcon>
+                  <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                </ListItemButton> : <></>
+              }
+
+              {['pga','student','teacher'].includes(user.user_type) ? 
+                <ListItemButton
+                  component={Link} 
+                  to={user.user_type == 'student' ? "thesis/manage" : "thesis"}
+                  state={{student_view: user.user_type == 'student', teacher_view: user.user_type == 'teacher'}}
                   sx={{
                     minHeight: 48,
                     justifyContent: open ? 'initial' : 'center',
@@ -317,7 +366,7 @@ function MisLayout() {
                   >
                     <Icon.Article style={{color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined}}/>
                   </ListItemIcon>
-                  <ListItemText primary='Thesis Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                  <ListItemText primary={user.user_type == 'pga' ? 'Thesis Management' : 'Thesis'} sx={{ opacity: open ? 1 : 0, color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                 </ListItemButton> : <></>
               }
 
@@ -393,16 +442,40 @@ function MisLayout() {
                 </ListItemButton> : <></>
               }
 
+              {['admin','pga'].includes(user.user_type) ? 
+                <ListItemButton
+                  component={Link}
+                  to="teachersPerformance"
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? 'initial' : 'center',
+                    px: 2.5,
+                  }}
+                  onClick={() => setCurrentMenu('teachersPerformance')}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : 'auto',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <Icon.QueryStats style={{color: currentMenu == 'teachersPerformance' ? Color.deepPurple[500] : undefined}}/>
+                  </ListItemIcon>
+                  <ListItemText primary='Instructors Performance' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachersPerformance' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                </ListItemButton> : <></>
+              }
+
               {['teacher'].includes(user.user_type) ?
                 <ListItemButton
                   component={Link} 
-                  to="tportal/courses"
+                  to="tportal/performance"
                   sx={{
                     minHeight: 48,
                     justifyContent: open ? 'initial' : 'center',
                     px: 2.5,
                   }}
-                  onClick={() => setCurrentMenu('courses')}
+                  onClick={() => setCurrentMenu('performance')}
                 >
                   <ListItemIcon
                     sx={{
@@ -411,58 +484,9 @@ function MisLayout() {
                       justifyContent: 'center',
                     }}
                   >
-                    <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
+                    <Icon.QueryStats style={{color: currentMenu == 'performance' ? Color.deepPurple[500] : undefined}}/>
                   </ListItemIcon>
-                  <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
-              }
-
-              {['student'].includes(user.user_type) ?
-                <ListItemButton
-                  component={Link} 
-                  to="sportal/courses"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('courses')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
-              }
-
-              {['student'].includes(user.user_type) ?
-                <ListItemButton
-                  component={Link} 
-                  to="sportal/thesis"
-                  state={{student_view: true}}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('thesis')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Article style={{color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Thesis' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                  <ListItemText primary='Performance Report' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'performance' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                 </ListItemButton> : <></>
               }
 

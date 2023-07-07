@@ -58,6 +58,8 @@ import MisProfile from "./views/MIS/Profile/MisProfile";
 import MisStudentTranscript from "./views/MIS/Student Dashboard/Transcript/MisStudentTranscript";
 import MisStudentPerformance from "./views/MIS/StudentPerformance/MisStudentPerformance";
 import MisThesisGrading from "./views/MIS/Thesis/MisThesisGrading";
+import MisTeachersPerformance from "./views/MIS/TeachersPerformance/MisTeachersPerformance";
+import MisTeacherPerformance from "./views/MIS/Teacher Dashboard/Performance/MisTeacherPerformance";
 
 export default function Router() {
   return (
@@ -114,6 +116,7 @@ export default function Router() {
           <Route path="documents" element={<MisDocuments/>}/>
 
           <Route path="studentPerformance" element={<MisStudentPerformance />}/>
+          <Route path="teachersPerformance" element={<MisTeachersPerformance />}/>
 
           <Route path="applications/applicationsTemplates" element={<MisApplicationsTemplates/>}/>
             <Route path="applications/applicationsTemplates/create" element={<MisApplicationsTemplatesCreateUpdate/>}/>
@@ -126,14 +129,14 @@ export default function Router() {
           <Route path="tportal/courses" element={<MisTeachersCourses />} />
             <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />
 
+          <Route path="tportal/performance" element={<MisTeacherPerformance />} />
+
           <Route path="sportal/batches" element={<MisStudentBatches />} />
           
           <Route path="sportal/semesters" element={<MisStudentSemesters />} />
 
           <Route path="sportal/courses" element={<MisStudentCourses />} />
             <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
-
-          <Route path="sportal/thesis" element={<MisThesisManagement/>}/>
 
           <Route path="sportal/transcript" element={<MisStudentTranscript />} />
 

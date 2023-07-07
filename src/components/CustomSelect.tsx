@@ -87,7 +87,7 @@ export default class CustomSelect extends React.Component<IProps, IState> {
                 onChange={this.props.onChange}
                 required={this.props.required}
                 value={this.state.menuItems.filter(option => option.id == this.props.value)[0]}
-                sx={{minWidth: width && width > 200 ? `${width}px` : `200px`,...this.props.sx}}
+                sx={{minWidth: width && width > 250 ? `${width}px` : `250px`,...this.props.sx}}
             />
         )
     }

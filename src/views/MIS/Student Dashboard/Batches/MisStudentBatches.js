@@ -39,6 +39,7 @@ class MisStudentBatches extends React.Component {
   }
 
   componentDidMount() {
+    console.log('[MisStudentBatches] mounted')
     socket.emit('students/fetch', { student_id: this.student_id }, (res) => {
       if (res.code == 200) {
         if (res.data.length == 1) return this.redirect(res.data[0])
@@ -69,9 +70,8 @@ class MisStudentBatches extends React.Component {
     const columns = [
       { id: 'batch_no', label: 'Batch Number', format: (value) => value },
       { id: 'degree_type', label: 'Degree Type', format: (value) => convertUpper(value) },
-      { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
       { id: 'enrollment_season', label: 'Enrollment Season', format: (value) => convertUpper(value) },
-      { id: 'registered_students', label: 'Registered Students', format: (value) => value },
+      { id: 'enrollment_year', label: 'Enrollment Year', format: (value) => value },
     ];
     return (
       <CustomCard>

@@ -13,6 +13,7 @@ import CustomCard from "../../../components/CustomCard";
 import { timeLocale } from "../../../objects/Time";
 import { convertTimestampToSeasonYear, convertUpper } from "../../../extras/functions";
 import { getUserNameById } from "../../../objects/Users_List";
+import { user } from "../../../objects/User";
 
 const palletes = {
   primary: "#439CEF",
@@ -57,10 +58,10 @@ class MisThesis extends React.Component {
   }
 
   fetchStudentsThesis = () => {
-    socket.emit("studentsThesis/fetch", {}, (res) => {
+    socket.emit("studentsThesis/fetch", user.user_type == 'teacher' ? {supervisor_id: user.user_id} : {}, (res) => {
       if (res.code == 200) {
         return this.setState({
-          studentsThesisArr: res.data,
+          studentsThesisArr: res.data.map(thesis => ({...thesis, supervisor_id: getUserNameById(thesis.supervisor_id) })),
           loadingStudentsThesis: false,
         });
       }
@@ -87,7 +88,7 @@ class MisThesis extends React.Component {
       { id: "degree_type", label: "Degree", format: (value) => convertUpper(value) },
       { id: "thesis_title", label: "Title", format: (value) => value },
       { id: "thesis_type", label: "Type", format: (value) => convertUpper(value) },
-      { id: "supervisor_id", label: "Supervisor", format: (value) => getUserNameById(value) },
+      { id: "supervisor_id", label: "Supervisor", format: (value) => value },
       { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value) },
     ];
     return (

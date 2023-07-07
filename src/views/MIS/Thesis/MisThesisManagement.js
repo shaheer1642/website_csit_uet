@@ -82,7 +82,8 @@ class MisThesisManagement extends React.Component {
     }
     this.student_batch_id = this.props.location.state.student_batch_id || this.props.location.state.student_batch?.student_batch_id
     this.context_info = this.props.location.state.context_info
-    this.student_view = this.props.location.state.student_view
+    this.student_view = user.user_type == 'student'
+    this.teacher_view = user.user_type == 'teacher'
 
     this.timeoutAlertRef = null
 
@@ -159,7 +160,7 @@ class MisThesisManagement extends React.Component {
   }
 
   render() {
-    if (this.student_view && !this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/sportal/thesis', student_id: user?.user_id }} />
+    if (this.student_view && !this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/thesis/manage', student_id: user?.user_id }} />
     return (
       this.state.loading ? <LoadingIcon /> :
         Object.keys(this.state.student_thesis) == 0 ? <Typography variant='h4'>No Thesis Found</Typography> :
@@ -175,9 +176,10 @@ class MisThesisManagement extends React.Component {
                   <Grid item xs={12}>
                     <Typography variant='h3'>Thesis Report</Typography>
                   </Grid>
-                  <Grid item xs={'auto'}>
+                  <Grid item xs={12}>
                     <CustomTextField
-                      readOnly={this.student_view}
+                      fullWidth
+                      readOnly={this.student_view || this.teacher_view}
                       value={this.state.student_thesis.thesis_title}
                       variant="filled"
                       label={'Thesis Title'}
@@ -202,7 +204,7 @@ class MisThesisManagement extends React.Component {
                   <Grid item xs={12}></Grid>
                   <Grid item xs={'auto'}>
                     <CustomSelect
-                      readOnly={this.student_view}
+                      readOnly={this.student_view || this.teacher_view}
                       menuItems={[{ id: '', label: 'None' }]}
                       endpoint='autocomplete/teachers'
                       label='Supervisor'
@@ -212,9 +214,9 @@ class MisThesisManagement extends React.Component {
                   </Grid>
                   <Grid item xs={'auto'}>
                     <CustomSelect
-                      readOnly={this.student_view}
+                      readOnly={this.student_view || this.teacher_view}
                       menuItems={[{ id: '', label: 'None' }]}
-                      endpoint='autocomplete/teachers'
+                      endpoint='autocomplete/studentsThesisExaminers'
                       label='Co-Supervisor'
                       onChange={(e, option) => this.updateStudentThesis('co_supervisor_id', option.id)}
                       value={this.state.student_thesis.co_supervisor_id || ''}
@@ -225,7 +227,7 @@ class MisThesisManagement extends React.Component {
                       <React.Fragment>
                         <Grid item xs={'auto'}>
                           <CustomSelect
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Internal Examiner"
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
@@ -242,7 +244,7 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                         <Grid item xs={'auto'}>
                           <CustomSelect
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="External Examiner"
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
@@ -264,7 +266,7 @@ class MisThesisManagement extends React.Component {
                       <React.Fragment>
                         <Grid item xs={'auto'}>
                           <CustomSelect
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Examiner (Within Dept.)"
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
@@ -281,7 +283,7 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                         <Grid item xs={'auto'}>
                           <CustomSelect
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Examiner (Outside Dept.)"
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
@@ -298,7 +300,7 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                         <Grid item xs={'auto'}>
                           <CustomSelect
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Examiner (Outside University)"
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
@@ -315,7 +317,7 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                         <Grid item xs={'auto'}>
                           <CustomSelect
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Examiner (Industry)"
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
@@ -332,7 +334,7 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                         <Grid item xs={'auto'}>
                           <CustomSelect
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Foreign Thesis Evaluator 1"
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
@@ -349,7 +351,7 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                         <Grid item xs={'auto'}>
                           <CustomSelect
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Foreign Thesis Evaluator 2"
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
@@ -394,7 +396,7 @@ class MisThesisManagement extends React.Component {
                           <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                         </Grid>
                         <Grid item xs={12} marginLeft={'20px'}>
-                          <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='ms_research_proposal' />
+                          <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='ms_research_proposal' />
                         </Grid>
                         <Grid item xs={12}>
                           <CustomTextField
@@ -402,13 +404,13 @@ class MisThesisManagement extends React.Component {
                             sx={{ width: '200px' }}
                             InputLabelProps={{ shrink: true }}
                             label='BOASAR Notification Date'
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
                             onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp', new Date(e.target.value).getTime())} />
                         </Grid>
                         <Grid item xs={12}>
                           <CustomFilesField
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Attached Documents"
                             documents={this.state.student_thesis.phase_1_documents}
                             onChange={(e) => this.fileUploadHandler('phase_1_documents', e)}
@@ -437,7 +439,7 @@ class MisThesisManagement extends React.Component {
                           <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                         </Grid>
                         <Grid item xs={12} marginLeft={'20px'}>
-                          <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='ms_research_thesis_defense' />
+                          <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='ms_research_thesis_defense' />
                         </Grid>
                         <Grid item xs={'auto'}>
                           <CustomTextField
@@ -445,7 +447,7 @@ class MisThesisManagement extends React.Component {
                             sx={{ width: '200px' }}
                             InputLabelProps={{ shrink: true }}
                             label='Committee Notification Date'
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             value={this.state.student_thesis.committee_notification_timestamp ? new Date(Number(this.state.student_thesis.committee_notification_timestamp)).toISOString().split('T')[0] : null}
                             onChange={(e) => this.updateStudentThesis('committee_notification_timestamp', new Date(e.target.value).getTime())} />
                         </Grid>
@@ -455,13 +457,13 @@ class MisThesisManagement extends React.Component {
                             sx={{ width: '200px' }}
                             InputLabelProps={{ shrink: true }}
                             label='Thesis Defense Date'
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             value={this.state.student_thesis.defense_day_timestamp ? new Date(Number(this.state.student_thesis.defense_day_timestamp)).toISOString().split('T')[0] : null}
                             onChange={(e) => this.updateStudentThesis('defense_day_timestamp', new Date(e.target.value).getTime())} />
                         </Grid>
                         <Grid item xs={12}>
                           <CustomFilesField
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Attached Documents"
                             documents={this.state.student_thesis.phase_2_documents}
                             onChange={(e) => this.fileUploadHandler('phase_2_documents', e)}
@@ -483,11 +485,11 @@ class MisThesisManagement extends React.Component {
                           <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                         </Grid>
                         <Grid item xs={12} marginLeft={'20px'}>
-                          <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='ms_research_post_defense' />
+                          <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='ms_research_post_defense' />
                         </Grid>
                         <Grid item xs={12}>
                           <CustomFilesField
-                            readOnly={this.student_view}
+                            readOnly={this.student_view || this.teacher_view}
                             label="Attached Documents"
                             documents={this.state.student_thesis.phase_3_documents}
                             onChange={(e) => this.fileUploadHandler('phase_3_documents', e)}
@@ -513,7 +515,7 @@ class MisThesisManagement extends React.Component {
                             <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                           </Grid>
                           <Grid item xs={12} marginLeft={'20px'}>
-                            <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='ms_project_proposal' />
+                            <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='ms_project_proposal' />
                           </Grid>
                           <Grid item xs={'auto'}>
                             <CustomTextField
@@ -521,7 +523,7 @@ class MisThesisManagement extends React.Component {
                               sx={{ width: '200px' }}
                               InputLabelProps={{ shrink: true }}
                               label='BOASAR Notification Date'
-                              readOnly={this.student_view}
+                              readOnly={this.student_view || this.teacher_view}
                               value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
                               onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp', new Date(e.target.value).getTime())} />
                           </Grid>
@@ -531,13 +533,13 @@ class MisThesisManagement extends React.Component {
                               sx={{ width: '200px' }}
                               InputLabelProps={{ shrink: true }}
                               label='Proposal Submission Date'
-                              readOnly={this.student_view}
+                              readOnly={this.student_view || this.teacher_view}
                               value={this.state.student_thesis.proposal_submission_timestamp ? new Date(Number(this.state.student_thesis.proposal_submission_timestamp)).toISOString().split('T')[0] : null}
                               onChange={(e) => this.updateStudentThesis('proposal_submission_timestamp', new Date(e.target.value).getTime())} />
                           </Grid>
                           <Grid item xs={12}>
                             <CustomFilesField
-                              readOnly={this.student_view}
+                              readOnly={this.student_view || this.teacher_view}
                               label="Attached Documents"
                               documents={this.state.student_thesis.phase_1_documents}
                               onChange={(e) => this.fileUploadHandler('phase_1_documents', e)}
@@ -559,11 +561,11 @@ class MisThesisManagement extends React.Component {
                             <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                           </Grid>
                           <Grid item xs={12} marginLeft={'20px'}>
-                            <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='ms_project_thesis_submission' />
+                            <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='ms_project_thesis_submission' />
                           </Grid>
                           <Grid item xs={12}>
                             <CustomFilesField
-                              readOnly={this.student_view}
+                              readOnly={this.student_view || this.teacher_view}
                               label="Attached Documents"
                               documents={this.state.student_thesis.phase_2_documents}
                               onChange={(e) => this.fileUploadHandler('phase_2_documents', e)}
@@ -584,11 +586,11 @@ class MisThesisManagement extends React.Component {
                             <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                           </Grid>
                           <Grid item xs={12} marginLeft={'20px'}>
-                            <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='ms_project_post_thesis' />
+                            <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='ms_project_post_thesis' />
                           </Grid>
                           <Grid item xs={12}>
                             <CustomFilesField
-                              readOnly={this.student_view}
+                              readOnly={this.student_view || this.teacher_view}
                               label="Attached Documents"
                               documents={this.state.student_thesis.phase_3_documents}
                               onChange={(e) => this.fileUploadHandler('phase_3_documents', e)}
@@ -612,7 +614,7 @@ class MisThesisManagement extends React.Component {
                               <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                             </Grid>
                             <Grid item xs={12} marginLeft={'20px'}>
-                              <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_qualifying_exam' />
+                              <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='phd_research_qualifying_exam' />
                             </Grid>
                             <Grid item xs={'auto'}>
                               <CustomTextField
@@ -620,7 +622,7 @@ class MisThesisManagement extends React.Component {
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
                                 label='QE Notification Date'
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 value={this.state.student_thesis.qe_notification_timestamp ? new Date(Number(this.state.student_thesis.qe_notification_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('qe_notification_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
@@ -630,7 +632,7 @@ class MisThesisManagement extends React.Component {
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
                                 label='REC Notification Date'
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 value={this.state.student_thesis.rec_notification_timestamp ? new Date(Number(this.state.student_thesis.rec_notification_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('rec_notification_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
@@ -640,7 +642,7 @@ class MisThesisManagement extends React.Component {
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
                                 label='BOASAR Notification Date'
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
@@ -650,13 +652,13 @@ class MisThesisManagement extends React.Component {
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
                                 label='FE Notification Date'
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 value={this.state.student_thesis.fe_notification_timestamp ? new Date(Number(this.state.student_thesis.fe_notification_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('fe_notification_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 label="Attached Documents"
                                 documents={this.state.student_thesis.phase_0_documents}
                                 onChange={(e) => this.fileUploadHandler('phase_0_documents', e)}
@@ -676,7 +678,7 @@ class MisThesisManagement extends React.Component {
                               <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                             </Grid>
                             <Grid item xs={12} marginLeft={'20px'}>
-                              <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_rec_i' />
+                              <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='phd_research_rec_i' />
                             </Grid>
                             <Grid item xs={'auto'}>
                               <CustomTextField
@@ -684,13 +686,13 @@ class MisThesisManagement extends React.Component {
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
                                 label='REC-I Meeting Date'
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 value={this.state.student_thesis.rec_i_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_i_meeting_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('rec_i_meeting_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 label="Attached Documents"
                                 documents={this.state.student_thesis.phase_1_documents}
                                 onChange={(e) => this.fileUploadHandler('phase_1_documents', e)}
@@ -710,7 +712,7 @@ class MisThesisManagement extends React.Component {
                               <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                             </Grid>
                             <Grid item xs={12} marginLeft={'20px'}>
-                              <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_rec_ii' />
+                              <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='phd_research_rec_ii' />
                             </Grid>
                             <Grid item xs={'auto'}>
                               <CustomTextField
@@ -718,13 +720,13 @@ class MisThesisManagement extends React.Component {
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
                                 label='REC-II Meeting Date'
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 value={this.state.student_thesis.rec_ii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_ii_meeting_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('rec_ii_meeting_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 label="Attached Documents"
                                 documents={this.state.student_thesis.phase_2_documents}
                                 onChange={(e) => this.fileUploadHandler('phase_2_documents', e)}
@@ -744,7 +746,7 @@ class MisThesisManagement extends React.Component {
                               <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                             </Grid>
                             <Grid item xs={12} marginLeft={'20px'}>
-                              <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_rec_iii' />
+                              <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='phd_research_rec_iii' />
                             </Grid>
                             <Grid item xs={'auto'}>
                               <CustomTextField
@@ -752,13 +754,13 @@ class MisThesisManagement extends React.Component {
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
                                 label='REC-III Meeting Date'
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 value={this.state.student_thesis.rec_iii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_iii_meeting_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('rec_iii_meeting_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 label="Attached Documents"
                                 documents={this.state.student_thesis.phase_3_documents}
                                 onChange={(e) => this.fileUploadHandler('phase_3_documents', e)}
@@ -778,7 +780,7 @@ class MisThesisManagement extends React.Component {
                               <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                             </Grid>
                             <Grid item xs={12} marginLeft={'20px'}>
-                              <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_pre_defense' />
+                              <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='phd_research_pre_defense' />
                             </Grid>
                             <Grid item xs={'auto'}>
                               <CustomTextField
@@ -786,13 +788,13 @@ class MisThesisManagement extends React.Component {
                                 sx={{ width: '200px' }}
                                 InputLabelProps={{ shrink: true }}
                                 label='Thesis Defense Date'
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 value={this.state.student_thesis.defense_day_timestamp ? new Date(Number(this.state.student_thesis.defense_day_timestamp)).toISOString().split('T')[0] : null}
                                 onChange={(e) => this.updateStudentThesis('defense_day_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 label="Attached Documents"
                                 documents={this.state.student_thesis.phase_4_documents}
                                 onChange={(e) => this.fileUploadHandler('phase_4_documents', e)}
@@ -812,11 +814,11 @@ class MisThesisManagement extends React.Component {
                               <Typography variant='h5' fontWeight={'bold'}>Instructions</Typography>
                             </Grid>
                             <Grid item xs={12} marginLeft={'20px'}>
-                              <InstructionsField readOnly={this.student_view} instruction_id={1} instruction_detail_key='phd_research_post_defense' />
+                              <InstructionsField readOnly={this.student_view || this.teacher_view} instruction_id={1} instruction_detail_key='phd_research_post_defense' />
                             </Grid>
                             <Grid item xs={12}>
                               <CustomFilesField
-                                readOnly={this.student_view}
+                                readOnly={this.student_view || this.teacher_view}
                                 label="Attached Documents"
                                 documents={this.state.student_thesis.phase_5_documents}
                                 onChange={(e) => this.fileUploadHandler('phase_5_documents', e)}
@@ -830,7 +832,7 @@ class MisThesisManagement extends React.Component {
                     <></>
             }
             {/* Action Buttons */}
-            {this.student_view ? <></> :
+            {this.student_view || this.teacher_view ? <></> :
               <React.Fragment>
                 <Grid item xs={12}>
                   <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>

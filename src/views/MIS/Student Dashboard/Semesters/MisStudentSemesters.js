@@ -39,11 +39,11 @@ class MisStudentSemesters extends React.Component {
       loading: true,
       studentSemestersArr: [],
     };
+    this.student_batch_id = this.props.location?.state?.student_batch_id
   }
 
   componentDidMount() {
-    socket.emit("semesters/fetch", { student_id: user.user_id }, (res) => {
-      console.log(res)
+    socket.emit("semesters/fetch", { student_batch_id: this.student_batch_id }, (res) => {
       if (res.code == 200) {
         return this.setState({
           studentSemestersArr: res.data,
@@ -64,6 +64,7 @@ class MisStudentSemesters extends React.Component {
       { id: 'semester_end_timestamp', label: 'Ends', format: (value) => new Date(Number(value)).toLocaleDateString(...timeLocale) },
     ];
     return (
+      !this.student_batch_id ? <Typography>error: missing student_batch_id</Typography> :
       <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>

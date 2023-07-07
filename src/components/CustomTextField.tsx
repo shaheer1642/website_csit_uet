@@ -78,6 +78,8 @@ export default class CustomTextField extends React.Component<IProps> {
         
     }
 
+    // const width = this.props.value ? this.props.value.length * 8.5 : undefined
+
     return (
         <TextField
             fullWidth={this.props.fullWidth}
@@ -90,7 +92,7 @@ export default class CustomTextField extends React.Component<IProps> {
             variant={this.props.variant || (this.props.type == 'date' ? 'outlined' : "standard")}
             sx= {{
                 ...styles, 
-                width: this.props.value && this.props.value.length > 20 ? `${this.props.value.length * 8}px` : undefined,
+                // minWidth: width && width > 250 ? `${width}px` : `250px`,
                 ...this.props.sx
             }}
             style= {this.props.style}

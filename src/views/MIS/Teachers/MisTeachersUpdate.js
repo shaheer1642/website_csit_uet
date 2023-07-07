@@ -16,7 +16,8 @@ class MisTeachersUpdate extends React.Component {
       reg_no: '',
       teacher_name: '',
       teacher_gender: 'Male',
-      user_email: ''
+      user_email: '',
+      teacher_department_id: ''
     }
     this.teacher_id = this.props.location.state.teacher_id
   }
@@ -32,7 +33,8 @@ class MisTeachersUpdate extends React.Component {
           reg_no: teacher.reg_no,
           teacher_name: teacher.teacher_name,
           teacher_gender: teacher.teacher_gender,
-          user_email: teacher.user_email
+          user_email: teacher.user_email,
+          teacher_department_id: teacher.teacher_department_id,
         })
       }
     })
@@ -61,25 +63,25 @@ class MisTeachersUpdate extends React.Component {
                 cnic: {
                   label: "CNIC",
                   defaultValue: this.state.cnic,
-                  position: 3,
+                  position: 2,
                   xs: 6,
                 },
                 reg_no: {
                   label: "Registration No",
                   defaultValue: this.state.reg_no,
-                  position: 4,
+                  position: 3,
                   xs: 6,
                 },
                 teacher_name: {
                   label: "Instructor Name",
                   defaultValue: this.state.teacher_name,
-                  position: 5,
+                  position: 4,
                   xs: 6,
                 },
                 teacher_gender: {
                   label: "Gender",
                   defaultValue: this.state.teacher_gender,
-                  position: 7,
+                  position: 5,
                   xs: 6,
                   fieldType: 'radiobox',
                   fieldTypeOptions: ['male', 'female']
@@ -95,6 +97,14 @@ class MisTeachersUpdate extends React.Component {
                 },
                 areas_of_interest: {
                   hidden: true
+                },
+                teacher_department_id: {
+                  label: "Department",
+                  position: 7,
+                  xs: 6,
+                  defaultValue: this.state.teacher_department_id,
+                  fieldType: 'select',
+                  endpoint: 'autocomplete/departments',
                 },
               }}
             />

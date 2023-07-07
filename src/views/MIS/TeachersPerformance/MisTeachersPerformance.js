@@ -1,14 +1,9 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off" */
 import React from "react";
-import { Grid, Typography, IconButton, ButtonGroup } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
-import * as Color from "@mui/material/colors";
+import { Grid, Typography } from "@mui/material";
 import { socket } from "../../../websocket/socket";
 import { withRouter } from "../../../withRouter";
 import CustomTable from "../../../components/CustomTable";
-import CustomButton from "../../../components/CustomButton";
-import CustomModal from "../../../components/CustomModal";
-import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
 import { convertUpper } from "../../../extras/functions";
 
@@ -31,19 +26,12 @@ const styles = {
   },
 };
 
-class MisTeachers extends React.Component {
+class MisTeachersPerformance extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loadingTeachers: true,
       teachersArr: [],
-      modalTitle: "",
-      modalBody: "",
-      modalShow: false,
-
-      confirmationModalShow: false,
-      confirmationModalMessage: "",
-      confirmationModalExecute: () => { },
     };
   }
 
@@ -110,69 +98,28 @@ class MisTeachers extends React.Component {
     });
   };
 
-  confirmationModalDestroy = () => {
-    this.setState({
-      confirmationModalShow: false,
-      confirmationModalMessage: "",
-      confirmationModalExecute: () => { },
-    });
-  };
-
   render() {
     const columns = [
       { id: "cnic", label: "CNIC", format: (value) => value },
       { id: "teacher_name", label: "Instructor Name", format: (value) => value },
       { id: "teacher_gender", label: "Gender", format: (value) => convertUpper(value) },
-      { id: "user_email", label: "Email", format: (value) => value },
       { id: "teacher_department_id", label: "Department", format: (value) => value },
+      { id: "courses_taught", label: "Courses Taught", format: (value) => value },
+      { id: "ms_students_supervised", label: "MS Stds. Supervised", format: (value) => value },
+      { id: "ms_students_under_supervision", label: "MS Stds. Under Supervision", format: (value) => value },
+      { id: "phd_students_supervised", label: "PhD Stds. Supervised", format: (value) => value },
+      { id: "phd_students_under_supervision", label: "PhD Stds. Under Supervision", format: (value) => value },
     ];
     return (
       <CustomCard>
         <Grid container>
           <Typography variant="h2" style={{ margin: "10px" }}>
-            {`Instructors`}
+            {`Instructors Performance`}
           </Typography>
           <CustomTable
             loadingState={this.state.loadingTeachers}
-            onEditClick={(teacher) =>
-              this.props.navigate("update", {
-                state: { teacher_id: teacher.teacher_id },
-              })
-            }
-            onDeleteClick={(teacher) => {
-              this.setState({
-                confirmationModalShow: true,
-                confirmationModalMessage:
-                  "Are you sure you want to remove this instructor?",
-                confirmationModalExecute: () =>
-                  socket.emit("teachers/delete", {
-                    teacher_id: teacher.teacher_id,
-                  }),
-              });
-            }}
             rows={this.state.teachersArr}
             columns={columns}
-          />
-          <CustomButton
-            sx={{ margin: "10px" }}
-            onClick={() => this.props.navigate("create")}
-            label="Create New"
-          />
-          <CustomModal
-            title={this.state.modalTitle}
-            body={this.state.modalBody}
-            open={this.state.modalShow}
-            onClose={() => this.setState({ modalShow: false })}
-          />
-          <ConfirmationModal
-            open={this.state.confirmationModalShow}
-            message={this.state.confirmationModalMessage}
-            onClose={() => this.confirmationModalDestroy()}
-            onClickNo={() => this.confirmationModalDestroy()}
-            onClickYes={() => {
-              this.state.confirmationModalExecute();
-              this.confirmationModalDestroy();
-            }}
           />
         </Grid>
       </CustomCard>
@@ -180,4 +127,4 @@ class MisTeachers extends React.Component {
   }
 }
 
-export default withRouter(MisTeachers);
+export default withRouter(MisTeachersPerformance);
