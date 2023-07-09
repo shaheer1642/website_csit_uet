@@ -165,10 +165,8 @@ class MisStudentCourseAttendance extends React.Component {
     socket.removeEventListener('studentsCourses/listener/changed', this.changeListener)
   }
 
-
   changeListener = (data) => {
-    if (data.sem_course_id == this.sem_course_id)
-      this.fetchData()
+    if (data.sem_course_id == this.sem_course_id) this.fetchData()
   }
 
   fetchData = () => {
@@ -188,148 +186,40 @@ class MisStudentCourseAttendance extends React.Component {
     });
   }
 
-  addWeek = () => {
-    const attendances = this.state.attendances
-    attendances.forEach((obj, index) => {
-      attendances[index][`week${Object.keys(obj).filter(k => k.startsWith('week')).length + 1}`] = {
-        classes: [{
-          attendance: '',
-          remarks: '',
-          cancelled: false,
-          timestamp: new Date().getTime()
-        }]
-      }
-    })
-    console.log('addWeek', attendances)
-    this.setState({
-      attendances: [...attendances],
-    })
-  }
-
-  removeLastWeek = () => {
-    const attendances = this.state.attendances
-    attendances.forEach((obj, index) => {
-      delete attendances[index][`week${Object.keys(obj).filter(k => k.startsWith('week')).length}`]
-    })
-    this.setState({
-      attendances: [...attendances],
-    })
-  }
-
-  editWeekClassDate = (week, classIndex, newTimestamp) => {
-    console.log('editWeekClassDate', week, classIndex, newTimestamp)
-    const attendances = this.state.attendances
-    attendances.forEach((obj, index) => {
-      attendances[index][week].classes[classIndex].timestamp = newTimestamp
-    })
-    this.setState({
-      attendances: [...attendances],
-    })
-  }
-
-  resetWeekClass = (week, classIndex) => {
-    const attendances = this.state.attendances
-    attendances.forEach((obj, index) => {
-      attendances[index][week].classes[classIndex] = {
-        attendance: '',
-        remarks: '',
-        cancelled: false,
-        timestamp: new Date().getTime()
-      }
-    })
-    this.setState({
-      attendances: [...attendances],
-    })
-  }
-
-  cancelWeekClass = () => {
-    const attendances = this.state.attendances
-    const week = this.state.cancelClassWeek
-    const classIndex = this.state.cancelClassIndex
-    attendances.forEach((obj, index) => {
-      attendances[index][week].classes[classIndex].cancelled = true
-      attendances[index][week].classes[classIndex].remarks = this.state.cancelClassRemarks
-    })
-    this.setState({
-      attendances: [...attendances],
-      cancelClassIndex: -1,
-      cancelClassWeek: '',
-      cancelClassModalOpen: false
-    })
-  }
-
-  addClassInWeek = (week) => {
-    const attendances = this.state.attendances
-    attendances.forEach((obj, index) => {
-      attendances[index][week].classes.push({
-        attendance: '',
-        remarks: '',
-        cancelled: false,
-        timestamp: new Date().getTime()
-      })
-    })
-    this.setState({
-      attendances: [...attendances],
-    })
-  }
-
-  removeClassInWeek = (week, classIndex) => {
-    if (classIndex == 0) return
-    console.log('removeClassInWeek', week, classIndex)
-    const attendances = this.state.attendances
-    attendances.forEach((obj, index) => {
-      attendances[index][week].classes = attendances[index][week].classes.filter((o, i) => i != classIndex)
-    })
-    this.setState({
-      attendances: [...attendances],
-    })
-  }
-
   generateAttendances = (callback) => {
     const attendances = []
-    console.log('courseStudents', this.state.courseStudents)
+
+    const attendance_obj = {}
+
     this.state.courseStudents.map(studentCourse => {
-      console.log(studentCourse)
+      if (studentCourse.attendance) {
+        Object.keys(studentCourse.attendance).filter(k => k.startsWith('week')).forEach((week) => {
+          if (!attendance_obj[week]) attendance_obj[week] = {classes: []}
+          studentCourse.attendance[week].classes.forEach((weekClass, c_index) => {
+            if (!attendance_obj[week].classes[c_index]) attendance_obj[week].classes[c_index] = {...weekClass, attendance: ""}
+          })
+        })
+      }
+    })
+
+    this.state.courseStudents.map(studentCourse => {
+      const inner_attendance_obj = JSON.parse(JSON.stringify(attendance_obj))
       const obj = {
         student_batch_id: studentCourse.student_batch_id,
+        ...inner_attendance_obj
       }
-      if (Object.keys(studentCourse.attendance).some(k => k.startsWith('week'))) {
-        Object.keys(studentCourse.attendance).filter(k => k.startsWith('week')).forEach((week, index) => {
-          obj[week] = studentCourse.attendance[week]
+      Object.keys(studentCourse.attendance).filter(k => k.startsWith('week')).forEach((week, index) => {
+        studentCourse.attendance[week].classes.forEach((weekClass, c_index) => {
+          obj[week].classes[c_index].attendance = weekClass.attendance
         })
-      } else {
-        Array(16).fill(0).forEach((e, index) => {
-          obj[`week${index + 1}`] = {
-            classes: [{
-              attendance: '',
-              remarks: '',
-              cancelled: false,
-              timestamp: new Date().getTime()
-            }]
-          }
-        })
-      }
+      })
       attendances.push(obj)
     })
+
     console.log('generateAttendances', attendances)
     this.setState({
       attendances: [...attendances]
     }, () => callback ? callback() : null)
-  }
-
-  updateStudentAttendace = (week, classIndex, student_batch_id, value) => {
-    console.log('updateStudentAttendace', week, classIndex, student_batch_id, value)
-    value = value.toUpperCase()
-    if (value != 'A' && value != 'P' && value != 'L') return
-    const attendances = this.state.attendances
-    attendances.forEach((obj, index) => {
-      if (attendances[index].student_batch_id == student_batch_id) {
-        attendances[index][week].classes[classIndex].attendance = value
-      }
-    })
-    this.setState({
-      attendances: [...attendances],
-    })
   }
 
   timeoutAlert = () => {
@@ -424,7 +314,6 @@ class MisStudentCourseAttendance extends React.Component {
                                           key={`input-${(studentsIndex + 1) + (classesCounter * this.state.courseStudents.length)}`}
                                           onFocus={(e) => e.target.select()}
                                           value={weekClass.attendance}
-                                          onChange={(e) => this.updateStudentAttendace(`week${weekIndex + 1}`, classIndex, student.student_batch_id, e.target.value)}
                                           sx={{ '.MuiInputBase-input': { fontSize: '15px' }, width: '40px' }}
                                           type="tel" size="small" />
                                       </StyledTableCell>

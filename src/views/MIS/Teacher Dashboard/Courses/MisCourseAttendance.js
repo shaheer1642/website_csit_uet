@@ -290,30 +290,34 @@ class MisCourseAttendance extends React.Component {
 
   generateAttendances = (callback) => {
     const attendances = []
-    console.log('courseStudents', this.state.courseStudents)
+
+    const attendance_obj = {}
+
     this.state.courseStudents.map(studentCourse => {
-      console.log(studentCourse)
+      if (studentCourse.attendance) {
+        Object.keys(studentCourse.attendance).filter(k => k.startsWith('week')).forEach((week) => {
+          if (!attendance_obj[week]) attendance_obj[week] = {classes: []}
+          studentCourse.attendance[week].classes.forEach((weekClass, c_index) => {
+            if (!attendance_obj[week].classes[c_index]) attendance_obj[week].classes[c_index] = {...weekClass, attendance: ""}
+          })
+        })
+      }
+    })
+
+    this.state.courseStudents.map(studentCourse => {
+      const inner_attendance_obj = JSON.parse(JSON.stringify(attendance_obj))
       const obj = {
         student_batch_id: studentCourse.student_batch_id,
+        ...inner_attendance_obj
       }
-      if (Object.keys(studentCourse.attendance).some(k => k.startsWith('week'))) {
-        Object.keys(studentCourse.attendance).filter(k => k.startsWith('week')).forEach((week, index) => {
-          obj[week] = studentCourse.attendance[week]
+      Object.keys(studentCourse.attendance).filter(k => k.startsWith('week')).forEach((week, index) => {
+        studentCourse.attendance[week].classes.forEach((weekClass, c_index) => {
+          obj[week].classes[c_index].attendance = weekClass.attendance
         })
-      } else {
-        Array(16).fill(0).forEach((e, index) => {
-          obj[`week${index + 1}`] = {
-            classes: [{
-              attendance: '',
-              remarks: '',
-              cancelled: false,
-              timestamp: new Date().getTime()
-            }]
-          }
-        })
-      }
+      })
       attendances.push(obj)
     })
+    
     console.log('generateAttendances', attendances)
     this.setState({
       attendances: [...attendances]
