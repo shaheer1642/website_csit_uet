@@ -230,7 +230,7 @@ class Login extends React.Component {
             </Grid>
           }
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
-            <CustomButton onClick={this.login} tabIndex={3} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Login"} disabled={this.state.callingApi} />
+            <CustomButton onClick={this.login} tabIndex={3} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Login"} disabled={this.state.callingApi == 'loginAuth'} />
           </Grid>
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
             <Link href="#" sx={{":hover": {color: 'primary.light'}, color: 'white', textDecoration: 'underline'}} onClick={() => this.setState({ activePanel: 'resetPasswordPanel1' })}>Reset Password</Link>
