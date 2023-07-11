@@ -1,3 +1,5 @@
+import { socket, socketHasConnected } from "../websocket/socket";
+
 function dynamicSort(property) {
     var sortOrder = 1;
     if(property[0] === "-") {
@@ -141,9 +143,25 @@ function filterObjectByKeys(object,keysArr) {
     }, {})
 }
 
+var semesters_array = []
+socketHasConnected().then(fetchSemesters)
+socket.on('semesters/listener/insert',fetchSemesters)
+socket.on('semesters/listener/update',fetchSemesters)
+socket.on('semesters/listener/delete',fetchSemesters)
+function fetchSemesters() {
+    console.log('[Functions.js] fetchSemesters called')
+    socket.emit('semesters/fetch',(res) => {
+        if (res.code == 200) semesters_array = res.data
+    })
+}
 function convertTimestampToSeasonYear(ts) {
     ts = Number(ts)
-    return `${new Date(ts).getMonth() < 7 ? 'Spring' : 'Fall'} ${new Date(ts).getFullYear()}`
+    for (const semester of semesters_array) {
+        if (ts >= semester.semester_start_timestamp && ts <= semester.semester_end_timestamp) 
+            return `${convertUpper(semester.semester_season)} ${semester.semester_year}`
+    }
+    const season = new Date(ts).getMonth() < 2 || new Date(ts).getMonth() > 8 ? 'Fall' : 'Spring'
+    return `${season} ${new Date(ts).getFullYear() + (new Date(ts).getMonth() < 2 ? 1 : 0)}`
 }
 
 function calculateDegreeExpiry(data) {
