@@ -226,7 +226,7 @@ class MisStudentsUpdate extends React.Component {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography variant="h2">
-                  Degree Extention
+                  Degree Extension
                 </Typography>
               </Grid>
               <Grid item xs={12}>
@@ -234,13 +234,14 @@ class MisStudentsUpdate extends React.Component {
                 <Field name='History' alignment='vertical' value={this.state.student.degree_extension_periods.map(ext => <Typography>Extended by {ext.period/86400000} days ({ext.reason})</Typography>)} />
               </Grid>
               <Grid item xs={12}>
-                <CustomTextField label='Extention Period (in days)' variant='filled' type='number' value={this.state.degree_extension_period} onChange={(e) => this.setState({degree_extension_period: e.target.value})}/>
+                <CustomTextField label='Extension Period (in days)' variant='filled' type='number' value={this.state.degree_extension_period} onChange={(e) => this.setState({degree_extension_period: e.target.value})}/>
               </Grid>
               <Grid item xs={6}>
                 <CustomTextField fullWidth label='Reason / Notification No.' variant='filled' value={this.state.degree_extension_reason} onChange={(e) => this.setState({degree_extension_reason: e.target.value})}/>
               </Grid>
               <Grid item xs={12}>
                 <CustomButton 
+                  disabled = {!Number(this.state.degree_extension_period) || !this.state.degree_extension_reason}
                   label={'Extend Degree Time'} 
                   callingApiState={this.state.callingApi == 'extendDegreeTime'}
                   variant='contained'

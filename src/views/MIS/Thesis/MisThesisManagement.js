@@ -80,8 +80,8 @@ class MisThesisManagement extends React.Component {
       thesisExaminersOpen: false,
       thesisExaminersType: '',
     }
-    this.student_batch_id = this.props.location.state.student_batch_id || this.props.location.state.student_batch?.student_batch_id
-    this.context_info = this.props.location.state.context_info
+    this.student_batch_id = this.props.location.state?.student_batch_id || this.props.location.state?.student_batch?.student_batch_id
+    this.context_info = this.props.location.state?.context_info
     this.student_view = user.user_type == 'student'
     this.teacher_view = user.user_type == 'teacher'
 

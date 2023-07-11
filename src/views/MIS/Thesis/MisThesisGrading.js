@@ -177,7 +177,6 @@ class MisThesisGrading extends React.Component {
                       sx={{ width: '200px' }}
                       InputLabelProps={{ shrink: true }}
                       label='Completion Date'
-                      readOnly={this.student_view}
                       value={this.state.student_thesis.completion_timestamp ? new Date(Number(this.state.student_thesis.completion_timestamp)).toISOString().split('T')[0] : null}
                       onChange={(e) => this.setState({ student_thesis: { ...this.state.student_thesis, completion_timestamp: new Date(e.target.value).getTime() } })} />
                   </Grid>

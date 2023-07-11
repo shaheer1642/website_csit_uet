@@ -17,7 +17,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import { Collapse, Grid } from '@mui/material';
+import { Collapse, Grid, Tooltip } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import * as Icon from '@mui/icons-material';
@@ -32,7 +32,7 @@ import eventHandler from '../eventHandler';
 import {user} from './../objects/User'
 import * as Color from "@mui/material/colors";
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -143,9 +143,33 @@ function MisLayout() {
     //navigate("/login")
   }
 
-  if (!user) return (
-    <Navigate to='/login' />
-  )
+  const DrawerItem = (props) => {
+    return (
+      <Tooltip title={props.name} placement='right' disableHoverListener={open}>
+        <ListItemButton
+          component={props.navigation ? Link : undefined} 
+          to={props.navigation}
+          sx={{
+            minHeight: 48,
+            justifyContent: open ? 'initial' : 'center',
+            px: 2.5,
+          }}
+          onClick={() => props.onClick ? props.onClick() : setCurrentMenu(props.name)}
+        >
+          <ListItemIcon
+            sx={{
+              minWidth: 0,
+              mr: open ? 3 : 'auto',
+              justifyContent: 'center',
+            }}
+          >
+            <props.icon style={{color: currentMenu == props.name ? Color.deepPurple[500] : props.iconColor}} />
+          </ListItemIcon>
+          <ListItemText primary={props.name} sx={{ opacity: open ? 1 : 0, color: currentMenu == props.name ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+        </ListItemButton>
+      </Tooltip>
+    )
+  }
 
   return (
     <React.Fragment>
@@ -178,366 +202,87 @@ function MisLayout() {
             </DrawerHeader>
             <List>
               {['admin','pga'].includes(user.user_type) ? 
-                <ListItemButton
-                  component={Link} 
-                  to="events"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('events')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Campaign style={{color: currentMenu == 'events' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Events' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'events' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Events" navigation="events" icon={Icon.Campaign} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ? 
-                <ListItemButton
-                  component={Link} 
-                  to="documents"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('documents')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Description style={{color: currentMenu == 'documents' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Documents' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'documents' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Documents" navigation="documents" icon={Icon.Description} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ? 
-                <ListItemButton
-                  component={Link} 
-                  to="departments"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('departments')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Apartment style={{color: currentMenu == 'departments' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Department Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'departments' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Department Management" navigation="departments" icon={Icon.Apartment} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ? 
-                <ListItemButton
-                  component={Link} 
-                  to="batches"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('batches')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.ManageAccounts style={{color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Batch Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'batches' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Batch Management" navigation="batches" icon={Icon.ManageAccounts} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ? 
-                <ListItemButton
-                  component={Link} 
-                  to="semesters"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('semesters')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.CastForEducation style={{color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Semester Management' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'semesters' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Semester Management" navigation="semesters" icon={Icon.CastForEducation} /> : <></>
               }
 
               {['teacher'].includes(user.user_type) ?
-                <ListItemButton
-                  component={Link} 
-                  to="tportal/courses"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('courses')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Courses" navigation="tportal/courses" icon={Icon.Book} /> : <></>
               }
               
               {['student'].includes(user.user_type) ?
-                <ListItemButton
-                  component={Link} 
-                  to="sportal/courses"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('courses')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Courses" navigation="sportal/courses" icon={Icon.Book} /> : <></>
               }
 
               {['pga','student','teacher'].includes(user.user_type) ? 
-                <ListItemButton
-                  component={Link} 
-                  to={user.user_type == 'student' ? "thesis/manage" : "thesis"}
-                  state={{student_view: user.user_type == 'student', teacher_view: user.user_type == 'teacher'}}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('thesis')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Article style={{color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary={user.user_type == 'pga' ? 'Thesis Management' : 'Thesis'} sx={{ opacity: open ? 1 : 0, color: currentMenu == 'thesis' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name={user.user_type == 'pga' ? 'Thesis Management' : 'Thesis'} navigation={user.user_type == 'student' ? "thesis/manage" : "thesis"} icon={Icon.Article} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ?
-                <ListItemButton
-                  component={Link} 
-                  to="teachers"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('teachers')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.School  style={{color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Instructors' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachers' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Instructors" navigation="teachers" icon={Icon.School} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ? 
-                <ListItemButton
-                  component={Link}
-                  to="courses"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('courses')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Book style={{color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Courses' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'courses' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Courses" navigation="courses" icon={Icon.Book} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ? 
-                <ListItemButton
-                  component={Link}
-                  to="studentPerformance"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('studentPerformance')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.QueryStats style={{color: currentMenu == 'studentPerformance' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Student Performance' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'studentPerformance' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Student Performance" navigation="studentPerformance" icon={Icon.QueryStats} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ? 
-                <ListItemButton
-                  component={Link}
-                  to="teachersPerformance"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('teachersPerformance')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.QueryStats style={{color: currentMenu == 'teachersPerformance' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Instructors Performance' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'teachersPerformance' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Instructors Performance" navigation="teachersPerformance" icon={Icon.QueryStats} /> : <></>
               }
 
               {['teacher'].includes(user.user_type) ?
-                <ListItemButton
-                  component={Link} 
-                  to="tportal/performance"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                  }}
-                  onClick={() => setCurrentMenu('performance')}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.QueryStats style={{color: currentMenu == 'performance' ? Color.deepPurple[500] : undefined}}/>
-                  </ListItemIcon>
-                  <ListItemText primary='Performance Report' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'performance' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
+                <DrawerItem name="Performance Report" navigation="tportal/performance" icon={Icon.QueryStats} /> : <></>
               }
 
               {['student'].includes(user.user_type) ?
-                <ListItemButton
-                  component={Link} 
-                  to="sportal/transcript"
+                <DrawerItem name="Transcript" navigation="sportal/transcript" icon={Icon.Summarize} /> : <></>
+              }
+
+              <Tooltip title='Applications' placement='right' disableHoverListener={open}>
+                <ListItemButton 
+                  component={Link}
+                  to="applications/viewApplications"
                   sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
+                      minHeight: 48,
+                      justifyContent: open ? 'initial' : 'center',
+                      px: 2.5,
                   }}
-                  onClick={() => setCurrentMenu('transcript')}
+                  onClick={() => {
+                    setCurrentMenu('viewApplications')
+                    setApplicationsOpen(!applicationsOpen)
+                  }}
                 >
                   <ListItemIcon
                     sx={{
                       minWidth: 0,
                       mr: open ? 3 : 'auto',
                       justifyContent: 'center',
-                    }}
-                  >
-                    <Icon.Summarize style={{color: currentMenu == 'transcript' ? Color.deepPurple[500] : undefined}}/>
+                  }}>
+                    <InboxIcon />
                   </ListItemIcon>
-                  <ListItemText primary='Transcript' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'transcript' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-                </ListItemButton> : <></>
-              }
-
-              <ListItemButton 
-                component={Link}
-                to="applications/viewApplications"
-                sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                }}
-                onClick={() => {
-                  setCurrentMenu('viewApplications')
-                  setApplicationsOpen(!applicationsOpen)
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                }}>
-                  <InboxIcon />
-                </ListItemIcon>
-                <ListItemText primary="Applications" sx={{ opacity: open ? 1 : 0, '&:hover': {color: Color.deepPurple[700]} }}/>
-                {open ? applicationsOpen ? <Icon.ExpandLess /> : <Icon.ExpandMore /> : <></>}
-              </ListItemButton>
+                  <ListItemText primary="Applications" sx={{ opacity: open ? 1 : 0, '&:hover': {color: Color.deepPurple[700]} }}/>
+                  {open ? applicationsOpen ? <Icon.ExpandLess /> : <Icon.ExpandMore /> : <></>}
+                </ListItemButton>
+              </Tooltip>
 
               <Collapse in={open ? applicationsOpen : false} timeout="auto" unmountOnExit>
 
@@ -589,71 +334,12 @@ function MisLayout() {
 
               <Divider />
 
-              <ListItemButton
-                component={Link} 
-                to="profile"
-                state={{student_view: true}}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-                onClick={() => setCurrentMenu('profile')}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Icon.AccountCircle style={{color: currentMenu == 'profile' ? Color.deepPurple[500] : undefined}}/>
-                </ListItemIcon>
-                <ListItemText primary='My Profile' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'profile' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-              </ListItemButton>
+              <DrawerItem name="My Profile" navigation="profile" icon={Icon.AccountCircle} />
 
-              <ListItemButton
-                component={Link} 
-                to="help"
-                state={{student_view: true}}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-                onClick={() => setCurrentMenu('help')}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Icon.Help style={{color: currentMenu == 'help' ? Color.deepPurple[500] : undefined}}/>
-                </ListItemIcon>
-                <ListItemText primary='Help' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'help' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
-              </ListItemButton>
+              <DrawerItem name="Help" navigation="help" icon={Icon.Help} />
 
-              <ListItemButton
-                onClick={onLogoutClick}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Icon.PowerSettingsNew style={{ color: 'Red' }} />
-                </ListItemIcon>
-                <ListItemText primary='Logout'  sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
+              <DrawerItem name="Logout" icon={Icon.PowerSettingsNew} iconColor='Red' onClick={() => onLogoutClick()}/>
+
             </List>
           </Drawer>
           <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: Color.grey[100], minHeight: '100vh' }}>

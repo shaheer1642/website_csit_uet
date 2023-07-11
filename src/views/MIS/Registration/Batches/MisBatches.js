@@ -122,7 +122,7 @@ class MisBatches extends React.Component {
           <CustomCard>
             <Grid container spacing={3} padding={1}>
               <Grid item xs={12}>
-                <Typography variant="h2" >Select Batch</Typography>
+                <Typography variant="h2" >Batches</Typography>
               </Grid>
               <Grid item xs={'auto'}>
                 <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})}>
