@@ -139,7 +139,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
                   </StyledTableRow >
                 </TableHead>
                 <TableBody>
-                  {this.props.rows.filter(row => !this.state.searchText ? true : Object.values(row).some(val => val?.toString().toLowerCase().includes(this.state.searchText))).slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
+                  {this.props.rows.filter(row => !this.state.searchText ? true : Object.values(row).some(val => val?.toString().toLowerCase().includes(this.state.searchText?.toLowerCase()))).slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage)
                     .map((row, index) => {
                       return (
                         <TableRow hover role="checkbox" key={index} sx={((this.props.rowSx ? this.props.rowSx(row) : undefined) || {
@@ -161,7 +161,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
                             );
                           })}
                           {this.props.onEditClick || this.props.onDeleteClick || this.props.onViewClick?
-                            <StyledTableCell key="action_buttons">
+                            <StyledTableCell key="action_buttons" sx={{minWidth: '120px'}}>
                               {this.props.onEditClick ? 
                               <IconButton style={{ color: Color.deepPurple[500] }} onClick={() => this.props.onEditClick(row)}><Edit /></IconButton>:<></>}
                               {this.props.onDeleteClick ?

@@ -26,7 +26,7 @@ import LoadingIcon from "../../../../../components/LoadingIcon";
 import CustomCard from "../../../../../components/CustomCard";
 import CustomSelect from "../../../../../components/CustomSelect";
 import ContextInfo from "../../../../../components/ContextInfo";
-import { convertUpper } from "../../../../../extras/functions";
+import { calculateDegreeExpiry, convertUpper } from "../../../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -154,7 +154,7 @@ class MisCoursesStudents extends React.Component {
       .map(student => ({ 
         id: student.student_batch_id, 
         label: `${student.student_name} (${student.reg_no || student.cnic}) - ${student.total_credit_hours || 0} CH | ${student.total_core_courses || 0} Cores | ${student.total_elective_courses || 0} Electives ${student.degree_completed ? '[Graduated]' : student.admission_cancelled ? '[Admission Cancelled]' : student.semester_frozen ? '[Semester Frozen]' : ''}`.trim(), 
-        batch: `Batch#${student.batch_no.toString().padStart(2,'0')} (${student.degree_type}) ${student.batch_expiration_timestamp <= new Date().getTime() ? '[Time Barred]' : ''}`.trim(),
+        batch: `Batch#${student.batch_no.toString().padStart(2,'0')} (${convertUpper(student.degree_type)}) ${calculateDegreeExpiry(student) <= new Date().getTime() ? '[Time Barred]' : ''}`.trim(),
         disabled: student.degree_completed || student.admission_cancelled || student.semester_frozen
       }));
     return (

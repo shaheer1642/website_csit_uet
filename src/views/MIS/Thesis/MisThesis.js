@@ -11,7 +11,7 @@ import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
 import { timeLocale } from "../../../objects/Time";
-import { convertTimestampToSeasonYear, convertUpper } from "../../../extras/functions";
+import { calculateDegreeExpiry, convertTimestampToSeasonYear, convertUpper } from "../../../extras/functions";
 import { getUserNameById } from "../../../objects/Users_List";
 import { user } from "../../../objects/User";
 
@@ -89,7 +89,7 @@ class MisThesis extends React.Component {
       { id: "thesis_title", label: "Title", format: (value) => value },
       { id: "thesis_type", label: "Type", format: (value) => convertUpper(value) },
       { id: "supervisor_id", label: "Supervisor", format: (value) => value },
-      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value) },
+      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value), valueFunc: (row) => calculateDegreeExpiry(row)},
     ];
     return (
       <CustomCard>
@@ -141,7 +141,7 @@ class MisThesis extends React.Component {
                   backgroundColor: Color.green[100]
               } : row.grade == 'U' ? {
                 backgroundColor: Color.yellow[100]
-              } : row.batch_expiration_timestamp < new Date().getTime() ? {
+              } : calculateDegreeExpiry(row) < new Date().getTime() ? {
                 backgroundColor: Color.red[100]
             } : undefined
             }}

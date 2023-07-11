@@ -23,7 +23,7 @@ import ConfirmationModal from "../../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../../components/GoBackButton";
 import CustomCard from "../../../../../components/CustomCard";
 import ContextInfo from "../../../../../components/ContextInfo";
-import { convertUpper } from "../../../../../extras/functions";
+import { calculateDegreeExpiry, convertTimestampToSeasonYear, convertUpper } from "../../../../../extras/functions";
 
 const palletes = {
   primary: "#439CEF",
@@ -288,6 +288,7 @@ class MisStudent extends React.Component {
       { id: "user_email", label: "Email", format: (value) => value },
       { id: "student_address", label: "Home Address", format: (value) => value },
       { id: "student_gender", label: "Gender", format: (value) => convertUpper(value) },
+      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value), valueFunc: (row) => calculateDegreeExpiry(row)},
     ];
     return (
       <Grid container rowSpacing={"20px"}>

@@ -4,28 +4,22 @@ import FormGenerator from '../../../../../components/FormGenerator';
 import { socket } from '../../../../../websocket/socket';
 import { withRouter } from '../../../../../withRouter';
 import LoadingIcon from '../../../../../components/LoadingIcon';
-import { CircularProgress, Grid } from '@mui/material'
+import { CircularProgress, Grid, Typography } from '@mui/material'
 import GoBackButton from '../../../../../components/GoBackButton';
 import CustomButton from '../../../../../components/CustomButton';
 import ConfirmationModal from '../../../../../components/ConfirmationModal';
+import CustomCard from '../../../../../components/CustomCard';
+import Field from '../../../../../components/Field';
+import CustomTextField from '../../../../../components/CustomTextField';
 
 class MisStudentsUpdate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      callingApi: '',
-      cnic: '',
-      reg_no: '',
-      student_name: '',
-      student_father_name: '',
-      student_address: '',
-      student_gender: 'Male',
-      student_admission_status: '',
-      student_contact_no: '',
-      user_email: '',
+      callingApi: 'fetchData',
       student: undefined,
-
+      degree_extension_period: 0,
+      degree_extension_reason: '',
       confirmationModalShow: false,
       confirmationModalMessage: "",
       confirmationModalExecute: () => {},
@@ -39,25 +33,26 @@ class MisStudentsUpdate extends React.Component {
   }
 
   fetchData = () => {
-    this.setState({loading: true})
+    this.setState({callingApi: 'fetchData'})
     socket.emit('students/fetch', {student_id: this.student_id, batch_id: this.batch_id}, (res) => {
       console.log('[students/fetch] response:',res)
       if (res.code == 200) {
-        const student = res.data[0]
         this.setState({
-          loading: false,
-          cnic: student.cnic,
-          reg_no: student.reg_no,
-          student_name: student.student_name,
-          student_father_name: student.student_father_name,
-          student_address: student.student_address,
-          student_gender: student.student_gender,
-          student_admission_status: student.student_admission_status,
-          student_contact_no: student.student_contact_no,
-          user_email: student.user_email,
-          student: student
+          callingApi: '',
+          student: res.data[0]
         })
       }
+    })
+  }
+
+  extendDegreeTime = () => {
+    this.setState({callingApi: 'extendDegreeTime'})
+    socket.emit('students/extendDegreeTime',{
+      student_batch_id: this.state.student.student_batch_id, 
+      degree_extension_period: {period: Number(this.state.degree_extension_period) * 86400000, reason: this.state.degree_extension_reason}, 
+    }, (res) => {
+      this.setState({callingApi: ''})
+      this.fetchData()
     })
   }
 
@@ -96,7 +91,7 @@ class MisStudentsUpdate extends React.Component {
 
   render() {
     return (
-      this.state.loading ? <LoadingIcon />:
+      this.state.callingApi == 'fetchData' ? <LoadingIcon />:
       <Grid container rowSpacing={"20px"}>
         <GoBackButton context={this.props.navigate}/>
         <Grid item xs={12}>
@@ -124,31 +119,31 @@ class MisStudentsUpdate extends React.Component {
               },
               cnic: {
                 label: "CNIC",
-                defaultValue: this.state.cnic,
+                defaultValue: this.state.student.cnic,
                 position: 3,
                 xs: 6,
               },
               reg_no: {
                 label: "Registration No",
-                defaultValue: this.state.reg_no,
+                defaultValue: this.state.student.reg_no,
                 position: 4,
                 xs: 6,
               },
               student_name: {
                 label: "Student Name",
-                defaultValue: this.state.student_name,
+                defaultValue: this.state.student.student_name,
                 position: 5,
                 xs: 6,
               },
               student_father_name: {
                 label: "Father Name",
-                defaultValue: this.state.student_father_name,
+                defaultValue: this.state.student.student_father_name,
                 position: 6,
                 xs: 6,
               },
               student_gender: {
                 label: "Gender",
-                defaultValue: this.state.student_gender,
+                defaultValue: this.state.student.student_gender,
                 position: 7,
                 xs: 6,
                 fieldType: 'radiobox',
@@ -156,7 +151,7 @@ class MisStudentsUpdate extends React.Component {
               },
               student_admission_status: {
                 label: "Admission Status",
-                defaultValue: this.state.student_admission_status,
+                defaultValue: this.state.student.student_admission_status,
                 position: 8,
                 xs: 6,
                 fieldType: 'radiobox',
@@ -164,19 +159,19 @@ class MisStudentsUpdate extends React.Component {
               },
               user_email: {
                 label: "Email",
-                defaultValue: this.state.user_email,
+                defaultValue: this.state.student.user_email,
                 position: 9,
                 xs: 6,
               },
               student_contact_no: {
                 label: "Contact #",
-                defaultValue: this.state.student_contact_no,
+                defaultValue: this.state.student.student_contact_no,
                 position: 10,
                 xs: 6,
               },
               student_address: {
                 label: "Address",
-                defaultValue: this.state.student_address,
+                defaultValue: this.state.student.student_address,
                 position: 11,
                 xs: 6,
               },
@@ -225,6 +220,39 @@ class MisStudentsUpdate extends React.Component {
               />
             </Grid>
           </FormGenerator>
+        </Grid>
+        <Grid item xs={12}>
+          <CustomCard>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h2">
+                  Degree Extention
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Field name='Total Extensions' value={this.state.student.degree_extension_periods.length} />
+                <Field name='History' alignment='vertical' value={this.state.student.degree_extension_periods.map(ext => <Typography>Extended by {ext.period/86400000} days ({ext.reason})</Typography>)} />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomTextField label='Extention Period (in days)' variant='filled' type='number' value={this.state.degree_extension_period} onChange={(e) => this.setState({degree_extension_period: e.target.value})}/>
+              </Grid>
+              <Grid item xs={6}>
+                <CustomTextField fullWidth label='Reason / Notification No.' variant='filled' value={this.state.degree_extension_reason} onChange={(e) => this.setState({degree_extension_reason: e.target.value})}/>
+              </Grid>
+              <Grid item xs={12}>
+                <CustomButton 
+                  label={'Extend Degree Time'} 
+                  callingApiState={this.state.callingApi == 'extendDegreeTime'}
+                  variant='contained'
+                  onClick={() => this.setState({
+                    confirmationModalShow: true,
+                    confirmationModalMessage: `Are you sure you want to extend degree time for this student?`,
+                    confirmationModalExecute: () => this.extendDegreeTime()
+                  })}
+                />
+              </Grid>
+            </Grid>
+          </CustomCard>
         </Grid>
         <ConfirmationModal
           open={this.state.confirmationModalShow}

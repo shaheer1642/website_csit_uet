@@ -27,7 +27,6 @@ socket.on('users/listener/delete',() => {
 })
 
 function getUserNameById(user_id) {
-    console.log('[getUserNameById]',user_id,users_list[user_id]?.name)
     return users_list[user_id]?.name || user_id
 }
 

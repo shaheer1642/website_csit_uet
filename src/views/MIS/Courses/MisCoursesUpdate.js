@@ -58,10 +58,16 @@ class MisCoursesUpdate extends React.Component {
                 position: 2,
                 xs: 6,
               },
+              course_description: {
+                label: 'Course Description',
+                defaultValue: this.state.course.course_description,
+                position: 3,
+                xs: 12,
+              },
               course_type: {
                 label: 'Course Type',
                 defaultValue: this.state.course.course_type,
-                position: 2,
+                position: 4,
                 xs: 6,
                 fieldType: 'radiobox',
                 fieldTypeOptions: ['core', 'elective']
@@ -69,14 +75,14 @@ class MisCoursesUpdate extends React.Component {
               credit_hours: {
                 label: "Credit Hours",
                 defaultValue: this.state.course.credit_hours,
-                position: 3,
+                position: 5,
                 xs: 12,
                 width: '150px'
               },
               department: {
                 label: "Department",
                 defaultValue: this.state.course.department,
-                position: 3,
+                position: 6,
                 xs: 6,
               },
             }}

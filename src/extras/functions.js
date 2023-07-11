@@ -146,9 +146,13 @@ function convertTimestampToSeasonYear(ts) {
     return `${new Date(ts).getMonth() < 7 ? 'Spring' : 'Fall'} ${new Date(ts).getFullYear()}`
 }
 
+function calculateDegreeExpiry(data) {
+    return Number(data.batch_expiration_timestamp) + data.degree_extension_periods.reduce((sum,ext) => sum += Number(ext.period),0)
+}
+
 export {
     dynamicSort,dynamicSortDesc,msToTime,msToFullTime,
     getRandomColor,embedScore,convertUpper,getTodayStartMs,
     getWeekStartMs,getMonthStartMs,calcArrAvg,isEmailValid,
-    filterObjectByKeys,convertTimestampToSeasonYear
+    filterObjectByKeys,convertTimestampToSeasonYear,calculateDegreeExpiry
 }

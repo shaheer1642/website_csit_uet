@@ -32,22 +32,27 @@ class MisCoursesCreate extends React.Component {
                 position: 2,
                 xs: 6
               },
+              course_description: {
+                label: 'Course Description',
+                position: 3,
+                xs: 12,
+              },
               course_type: {
                 label: 'Course Type',
-                position: 2,
+                position: 4,
                 xs: 6,
                 fieldType: 'radiobox',
                 fieldTypeOptions: ['core', 'elective']
               },
               department: {
                 label: "Department",
-                position: 3,
+                position: 5,
                 defaultValue: true,
                 xs: 6
               },
               credit_hours: {
                 label: "Credit Hours",
-                position: 3,
+                position: 6,
                 xs: 12,
                 width: '150px'
               },
