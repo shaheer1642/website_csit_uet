@@ -214,7 +214,11 @@ function MisLayout() {
               }
 
               {['admin','pga'].includes(user.user_type) ? 
-                <DrawerItem name="Batch Management" navigation="batches" icon={Icon.ManageAccounts} /> : <></>
+                <DrawerItem name="Batch Management" navigation="batches" icon={Icon.People} /> : <></>
+              }
+
+              {['admin','pga'].includes(user.user_type) ? 
+                <DrawerItem name="Student Management" navigation="students" icon={Icon.ManageAccounts} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ? 
@@ -242,7 +246,7 @@ function MisLayout() {
               }
 
               {['admin','pga'].includes(user.user_type) ? 
-                <DrawerItem name="Student Performance" navigation="studentPerformance" icon={Icon.QueryStats} /> : <></>
+                <DrawerItem name="Student Performance" navigation="studentPerformance" icon={Icon.Troubleshoot} /> : <></>
               }
 
               {['admin','pga'].includes(user.user_type) ? 

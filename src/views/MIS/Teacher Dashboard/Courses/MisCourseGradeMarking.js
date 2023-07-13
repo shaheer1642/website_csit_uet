@@ -132,13 +132,12 @@ class MisCourseGradeMarking extends React.Component {
     this.state = {
       semesterCourse: {},
       courseStudents: [],
-      loading: true,
       markings: [],
 
       alertMsg: '',
       alertSeverity: 'warning',
 
-      callingApi: false,
+      callingApi: 'fetchData',
       collapseOpen: false,
 
       confirmationModalShow: false,
@@ -166,7 +165,7 @@ class MisCourseGradeMarking extends React.Component {
   }
 
   fetchData = () => {
-    this.setState({ loading: true })
+    this.setState({ callingApi: 'fetchData' })
     socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
       if (res.code == 200 && res.data.length == 1) {
         const semesterCourse = res.data[0]
@@ -175,7 +174,7 @@ class MisCourseGradeMarking extends React.Component {
             return this.setState({
               semesterCourse: semesterCourse,
               courseStudents: res.data.filter(o => o.grade != 'W'),
-            }, () => this.generateMarkings(() => this.setState({ loading: false })));
+            }, () => this.generateMarkings(() => this.setState({ callingApi: '' })));
           }
         });
       }
@@ -243,18 +242,31 @@ class MisCourseGradeMarking extends React.Component {
   }
 
   lockGrades = () => {
+    this.setState({ callingApi: 'lockGrades' })
     socket.emit("semestersCourses/lockGrades", { sem_course_id: this.sem_course_id }, (res) => {
       this.setState({
+        callingApi: '',
         alertMsg: res.code == 200 ? 'Grades Locked' : `${res.status}: ${res.message}`,
         alertSeverity: res.code == 200 ? 'success' : 'warning'
       }, this.timeoutAlert)
     });
   }
 
+  updateMarkings = () => {
+    this.setState({ callingApi: 'updateMarkings' })
+    socket.emit(`studentsCourses/updateMarkings`, { sem_course_id: this.sem_course_id, markings: this.state.markings }, res => {
+      this.setState({
+        callingApi: '',
+        alertMsg: res.code == 200 ? 'Updated student markings' : `${res.status}: ${res.message}`,
+        alertSeverity: res.code == 200 ? 'success' : 'warning'
+      }, this.timeoutAlert)
+    })
+  }
+
   render() {
     return (
       <Grid container>
-        {this.state.loading ? <LoadingIcon /> :
+        {this.state.callingApi == 'fetchData' ? <LoadingIcon /> :
           <CustomCard>
             <Grid container style={{ padding: '10px' }}>
               <Grid item xs={'auto'}>
@@ -354,19 +366,9 @@ class MisCourseGradeMarking extends React.Component {
                   <React.Fragment>
                     <Grid key={`griditem-3`} item xs={"auto"}>
                       <CustomButton
-                        label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
-                        disabled={this.state.callingApi}
-                        onClick={() => {
-                          this.setState({ callingApi: true })
-                          socket.emit(`studentsCourses/updateMarkings`, { sem_course_id: this.sem_course_id, markings: this.state.markings }, res => {
-                            this.setState({ callingApi: false })
-                            this.setState({
-                              alertMsg: res.code == 200 ? 'Updated student markings' : `${res.status}: ${res.message}`,
-                              alertSeverity: res.code == 200 ? 'success' : 'warning'
-                            }, this.timeoutAlert)
-                          })
-                        }}
-
+                        callingApiState={this.state.callingApi == 'updateMarkings'}
+                        label={"Save"}
+                        onClick={this.updateMarkings}
                       />
                     </Grid>
                     <Grid key={`griditem-4`} item xs={"auto"}>
@@ -377,6 +379,7 @@ class MisCourseGradeMarking extends React.Component {
                     </Grid>
                     <Grid key={`griditem-5`} item xs={"auto"}>
                       <CustomButton
+                        callingApiState={this.state.callingApi == 'lockGrades'}
                         color='error'
                         variant="outlined"
                         onClick={() =>

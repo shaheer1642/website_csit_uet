@@ -27,6 +27,7 @@ import CustomCard from "../../../../../components/CustomCard";
 import CustomSelect from "../../../../../components/CustomSelect";
 import ContextInfo from "../../../../../components/ContextInfo";
 import { calculateDegreeExpiry, convertUpper } from "../../../../../extras/functions";
+import { getCache, setCache } from "../../../../../localStorage";
 
 const palletes = {
   primary: "#439CEF",
@@ -112,14 +113,17 @@ class MisCoursesStudents extends React.Component {
           if (res.code == 200) {
             const studentsCourses = res.data
             const studentBatchIds = studentsCourses.map(studentCourse => studentCourse.student_batch_id)
+            const students = getCache('students/fetch')
+            if (students) return this.setState({students, semesterCourse, studentBatchIds, studentsCourses, loading: false})
             socket.emit("students/fetch", {}, (res) => {
               if (res.code == 200) {
                 const students = res.data
+                setCache('students/fetch',students)
                 return this.setState({
-                  students: students,
-                  semesterCourse: semesterCourse,
-                  studentBatchIds: studentBatchIds,
-                  studentsCourses: studentsCourses,
+                  students,
+                  semesterCourse,
+                  studentBatchIds,
+                  studentsCourses,
                   loading: false,
                 });
               }
@@ -151,10 +155,10 @@ class MisCoursesStudents extends React.Component {
   studentsSelectMenu = () => {
     const options = this.state.students
       .filter(student => !this.state.studentBatchIds.includes(student.student_batch_id))
-      .map(student => ({ 
-        id: student.student_batch_id, 
-        label: `${student.student_name} (${student.reg_no || student.cnic}) - ${student.total_credit_hours || 0} CH | ${student.total_core_courses || 0} Cores | ${student.total_elective_courses || 0} Electives ${student.degree_completed ? '[Graduated]' : student.admission_cancelled ? '[Admission Cancelled]' : student.semester_frozen ? '[Semester Frozen]' : ''}`.trim(), 
-        batch: `Batch#${student.batch_no.toString().padStart(2,'0')} (${convertUpper(student.degree_type)}) ${calculateDegreeExpiry(student) <= new Date().getTime() ? '[Time Barred]' : ''}`.trim(),
+      .map(student => ({
+        id: student.student_batch_id,
+        label: `${student.student_name} (${student.reg_no || student.cnic}) - ${student.total_credit_hours || 0} CH | ${student.total_core_courses || 0} Cores | ${student.total_elective_courses || 0} Electives ${student.degree_completed ? '[Graduated]' : student.admission_cancelled ? '[Admission Cancelled]' : student.semester_frozen ? '[Semester Frozen]' : ''}`.trim(),
+        batch: `Batch#${student.batch_no.toString().padStart(2, '0')} (${convertUpper(student.degree_type)}) ${calculateDegreeExpiry(student) <= new Date().getTime() ? '[Time Barred]' : ''}`.trim(),
         disabled: student.degree_completed || student.admission_cancelled || student.semester_frozen
       }));
     return (
@@ -179,6 +183,15 @@ class MisCoursesStudents extends React.Component {
     socket.emit("semestersCourses/lockChanges", { sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds }, (res) => {
       this.setState({
         alertMsg: res.code == 200 ? 'Course Locked' : `${res.status}: ${res.message}`,
+        alertSeverity: res.code == 200 ? 'success' : 'warning'
+      }, this.timeoutAlert)
+    });
+  }
+
+  unlockGrades = () => {
+    socket.emit("semestersCourses/unlockGrades", { sem_course_id: this.sem_course_id }, (res) => {
+      this.setState({
+        alertMsg: res.code == 200 ? 'Course Grades Unlocked' : `${res.status}: ${res.message}`,
         alertSeverity: res.code == 200 ? 'success' : 'warning'
       }, this.timeoutAlert)
     });
@@ -246,7 +259,7 @@ class MisCoursesStudents extends React.Component {
                       },
                     })}
                     rowSx={(student) => {
-                      return this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.grade == 'W' ) ? {
+                      return this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.grade == 'W') ? {
                         backgroundColor: Color.red[100]
                       } : this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.is_repeat) ? {
                         backgroundColor: Color.yellow[100]
@@ -288,6 +301,21 @@ class MisCoursesStudents extends React.Component {
                       }
                       label="Lock Changes"
                     />
+                    {this.state.semesterCourse.grades_locked ?
+                      <CustomButton
+                        color='error'
+                        variant="outlined"
+                        sx={{ margin: "10px" }}
+                        onClick={() =>
+                          this.setState({
+                            confirmationModalShow: true,
+                            confirmationModalMessage:
+                              "Are you sure you want to unlock grades for this course?",
+                            confirmationModalExecute: () => this.unlockGrades()
+                          })
+                        }
+                        label="Unlock Grades"
+                      /> : <></>}
                   </Grid>
                 }
               </CustomCard>

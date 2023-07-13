@@ -16,6 +16,7 @@ import ContextInfo from "../../../components/ContextInfo";
 import CustomCard from "../../../components/CustomCard";
 import { convertUpper } from "../../../extras/functions";
 import CustomTable from "../../../components/CustomTable";
+import { getCache, setCache } from "../../../localStorage";
 
 class MisStudentPerformance extends React.Component {
   constructor(props) {
@@ -35,6 +36,9 @@ class MisStudentPerformance extends React.Component {
   }
 
   fetchStudents = () => {
+    const cachedData = getCache('students/fetch')
+    if (cachedData) return this.setState({studentsArr: cachedData, callingApi: ''})
+
     this.setState({ callingApi: 'fetchStudents' })
     socket.emit('students/fetch', {}, (res) => {
       if (res.code == 200) {
@@ -42,6 +46,7 @@ class MisStudentPerformance extends React.Component {
           studentsArr: res.data,
           callingApi: ''
         })
+        setCache('students/fetch',res.data)
       }
     })
   }
