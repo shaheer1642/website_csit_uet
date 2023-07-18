@@ -33,11 +33,9 @@ export default class MisHome extends React.Component {
 
   render() {
     return (
-      <div >
-        <Typography style={{color: Color.deepPurple[500]}} variant="h2">
-          MIS Dashboard Under Construction
-        </Typography>
-      </div>
+      <Typography style={{color: Color.deepPurple[500]}} variant="h2" fontWeight={'bold'}>
+        MIS Dashboard
+      </Typography>
       );
   }
 }

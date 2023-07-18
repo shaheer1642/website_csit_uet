@@ -143,6 +143,46 @@ function MisLayout() {
     //navigate("/login")
   }
 
+  const LogoText = () => {
+    return (
+      <React.Fragment>
+        <Box component="img" sx={{ mr: 1, width: "48px" }} alt="UET Logo" src="logo512.png" />
+        {/* <img src={'logo512.png'} style={{ display: { xs: 'none', md: 'flex' }, mr: 1, width: "50px" }} alt="uet_banner" /> */}
+        {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
+        <Typography
+          variant="h6"
+          noWrap
+          sx={{
+            mr: 2,
+            display: { xs: 'none', md: 'flex' },
+            fontFamily: 'TimesNewRoman',
+            fontWeight: 700,
+            letterSpacing: '.3rem',
+            color: 'inherit',
+            textDecoration: 'none',
+          }}
+        >
+          Computer Science & IT (MIS)
+        </Typography>
+        <Typography
+          variant="h6"
+          noWrap
+          sx={{
+            mr: 2,
+            display: { xs: 'flex', md: 'none' },
+            fontFamily: 'TimesNewRoman',
+            fontWeight: 700,
+            letterSpacing: '.3rem',
+            color: 'inherit',
+            textDecoration: 'none',
+          }}
+        >
+          CS & IT (MIS)
+        </Typography>
+      </React.Fragment>
+    )
+  }
+
   const DrawerItem = (props) => {
     return (
       <Tooltip title={props.name} placement='right' disableHoverListener={open}>
@@ -153,6 +193,10 @@ function MisLayout() {
             minHeight: 48,
             justifyContent: open ? 'initial' : 'center',
             px: 2.5,
+            textDecoration: 'none',
+            ':hover': {
+              color: 'primary.main'
+            }
           }}
           onClick={() => props.onClick ? props.onClick() : setCurrentMenu(props.name)}
         >
@@ -189,9 +233,7 @@ function MisLayout() {
               >
                 <MenuIcon />
               </IconButton>
-              <Typography sx={{fontWeight: 'bold'}} variant="h6" noWrap component="div">
-                DigiTransform: An Integrated Departmental MIS
-              </Typography>
+              {LogoText()}
             </Toolbar>
           </AppBar>
           <Drawer variant="permanent" open={open}>
@@ -297,7 +339,10 @@ function MisLayout() {
                     minHeight: 48,
                     justifyContent: open ? 'initial' : 'center',
                     px: 2.5,
-                    pl: 4
+                    pl: 4,
+                    ':hover': {
+                      color: 'primary.main'
+                    }
                   }}
                   onClick={() => setCurrentMenu('viewApplications')}
                 >
@@ -311,7 +356,10 @@ function MisLayout() {
                     minHeight: 48,
                     justifyContent: open ? 'initial' : 'center',
                     px: 2.5,
-                    pl: 4
+                    pl: 4,
+                    ':hover': {
+                      color: 'primary.main'
+                    }
                   }}
                   onClick={() => setCurrentMenu('submitApplication')}
                 >
@@ -326,7 +374,10 @@ function MisLayout() {
                       minHeight: 48,
                       justifyContent: open ? 'initial' : 'center',
                       px: 2.5,
-                      pl: 4
+                      pl: 4,
+                      ':hover': {
+                        color: 'primary.main'
+                      }
                     }}
                     onClick={() => setCurrentMenu('applicationsTemplates')}
                   >

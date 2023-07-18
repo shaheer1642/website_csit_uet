@@ -1,20 +1,23 @@
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import MainLayout from "./layouts/MainLayout";
-import LoginLayout from "./layouts/LoginLayout";
-import MainHome from "./views/MainHome";
-import Login from "./views/Login/Login";
-import About from "./views/About";
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from "./theme";
+import React from "react";
+import MainLayout from "./layouts/MainLayout";
 import MisLayout from "./layouts/MisLayout";
+import LoginLayout from "./layouts/LoginLayout";
+import Login from "./views/Login/Login";
 import MisHome from "./views/MIS/Home/MisHome";
+import MainHome from "./views/Main/MainHome";
+import MainCourses from "./views/Main/MainCourses";
+import MainInstructors from "./views/Main/MainInstructors";
+import MainDownloads from "./views/Main/MainDownloads";
+import MainNewsAndEvents from "./views/Main/MainNewsAndEvents";
 import MisEvents from "./views/MIS/Events/MisEvents";
 import MisBatches from "./views/MIS/Registration/Batches/MisBatches";
 import MisEventsCreate from "./views/MIS/Events/MisEventsCreate";
 import MisEventsUpdate from "./views/MIS/Events/MisEventsUpdate";
-import React from "react";
 import MisBatchesCreate from "./views/MIS/Registration/Batches/MisBatchesCreate";
 import MisBatchesUpdate from "./views/MIS/Registration/Batches/MisBatchesUpdate";
 import MisTeachers from "./views/MIS/Teachers/MisTeachers";
@@ -70,7 +73,10 @@ export default function Router() {
       <Routes>
         <Route path="/" element={<MainLayout />}>
           <Route index element={<MainHome />} />
-          <Route path="about" element={<About />} />
+          <Route path="courses" element={<MainCourses />} />
+          <Route path="instructors" element={<MainInstructors />} />
+          <Route path="downloads" element={<MainDownloads />} />
+          <Route path="newsAndEvents" element={<MainNewsAndEvents />} />
         </Route>
         <Route path="/login" element={<LoginLayout />}>
           <Route index element={<Login />} />

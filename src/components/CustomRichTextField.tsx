@@ -3,9 +3,8 @@ import React from 'react';
 import { EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { Box, IconButton, Tooltip } from '@mui/material';
+import { Box, ButtonGroup, IconButton, Tooltip } from '@mui/material';
 import { CancelOutlined, Check, Edit } from '@mui/icons-material';
-import { ButtonGroup } from 'reactstrap';
 import { global_documents } from '../objects/Documents';
 import { socket } from '../websocket/socket';
 

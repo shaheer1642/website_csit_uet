@@ -11,25 +11,29 @@ const theme = responsiveFontSizes(createTheme({
       contrastText: '#FFFFFF', 
     },
     secondary: { 
-      main: Color.deepPurple[500], 
-      dark: '#000000',
+      main: '#FFFFFF', 
+      dark: '#FFFFFF',
       light: '#FFFFFF',
       contrastText: '#FFFFFF'
     },
-    white: '#FFFFFF'
+    white: '#FFFFFF',
+    text: {
+      primary: '#000000',
+      secondary: Color.grey[500]
+    }
   },
   components: {
     MuiCssBaseline: {
       styleOverrides: {
         body: {
           "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
-            backgroundColor: Color.deepPurple[50],
+            backgroundColor: Color.deepPurple[400],
             width: '10px',
             height: '10px'
           },
           "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
             borderRadius: 8,
-            backgroundColor: Color.deepPurple[400],
+            backgroundColor: Color.deepPurple[800],
             border: "none",
           },
           "&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
@@ -46,7 +50,7 @@ const theme = responsiveFontSizes(createTheme({
           },
         },
       },
-    }
+    },
   }
 }));
 

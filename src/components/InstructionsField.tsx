@@ -80,7 +80,6 @@ export default class InstructionsField extends React.Component<IProps> {
 // import { SxProps, Theme } from '@mui/material';
 // import { socket } from '../websocket/socket';
 // import { Edit, Check, CancelOutlined, NoteAdd } from '@mui/icons-material';
-// import { ButtonGroup } from 'reactstrap';
 // import { global_documents, getNameForUrl } from '../objects/Documents';
 // import LoadingIcon from './LoadingIcon';
 

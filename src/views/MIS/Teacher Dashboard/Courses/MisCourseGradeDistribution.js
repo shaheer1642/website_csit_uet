@@ -12,7 +12,8 @@ import {
   Radio,
   RadioGroup,
   CircularProgress,
-  Collapse
+  Collapse,
+  Card
 } from "@mui/material";
 import { ArrowDownward, ArrowRight, Delete, Edit, ExpandLess, ExpandMore } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
@@ -28,7 +29,6 @@ import CustomCard from "../../../../components/CustomCard";
 import CustomTextField from "../../../../components/CustomTextField";
 import LoadingIcon from "../../../../components/LoadingIcon";
 import { convertUpper } from "../../../../extras/functions";
-import { Card } from "reactstrap";
 
 
 const palletes = {
