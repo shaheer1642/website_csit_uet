@@ -1,8 +1,6 @@
 // @ts-nocheck
 import React from 'react';
-import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import * as Color from '@mui/material/colors';
 import { Card, Typography, Grid } from '@mui/material';
 import { convertUpper } from '../extras/functions';
 

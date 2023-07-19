@@ -21,9 +21,10 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Facebook, Instagram, Mail, Phone, Twitter } from "@mui/icons-material";
 import { styled, keyframes } from "@mui/system";
+import { withRouter } from "../withRouter";
 
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar(props) {
   const tabs = [{
     label: 'Home',
     path: '/'
@@ -176,7 +177,7 @@ function ResponsiveAppBar() {
             CS & IT
           </Typography> */}
           <Box>
-            <Button onClick={() => navigate('/login')} color="secondary" variant="outlined" >MIS Login</Button>
+            <Button onClick={() => navigate(props.user ? '/mis' : '/login')} color="secondary" variant="outlined" >{props.user ? 'MIS Dashboard' : 'MIS Login'}</Button>
           </Box>
         </Toolbar>
       </Container>
@@ -247,7 +248,7 @@ const Footer = () => {
   return (
     <FooterContainer ref={footerRef}>
       <Grid container>
-        <Grid item container columnSpacing={4} padding={4}>
+        <Grid item container columnSpacing={4} padding={4} pb={0}>
           <Grid item xs={12} md={4} lg={4}>
             <Grid item container>
               <Grid item xs={12}>
@@ -422,6 +423,7 @@ class MainLayout extends React.Component {
   }
 
   componentDidMount() {
+    this.props.login()
     console.log('[MainLayout] componentDidMount')
     socketHasConnected().then(() => this.setState({ socketConnecting: false })).catch(console.error)
     socket.on('connect', this.SocketConnectedListener)
@@ -443,7 +445,7 @@ class MainLayout extends React.Component {
         {this.state.socketConnecting ? <EstablishingConnection /> :
           <Grid container>
             <Grid item xs={12}>
-              <ResponsiveAppBar />
+              <ResponsiveAppBar {...this.props}/>
             </Grid>
             <Grid item xs={12}>
               <Outlet />
@@ -618,4 +620,4 @@ class MainLayout extends React.Component {
   }
 }
 
-export default MainLayout;
+export default withRouter(MainLayout);

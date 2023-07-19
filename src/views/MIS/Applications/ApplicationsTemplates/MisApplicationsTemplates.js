@@ -10,7 +10,6 @@ import CustomButton from "../../../../components/CustomButton";
 import CustomModal from "../../../../components/CustomModal";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import CustomCard from "../../../../components/CustomCard";
-import { user } from "../../../../objects/User";
 
 const palletes = {
   primary: "#439CEF",

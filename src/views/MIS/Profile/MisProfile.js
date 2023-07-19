@@ -6,7 +6,6 @@ import { socket } from '../../../websocket/socket';
 import * as Color from "@mui/material/colors";
 import CustomCard from '../../../components/CustomCard';
 import LoadingIcon from '../../../components/LoadingIcon';
-import { user } from '../../../objects/User';
 import CustomTextField from '../../../components/CustomTextField';
 import CustomModal from '../../../components/CustomModal';
 import CustomButton from '../../../components/CustomButton';
@@ -14,6 +13,7 @@ import CustomAlert from '../../../components/CustomAlert';
 import { convertUpper, filterObjectByKeys } from '../../../extras/functions';
 import './MisProfile.css';
 import "font-awesome/css/font-awesome.css";
+import { withRouter } from '../../../withRouter';
 
 const palletes = {
   primary: '#439CEF',
@@ -34,7 +34,7 @@ const styles = {
   },
 }
 
-export default class MisProfile extends React.Component {
+class MisProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -78,8 +78,8 @@ export default class MisProfile extends React.Component {
 
   fetchUser = () => {
     this.setCallingApi('fetchUser')
-    if (!user?.user_id) return
-    socket.emit('users/fetch', { fetch_user_id: user.user_id }, (res) => {
+    if (!this.props.user?.user_id) return
+    socket.emit('users/fetch', { fetch_user_id: this.props.user.user_id }, (res) => {
       if (res.code == 200) {
         this.setState({
           userInfo: res.data[0],
@@ -123,7 +123,7 @@ export default class MisProfile extends React.Component {
   sendEmailVerificationCode = (callback) => {
     if (!this.state.userInput['new_email']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('sendEmailVerificationCode')
-    socket.emit('users/sendEmailVerificationCode', { user_email: this.state.userInput['new_email'], user_id: user.user_id }, (res) => {
+    socket.emit('users/sendEmailVerificationCode', { user_email: this.state.userInput['new_email'], user_id: this.props.user.user_id }, (res) => {
       this.setCallingApi('')
       if (res.code == 200 && callback) callback(res)
       this.updateAlertMesg(res)
@@ -414,3 +414,5 @@ export default class MisProfile extends React.Component {
     );
   }
 }
+
+export default withRouter(MisProfile)

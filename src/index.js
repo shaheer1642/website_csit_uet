@@ -66,104 +66,210 @@ import MisBatchStudentsUpdate from "./views/MIS/Registration/Batches/Students/Mi
 import MisStudents from "./views/MIS/Students/MisStudents";
 import MisStudentsManagement from "./views/MIS/Students/MisStudentsManagement";
 import './localStorage'
+import { AuthContext } from "./contexts/AuthContext";
 
-export default function Router() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainLayout />}>
-          <Route index element={<MainHome />} />
-          <Route path="courses" element={<MainCourses />} />
-          <Route path="instructors" element={<MainInstructors />} />
-          <Route path="downloads" element={<MainDownloads />} />
-          <Route path="newsAndEvents" element={<MainNewsAndEvents />} />
-        </Route>
-        <Route path="/login" element={<LoginLayout />}>
-          <Route index element={<Login />} />
-        </Route>
-        <Route path="/mis" element={<MisLayout />}>
-          <Route index element={<MisHome />} />
 
-          <Route path="profile" element={<MisProfile />} />
+class Router extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      user: null
+    }
+  }
 
-          <Route path="events" element={<MisEvents />} />
-            <Route path="events/create" element={<MisEventsCreate />} />
-            <Route path="events/update" element={<MisEventsUpdate />} />
+  render() {
+    return (
+      <AuthContext.Provider value={{ user: this.state.user, setUser: (user, callback) => this.setState({ user: user }, () => callback ? callback() : null) }}>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<MainHome />} />
+              <Route path="courses" element={<MainCourses />} />
+              <Route path="instructors" element={<MainInstructors />} />
+              <Route path="downloads" element={<MainDownloads />} />
+              <Route path="newsAndEvents" element={<MainNewsAndEvents />} />
+            </Route>
+            <Route path="/login" element={<LoginLayout />}>
+              <Route index element={<Login />} />
+            </Route>
+            <Route path="/mis" element={<MisLayout />}>
+              <Route index element={<MisHome />} />
 
-          <Route path="departments" element={<MisDepartments/>}/>
-            <Route path="departments/update" element={<MisDepartmentsUpdate/>}/>
+              <Route path="profile" element={<MisProfile />} />
 
-          <Route path="batches" element={<MisBatches/>}/>
-            <Route path="batches/create" element={<MisBatchesCreate/>}/>
-            <Route path="batches/update" element={<MisBatchesUpdate/>}/>
-            <Route path="batches/students" element={<MisBatchStudents/>}/> 
-              <Route path="batches/students/create" element={<MisBatchStudentsCreate/>}/> 
-              <Route path="batches/students/update" element={<MisBatchStudentsUpdate/>}/> 
+              <Route path="events" element={<MisEvents />} />
+              <Route path="events/create" element={<MisEventsCreate />} />
+              <Route path="events/update" element={<MisEventsUpdate />} />
 
-          <Route path="students" element={<MisStudents/>}/>
-            <Route path="students/manage" element={<MisStudentsManagement />} />
+              <Route path="departments" element={<MisDepartments />} />
+              <Route path="departments/update" element={<MisDepartmentsUpdate />} />
 
-          <Route path="semesters" element={<MisSemesters/>}/> 
-            <Route path="semesters/create" element={<MisSemestersCreate/>}/> 
-            <Route path="semesters/update" element={<MisSemestersUpdate/>}/> 
-            <Route path="semesters/courses" element={<MisSemestersCourses/>}/> 
-              <Route path="semesters/courses/create" element={<MisSemestersCoursesCreate/>}/> 
-              <Route path="semesters/courses/update" element={<MisSemestersCoursesUpdate/>}/> 
-              <Route path="semesters/courses/students" element={<MisCoursesStudents/>}/> 
-                <Route path="semesters/courses/students/update" element={<MisCoursesStudentsUpdate />}/> 
+              <Route path="batches" element={<MisBatches />} />
+              <Route path="batches/create" element={<MisBatchesCreate />} />
+              <Route path="batches/update" element={<MisBatchesUpdate />} />
+              <Route path="batches/students" element={<MisBatchStudents />} />
+              <Route path="batches/students/create" element={<MisBatchStudentsCreate />} />
+              <Route path="batches/students/update" element={<MisBatchStudentsUpdate />} />
 
-          <Route path="teachers" element={<MisTeachers/>}/>
-            <Route path="teachers/create" element={<MisTeachersCreate/>}/>
-            <Route path="teachers/update" element={<MisTeachersUpdate/>}/>
+              <Route path="students" element={<MisStudents />} />
+              <Route path="students/manage" element={<MisStudentsManagement />} />
 
-          <Route path="courses" element={<MisCourses/>}/>
-            <Route path="courses/create" element={<MisCoursesCreate/>}/>
-            <Route path="courses/update" element={<MisCoursesUpdate/>}/>
+              <Route path="semesters" element={<MisSemesters />} />
+              <Route path="semesters/create" element={<MisSemestersCreate />} />
+              <Route path="semesters/update" element={<MisSemestersUpdate />} />
+              <Route path="semesters/courses" element={<MisSemestersCourses />} />
+              <Route path="semesters/courses/create" element={<MisSemestersCoursesCreate />} />
+              <Route path="semesters/courses/update" element={<MisSemestersCoursesUpdate />} />
+              <Route path="semesters/courses/students" element={<MisCoursesStudents />} />
+              <Route path="semesters/courses/students/update" element={<MisCoursesStudentsUpdate />} />
 
-          <Route path="thesis" element={<MisThesis/>}/>
-            <Route path="thesis/create" element={<MisThesisCreate/>}/>
-            <Route path="thesis/manage" element={<MisThesisManagement/>}/>
-            <Route path="thesis/grading" element={<MisThesisGrading/>}/>
+              <Route path="teachers" element={<MisTeachers />} />
+              <Route path="teachers/create" element={<MisTeachersCreate />} />
+              <Route path="teachers/update" element={<MisTeachersUpdate />} />
 
-          <Route path="documents" element={<MisDocuments/>}/>
+              <Route path="courses" element={<MisCourses />} />
+              <Route path="courses/create" element={<MisCoursesCreate />} />
+              <Route path="courses/update" element={<MisCoursesUpdate />} />
 
-          <Route path="studentPerformance" element={<MisStudentPerformance />}/>
-          <Route path="teachersPerformance" element={<MisTeachersPerformance />}/>
+              <Route path="thesis" element={<MisThesis />} />
+              <Route path="thesis/create" element={<MisThesisCreate />} />
+              <Route path="thesis/manage" element={<MisThesisManagement />} />
+              <Route path="thesis/grading" element={<MisThesisGrading />} />
 
-          <Route path="applications/applicationsTemplates" element={<MisApplicationsTemplates/>}/>
-            <Route path="applications/applicationsTemplates/create" element={<MisApplicationsTemplatesCreateUpdate/>}/>
-            <Route path="applications/applicationsTemplates/update" element={<MisApplicationsTemplatesCreateUpdate/>}/>
-          <Route path="applications/submitApplication" element={<SubmitApplication/>}/>
-            <Route path="applications/submitApplication/draft" element={<SubmitApplicationDraft/>}/>
-          <Route path="applications/viewApplications" element={<ViewApplications/>}/>
-            <Route path="applications/viewApplications/detail" element={<ViewApplicationsDetail/>}/>
+              <Route path="documents" element={<MisDocuments />} />
 
-          <Route path="tportal/courses" element={<MisTeachersCourses />} />
-            <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />
+              <Route path="studentPerformance" element={<MisStudentPerformance />} />
+              <Route path="teachersPerformance" element={<MisTeachersPerformance />} />
 
-          <Route path="tportal/performance" element={<MisTeacherPerformance />} />
+              <Route path="applications/applicationsTemplates" element={<MisApplicationsTemplates />} />
+              <Route path="applications/applicationsTemplates/create" element={<MisApplicationsTemplatesCreateUpdate />} />
+              <Route path="applications/applicationsTemplates/update" element={<MisApplicationsTemplatesCreateUpdate />} />
+              <Route path="applications/submitApplication" element={<SubmitApplication />} />
+              <Route path="applications/submitApplication/draft" element={<SubmitApplicationDraft />} />
+              <Route path="applications/viewApplications" element={<ViewApplications />} />
+              <Route path="applications/viewApplications/detail" element={<ViewApplicationsDetail />} />
 
-          <Route path="sportal/batches" element={<MisStudentBatches />} />
-          
-          <Route path="sportal/semesters" element={<MisStudentSemesters />} />
+              <Route path="tportal/courses" element={<MisTeachersCourses />} />
+              <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />
 
-          <Route path="sportal/courses" element={<MisStudentCourses />} />
-            <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
+              <Route path="tportal/performance" element={<MisTeacherPerformance />} />
 
-          <Route path="sportal/transcript" element={<MisStudentTranscript />} />
+              <Route path="sportal/batches" element={<MisStudentBatches />} />
 
-          <Route path="help" element={<MisHelp/>}/>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-  );
+              <Route path="sportal/semesters" element={<MisStudentSemesters />} />
+
+              <Route path="sportal/courses" element={<MisStudentCourses />} />
+              <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
+
+              <Route path="sportal/transcript" element={<MisStudentTranscript />} />
+
+              <Route path="help" element={<MisHelp />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthContext.Provider>
+    )
+  }
 }
+// export default function Router() {
+//   return (
+//     <AuthContext.Provider value={{ user: this.state.user, setUser: (user, callback) => this.setState({ user: user }, () => callback ? callback() : null) }}>
+//       <BrowserRouter>
+//         <Routes>
+//           <Route path="/" element={<MainLayout />}>
+//             <Route index element={<MainHome />} />
+//             <Route path="courses" element={<MainCourses />} />
+//             <Route path="instructors" element={<MainInstructors />} />
+//             <Route path="downloads" element={<MainDownloads />} />
+//             <Route path="newsAndEvents" element={<MainNewsAndEvents />} />
+//           </Route>
+//           <Route path="/login" element={<LoginLayout />}>
+//             <Route index element={<Login />} />
+//           </Route>
+//           <Route path="/mis" element={<MisLayout />}>
+//             <Route index element={<MisHome />} />
+
+//             <Route path="profile" element={<MisProfile />} />
+
+//             <Route path="events" element={<MisEvents />} />
+//             <Route path="events/create" element={<MisEventsCreate />} />
+//             <Route path="events/update" element={<MisEventsUpdate />} />
+
+//             <Route path="departments" element={<MisDepartments />} />
+//             <Route path="departments/update" element={<MisDepartmentsUpdate />} />
+
+//             <Route path="batches" element={<MisBatches />} />
+//             <Route path="batches/create" element={<MisBatchesCreate />} />
+//             <Route path="batches/update" element={<MisBatchesUpdate />} />
+//             <Route path="batches/students" element={<MisBatchStudents />} />
+//             <Route path="batches/students/create" element={<MisBatchStudentsCreate />} />
+//             <Route path="batches/students/update" element={<MisBatchStudentsUpdate />} />
+
+//             <Route path="students" element={<MisStudents />} />
+//             <Route path="students/manage" element={<MisStudentsManagement />} />
+
+//             <Route path="semesters" element={<MisSemesters />} />
+//             <Route path="semesters/create" element={<MisSemestersCreate />} />
+//             <Route path="semesters/update" element={<MisSemestersUpdate />} />
+//             <Route path="semesters/courses" element={<MisSemestersCourses />} />
+//             <Route path="semesters/courses/create" element={<MisSemestersCoursesCreate />} />
+//             <Route path="semesters/courses/update" element={<MisSemestersCoursesUpdate />} />
+//             <Route path="semesters/courses/students" element={<MisCoursesStudents />} />
+//             <Route path="semesters/courses/students/update" element={<MisCoursesStudentsUpdate />} />
+
+//             <Route path="teachers" element={<MisTeachers />} />
+//             <Route path="teachers/create" element={<MisTeachersCreate />} />
+//             <Route path="teachers/update" element={<MisTeachersUpdate />} />
+
+//             <Route path="courses" element={<MisCourses />} />
+//             <Route path="courses/create" element={<MisCoursesCreate />} />
+//             <Route path="courses/update" element={<MisCoursesUpdate />} />
+
+//             <Route path="thesis" element={<MisThesis />} />
+//             <Route path="thesis/create" element={<MisThesisCreate />} />
+//             <Route path="thesis/manage" element={<MisThesisManagement />} />
+//             <Route path="thesis/grading" element={<MisThesisGrading />} />
+
+//             <Route path="documents" element={<MisDocuments />} />
+
+//             <Route path="studentPerformance" element={<MisStudentPerformance />} />
+//             <Route path="teachersPerformance" element={<MisTeachersPerformance />} />
+
+//             <Route path="applications/applicationsTemplates" element={<MisApplicationsTemplates />} />
+//             <Route path="applications/applicationsTemplates/create" element={<MisApplicationsTemplatesCreateUpdate />} />
+//             <Route path="applications/applicationsTemplates/update" element={<MisApplicationsTemplatesCreateUpdate />} />
+//             <Route path="applications/submitApplication" element={<SubmitApplication />} />
+//             <Route path="applications/submitApplication/draft" element={<SubmitApplicationDraft />} />
+//             <Route path="applications/viewApplications" element={<ViewApplications />} />
+//             <Route path="applications/viewApplications/detail" element={<ViewApplicationsDetail />} />
+
+//             <Route path="tportal/courses" element={<MisTeachersCourses />} />
+//             <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />
+
+//             <Route path="tportal/performance" element={<MisTeacherPerformance />} />
+
+//             <Route path="sportal/batches" element={<MisStudentBatches />} />
+
+//             <Route path="sportal/semesters" element={<MisStudentSemesters />} />
+
+//             <Route path="sportal/courses" element={<MisStudentCourses />} />
+//             <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
+
+//             <Route path="sportal/transcript" element={<MisStudentTranscript />} />
+
+//             <Route path="help" element={<MisHelp />} />
+//           </Route>
+//         </Routes>
+//       </BrowserRouter>
+//     </AuthContext.Provider>
+//   );
+// }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router />
-      <FirebaseNotifications />
+    <CssBaseline />
+    <Router />
+    <FirebaseNotifications />
   </ThemeProvider>
 );

@@ -54,8 +54,8 @@ export default class InstructionsField extends React.Component<IProps> {
         this.setState({
             editable: false,
         })
+        this.fetchInstruction()
       }
-      this.fetchInstruction()
     })
   }
 

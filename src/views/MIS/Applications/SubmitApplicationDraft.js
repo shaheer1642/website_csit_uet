@@ -15,7 +15,6 @@ import CustomSelect from "../../../components/CustomSelect";
 import { IndexKind } from "typescript";
 import CustomAlert from "../../../components/CustomAlert";
 import GoBackButton from "../../../components/GoBackButton";
-import { user } from "../../../objects/User";
 import RenderCustomTemplates from "./ApplicationsTemplates/RenderCustomTemplates";
 
 const palletes = {
@@ -176,7 +175,7 @@ class SubmitApplicationDraft extends React.Component {
                       endpoint= 'autocomplete/users'
                       endpointData={{
                         exclude_user_types: this.state.applicationTemplate.submit_to_type == 'teacher_only' ? ['admin','pga','student'] : ['student'],
-                        exclude_user_ids: [user?.user_id]
+                        exclude_user_ids: [this.props.user?.user_id]
                       }}
                       sx={{minWidth: '150px'}}
                       onChange={(e,option) => this.setState({submit_to: option.id})}

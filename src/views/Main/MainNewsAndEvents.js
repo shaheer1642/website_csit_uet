@@ -2,9 +2,6 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import { Box, Grid, Tabs, Tab, Button, Container } from "@mui/material";
 import { socket } from "../../websocket/socket";
-import Card from "react-bootstrap/Card";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
 import * as Color from '@mui/material/colors'
 
 class MainNewsAndEvents extends React.Component {

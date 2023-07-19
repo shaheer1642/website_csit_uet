@@ -73,9 +73,9 @@ class Login extends React.Component {
   }
 
   checkLogin = () => {
-    socket.emit('login/auth', {}, res => {
+    this.props.login({}, (res) => {
       if (res.code == 200) {
-        eventHandler.emit('login/auth', res.data)
+        // eventHandler.emit('login/auth', res.data)
         this.props.navigate("/mis")
       }
     })
@@ -85,14 +85,14 @@ class Login extends React.Component {
     if (!this.state.userInput['username']) return this.setState({alertMsg: 'Enter username', alertSeverity: 'warning'})
     if (!this.state.userInput['password']) return this.setState({alertMsg: 'Enter password', alertSeverity: 'warning'})
     this.setCallingApi('loginAuth')
-    socket.emit('login/auth', { 
+    this.props.login({ 
       username: this.state.userInput['username'], 
       password: this.state.userInput['password'],
       user_type: this.state.userInput['user_type']
-    }, res => {
+    }, (res) => {
       this.setCallingApi('')
       if (res.code == 200) {
-        eventHandler.emit('login/auth', res.data)
+        // eventHandler.emit('login/auth', res.data)
         this.props.navigate("/mis")
       } else {
         this.updateAlertMesg(res)

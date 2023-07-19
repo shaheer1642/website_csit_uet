@@ -17,7 +17,6 @@ import CustomSelect from "../../../components/CustomSelect";
 import { IndexKind } from "typescript";
 import CustomAlert from "../../../components/CustomAlert";
 import GoBackButton from "../../../components/GoBackButton";
-import { user } from "../../../objects/User";
 import { convertUpper } from "../../../extras/functions";
 import { getUserNameById } from "../../../objects/Users_List";
 import { timeLocale } from "../../../objects/Time";
@@ -140,7 +139,7 @@ class viewApplicationsDetail extends React.Component {
   getForwardersList = () => {
     var all_forwards = []
     this.state.application.forwarded_to.map(forward => {
-      if (forward.receiver_id == user.user_id) all_forwards.push(`${getUserNameById(forward.sender_id)} (${forward.status} by you)`)
+      if (forward.receiver_id == this.props.user.user_id) all_forwards.push(`${getUserNameById(forward.sender_id)} (${forward.status} by you)`)
     })
     return all_forwards
   }
@@ -190,7 +189,7 @@ class viewApplicationsDetail extends React.Component {
             </Grid>
           </React.Fragment>:<></>
         }
-        {this.state.application.forwarded_to.some(forward => forward.receiver_id == user.user_id) ? 
+        {this.state.application.forwarded_to.some(forward => forward.receiver_id == this.props.user.user_id) ? 
           <React.Fragment>
             <Grid item xs={12}>
               <Typography variant='h4'>Forwarded By</Typography>
@@ -231,7 +230,7 @@ class viewApplicationsDetail extends React.Component {
           }
         </Grid>
         {this.state.application.status != 'under_review' ? <></>:
-        ((this.state.application.submitted_to == user?.user_id && !(this.state.application.forwarded_to.some(forward => forward.status == 'under_review'))) || this.state.application.forwarded_to.some(forward => forward.status == 'under_review' && forward.receiver_id == user.user_id)) ?
+        ((this.state.application.submitted_to == this.props.user?.user_id && !(this.state.application.forwarded_to.some(forward => forward.status == 'under_review'))) || this.state.application.forwarded_to.some(forward => forward.status == 'under_review' && forward.receiver_id == this.props.user.user_id)) ?
         <React.Fragment>
           <Grid item xs={12}>
             <Typography variant='h4'>Take Action</Typography>
@@ -268,7 +267,7 @@ class viewApplicationsDetail extends React.Component {
           </Grid>
         </React.Fragment> : <></>
         }
-        {this.state.application.submitted_by != user.user_id ? 
+        {this.state.application.submitted_by != this.props.user.user_id ? 
           <Grid item xs={12}>
             <CustomButton label="View Applicant Detail" variant="outlined" onClick={() => this.setState({applicantDetailModalOpen: true})} />
           </Grid> :<></>

@@ -16,7 +16,6 @@ import { Navigate } from 'react-router';
 import ContextInfo from '../../../components/ContextInfo';
 import CustomModal from '../../../components/CustomModal';
 import MisThesisExaminers from './MisThesisExaminers';
-import { user } from '../../../objects/User';
 import { getUserNameById } from '../../../objects/Users_List';
 import { timeLocale } from '../../../objects/Time';
 import CustomAlert from '../../../components/CustomAlert';

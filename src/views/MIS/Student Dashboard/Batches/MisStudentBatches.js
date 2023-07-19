@@ -5,7 +5,6 @@ import { socket } from '../../../../websocket/socket';
 import { withRouter } from '../../../../withRouter';
 import CustomTable from '../../../../components/CustomTable';
 import CustomCard from '../../../../components/CustomCard';
-import { user } from '../../../../objects/User';
 import GoBackButton from '../../../../components/GoBackButton';
 import { convertUpper } from '../../../../extras/functions';
 

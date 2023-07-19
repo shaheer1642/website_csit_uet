@@ -17,6 +17,8 @@ class MisTeachersUpdate extends React.Component {
       teacher_name: '',
       teacher_gender: 'Male',
       user_email: '',
+      qualification: '',
+      designation: '',
       teacher_department_id: ''
     }
     this.teacher_id = this.props.location.state.teacher_id
@@ -34,6 +36,8 @@ class MisTeachersUpdate extends React.Component {
           teacher_name: teacher.teacher_name,
           teacher_gender: teacher.teacher_gender,
           user_email: teacher.user_email,
+          qualification: teacher.qualification,
+          designation: teacher.designation,
           teacher_department_id: teacher.teacher_department_id,
         })
       }
@@ -86,10 +90,24 @@ class MisTeachersUpdate extends React.Component {
                   fieldType: 'radiobox',
                   fieldTypeOptions: ['male', 'female']
                 },
+                qualification: {
+                  label: "Qualification",
+                  defaultValue: this.state.qualification,
+                  position: 6,
+                  xs: 6,
+                },
+                designation: {
+                  label: "Designation",
+                  defaultValue: this.state.designation,
+                  position: 7,
+                  xs: 6,
+                  fieldType: 'radiobox',
+                  fieldTypeOptions: ['Dean', 'Assistant to Dean', 'Assistant Professor', 'Lecturer']
+                },
                 user_email: {
                   label: "Email",
                   defaultValue: this.state.user_email,
-                  position: 6,
+                  position: 8,
                   xs: 6,
                 },
                 digital_signature: {
@@ -100,7 +118,7 @@ class MisTeachersUpdate extends React.Component {
                 },
                 teacher_department_id: {
                   label: "Department",
-                  position: 7,
+                  position: 9,
                   xs: 6,
                   defaultValue: this.state.teacher_department_id,
                   fieldType: 'select',

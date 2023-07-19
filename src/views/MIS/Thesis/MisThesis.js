@@ -13,7 +13,6 @@ import CustomCard from "../../../components/CustomCard";
 import { timeLocale } from "../../../objects/Time";
 import { calculateDegreeExpiry, convertTimestampToSeasonYear, convertUpper } from "../../../extras/functions";
 import { getUserNameById } from "../../../objects/Users_List";
-import { user } from "../../../objects/User";
 
 const palletes = {
   primary: "#439CEF",
@@ -58,7 +57,7 @@ class MisThesis extends React.Component {
   }
 
   fetchStudentsThesis = () => {
-    socket.emit("studentsThesis/fetch", user.user_type == 'teacher' ? {supervisor_id: user.user_id} : {}, (res) => {
+    socket.emit("studentsThesis/fetch", this.props.user.user_type == 'teacher' ? {supervisor_id: this.props.user.user_id} : {}, (res) => {
       if (res.code == 200) {
         return this.setState({
           studentsThesisArr: res.data.map(thesis => ({...thesis, supervisor_id: getUserNameById(thesis.supervisor_id) })),

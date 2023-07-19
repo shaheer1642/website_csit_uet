@@ -8,7 +8,6 @@ import { withRouter } from "../../../../withRouter";
 import CustomTable from "../../../../components/CustomTable";
 import CustomCard from "../../../../components/CustomCard";
 import { timeLocale } from "../../../../objects/Time";
-import { user } from "../../../../objects/User";
 import { socket } from "../../../../websocket/socket";
 import GoBackButton from "../../../../components/GoBackButton";
 import { convertUpper } from "../../../../extras/functions";

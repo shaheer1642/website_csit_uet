@@ -10,7 +10,6 @@ import CustomButton from "../../../components/CustomButton";
 import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
-import { user } from "../../../objects/User";
 
 const palletes = {
   primary: "#439CEF",
@@ -46,7 +45,7 @@ class SubmitApplication extends React.Component {
     socket.emit("applicationsTemplates/fetch", {}, (res) => {
       if (res.code == 200) {
         return this.setState({
-          applicationsTemplatesArr: res.data.filter(o => o.submit_to != user?.user_id),
+          applicationsTemplatesArr: res.data.filter(o => o.submit_to != this.props.user?.user_id),
           loading: false,
         });
       }

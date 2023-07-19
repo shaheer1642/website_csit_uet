@@ -16,7 +16,6 @@ import CustomButton from "../../../../components/CustomButton";
 import CustomModal from "../../../../components/CustomModal";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../components/GoBackButton";
-import { user } from "../../../../objects/User";
 import CustomCard from "../../../../components/CustomCard";
 import { getUserNameById } from "../../../../objects/Users_List";
 import { convertUpper } from "../../../../extras/functions";
@@ -79,7 +78,7 @@ class MisStudentCourses extends React.Component {
       { id: "department_name", label: "Department", format: (value) => value },
       { id: "teacher_name", label: "Instructor", format: (value) => value },
     ];
-    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses', student_id: user?.user_id }} />
+    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses', student_id: this.props.user?.user_id }} />
     else if (!this.student_semester) return <Navigate to='/mis/sportal/semesters' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses', student_batch_id: this.student_batch?.student_batch_id }} />
     return (
       <Grid container rowSpacing={"20px"}>

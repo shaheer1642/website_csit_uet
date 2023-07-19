@@ -15,7 +15,6 @@ import CustomButton from "../../../../components/CustomButton";
 import CustomModal from "../../../../components/CustomModal";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../components/GoBackButton";
-import { user } from "../../../../objects/User";
 import CustomCard from "../../../../components/CustomCard";
 import { convertUpper } from "../../../../extras/functions";
 
@@ -66,7 +65,7 @@ class MisTeachersCourses extends React.Component {
   }
 
   fetchSemesterCourses = () => {
-    socket.emit("semestersCourses/fetch", { teacher_id: user.user_id }, (res) => {
+    socket.emit("semestersCourses/fetch", { teacher_id: this.props.user.user_id }, (res) => {
       if (res.code == 200) {
         return this.setState({
           semestersCoursesArr: res.data,

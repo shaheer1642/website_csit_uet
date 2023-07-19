@@ -29,7 +29,6 @@ import { withRouter } from '../withRouter';
 import { socket, socketHasConnected } from '../websocket/socket';
 import EstablishingConnection from '../views/EstablishingConnection';
 import eventHandler from '../eventHandler';
-import {user} from './../objects/User'
 import * as Color from "@mui/material/colors";
 
 const drawerWidth = 300;
@@ -99,7 +98,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-function MisLayout() {
+function MisLayout(props) {
   const theme = useTheme();
   const navigate = useNavigate()
   const [open, setOpen] = React.useState(false);
@@ -112,8 +111,8 @@ function MisLayout() {
     socketHasConnected().then(() => setSocketConnecting(false)).catch(console.error)
     socket.on('connect', SocketConnectedListener)
     socket.on('disconnect', SocketDisconnectedListener)
-    if (!user) navigate("/login")
-    else console.log('[MisLayout] user=',user)
+    if (!props.user) navigate("/login")
+    // else console.log('[MisLayout] user=',user)
     
     return () => {
       console.log('[MisLayout] componentWillUnmount')
@@ -139,7 +138,8 @@ function MisLayout() {
 
   const onLogoutClick = () => {
     console.log('[onLogoutClick]')
-    generateNewToken()
+    props.logout()
+    // generateNewToken()
     //navigate("/login")
   }
 
@@ -152,6 +152,8 @@ function MisLayout() {
         <Typography
           variant="h6"
           noWrap
+          component="a"
+          href="/"
           sx={{
             mr: 2,
             display: { xs: 'none', md: 'flex' },
@@ -160,6 +162,9 @@ function MisLayout() {
             letterSpacing: '.3rem',
             color: 'inherit',
             textDecoration: 'none',
+            ":hover": {
+              color: 'primary.light'
+            }
           }}
         >
           Computer Science & IT (MIS)
@@ -167,6 +172,8 @@ function MisLayout() {
         <Typography
           variant="h6"
           noWrap
+          component="a"
+          href="/"
           sx={{
             mr: 2,
             display: { xs: 'flex', md: 'none' },
@@ -175,6 +182,9 @@ function MisLayout() {
             letterSpacing: '.3rem',
             color: 'inherit',
             textDecoration: 'none',
+            ":hover": {
+              color: 'primary.light'
+            }
           }}
         >
           CS & IT (MIS)
@@ -216,6 +226,7 @@ function MisLayout() {
   }
 
   return (
+    !props.user ? <Navigate to={'/login'} /> :
     <React.Fragment>
       {socketConnecting ? <EstablishingConnection /> :
         <Box sx={{ display: 'flex' }}>
@@ -243,63 +254,63 @@ function MisLayout() {
               </IconButton>
             </DrawerHeader>
             <List>
-              {['admin','pga'].includes(user.user_type) ? 
+              {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Events" navigation="events" icon={Icon.Campaign} /> : <></>
               }
 
-              {['admin','pga'].includes(user.user_type) ? 
+              {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Documents" navigation="documents" icon={Icon.Description} /> : <></>
               }
 
-              {['admin','pga'].includes(user.user_type) ? 
+              {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Department Management" navigation="departments" icon={Icon.Apartment} /> : <></>
               }
 
-              {['admin','pga'].includes(user.user_type) ? 
+              {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Batch Management" navigation="batches" icon={Icon.People} /> : <></>
               }
 
-              {['admin','pga'].includes(user.user_type) ? 
+              {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Student Management" navigation="students" icon={Icon.ManageAccounts} /> : <></>
               }
 
-              {['admin','pga'].includes(user.user_type) ? 
+              {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Semester Management" navigation="semesters" icon={Icon.CastForEducation} /> : <></>
               }
 
-              {['teacher'].includes(user.user_type) ?
+              {['teacher'].includes(props.user.user_type) ?
                 <DrawerItem name="Courses" navigation="tportal/courses" icon={Icon.Book} /> : <></>
               }
               
-              {['student'].includes(user.user_type) ?
+              {['student'].includes(props.user.user_type) ?
                 <DrawerItem name="Courses" navigation="sportal/courses" icon={Icon.Book} /> : <></>
               }
 
-              {['pga','student','teacher'].includes(user.user_type) ? 
-                <DrawerItem name={user.user_type == 'pga' ? 'Thesis Management' : 'Thesis'} navigation={user.user_type == 'student' ? "thesis/manage" : "thesis"} icon={Icon.Article} /> : <></>
+              {['pga','student','teacher'].includes(props.user.user_type) ? 
+                <DrawerItem name={props.user.user_type == 'pga' ? 'Thesis Management' : 'Thesis'} navigation={props.user.user_type == 'student' ? "thesis/manage" : "thesis"} icon={Icon.Article} /> : <></>
               }
 
-              {['admin','pga'].includes(user.user_type) ?
+              {['admin','pga'].includes(props.user.user_type) ?
                 <DrawerItem name="Instructors" navigation="teachers" icon={Icon.School} /> : <></>
               }
 
-              {['admin','pga'].includes(user.user_type) ? 
+              {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Courses" navigation="courses" icon={Icon.Book} /> : <></>
               }
 
-              {['admin','pga'].includes(user.user_type) ? 
+              {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Student Performance" navigation="studentPerformance" icon={Icon.Troubleshoot} /> : <></>
               }
 
-              {['admin','pga'].includes(user.user_type) ? 
+              {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Instructors Performance" navigation="teachersPerformance" icon={Icon.QueryStats} /> : <></>
               }
 
-              {['teacher'].includes(user.user_type) ?
+              {['teacher'].includes(props.user.user_type) ?
                 <DrawerItem name="Performance Report" navigation="tportal/performance" icon={Icon.QueryStats} /> : <></>
               }
 
-              {['student'].includes(user.user_type) ?
+              {['student'].includes(props.user.user_type) ?
                 <DrawerItem name="Transcript" navigation="sportal/transcript" icon={Icon.Summarize} /> : <></>
               }
 
@@ -366,7 +377,7 @@ function MisLayout() {
                   <ListItemText primary='Submit Application' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'submitApplication' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
                 </ListItemButton>
 
-                {['admin','pga'].includes(user.user_type) ? 
+                {['admin','pga'].includes(props.user.user_type) ? 
                   <ListItemButton
                     component={Link}
                     to="applications/applicationsTemplates"

@@ -16,7 +16,6 @@ import { Navigate } from 'react-router';
 import ContextInfo from '../../../components/ContextInfo';
 import CustomModal from '../../../components/CustomModal';
 import MisThesisExaminers from './MisThesisExaminers';
-import { user } from '../../../objects/User';
 
 const palletes = {
   primary: '#439CEF',
@@ -82,8 +81,8 @@ class MisThesisManagement extends React.Component {
     }
     this.student_batch_id = this.props.location.state?.student_batch_id || this.props.location.state?.student_batch?.student_batch_id
     this.context_info = this.props.location.state?.context_info
-    this.student_view = user.user_type == 'student'
-    this.teacher_view = user.user_type == 'teacher'
+    this.student_view = this.props.user.user_type == 'student'
+    this.teacher_view = this.props.user.user_type == 'teacher'
 
     this.timeoutAlertRef = null
 
@@ -160,7 +159,7 @@ class MisThesisManagement extends React.Component {
   }
 
   render() {
-    if (this.student_view && !this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/thesis/manage', student_id: user?.user_id }} />
+    if (this.student_view && !this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/thesis/manage', student_id: this.props.user?.user_id }} />
     return (
       this.state.loading ? <LoadingIcon /> :
         Object.keys(this.state.student_thesis) == 0 ? <Typography variant='h4'>No Thesis Found</Typography> :
@@ -368,7 +367,7 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                       </React.Fragment> : <></>
                   }
-                  {user.user_type == 'pga' ? 
+                  {this.props.user.user_type == 'pga' ? 
                     <Grid item xs={12}>
                       <CustomButton
                         label = 'Grade Management'

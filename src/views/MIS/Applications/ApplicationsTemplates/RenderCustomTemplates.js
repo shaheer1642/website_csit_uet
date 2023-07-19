@@ -15,7 +15,6 @@ import CustomSelect from "../../../../components/CustomSelect";
 import { IndexKind } from "typescript";
 import CustomAlert from "../../../../components/CustomAlert";
 import GoBackButton from "../../../../components/GoBackButton";
-import { user } from "../../../../objects/User";
 import { convertUpper } from "../../../../extras/functions";
 
 const palletes = {
@@ -83,7 +82,7 @@ class RenderCustomTemplates extends React.Component {
     console.log('fetchData')
     if (this.state.applicationTemplate.template_id == '6f1a4a0e-fe49-11ed-95ef-0242ac110032') {
       this.setState({callingApi: 'fetchData'})
-      socket.emit("students/fetch", {student_id: user?.user_id}, (res) => {
+      socket.emit("students/fetch", {student_id: this.props.user?.user_id}, (res) => {
         if (res.code != 200) return
         const student = res.data[1] || res.data[0]
         socket.emit("studentsCourses/fetch", {student_batch_id: student.student_batch_id}, (res) => {

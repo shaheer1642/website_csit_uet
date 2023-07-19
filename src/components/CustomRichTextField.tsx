@@ -55,10 +55,10 @@ export default class CustomRichTextField extends React.Component<IProps, IState>
     return (
       <Box sx={{ position: 'relative' }}>
         {
-          <div style={{ 
+          <Box sx={{ 
             position: 'absolute', 
             right: this.state.editing ? 20 : this.props.editorState.getCurrentContent().hasText() ? 5 : undefined, 
-            top: this.state.editing ? 110 : undefined, 
+            top: this.state.editing ? {xs: 200, sm: 150, md: 110, xl: 80} : undefined, 
             zIndex: 10 
           }}>
             {
@@ -84,7 +84,7 @@ export default class CustomRichTextField extends React.Component<IProps, IState>
                     </Tooltip> :
                 <></>
             }
-          </div>
+          </Box>
         }
         {/* {this.props.editable && !this.props.readOnly && !this.state.editing ? 
             <IconButton sx={{position: 'absolute',right: this.props.editorState.getCurrentContent().hasText() ? 5 : undefined, zIndex: 10}} onClick={() => this.setState({editing: true})}>

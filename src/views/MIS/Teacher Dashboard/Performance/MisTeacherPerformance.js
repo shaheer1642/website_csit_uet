@@ -11,7 +11,6 @@ import CustomModal from "../../../../components/CustomModal";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import CustomCard from "../../../../components/CustomCard";
 import { convertUpper } from "../../../../extras/functions";
-import { user } from "../../../../objects/User";
 import LoadingIcon from "../../../../components/LoadingIcon";
 import Field from "../../../../components/Field";
 
@@ -54,7 +53,7 @@ class MisTeacherPerformance extends React.Component {
 
   fetchTeacher() {
     this.setState({callingApi: 'fetchTeacher'})
-    socket.emit("teachers/fetch", {teacher_id: user?.user_id}, (res) => {
+    socket.emit("teachers/fetch", {teacher_id: this.props.user?.user_id}, (res) => {
       console.log(res)
       if (res.code == 200) {
         return this.setState({

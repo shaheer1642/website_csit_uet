@@ -31,7 +31,6 @@ import CustomTable from "../../../../components/CustomTable";
 import CustomModal from "../../../../components/CustomModal";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../components/GoBackButton";
-import { user } from "../../../../objects/User";
 import CustomCard from "../../../../components/CustomCard";
 import CustomTextField from "../../../../components/CustomTextField";
 import LoadingIcon from "../../../../components/LoadingIcon";

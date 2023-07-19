@@ -43,14 +43,26 @@ class MisTeachersCreate extends React.Component {
                 fieldType: 'radiobox',
                 fieldTypeOptions: ['male', 'female']
               },
+              qualification: {
+                label: "Qualification",
+                position: 5,
+                xs: 6,
+              },
+              designation: {
+                label: "Designation",
+                position: 6,
+                xs: 6,
+                fieldType: 'radiobox',
+                fieldTypeOptions: ['Dean', 'Assistant to Dean', 'Assistant Professor', 'Lecturer']
+              },
               user_email: {
                 label: "Email",
-                position: 5,
+                position: 7,
                 xs: 6,
               },
               teacher_department_id: {
                 label: "Department",
-                position: 6,
+                position: 8,
                 xs: 6,
                 fieldType: 'select',
                 endpoint: 'autocomplete/departments',

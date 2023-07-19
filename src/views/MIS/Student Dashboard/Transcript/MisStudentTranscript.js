@@ -8,7 +8,6 @@ import { socket } from "../../../../websocket/socket";
 import { withRouter } from "../../../../withRouter";
 import CustomButton from "../../../../components/CustomButton";
 import LoadingIcon from "../../../../components/LoadingIcon";
-import { user } from "../../../../objects/User";
 
 const palletes = {
   primary: "#439CEF",
@@ -67,7 +66,7 @@ class MisStudentTranscript extends React.Component {
   }
 
   render() {
-    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/transcript', student_id: user?.user_id}} />
+    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/transcript', student_id: this.props.user?.user_id}} />
     return (
       this.state.loading ? <LoadingIcon /> :
       <Grid container rowSpacing={"20px"}>
