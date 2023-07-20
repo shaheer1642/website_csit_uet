@@ -14,10 +14,7 @@ import MainCourses from "./views/Main/MainCourses";
 import MainInstructors from "./views/Main/MainInstructors";
 import MainDownloads from "./views/Main/MainDownloads";
 import MainNewsAndEvents from "./views/Main/MainNewsAndEvents";
-import MisEvents from "./views/MIS/Events/MisEvents";
 import MisBatches from "./views/MIS/Registration/Batches/MisBatches";
-import MisEventsCreate from "./views/MIS/Events/MisEventsCreate";
-import MisEventsUpdate from "./views/MIS/Events/MisEventsUpdate";
 import MisBatchesCreate from "./views/MIS/Registration/Batches/MisBatchesCreate";
 import MisBatchesUpdate from "./views/MIS/Registration/Batches/MisBatchesUpdate";
 import MisTeachers from "./views/MIS/Teachers/MisTeachers";
@@ -68,6 +65,11 @@ import MisStudentsManagement from "./views/MIS/Students/MisStudentsManagement";
 import './localStorage'
 import { AuthContext } from "./contexts/AuthContext";
 
+if (process.env.REACT_APP_ENV === 'production') {
+  console.log = () => {}
+  console.error = () => {}
+  console.debug = () => {}
+}
 
 class Router extends React.Component {
   constructor(props) {
@@ -96,10 +98,6 @@ class Router extends React.Component {
               <Route index element={<MisHome />} />
 
               <Route path="profile" element={<MisProfile />} />
-
-              <Route path="events" element={<MisEvents />} />
-              <Route path="events/create" element={<MisEventsCreate />} />
-              <Route path="events/update" element={<MisEventsUpdate />} />
 
               <Route path="departments" element={<MisDepartments />} />
               <Route path="departments/update" element={<MisDepartmentsUpdate />} />

@@ -24,7 +24,7 @@ import { styled, keyframes } from "@mui/system";
 import { withRouter } from "../withRouter";
 
 
-function ResponsiveAppBar(props) {
+function HeaderAppBar(props) {
   const tabs = [{
     label: 'Home',
     path: '/'
@@ -189,8 +189,56 @@ const Footer = () => {
 
   const footerRef = React.useRef(null)
 
-  const list1 = ['Home','Statutes & Rules','Scholarships & Awards','Research & Development','Clubs & Societies','UET Committee\'s','Seniority List']
-  const list2 = ['HEC','PEC','ETEA','PCATP','Admissions','MIS Login','Digital Library']
+  const list1 = [{
+    label: 'UET Homepage',
+    link: 'https://www.uetpeshawar.edu.pk/index.php'
+  },{
+    label: 'Statutes & Rules',
+    link: 'https://www.uetpeshawar.edu.pk/statutes&rules.php'
+  },{
+    label: 'Scholarships & Awards',
+    link: 'https://www.uetpeshawar.edu.pk/scholarships&awards.php'
+  },{
+    label: 'Research & Development',
+    link: 'https://www.uetpeshawar.edu.pk/research&development.php'
+  },{
+    label: 'Clubs & Societies',
+    link: 'https://www.uetpeshawar.edu.pk/clubs&societies.php'
+  },{
+    label: 'UET Committee\'s',
+    link: 'https://www.uetpeshawar.edu.pk/uetcommittee.php'
+  },{
+    label: 'Seniority List',
+    link: 'https://www.uetpeshawar.edu.pk/senioritylist.php'
+  },{
+    label: 'Contact Us',
+    link: 'https://www.uetpeshawar.edu.pk/contactus.php'
+  }]
+  const list2 = [{
+    label: 'HEC',
+    link: 'http://www.hec.gov.pk/'
+  },{
+    label: 'PEC',
+    link: 'http://www.pec.org.pk/'
+  },{
+    label: 'ETEA',
+    link: 'https://etea.edu.pk/'
+  },{
+    label: 'PCATP',
+    link: 'http://www.pcatp.org.pk/'
+  },{
+    label: 'Admissions',
+    link: 'http://www.enggentrancetest.pk/uet/'
+  },{
+    label: 'CMS Login',
+    link: 'http://cms.nwfpuet.edu.pk/'
+  },{
+    label: 'Digital Library',
+    link: 'http://www.digitallibrary.edu.pk/nwfpuet.html'
+  },{
+    label: 'Useful Links',
+    link: 'https://www.uetpeshawar.edu.pk/usefullinks.php'
+  }]
 
   React.useEffect(() => {
     var animationTimeout = false;
@@ -249,18 +297,18 @@ const Footer = () => {
     <FooterContainer ref={footerRef}>
       <Grid container>
         <Grid item container columnSpacing={4} padding={4} pb={0}>
-          <Grid item xs={12} md={4} lg={4}>
+          <Grid item xs={6} md={4} lg={4}>
             <Grid item container>
               <Grid item xs={12}>
                 <Typography variant="h5">Quick Links</Typography>
               </Grid>
               <Grid item>
                 <List>
-                  {list1.map((label, index) => 
+                  {list1.map((item, index) => 
                     <React.Fragment>
                       <AnimatedListItem className="animated-list1-items" key={index} style={{ animationDelay: `${index * 300}ms` }}>
-                        <ListItemButton>
-                          <ListItemText primary={label} />
+                        <ListItemButton onClick={() => window.open(item.link, '_blank')}>
+                          <ListItemText primary={item.label} />
                         </ListItemButton>
                       </AnimatedListItem>
                       {index !== list1.length - 1 && (
@@ -272,18 +320,18 @@ const Footer = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} md={4} lg={4}>
+          <Grid item xs={6} md={4} lg={4}>
             <Grid item container>
               <Grid item xs={12}>
                 <Typography variant="h5">Important Links</Typography>
               </Grid>
               <Grid item>
                 <List>
-                  {list2.map((label, index) => 
+                  {list2.map((item, index) => 
                     <React.Fragment>
                       <AnimatedListItem className="animated-list2-items" key={index} style={{ animationDelay: `${index * 300}ms` }}>
-                        <ListItemButton>
-                          <ListItemText primary={label} />
+                        <ListItemButton onClick={() => window.open(item.link, '_blank')}>
+                          <ListItemText primary={item.label} />
                         </ListItemButton>
                       </AnimatedListItem>
                       {index !== list2.length - 1 && (
@@ -384,35 +432,6 @@ const Footer = () => {
   );
 };
 
-const styles = {
-  tabStyle: {
-    background: {
-      color: Color.deepPurple[500]
-    },
-    indicatorColor: {
-      sx: {
-        backgroundColor: Color.deepPurple[500],
-      },
-    },
-    label: {
-      color: 'white'
-    },
-    active: {
-      color: Color.deepPurple[500]
-    },
-  },
-  footer: {
-    paddingTop: 20,
-    borderTop: `4px solid ${Color.deepPurple[500]}`,
-    backgroundImage: `url(${footerImg})`,
-    backgroundSize: 'cover',
-  },
-  list: {
-    color: Color.deepPurple[500],
-    width: 300
-  }
-}
-
 class MainLayout extends React.Component {
   constructor(props) {
     super(props);
@@ -445,7 +464,7 @@ class MainLayout extends React.Component {
         {this.state.socketConnecting ? <EstablishingConnection /> :
           <Grid container>
             <Grid item xs={12}>
-              <ResponsiveAppBar {...this.props}/>
+              <HeaderAppBar {...this.props}/>
             </Grid>
             <Grid item xs={12}>
               <Outlet />
@@ -453,166 +472,6 @@ class MainLayout extends React.Component {
             <Grid item xs={12}>
               <Footer />
             </Grid>
-            {/* <Grid container style={styles.footer}>
-              <Grid item xs={12} md={4} lg={4}>
-                <Typography variant="h6" style={{ color: 'white', textAlign: 'left', marginLeft: 15 }}>
-                  Quick Links
-                </Typography>
-                <List style={styles.list}>
-                  <ListItem button>
-                    <ListItemText primary="Home" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button divider>
-                    <ListItemText primary="Statutes & Rules" />
-                  </ListItem>
-                  <ListItem button>
-                    <ListItemText primary="Scholarships & Awards" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="Research & Development" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="Clubs & Societies" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="UET Committee's" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="Seniority List" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="Contact Us" />
-                  </ListItem>
-                </List>
-              </Grid>
-              <Grid item xs={12} md={4} lg={4}>
-                <Typography variant="h6" style={{ color: 'white', textAlign: 'left', marginLeft: 15 }}>
-                  Important Links
-                </Typography>
-                <List style={styles.list}>
-                  <ListItem button>
-                    <ListItemText primary="HEC" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button divider>
-                    <ListItemText primary="PEC" />
-                  </ListItem>
-                  <ListItem button>
-                    <ListItemText primary="ETEA" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="PCATP" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="Admissions" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="CMS Login" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="Digital Library" />
-                  </ListItem>
-                  <Divider />
-                  <ListItem button>
-                    <ListItemText primary="Useful Links" />
-                  </ListItem>
-                </List>
-              </Grid>
-              <Grid item xs={12} md={4} lg={4}>
-                <Typography variant="h6" style={{ color: 'white', textAlign: 'left', marginLeft: 15 }}>
-                  Contact Us
-                </Typography>
-                <List style={styles.list}>
-                  <ListItem>
-                    <Typography variant="body1" style={{ color: '#bababa', textAlign: 'left' }}>
-                      University of Engineering & Technology, Jamrud Road Peshawar, Khyber Pakhtunkhwa, Pakistan
-                    </Typography>
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <div style={{ flex: true, flexDirection: 'column' }}>
-                      <Typography>
-                        UET Exchange:
-                      </Typography>
-                      <div style={{ marginLeft: 10, flexDirection: 'row', display: 'flex' }}>
-                        <Typography>
-                          Tel No:
-                        </Typography>
-                        <Typography style={{ color: '#bababa', marginLeft: 5 }}>
-                          (+92-91)9216796-8
-                        </Typography>
-                      </div>
-                      <div style={{ marginLeft: 10, flexDirection: 'row', display: 'flex' }}>
-                        <Typography>
-                          Fax No:
-                        </Typography>
-                        <Typography style={{ color: '#bababa', marginLeft: 5 }}>
-                          (+92-91) 9216663
-                        </Typography>
-                      </div>
-                    </div>
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <div style={{ flex: true, flexDirection: 'column' }}>
-                      <Typography>
-                        Vice-Chancellor:
-                      </Typography>
-                      <div style={{ marginLeft: 10, flexDirection: 'row', display: 'flex' }}>
-                        <Typography>
-                          Tel No:
-                        </Typography>
-                        <Typography style={{ color: '#bababa', marginLeft: 5 }}>
-                          (+92-91) 9222212
-                        </Typography>
-                      </div>
-                      <div style={{ marginLeft: 10, flexDirection: 'row', display: 'flex' }}>
-                        <Typography>
-                          Fax No:
-                        </Typography>
-                        <Typography style={{ color: '#bababa', marginLeft: 5 }}>
-                          (+92-91) 9222213
-                        </Typography>
-                      </div>
-                    </div>
-                  </ListItem>
-                  <Divider />
-                  <ListItem>
-                    <div style={{ flex: true, flexDirection: 'column' }}>
-                      <Typography>
-                        Registrar:
-                      </Typography>
-                      <div style={{ marginLeft: 10, flexDirection: 'row', display: 'flex' }}>
-                        <Typography>
-                          Tel No:
-                        </Typography>
-                        <Typography style={{ color: '#bababa', marginLeft: 5 }}>
-                          (+92-91) 9222215
-                        </Typography>
-                      </div>
-                      <div style={{ marginLeft: 10, flexDirection: 'row', display: 'flex' }}>
-                        <Typography>
-                          Email:
-                        </Typography>
-                        <Typography style={{ color: '#bababa', marginLeft: 5 }}>
-                          registrar@uetpeshawar.edu.pk
-                        </Typography>
-                      </div>
-                    </div>
-                  </ListItem>
-                </List>
-              </Grid>
-            </Grid> */}
           </Grid>
         }
       </React.Fragment>

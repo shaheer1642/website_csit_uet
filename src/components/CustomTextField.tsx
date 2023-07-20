@@ -9,10 +9,10 @@ const defaultStyles = {
         inputTextColor: 'black',
 
         labelColor: 'grey',
-        labelFocusedColor: Color.deepPurple[700],
+        labelFocusedColor: 'primary.dark',
 
         underlineColor: 'grey',
-        underlineFocusedColor: Color.deepPurple[700],
+        underlineFocusedColor: 'primary.dark',
     },
     font: {
         size: "18px",

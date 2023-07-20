@@ -33,7 +33,7 @@ export default class MisHome extends React.Component {
 
   render() {
     return (
-      <Typography style={{color: Color.deepPurple[500]}} variant="h2" fontWeight={'bold'}>
+      <Typography sx={{color: 'primary.main'}} variant="h2" fontWeight={'bold'}>
         MIS Dashboard
       </Typography>
       );

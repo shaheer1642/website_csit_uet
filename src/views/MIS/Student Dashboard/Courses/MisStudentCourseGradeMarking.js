@@ -33,6 +33,7 @@ import GoBackButton from "../../../../components/GoBackButton";
 import CustomCard from "../../../../components/CustomCard";
 import LoadingIcon from "../../../../components/LoadingIcon";
 import { convertUpper } from "../../../../extras/functions";
+import theme from "../../../../theme";
 
 const palletes = {
   primary: "#439CEF",
@@ -80,10 +81,10 @@ const defaultStyles = {
   },
   colors: {
     headerTextColor: 'white',
-    headerBackgroundColor: Color.deepPurple[500],
+    headerBackgroundColor: theme.palette.primary.main,
     rowTextColor: 'black',
     rowBackgroundColor: 'white',
-    nthRowBackgroundColor: Color.deepPurple[100],
+    nthRowBackgroundColor: theme.palette.primary.light,
     footerTextColor: 'black',
     footerBackgroundColor: 'white',
   }

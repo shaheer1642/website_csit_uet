@@ -7,7 +7,7 @@ const theme = responsiveFontSizes(createTheme({
     primary: { 
       main: Color.deepPurple[500], 
       dark: Color.deepPurple[900], 
-      light: Color.deepPurple[200],
+      light: Color.deepPurple[100],
       contrastText: '#FFFFFF', 
     },
     secondary: { 
@@ -16,10 +16,17 @@ const theme = responsiveFontSizes(createTheme({
       light: '#FFFFFF',
       contrastText: '#FFFFFF'
     },
-    white: '#FFFFFF',
     text: {
       primary: '#000000',
       secondary: Color.grey[500]
+    },
+    common: {
+      white: '#FFFFFF',
+      black: '#000000'
+    },
+    background: {
+      default: '#FFFFFF',
+      paper: '#FFFFFF'
     }
   },
   components: {
@@ -27,7 +34,7 @@ const theme = responsiveFontSizes(createTheme({
       styleOverrides: {
         body: {
           "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
-            backgroundColor: Color.deepPurple[400],
+            backgroundColor: Color.deepPurple[200],
             width: '10px',
             height: '10px'
           },

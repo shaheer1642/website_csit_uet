@@ -5,14 +5,15 @@ import { Delete, Edit, Search } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
 import LoadingIcon from './LoadingIcon';
 import CustomButton from './CustomButton';
+import theme from '../theme';
 
 const defaultStyles = {
   colors: {
     headerTextColor: 'white',
-    headerBackgroundColor:Color.deepPurple[500],
+    headerBackgroundColor: theme.palette.primary.main,
     rowTextColor: 'black',
     rowBackgroundColor: 'white',
-    nthRowBackgroundColor: Color.deepPurple[100],
+    nthRowBackgroundColor: theme.palette.primary.light,
     footerTextColor: 'black',
     footerBackgroundColor: 'white',
   }
@@ -163,9 +164,9 @@ export default class CustomTable extends React.Component<IProps, IState> {
                           {this.props.onEditClick || this.props.onDeleteClick || this.props.onViewClick?
                             <StyledTableCell key="action_buttons" sx={{minWidth: '120px'}}>
                               {this.props.onEditClick ? 
-                              <IconButton style={{ color: Color.deepPurple[500] }} onClick={() => this.props.onEditClick(row)}><Edit /></IconButton>:<></>}
+                              <IconButton color='primary' onClick={() => this.props.onEditClick(row)}><Edit /></IconButton>:<></>}
                               {this.props.onDeleteClick ?
-                              <IconButton style={{ color: Color.red[500] }} onClick={() => this.props.onDeleteClick(row)}><Delete /></IconButton>:<></>}
+                              <IconButton color='error' onClick={() => this.props.onDeleteClick(row)}><Delete /></IconButton>:<></>}
                               {this.props.onViewClick ? 
                               <CustomButton fontSize={'12px'} size='small' variant='outlined' label={this.props.viewButtonLabel} onClick={() => this.props.onViewClick(row)} />:<></>}
                             </StyledTableCell> : <></>

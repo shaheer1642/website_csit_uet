@@ -8,13 +8,13 @@ import { socket } from '../websocket/socket';
 const defaultStyles = {
   chip: {
     color: Color.blue[700], 
-    borderColor: Color.deepPurple[900], 
+    borderColor: 'primary.dark', 
     '& .MuiChip-deleteIcon': {
-      color: Color.deepPurple[700]
+      color: 'primary.main'
     }
   },
   IconButton: {
-    color: Color.deepPurple[700], 
+    color: 'primary.main', 
   }
 }
 

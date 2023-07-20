@@ -28,7 +28,6 @@ import { generateNewToken } from '../websocket/socket';
 import { withRouter } from '../withRouter';
 import { socket, socketHasConnected } from '../websocket/socket';
 import EstablishingConnection from '../views/EstablishingConnection';
-import eventHandler from '../eventHandler';
 import * as Color from "@mui/material/colors";
 
 const drawerWidth = 300;
@@ -139,6 +138,7 @@ function MisLayout(props) {
   const onLogoutClick = () => {
     console.log('[onLogoutClick]')
     props.logout()
+    navigate('/')
     // generateNewToken()
     //navigate("/login")
   }
@@ -217,9 +217,9 @@ function MisLayout(props) {
               justifyContent: 'center',
             }}
           >
-            <props.icon style={{color: currentMenu == props.name ? Color.deepPurple[500] : props.iconColor}} />
+            <props.icon sx={{color: currentMenu == props.name ? 'primary.main' : props.iconColor}} />
           </ListItemIcon>
-          <ListItemText primary={props.name} sx={{ opacity: open ? 1 : 0, color: currentMenu == props.name ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+          <ListItemText primary={props.name} sx={{ opacity: open ? 1 : 0, color: currentMenu == props.name ? 'primary.main' : undefined, '&:hover': {color: 'primary.main'} }} />
         </ListItemButton>
       </Tooltip>
     )
@@ -254,9 +254,6 @@ function MisLayout(props) {
               </IconButton>
             </DrawerHeader>
             <List>
-              {['admin','pga'].includes(props.user.user_type) ? 
-                <DrawerItem name="Events" navigation="events" icon={Icon.Campaign} /> : <></>
-              }
 
               {['admin','pga'].includes(props.user.user_type) ? 
                 <DrawerItem name="Documents" navigation="documents" icon={Icon.Description} /> : <></>
@@ -336,7 +333,7 @@ function MisLayout(props) {
                   }}>
                     <InboxIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Applications" sx={{ opacity: open ? 1 : 0, '&:hover': {color: Color.deepPurple[700]} }}/>
+                  <ListItemText primary="Applications" sx={{ opacity: open ? 1 : 0, '&:hover': {color: 'primary.main'} }}/>
                   {open ? applicationsOpen ? <Icon.ExpandLess /> : <Icon.ExpandMore /> : <></>}
                 </ListItemButton>
               </Tooltip>
@@ -357,7 +354,7 @@ function MisLayout(props) {
                   }}
                   onClick={() => setCurrentMenu('viewApplications')}
                 >
-                  <ListItemText primary='My Applications' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'viewApplications' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                  <ListItemText primary='My Applications' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'viewApplications' ? 'primary.dark' : undefined, '&:hover': {color: 'primary.main'} }} />
                 </ListItemButton>
 
                 <ListItemButton
@@ -374,7 +371,7 @@ function MisLayout(props) {
                   }}
                   onClick={() => setCurrentMenu('submitApplication')}
                 >
-                  <ListItemText primary='Submit Application' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'submitApplication' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                  <ListItemText primary='Submit Application' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'submitApplication' ? 'primary.main' : undefined, '&:hover': {color: 'primary.main'} }} />
                 </ListItemButton>
 
                 {['admin','pga'].includes(props.user.user_type) ? 
@@ -392,7 +389,7 @@ function MisLayout(props) {
                     }}
                     onClick={() => setCurrentMenu('applicationsTemplates')}
                   >
-                    <ListItemText primary='Applications Templates' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'applicationsTemplates' ? Color.deepPurple[500] : undefined, '&:hover': {color: Color.deepPurple[700]} }} />
+                    <ListItemText primary='Applications Templates' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'applicationsTemplates' ? 'primary.main' : undefined, '&:hover': {color: 'primary.main'} }} />
                   </ListItemButton> : <></>
                 }
 

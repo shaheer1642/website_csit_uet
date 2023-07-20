@@ -4,6 +4,7 @@ import { socket } from "../../websocket/socket";
 import * as Color from '@mui/material/colors'
 import React, { useState, useEffect } from 'react';
 import { styled, alpha } from '@mui/system';
+import { withRouter } from "../../withRouter";
 
 function AnimatedText(props) {
   const { children, value, index, delay, Transition, ...other } = props;
@@ -342,4 +343,4 @@ function TabPanel(props) {
   );
 }
 
-export default MainHome;
+export default withRouter(MainHome);

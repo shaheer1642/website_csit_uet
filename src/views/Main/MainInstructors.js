@@ -5,6 +5,7 @@ import { socket } from "../../websocket/socket";
 import * as Color from '@mui/material/colors'
 import LoadingIcon from "../../components/LoadingIcon";
 import { getCache, setCache } from "../../localStorage";
+import { withRouter } from "../../withRouter";
 
 class MainInstructors extends React.Component {
   constructor(props) {
@@ -67,10 +68,10 @@ class MainInstructors extends React.Component {
                       <Fade in={true} style={{ transitionDelay: `${index * 100}ms` }}>
                         <Grid item container ml={{xs: 1, md: 2}} >
                           <Grid item xs={7} md={3}>
-                          <Typography sx={{ color: 'primary.dark' }}>{t.teacher_name}</Typography>
+                          <Typography>{t.teacher_name}</Typography>
                           </Grid>
                           <Grid item xs={5} md={3}>
-                          <Typography sx={{ color: 'primary.dark' }}>{t.qualification}</Typography>
+                          <Typography>{t.qualification}</Typography>
                           </Grid>
                         </Grid>
                       </Fade>
@@ -86,4 +87,4 @@ class MainInstructors extends React.Component {
 }
 
 
-export default MainInstructors;
+export default withRouter(MainInstructors);

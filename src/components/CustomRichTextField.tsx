@@ -9,7 +9,6 @@ import { global_documents } from '../objects/Documents';
 import { socket } from '../websocket/socket';
 
 interface IProps {
-  editable?: boolean,
   readOnly?: boolean,
   defaultEditorState: EditorState,
   editorState: EditorState,
@@ -43,11 +42,11 @@ export default class CustomRichTextField extends React.Component<IProps, IState>
   uploadCallback = (file) => {
     console.log('uploadCallback')
     return new Promise((resolve, reject) => {
-       const data = new FormData();
-       data.append(file.name, file)
-       socket.emit('documents/create', {document: file, document_name: file.name}, (res) => {
+      const data = new FormData();
+      data.append(file.name, file)
+      socket.emit('documents/create', { document: file, document_name: file.name }, (res) => {
         resolve({ data: { link: res.data.document_url } });
-       })
+      })
     });
   }
 
@@ -55,34 +54,32 @@ export default class CustomRichTextField extends React.Component<IProps, IState>
     return (
       <Box sx={{ position: 'relative' }}>
         {
-          <Box sx={{ 
-            position: 'absolute', 
-            right: this.state.editing ? 20 : this.props.editorState.getCurrentContent().hasText() ? 5 : undefined, 
-            top: this.state.editing ? {xs: 200, sm: 150, md: 110, xl: 80} : undefined, 
-            zIndex: 10 
+          <Box sx={{
+            position: 'absolute',
+            right: this.state.editing ? 20 : this.props.editorState.getCurrentContent().hasText() ? 5 : undefined,
+            top: this.state.editing ? { xs: 200, sm: 150, md: 110, xl: 80 } : undefined,
+            zIndex: 10
           }}>
             {
-              this.props.editable ?
-                this.state.editing ?
-                  <ButtonGroup size='medium'>
-                    <Tooltip title="Save">
-                      <IconButton size='medium' color='primary' onClick={() => this.props.onSave()}>
-                        <Check fontSize='14px' />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Cancel">
-                      <IconButton size='medium' color='primary' onClick={() => this.setState({ editable: false }, () => this.props.onCancel())}>
-                        <CancelOutlined />
-                      </IconButton>
-                    </Tooltip>
-                  </ButtonGroup> :
-                  this.props.readOnly ? <></> :
-                    <Tooltip title="Edit">
-                      <IconButton size='medium' color='primary' onClick={() => this.setState({ editing: true })}>
-                        <Edit />
-                      </IconButton>
-                    </Tooltip> :
-                <></>
+              this.state.editing ?
+                <ButtonGroup size='medium'>
+                  <Tooltip title="Save">
+                    <IconButton size='medium' color='primary' onClick={() => this.setState({ editing: false }, () => this.props.onSave())}>
+                      <Check fontSize='14px' />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title="Cancel">
+                    <IconButton size='medium' color='primary' onClick={() => this.setState({ editing: false }, () => this.props.onCancel())}>
+                      <CancelOutlined />
+                    </IconButton>
+                  </Tooltip>
+                </ButtonGroup> :
+                this.props.readOnly ? <></> :
+                  <Tooltip title="Edit">
+                    <IconButton size='medium' color='primary' onClick={() => this.setState({ editing: true })}>
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
             }
           </Box>
         }
@@ -119,7 +116,7 @@ export default class CustomRichTextField extends React.Component<IProps, IState>
           onEditorStateChange={this.props.onChange}
           readOnly={this.props.readOnly || !this.state.editing}
           toolbarHidden={this.props.readOnly || !this.state.editing}
-          
+
           toolbar={{
             image: {
               uploadEnabled: true,

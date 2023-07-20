@@ -5,6 +5,7 @@ import { socket } from "../../websocket/socket";
 import * as Color from '@mui/material/colors'
 import LoadingIcon from "../../components/LoadingIcon";
 import { getCache, setCache } from "../../localStorage";
+import { withRouter } from "../../withRouter";
 
 class MainCourses extends React.Component {
   constructor(props) {
@@ -62,4 +63,4 @@ class MainCourses extends React.Component {
 }
 
 
-export default MainCourses;
+export default withRouter(MainCourses);

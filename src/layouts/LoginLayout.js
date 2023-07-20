@@ -6,6 +6,7 @@ import {Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography} from
 import { Box } from '@mui/system';
 import login_banner from '../images/login_banner.jpg'
 import EstablishingConnection from '../views/EstablishingConnection';
+import { withRouter } from '../withRouter';
 
 const palletes = {
   primary: '#439CEF',
@@ -103,4 +104,4 @@ class LoginLayout extends React.Component {
   }
 }
 
-export default LoginLayout;
+export default withRouter(LoginLayout);
