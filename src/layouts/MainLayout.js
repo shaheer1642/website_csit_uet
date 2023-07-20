@@ -32,8 +32,8 @@ function HeaderAppBar(props) {
     label: 'Courses',
     path: '/courses'
   },{
-    label: 'Instructors',
-    path: '/instructors'
+    label: 'Faculty',
+    path: '/faculty'
   },{
     label: 'Downloads',
     path: '/downloads'

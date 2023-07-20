@@ -7,7 +7,7 @@ import LoadingIcon from "../../components/LoadingIcon";
 import { getCache, setCache } from "../../localStorage";
 import { withRouter } from "../../withRouter";
 
-class MainInstructors extends React.Component {
+class MainFaculty extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -55,7 +55,7 @@ class MainInstructors extends React.Component {
       this.state.callingApi == 'fetchData' ? <Box minHeight={'90vh'}><LoadingIcon minHeight='90vh' /></Box> :
         <Grid container padding={2} spacing={2} minHeight={'90vh'} justifyContent={'center'} alignItems={'center'} display='flex'>
           <Grid item xs={12} justifyContent={'center'} display='flex'>
-            <Typography fontWeight={'bold'} variant="h2" sx={{ color: 'primary.main' }}>Instructors</Typography>
+            <Typography fontWeight={'bold'} variant="h2" sx={{ color: 'primary.main' }}>Faculty</Typography>
           </Grid>
           {['Dean','Assistant to Dean','Assistant Professor','Lecturer'].map(designation => {
             return (
@@ -87,4 +87,4 @@ class MainInstructors extends React.Component {
 }
 
 
-export default withRouter(MainInstructors);
+export default withRouter(MainFaculty);

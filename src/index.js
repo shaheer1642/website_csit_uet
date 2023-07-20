@@ -11,7 +11,7 @@ import Login from "./views/Login/Login";
 import MisHome from "./views/MIS/Home/MisHome";
 import MainHome from "./views/Main/MainHome";
 import MainCourses from "./views/Main/MainCourses";
-import MainInstructors from "./views/Main/MainInstructors";
+import MainFaculty from "./views/Main/MainFaculty";
 import MainDownloads from "./views/Main/MainDownloads";
 import MainNewsAndEvents from "./views/Main/MainNewsAndEvents";
 import MisBatches from "./views/MIS/Registration/Batches/MisBatches";
@@ -87,7 +87,7 @@ class Router extends React.Component {
             <Route path="/" element={<MainLayout />}>
               <Route index element={<MainHome />} />
               <Route path="courses" element={<MainCourses />} />
-              <Route path="instructors" element={<MainInstructors />} />
+              <Route path="faculty" element={<MainFaculty />} />
               <Route path="downloads" element={<MainDownloads />} />
               <Route path="newsAndEvents" element={<MainNewsAndEvents />} />
             </Route>
@@ -177,7 +177,7 @@ class Router extends React.Component {
 //           <Route path="/" element={<MainLayout />}>
 //             <Route index element={<MainHome />} />
 //             <Route path="courses" element={<MainCourses />} />
-//             <Route path="instructors" element={<MainInstructors />} />
+//             <Route path="instructors" element={<MainFaculty />} />
 //             <Route path="downloads" element={<MainDownloads />} />
 //             <Route path="newsAndEvents" element={<MainNewsAndEvents />} />
 //           </Route>
