@@ -86,7 +86,7 @@ export default class CustomTextField extends React.Component<IProps> {
             color="primary"
             size={this.props.size}
             disabled={this.props.disabled}
-            value={this.props.value}
+            value={this.props.value || ''}
             placeholder={this.props.placeholder}
             label={this.props.label} 
             variant={this.props.variant || (this.props.type == 'date' ? 'outlined' : "standard")}

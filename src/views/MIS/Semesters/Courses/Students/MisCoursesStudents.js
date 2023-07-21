@@ -75,7 +75,7 @@ class MisCoursesStudents extends React.Component {
       studentsCourses: [],
 
       alertMsg: '',
-      alertSeverity: '',
+      alertSeverity: 'info',
 
       confirmationModalShow: false,
       confirmationModalMessage: "",

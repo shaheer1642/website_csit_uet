@@ -46,7 +46,7 @@ class MisProfile extends React.Component {
       modalPanel: '',
 
       alertMsg: '',
-      alertSeverity: '',
+      alertSeverity: 'info',
 
       resendCodeTimer: 0,
 

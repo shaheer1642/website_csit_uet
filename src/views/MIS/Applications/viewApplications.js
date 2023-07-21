@@ -75,7 +75,7 @@ class ViewApplications extends React.Component {
                 </Grid>
                 {['admin','pga','teacher'].includes(this.props.user.user_type) ?
                     <Grid item xs={'auto'}>
-                        <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})} aria-label="basic tabs example">
+                        <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})}>
                             <Tab label="Submitted"/>
                             <Tab label="Received" />
                             <Tab label="Forwarded to me" />

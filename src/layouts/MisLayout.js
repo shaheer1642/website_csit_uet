@@ -27,8 +27,8 @@ import * as uuid from 'uuid';
 import { generateNewToken } from '../websocket/socket';
 import { withRouter } from '../withRouter';
 import { socket, socketHasConnected } from '../websocket/socket';
-import EstablishingConnection from '../views/EstablishingConnection';
 import * as Color from "@mui/material/colors";
+import SocketConnection from '../views/SocketConnection';
 
 const drawerWidth = 300;
 
@@ -102,30 +102,21 @@ function MisLayout(props) {
   const navigate = useNavigate()
   const [open, setOpen] = React.useState(false);
   const [currentMenu, setCurrentMenu] = React.useState('home');
-  const [socketConnecting, setSocketConnecting] = React.useState(true);
   const [applicationsOpen, setApplicationsOpen] = React.useState(false);
 
   useEffect(() => {
     console.log('[MisLayout] componentDidMount')
-    socketHasConnected().then(() => setSocketConnecting(false)).catch(console.error)
-    socket.on('connect', SocketConnectedListener)
-    socket.on('disconnect', SocketDisconnectedListener)
     if (!props.user) navigate("/login")
     // else console.log('[MisLayout] user=',user)
-    
+
     return () => {
       console.log('[MisLayout] componentWillUnmount')
-      socket.removeListener(SocketConnectedListener)
-      socket.removeListener(SocketDisconnectedListener)
     }
   })
 
   useEffect(() => {
     console.log('[MisLayout] componentDidUpdate')
   });
-
-  const SocketConnectedListener = () => setSocketConnecting(false)
-  const SocketDisconnectedListener = () => setSocketConnecting(true)
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -197,7 +188,7 @@ function MisLayout(props) {
     return (
       <Tooltip title={props.name} placement='right' disableHoverListener={open}>
         <ListItemButton
-          component={props.navigation ? Link : undefined} 
+          component={props.navigation ? Link : undefined}
           to={props.navigation}
           sx={{
             minHeight: 48,
@@ -217,9 +208,9 @@ function MisLayout(props) {
               justifyContent: 'center',
             }}
           >
-            <props.icon sx={{color: currentMenu == props.name ? 'primary.main' : props.iconColor}} />
+            <props.icon sx={{ color: currentMenu == props.name ? 'primary.main' : props.iconColor }} />
           </ListItemIcon>
-          <ListItemText primary={props.name} sx={{ opacity: open ? 1 : 0, color: currentMenu == props.name ? 'primary.main' : undefined, '&:hover': {color: 'primary.main'} }} />
+          <ListItemText primary={props.name} sx={{ opacity: open ? 1 : 0, color: currentMenu == props.name ? 'primary.main' : undefined, '&:hover': { color: 'primary.main' } }} />
         </ListItemButton>
       </Tooltip>
     )
@@ -227,122 +218,155 @@ function MisLayout(props) {
 
   return (
     !props.user ? <Navigate to={'/login'} /> :
-    <React.Fragment>
-      {socketConnecting ? <EstablishingConnection /> :
-        <Box sx={{ display: 'flex' }}>
-          <AppBar position="fixed" open={open}>
-            <Toolbar>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
+      <Box sx={{ display: 'flex' }}>
+        <AppBar position="fixed" open={open}>
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              edge="start"
+              sx={{
+                marginRight: 5,
+                ...(open && { display: 'none' }),
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            {LogoText()}
+          </Toolbar>
+        </AppBar>
+        <Drawer variant="permanent" open={open}>
+          <DrawerHeader>
+            <IconButton onClick={handleDrawerClose}>
+              {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          </DrawerHeader>
+          <List>
+
+            {['admin', 'pga'].includes(props.user.user_type) ?
+              <DrawerItem name="Documents" navigation="documents" icon={Icon.Description} /> : <></>
+            }
+
+            {['admin', 'pga'].includes(props.user.user_type) ?
+              <DrawerItem name="Department Management" navigation="departments" icon={Icon.Apartment} /> : <></>
+            }
+
+            {['admin', 'pga'].includes(props.user.user_type) ?
+              <DrawerItem name="Batch Management" navigation="batches" icon={Icon.People} /> : <></>
+            }
+
+            {['admin', 'pga'].includes(props.user.user_type) ?
+              <DrawerItem name="Student Management" navigation="students" icon={Icon.ManageAccounts} /> : <></>
+            }
+
+            {['admin', 'pga'].includes(props.user.user_type) ?
+              <DrawerItem name="Semester Management" navigation="semesters" icon={Icon.CastForEducation} /> : <></>
+            }
+
+            {['teacher'].includes(props.user.user_type) ?
+              <DrawerItem name="Courses" navigation="tportal/courses" icon={Icon.Book} /> : <></>
+            }
+
+            {['student'].includes(props.user.user_type) ?
+              <DrawerItem name="Courses" navigation="sportal/courses" icon={Icon.Book} /> : <></>
+            }
+
+            {['pga', 'student', 'teacher'].includes(props.user.user_type) ?
+              <DrawerItem name={props.user.user_type == 'pga' ? 'Thesis Management' : 'Thesis'} navigation={props.user.user_type == 'student' ? "thesis/manage" : "thesis"} icon={Icon.Article} /> : <></>
+            }
+
+            {['admin', 'pga'].includes(props.user.user_type) ?
+              <DrawerItem name="Instructors" navigation="teachers" icon={Icon.School} /> : <></>
+            }
+
+            {['admin', 'pga'].includes(props.user.user_type) ?
+              <DrawerItem name="Courses" navigation="courses" icon={Icon.Book} /> : <></>
+            }
+
+            {['admin', 'pga'].includes(props.user.user_type) ?
+              <DrawerItem name="Student Performance" navigation="studentPerformance" icon={Icon.Troubleshoot} /> : <></>
+            }
+
+            {['admin', 'pga'].includes(props.user.user_type) ?
+              <DrawerItem name="Instructors Performance" navigation="teachersPerformance" icon={Icon.QueryStats} /> : <></>
+            }
+
+            {['teacher'].includes(props.user.user_type) ?
+              <DrawerItem name="Performance Report" navigation="tportal/performance" icon={Icon.QueryStats} /> : <></>
+            }
+
+            {['student'].includes(props.user.user_type) ?
+              <DrawerItem name="Transcript" navigation="sportal/transcript" icon={Icon.Summarize} /> : <></>
+            }
+
+            <Tooltip title='Applications' placement='right' disableHoverListener={open}>
+              <ListItemButton
+                component={Link}
+                to="applications/viewApplications"
                 sx={{
-                  marginRight: 5,
-                  ...(open && { display: 'none' }),
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}
+                onClick={() => {
+                  setCurrentMenu('viewApplications')
+                  setApplicationsOpen(!applicationsOpen)
                 }}
               >
-                <MenuIcon />
-              </IconButton>
-              {LogoText()}
-            </Toolbar>
-          </AppBar>
-          <Drawer variant="permanent" open={open}>
-            <DrawerHeader>
-              <IconButton onClick={handleDrawerClose}>
-                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-              </IconButton>
-            </DrawerHeader>
-            <List>
-
-              {['admin','pga'].includes(props.user.user_type) ? 
-                <DrawerItem name="Documents" navigation="documents" icon={Icon.Description} /> : <></>
-              }
-
-              {['admin','pga'].includes(props.user.user_type) ? 
-                <DrawerItem name="Department Management" navigation="departments" icon={Icon.Apartment} /> : <></>
-              }
-
-              {['admin','pga'].includes(props.user.user_type) ? 
-                <DrawerItem name="Batch Management" navigation="batches" icon={Icon.People} /> : <></>
-              }
-
-              {['admin','pga'].includes(props.user.user_type) ? 
-                <DrawerItem name="Student Management" navigation="students" icon={Icon.ManageAccounts} /> : <></>
-              }
-
-              {['admin','pga'].includes(props.user.user_type) ? 
-                <DrawerItem name="Semester Management" navigation="semesters" icon={Icon.CastForEducation} /> : <></>
-              }
-
-              {['teacher'].includes(props.user.user_type) ?
-                <DrawerItem name="Courses" navigation="tportal/courses" icon={Icon.Book} /> : <></>
-              }
-              
-              {['student'].includes(props.user.user_type) ?
-                <DrawerItem name="Courses" navigation="sportal/courses" icon={Icon.Book} /> : <></>
-              }
-
-              {['pga','student','teacher'].includes(props.user.user_type) ? 
-                <DrawerItem name={props.user.user_type == 'pga' ? 'Thesis Management' : 'Thesis'} navigation={props.user.user_type == 'student' ? "thesis/manage" : "thesis"} icon={Icon.Article} /> : <></>
-              }
-
-              {['admin','pga'].includes(props.user.user_type) ?
-                <DrawerItem name="Instructors" navigation="teachers" icon={Icon.School} /> : <></>
-              }
-
-              {['admin','pga'].includes(props.user.user_type) ? 
-                <DrawerItem name="Courses" navigation="courses" icon={Icon.Book} /> : <></>
-              }
-
-              {['admin','pga'].includes(props.user.user_type) ? 
-                <DrawerItem name="Student Performance" navigation="studentPerformance" icon={Icon.Troubleshoot} /> : <></>
-              }
-
-              {['admin','pga'].includes(props.user.user_type) ? 
-                <DrawerItem name="Instructors Performance" navigation="teachersPerformance" icon={Icon.QueryStats} /> : <></>
-              }
-
-              {['teacher'].includes(props.user.user_type) ?
-                <DrawerItem name="Performance Report" navigation="tportal/performance" icon={Icon.QueryStats} /> : <></>
-              }
-
-              {['student'].includes(props.user.user_type) ?
-                <DrawerItem name="Transcript" navigation="sportal/transcript" icon={Icon.Summarize} /> : <></>
-              }
-
-              <Tooltip title='Applications' placement='right' disableHoverListener={open}>
-                <ListItemButton 
-                  component={Link}
-                  to="applications/viewApplications"
+                <ListItemIcon
                   sx={{
-                      minHeight: 48,
-                      justifyContent: open ? 'initial' : 'center',
-                      px: 2.5,
-                  }}
-                  onClick={() => {
-                    setCurrentMenu('viewApplications')
-                    setApplicationsOpen(!applicationsOpen)
-                  }}
-                >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : 'auto',
-                      justifyContent: 'center',
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
                   }}>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Applications" sx={{ opacity: open ? 1 : 0, '&:hover': {color: 'primary.main'} }}/>
-                  {open ? applicationsOpen ? <Icon.ExpandLess /> : <Icon.ExpandMore /> : <></>}
-                </ListItemButton>
-              </Tooltip>
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText primary="Applications" sx={{ opacity: open ? 1 : 0, '&:hover': { color: 'primary.main' } }} />
+                {open ? applicationsOpen ? <Icon.ExpandLess /> : <Icon.ExpandMore /> : <></>}
+              </ListItemButton>
+            </Tooltip>
 
-              <Collapse in={open ? applicationsOpen : false} timeout="auto" unmountOnExit>
+            <Collapse in={open ? applicationsOpen : false} timeout="auto" unmountOnExit>
 
+              <ListItemButton
+                component={Link}
+                to="applications/viewApplications"
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  pl: 4,
+                  ':hover': {
+                    color: 'primary.main'
+                  }
+                }}
+                onClick={() => setCurrentMenu('viewApplications')}
+              >
+                <ListItemText primary='My Applications' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'viewApplications' ? 'primary.dark' : undefined, '&:hover': { color: 'primary.main' } }} />
+              </ListItemButton>
+
+              <ListItemButton
+                component={Link}
+                to="applications/submitApplication"
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  pl: 4,
+                  ':hover': {
+                    color: 'primary.main'
+                  }
+                }}
+                onClick={() => setCurrentMenu('submitApplication')}
+              >
+                <ListItemText primary='Submit Application' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'submitApplication' ? 'primary.main' : undefined, '&:hover': { color: 'primary.main' } }} />
+              </ListItemButton>
+
+              {['admin', 'pga'].includes(props.user.user_type) ?
                 <ListItemButton
                   component={Link}
-                  to="applications/viewApplications"
+                  to="applications/applicationsTemplates"
                   sx={{
                     minHeight: 48,
                     justifyContent: open ? 'initial' : 'center',
@@ -352,66 +376,30 @@ function MisLayout(props) {
                       color: 'primary.main'
                     }
                   }}
-                  onClick={() => setCurrentMenu('viewApplications')}
+                  onClick={() => setCurrentMenu('applicationsTemplates')}
                 >
-                  <ListItemText primary='My Applications' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'viewApplications' ? 'primary.dark' : undefined, '&:hover': {color: 'primary.main'} }} />
-                </ListItemButton>
+                  <ListItemText primary='Applications Templates' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'applicationsTemplates' ? 'primary.main' : undefined, '&:hover': { color: 'primary.main' } }} />
+                </ListItemButton> : <></>
+              }
 
-                <ListItemButton
-                  component={Link}
-                  to="applications/submitApplication"
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? 'initial' : 'center',
-                    px: 2.5,
-                    pl: 4,
-                    ':hover': {
-                      color: 'primary.main'
-                    }
-                  }}
-                  onClick={() => setCurrentMenu('submitApplication')}
-                >
-                  <ListItemText primary='Submit Application' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'submitApplication' ? 'primary.main' : undefined, '&:hover': {color: 'primary.main'} }} />
-                </ListItemButton>
+            </Collapse>
 
-                {['admin','pga'].includes(props.user.user_type) ? 
-                  <ListItemButton
-                    component={Link}
-                    to="applications/applicationsTemplates"
-                    sx={{
-                      minHeight: 48,
-                      justifyContent: open ? 'initial' : 'center',
-                      px: 2.5,
-                      pl: 4,
-                      ':hover': {
-                        color: 'primary.main'
-                      }
-                    }}
-                    onClick={() => setCurrentMenu('applicationsTemplates')}
-                  >
-                    <ListItemText primary='Applications Templates' sx={{ opacity: open ? 1 : 0, color: currentMenu == 'applicationsTemplates' ? 'primary.main' : undefined, '&:hover': {color: 'primary.main'} }} />
-                  </ListItemButton> : <></>
-                }
+            <Divider />
 
-              </Collapse>
+            <DrawerItem name="My Profile" navigation="profile" icon={Icon.AccountCircle} />
 
-              <Divider />
+            <DrawerItem name="Help" navigation="help" icon={Icon.Help} />
 
-              <DrawerItem name="My Profile" navigation="profile" icon={Icon.AccountCircle} />
+            <DrawerItem name="Logout" icon={Icon.PowerSettingsNew} iconColor='Red' onClick={() => onLogoutClick()} />
 
-              <DrawerItem name="Help" navigation="help" icon={Icon.Help} />
-
-              <DrawerItem name="Logout" icon={Icon.PowerSettingsNew} iconColor='Red' onClick={() => onLogoutClick()}/>
-
-            </List>
-          </Drawer>
-          <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: Color.grey[100], minHeight: '100vh' }}>
-            <DrawerHeader />
-            <Outlet />
-          </Box>
+          </List>
+        </Drawer>
+        <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: Color.grey[100], minHeight: '100vh' }}>
+          <DrawerHeader />
+          <Outlet />
         </Box>
-      }
-    </React.Fragment>
+        <SocketConnection />
+      </Box>
   );
 }
 

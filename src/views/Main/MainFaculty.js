@@ -57,15 +57,15 @@ class MainFaculty extends React.Component {
           <Grid item xs={12} justifyContent={'center'} display='flex'>
             <Typography fontWeight={'bold'} variant="h2" sx={{ color: 'primary.main' }}>Faculty</Typography>
           </Grid>
-          {['Dean','Assistant to Dean','Assistant Professor','Lecturer'].map(designation => {
+          {['Dean','Assistant to Dean','Assistant Professor','Lecturer'].map((designation,index) => {
             return (
-              <React.Fragment>
+              <React.Fragment key={index}>
                   <Grid item xs={12}>
                     <Typography fontWeight={'bold'} variant="h4" sx={{ color: 'primary.dark' }}>{designation}</Typography>
                   </Grid>
                   {this.state.teachersArr.filter(t => (t.designation || 'Lecturer') == designation).map((t, index) => {
                     return (
-                      <Fade in={true} style={{ transitionDelay: `${index * 100}ms` }}>
+                      <Fade key={index} in={true} style={{ transitionDelay: `${index * 100}ms` }}>
                         <Grid item container ml={{xs: 1, md: 2}} >
                           <Grid item xs={7} md={3}>
                           <Typography>{t.teacher_name}</Typography>

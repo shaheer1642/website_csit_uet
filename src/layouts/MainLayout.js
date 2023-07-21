@@ -4,7 +4,6 @@ import { Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography, tab
 import footerImg from '../images/website_footer.jpg'
 import bannerImg from '../images/website_banner.jpg'
 import { socket, socketHasConnected } from '../websocket/socket'
-import EstablishingConnection from '../views/EstablishingConnection';
 import * as Color from '@mui/material/colors'
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -22,50 +21,43 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { Facebook, Instagram, Mail, Phone, Twitter } from "@mui/icons-material";
 import { styled, keyframes } from "@mui/system";
 import { withRouter } from "../withRouter";
+import SocketConnection from "../views/SocketConnection";
 
 
 function HeaderAppBar(props) {
   const tabs = [{
     label: 'Home',
     path: '/'
-  },{
+  }, {
     label: 'Courses',
     path: '/courses'
-  },{
+  }, {
     label: 'Faculty',
     path: '/faculty'
-  },{
+  }, {
     label: 'Downloads',
     path: '/downloads'
-  },{
+  }, {
     label: 'News & Events',
     path: '/newsAndEvents'
   },]
 
   const location = useLocation()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [value, setValue] = React.useState(tabs.findIndex((tab) => tab.path == location.pathname));
   const navigate = useNavigate()
-
+  console.log('location',location.pathname,value)
   const handleChange = (event, newValue) => {
-    console.log('handleChange',newValue)
+    console.log('handleChange', newValue)
     setValue(newValue);
   };
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
   };
 
   const LogoText = (display) => {
@@ -128,8 +120,8 @@ function HeaderAppBar(props) {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {tabs.map((page) => (
-                <MenuItem key={page.label} onClick={() => {
+              {tabs.map((page,index) => (
+                <MenuItem key={index} onClick={() => {
                   navigate(page.path)
                   handleCloseNavMenu()
                 }}>
@@ -146,36 +138,16 @@ function HeaderAppBar(props) {
               scrollButtons
               textColor="secondary"
               indicatorColor="secondary"
-              aria-label="visible arrows tabs example"
               sx={{
                 [`& .${tabsClasses.scrollButtons}`]: {
                   '&.Mui-disabled': { opacity: 0.3 },
                 },
               }}
             >
-              {tabs.map(page => <Tab label={page.label} onClick={() => navigate(page.path)} />)}
+              {tabs.map((page,index) => <Tab key={index} value={index} label={page.label} onClick={() => navigate(page.path)} />)}
             </Tabs>
           </Box>
           {LogoText({ xs: 'flex', md: 'none' })}
-          {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            CS & IT
-          </Typography> */}
           <Box>
             <Button onClick={() => navigate(props.user ? '/mis' : '/login')} color="secondary" variant="outlined" >{props.user ? 'MIS Dashboard' : 'MIS Login'}</Button>
           </Box>
@@ -192,50 +164,50 @@ const Footer = () => {
   const list1 = [{
     label: 'UET Homepage',
     link: 'https://www.uetpeshawar.edu.pk/index.php'
-  },{
+  }, {
     label: 'Statutes & Rules',
     link: 'https://www.uetpeshawar.edu.pk/statutes&rules.php'
-  },{
+  }, {
     label: 'Scholarships & Awards',
     link: 'https://www.uetpeshawar.edu.pk/scholarships&awards.php'
-  },{
+  }, {
     label: 'Research & Development',
     link: 'https://www.uetpeshawar.edu.pk/research&development.php'
-  },{
+  }, {
     label: 'Clubs & Societies',
     link: 'https://www.uetpeshawar.edu.pk/clubs&societies.php'
-  },{
+  }, {
     label: 'UET Committee\'s',
     link: 'https://www.uetpeshawar.edu.pk/uetcommittee.php'
-  },{
+  }, {
     label: 'Seniority List',
     link: 'https://www.uetpeshawar.edu.pk/senioritylist.php'
-  },{
+  }, {
     label: 'Contact Us',
     link: 'https://www.uetpeshawar.edu.pk/contactus.php'
   }]
   const list2 = [{
     label: 'HEC',
     link: 'http://www.hec.gov.pk/'
-  },{
+  }, {
     label: 'PEC',
     link: 'http://www.pec.org.pk/'
-  },{
+  }, {
     label: 'ETEA',
     link: 'https://etea.edu.pk/'
-  },{
+  }, {
     label: 'PCATP',
     link: 'http://www.pcatp.org.pk/'
-  },{
+  }, {
     label: 'Admissions',
     link: 'http://www.enggentrancetest.pk/uet/'
-  },{
+  }, {
     label: 'CMS Login',
     link: 'http://cms.nwfpuet.edu.pk/'
-  },{
+  }, {
     label: 'Digital Library',
     link: 'http://www.digitallibrary.edu.pk/nwfpuet.html'
-  },{
+  }, {
     label: 'Useful Links',
     link: 'https://www.uetpeshawar.edu.pk/usefullinks.php'
   }]
@@ -244,21 +216,21 @@ const Footer = () => {
     var animationTimeout = false;
     const handleAnimationRestart = () => {
       const isScrolledToBottom = window.innerHeight + window.scrollY + footerRef.current.clientHeight >= document.documentElement.scrollHeight;
-      if (animationTimeout || isScrolledToBottom  ) return
+      if (animationTimeout || isScrolledToBottom) return
       else {
         setTimeout(() => animationTimeout = false, 5000);
         animationTimeout = true
       }
-      ['.animated-list1-items','.animated-list2-items'].forEach(className => {
-        document.querySelectorAll(className).forEach((item,index) => {
-          item.style.animation='none';
-          setTimeout(function () {item.style.animation='';item.style.animationDelay=`${index * 300}ms`},100)
+      ['.animated-list1-items', '.animated-list2-items'].forEach(className => {
+        document.querySelectorAll(className).forEach((item, index) => {
+          item.style.animation = 'none';
+          setTimeout(function () { item.style.animation = ''; item.style.animationDelay = `${index * 300}ms` }, 100)
         });
       })
     };
-  
+
     window.addEventListener('scroll', handleAnimationRestart);
-  
+
     return () => {
       window.removeEventListener('scroll', handleAnimationRestart);
     };
@@ -269,11 +241,11 @@ const Footer = () => {
     color: theme.palette.common.white,
     borderTop: `5px solid ${theme.palette.primary.dark}`,
   }));
-  
+
   const FooterSection = styled('div')(({ theme }) => ({
     // marginBottom: theme.spacing(2),
   }));
-  
+
   const slideInAnimation = keyframes`
     from {
       opacity: 0;
@@ -284,7 +256,7 @@ const Footer = () => {
       transform: translateY(0);
     }
   `;
-  
+
   const AnimatedListItem = styled(ListItem)(({ theme }) => ({
     opacity: 0,
     disableGutters: true,
@@ -304,8 +276,8 @@ const Footer = () => {
               </Grid>
               <Grid item>
                 <List>
-                  {list1.map((item, index) => 
-                    <React.Fragment>
+                  {list1.map((item, index) =>
+                    <React.Fragment key={index}>
                       <AnimatedListItem className="animated-list1-items" key={index} style={{ animationDelay: `${index * 300}ms` }}>
                         <ListItemButton onClick={() => window.open(item.link, '_blank')}>
                           <ListItemText primary={item.label} />
@@ -327,8 +299,8 @@ const Footer = () => {
               </Grid>
               <Grid item>
                 <List>
-                  {list2.map((item, index) => 
-                    <React.Fragment>
+                  {list2.map((item, index) =>
+                    <React.Fragment key={index}>
                       <AnimatedListItem className="animated-list2-items" key={index} style={{ animationDelay: `${index * 300}ms` }}>
                         <ListItemButton onClick={() => window.open(item.link, '_blank')}>
                           <ListItemText primary={item.label} />
@@ -342,23 +314,6 @@ const Footer = () => {
                 </List>
               </Grid>
             </Grid>
-            {/* <FooterSection>
-              <Typography variant="h5">Important Links</Typography>
-              <List>
-                {list2.map((label, index) => 
-                  <React.Fragment>
-                    <AnimatedListItem className="animated-list2-items" key={index} style={{ animationDelay: `${index * 300}ms` }}>
-                      <ListItemButton>
-                        <ListItemText primary={label} />
-                      </ListItemButton>
-                    </AnimatedListItem>
-                    {index !== list2.length - 1 && (
-                      <Divider sx={{ backgroundColor: 'primary.light' }} />
-                    )}
-                  </React.Fragment>
-                )}
-              </List>
-            </FooterSection> */}
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
             <FooterSection>
@@ -369,7 +324,7 @@ const Footer = () => {
                     University of Engineering & Technology, Jamrud Road Peshawar, Khyber Pakhtunkhwa, Pakistan
                   </Typography>
                 </ListItem>
-                <Divider sx={{backgroundColor: 'primary.light'}} />
+                <Divider sx={{ backgroundColor: 'primary.light' }} />
                 <ListItem>
                   <Grid container columnSpacing={4} rowSpacing={1}>
                     <Grid item xs={12}>
@@ -385,7 +340,7 @@ const Footer = () => {
                     </Grid>
                   </Grid>
                 </ListItem>
-                <Divider sx={{backgroundColor: 'primary.light'}} />
+                <Divider sx={{ backgroundColor: 'primary.light' }} />
                 <ListItem>
                   <Grid container columnSpacing={4} rowSpacing={1}>
                     <Grid item xs={12}>
@@ -401,7 +356,7 @@ const Footer = () => {
                     </Grid>
                   </Grid>
                 </ListItem>
-                <Divider sx={{backgroundColor: 'primary.light'}} />
+                <Divider sx={{ backgroundColor: 'primary.light' }} />
                 <ListItem>
                   <Grid container columnSpacing={4} rowSpacing={1}>
                     <Grid item xs={12}>
@@ -422,7 +377,7 @@ const Footer = () => {
           </Grid>
         </Grid>
         <Grid item container>
-          <Grid item xs={12} padding={1} justifyContent={'center'} alignItems={'center'} display='flex' sx={{backgroundColor: 'primary.dark'}} direction={'column'}>
+          <Grid container item padding={1} justifyContent={'center'} alignItems={'center'} display='flex' sx={{ backgroundColor: 'primary.dark' }} direction={'column'}>
             <Typography>Developed by the FYP team Muhammad Shaheer Qureshi, Sameer Shahzad, and Muqaddas Ishaq under the supervision of Dr. M. Imran Khan Khalil</Typography>
             <Typography>Copyright © 2023 - University of Engineering & Technology, Peshawar. All Rights Reserved.</Typography>
           </Grid>
@@ -437,44 +392,32 @@ class MainLayout extends React.Component {
     super(props);
     this.state = {
       tabValue: 0,
-      socketConnecting: true,
     };
   }
 
   componentDidMount() {
-    this.props.login()
     console.log('[MainLayout] componentDidMount')
-    socketHasConnected().then(() => this.setState({ socketConnecting: false })).catch(console.error)
-    socket.on('connect', this.SocketConnectedListener)
-    socket.on('disconnect', this.SocketDisconnectedListener)
+    this.props.login()
   }
 
   componentWillUnmount() {
     console.log('[MainLayout] componentWillUnmount')
-    socket.removeListener(this.SocketConnectedListener)
-    socket.removeListener(this.SocketDisconnectedListener)
   }
-
-  SocketConnectedListener = () => this.setState({ socketConnecting: false })
-  SocketDisconnectedListener = () => this.setState({ socketConnecting: true })
 
   render() {
     return (
-      <React.Fragment>
-        {this.state.socketConnecting ? <EstablishingConnection /> :
-          <Grid container>
-            <Grid item xs={12}>
-              <HeaderAppBar {...this.props}/>
-            </Grid>
-            <Grid item xs={12}>
-              <Outlet />
-            </Grid>
-            <Grid item xs={12}>
-              <Footer />
-            </Grid>
-          </Grid>
-        }
-      </React.Fragment>
+      <Grid container>
+        <Grid item xs={12}>
+          <HeaderAppBar {...this.props} />
+        </Grid>
+        <Grid item xs={12}>
+          <Outlet />
+        </Grid>
+        <Grid item xs={12}>
+          <Footer />
+        </Grid>
+        <SocketConnection />
+      </Grid>
     );
   }
 }

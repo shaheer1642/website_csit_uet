@@ -36,7 +36,7 @@ export default class ConfirmationModal extends React.Component<IProps,IState> {
 
     return (
       <Modal
-        open={this.props.open}
+        open={this.props.open || false}
         onClose={() => this.props.onClose()}
       >
         <Grid container sx={styles} rowSpacing='20px'>

@@ -39,9 +39,9 @@ export default class ContextInfo extends React.Component<IProps> {
             this.props.contextInfo ? 
             <Card elevation={3} sx={{padding: '20px', borderRadius: 0}}>
               <Grid container spacing={3} justifyContent={'space-evenly'}>
-                {this.includeKeys.filter(k => Object.keys(this.props.contextInfo).includes(k)).map(key => {
+                {this.includeKeys.filter(k => Object.keys(this.props.contextInfo).includes(k)).map((key,index) => {
                   return (
-                    <Grid container item xs={'auto'} direction={'row'} spacing={1}>
+                    <Grid container item xs={'auto'} key={index} direction={'row'} spacing={1}>
                       <Grid item>
                       <Typography fontWeight={'bold'} variant='subtitle1'>{convertUpper(key?.toString())}:</Typography>
                       </Grid>

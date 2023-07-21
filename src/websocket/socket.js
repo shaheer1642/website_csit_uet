@@ -33,8 +33,9 @@ async function socketHasConnected() {
 
 async function generateNewToken() {
     document.cookie = `login_token=${uuid.v4()};path=/`;
+    if (!socket) return
     //socket.emit('restartConn')
-    if (socket) socket.auth.token = getCookie('login_token')
+    socket.auth.token = getCookie('login_token')
     // eventHandler.emit('login/auth', undefined)
     await socketHasConnected()
     socket.disconnect()

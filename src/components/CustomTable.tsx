@@ -189,7 +189,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
             />
             {this.props.footerText ? 
               <Grid container marginLeft={2} marginBottom={1} flexDirection={'column'}>
-                {this.props.footerText.split('\\n').map(text => <Typography>{text}</Typography>)}
+                {this.props.footerText.split('\\n').map((text,index) => <Typography key={index}>{text}</Typography>)}
               </Grid> : <></>
             }
           </React.Fragment>

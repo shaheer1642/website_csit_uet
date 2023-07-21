@@ -75,7 +75,7 @@ class MisThesisGrading extends React.Component {
       savingChanges: false,
 
       alertMsg: '',
-      alertSeverity: '',
+      alertSeverity: 'info',
 
       callingApi: 'fetchStudentThesis',
 

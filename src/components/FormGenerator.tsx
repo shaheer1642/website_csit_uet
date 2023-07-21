@@ -169,7 +169,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
             </Grid>
             {this.state.schema.map((attribute,index) => {
               return (
-                this.props.options[attribute.key]?.hidden ? <></> :
+                this.props.options[attribute.key]?.hidden ? <React.Fragment key={index}></React.Fragment> :
                 <Grid item key={index} xs={this.props.options[attribute.key]?.xs || "auto"}>
                   {
                     attribute.type == 'string' || attribute.type == 'email' || attribute.type == 'uuid' || attribute.type == 'number' || attribute.type == 'array' ?
@@ -178,8 +178,8 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                           <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
                           <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
                             {
-                              this.props.options[attribute.key]?.fieldTypeOptions.map(option => {
-                                return <FormControlLabel value={option} control={<Radio />} label={convertUpper(option)} />
+                              this.props.options[attribute.key]?.fieldTypeOptions.map((option,index) => {
+                                return <FormControlLabel key={index} value={option} control={<Radio/>} label={convertUpper(option)} />
                               })
                             }
                           </RadioGroup>

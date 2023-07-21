@@ -1,12 +1,12 @@
 /* eslint eqeqeq: "off", no-unused-vars: "off", no-useless-constructor: "off" */
-import {socket,socketHasConnected} from '../websocket/socket'
+import { socket, socketHasConnected } from '../websocket/socket'
 import React from 'react';
 import { Link, Outlet } from "react-router-dom";
-import {Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography} from '@mui/material';
+import { Tabs, Tab, Grid, List, ListItem, ListItemText, Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import login_banner from '../images/login_banner.jpg'
-import EstablishingConnection from '../views/EstablishingConnection';
 import { withRouter } from '../withRouter';
+import SocketConnection from '../views/SocketConnection';
 
 const palletes = {
   primary: '#439CEF',
@@ -16,7 +16,7 @@ const palletes = {
 const styles = {
   container: {
     color: palletes.primary,
-    
+
     display: 'flex',
     margin: 0,
     padding: 0,
@@ -38,7 +38,7 @@ const styles = {
 
     width: "100%",
     alignSelf: 'flex-start',
-  
+
     //opacity: 0.8
   },
   body: {
@@ -53,7 +53,7 @@ const styles = {
     display: 'flex',
     flex: 1,
     background: [
-      
+
       "linear-gradient(90deg, rgba(158,229,255,1) 23%, rgba(255,255,255,1) 100%)"
     ],
 
@@ -67,39 +67,25 @@ class LoginLayout extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      socketConnecting: true,
     };
   }
 
   componentDidMount() {
     console.log('[LoginLayout] componentDidMount')
-    socketHasConnected().then(() => this.setState({socketConnecting: false})).catch(console.error)
-    socket.on('connect', this.SocketConnectedListener)
-    socket.on('disconnect', this.SocketDisconnectedListener)
   }
 
   componentWillUnmount() {
     console.log('[LoginLayout] componentWillUnmount')
-    socket.removeListener(this.SocketConnectedListener)
-    socket.removeListener(this.SocketDisconnectedListener)
   }
-
-  SocketConnectedListener = () => this.setState({socketConnecting: false})
-  SocketDisconnectedListener = () => this.setState({socketConnecting: true})
 
   render() {
     return (
-      <React.Fragment>
-        {this.state.socketConnecting ? <EstablishingConnection />:
-          <div style={styles.container}>
-
-            <div style={styles.body}>
-              <Outlet/>
-            </div>
-
-          </div>
-        }
-      </React.Fragment>
+      <Box sx={styles.container}>
+        <Box sx={styles.body}>
+          <Outlet />
+        </Box>
+        <SocketConnection />
+      </Box>
     );
   }
 }

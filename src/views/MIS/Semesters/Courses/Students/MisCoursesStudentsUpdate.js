@@ -73,7 +73,7 @@ class MisCoursesStudentsUpdate extends React.Component {
       studentCourse: {},
 
       alertMsg: '',
-      alertSeverity: '',
+      alertSeverity: 'info',
 
       updatedGrade: '',
 
