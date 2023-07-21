@@ -126,24 +126,24 @@ class MainNewsAndEvents extends React.Component {
                       <TimelineConnector />
                     </TimelineSeparator>
                     <TimelineContent>
-                      <Card onClick={() => this.handleCardClick(event)} sx={{ padding: 2, ':hover': { backgroundColor: 'primary.main', color: 'secondary.main' } }}>
+                      <Card onClick={() => this.handleCardClick(event)} sx={{ padding: 2, ':hover': { backgroundColor: 'primary.main', color: 'secondary.main', py: 3, transition: '0.2s' }, transition: '0.2s' }}>
                         <Typography variant="h4" flexGrow={1}>
                           {event.title}
                         </Typography>
                         {['admin', 'pga'].includes(this.props.user?.user_type) ?
                           <ButtonGroup>
-                          <IconButton onClick={(e) => {
-                            e.stopPropagation()
-                            this.setState({ event: event, editing: true})
-                          }}><Edit sx={{color: 'primary.light'}} /></IconButton>
-                          <IconButton onClick={(e) => {
-                            e.stopPropagation()
-                            this.setState({
-                              confirmationModalShow: true,
-                              confirmationModalMessage: `Are you sure you want to delete the event titled "${event.title}"?`,
-                              confirmationModalExecute: () => this.deleteEvent(event.event_id)
-                            })
-                          }}><Delete color='error' /></IconButton>
+                            <IconButton onClick={(e) => {
+                              e.stopPropagation()
+                              this.setState({ event: event, editing: true })
+                            }}><Edit sx={{ color: 'primary.light' }} /></IconButton>
+                            <IconButton onClick={(e) => {
+                              e.stopPropagation()
+                              this.setState({
+                                confirmationModalShow: true,
+                                confirmationModalMessage: `Are you sure you want to delete the event titled "${event.title}"?`,
+                                confirmationModalExecute: () => this.deleteEvent(event.event_id)
+                              })
+                            }}><Delete color='error' /></IconButton>
                           </ButtonGroup> : <></>
                         }
                       </Card>
