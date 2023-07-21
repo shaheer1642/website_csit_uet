@@ -104,6 +104,14 @@ class MisStudentCourses extends React.Component {
                       }
                     })
                   }
+                  rowSx={(semesterCourse) => {
+                    return semesterCourse.grade == 'W' ? {
+                      backgroundColor: Color.red[100]
+                    } : semesterCourse.is_repeat ? {
+                      backgroundColor: Color.yellow[100]
+                    } : undefined
+                  }}
+                  footerText="Red = Course Withdrawn\nYellow = Repeater"
                   rows={this.state.studentCoursesArr}
                   columns={columns}
                 />
