@@ -37,7 +37,7 @@ class MisStudentPerformance extends React.Component {
 
   fetchStudents = () => {
     const cachedData = getCache('students/fetch')
-    if (cachedData) return this.setState({studentsArr: cachedData, callingApi: ''})
+    if (cachedData) return this.setState({ studentsArr: cachedData, callingApi: '' })
 
     this.setState({ callingApi: 'fetchStudents' })
     socket.emit('students/fetch', {}, (res) => {
@@ -46,7 +46,7 @@ class MisStudentPerformance extends React.Component {
           studentsArr: res.data,
           callingApi: ''
         })
-        setCache('students/fetch',res.data)
+        setCache('students/fetch', res.data)
       }
     })
   }
@@ -65,7 +65,7 @@ class MisStudentPerformance extends React.Component {
       ];
       return (
         <CustomCard>
-          <Grid container spacing={3} padding={1}>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant="h2">Select Student</Typography>
             </Grid>

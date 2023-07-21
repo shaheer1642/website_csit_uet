@@ -39,7 +39,7 @@ class MisStudents extends React.Component {
     this.setState({ callingApi: 'fetchStudents' })
 
     const cachedData = getCache('students/fetch')
-    if (cachedData) return this.setState({studentsArr: cachedData, callingApi: ''})
+    if (cachedData) return this.setState({ studentsArr: cachedData, callingApi: '' })
 
     socket.emit('students/fetch', {}, (res) => {
       if (res.code == 200) {
@@ -61,11 +61,11 @@ class MisStudents extends React.Component {
       { id: "user_email", label: "Email", format: (value) => value },
       { id: "student_address", label: "Home Address", format: (value) => value },
       { id: "student_gender", label: "Gender", format: (value) => convertUpper(value) },
-      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value), valueFunc: (row) => calculateDegreeExpiry(row)},
+      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value), valueFunc: (row) => calculateDegreeExpiry(row) },
     ];
     return (
       <CustomCard>
-        <Grid container spacing={3} padding={1}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <Typography variant="h2">Students</Typography>
           </Grid>

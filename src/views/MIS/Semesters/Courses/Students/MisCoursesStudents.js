@@ -114,11 +114,11 @@ class MisCoursesStudents extends React.Component {
             const studentsCourses = res.data
             const studentBatchIds = studentsCourses.map(studentCourse => studentCourse.student_batch_id)
             const students = getCache('students/fetch')
-            if (students) return this.setState({students, semesterCourse, studentBatchIds, studentsCourses, loading: false})
+            if (students) return this.setState({ students, semesterCourse, studentBatchIds, studentsCourses, loading: false })
             socket.emit("students/fetch", {}, (res) => {
               if (res.code == 200) {
                 const students = res.data
-                setCache('students/fetch',students)
+                setCache('students/fetch', students)
                 return this.setState({
                   students,
                   semesterCourse,
@@ -207,7 +207,7 @@ class MisCoursesStudents extends React.Component {
       { id: "degree_type", label: "Degree", format: (value) => convertUpper(value) },
     ];
     return (
-      <Grid container rowSpacing={"20px"}>
+      <Grid container spacing={2}>
         <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <ContextInfo contextInfo={this.context_info} />
@@ -216,108 +216,116 @@ class MisCoursesStudents extends React.Component {
           {
             this.state.loading ? <LoadingIcon /> :
               <CustomCard>
-                <Typography variant="h4" sx={{ margin: "10px" }}>
-                  Enrolled Students
-                </Typography>
-                {
-                  this.state.semesterCourse.changes_locked ? <></> :
-                    <Grid item xs={6} sx={{ margin: "10px" }}>
-                      {this.studentsSelectMenu()}
-                    </Grid>
-                }
-                <Grid item xs={12} style={{ margin: '10px' }}>
-                  <CustomTable
-                    margin="0px"
-                    columns={columns}
-                    rows={this.state.students.filter(student => this.state.studentBatchIds.includes(student.student_batch_id))}
-                    loadingState={this.state.loading}
-                    onDeleteClick={this.state.semesterCourse.changes_locked ? undefined : (student) => {
-                      this.setState({
-                        confirmationModalShow: true,
-                        confirmationModalMessage:
-                          "Are you sure you want to remove this student?",
-                        confirmationModalExecute: () =>
-                          this.setState(state => {
-                            return {
-                              studentBatchIds: state.studentBatchIds.filter(student_batch_id => student_batch_id != student.student_batch_id)
-                            }
-                          })
-                      });
-                    }}
-                    onRowClick={(student) => this.props.navigate("update", {
-                      state: {
-                        sem_course_id: this.sem_course_id,
-                        student_batch_id: student.student_batch_id,
-                        context_info: { ...this.context_info, ...student }
-                      },
-                    })}
-                    onViewClick={(student) => this.props.navigate("update", {
-                      state: {
-                        sem_course_id: this.sem_course_id,
-                        student_batch_id: student.student_batch_id,
-                        context_info: { ...this.context_info, ...student }
-                      },
-                    })}
-                    rowSx={(student) => {
-                      return this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.grade == 'W') ? {
-                        backgroundColor: Color.red[100]
-                      } : this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.is_repeat) ? {
-                        backgroundColor: Color.yellow[100]
-                      } : undefined
-                    }}
-                    footerText="Red = Course Withdrawn\nYellow = Repeater"
-                    viewButtonLabel="Edit Student Course"
-                  />
-                </Grid>
-                <Grid item xs={12} sx={{ margin: "10px" }}>
-                  <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
-                    <Alert variant="outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
-                  </Zoom>
-                </Grid>
-                {this.state.semesterCourse.changes_locked ? <></> :
+                <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <CustomButton
-                      disabled={this.state.callingApi}
-                      sx={{ margin: "10px" }}
-                      onClick={() => this.updateStudentsList()}
-                      label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
-                    />
-                    <CustomButton
-                      sx={{ margin: "10px" }}
-                      onClick={() => this.fetchStudentCourses()}
-                      label="Reset"
-                    />
-                    <CustomButton
-                      color='error'
-                      variant="outlined"
-                      sx={{ margin: "10px" }}
-                      onClick={() =>
+                    <Typography variant="h4">
+                      Enrolled Students
+                    </Typography>
+                  </Grid>
+                  {
+                    this.state.semesterCourse.changes_locked ? <></> :
+                      <Grid item xs={6}>
+                        {this.studentsSelectMenu()}
+                      </Grid>
+                  }
+                  <Grid item xs={12}>
+                    <CustomTable
+                      margin="0px"
+                      columns={columns}
+                      rows={this.state.students.filter(student => this.state.studentBatchIds.includes(student.student_batch_id))}
+                      loadingState={this.state.loading}
+                      onDeleteClick={this.state.semesterCourse.changes_locked ? undefined : (student) => {
                         this.setState({
                           confirmationModalShow: true,
                           confirmationModalMessage:
-                            "Are you sure you want to lock this course? This change cannot be undone",
-                          confirmationModalExecute: () => this.lockCourse()
-                        })
-                      }
-                      label="Lock Changes"
+                            "Are you sure you want to remove this student?",
+                          confirmationModalExecute: () =>
+                            this.setState(state => {
+                              return {
+                                studentBatchIds: state.studentBatchIds.filter(student_batch_id => student_batch_id != student.student_batch_id)
+                              }
+                            })
+                        });
+                      }}
+                      onRowClick={(student) => this.props.navigate("update", {
+                        state: {
+                          sem_course_id: this.sem_course_id,
+                          student_batch_id: student.student_batch_id,
+                          context_info: { ...this.context_info, ...student }
+                        },
+                      })}
+                      onViewClick={(student) => this.props.navigate("update", {
+                        state: {
+                          sem_course_id: this.sem_course_id,
+                          student_batch_id: student.student_batch_id,
+                          context_info: { ...this.context_info, ...student }
+                        },
+                      })}
+                      rowSx={(student) => {
+                        return this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.grade == 'W') ? {
+                          backgroundColor: Color.red[100]
+                        } : this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.is_repeat) ? {
+                          backgroundColor: Color.yellow[100]
+                        } : undefined
+                      }}
+                      footerText="Red = Course Withdrawn\nYellow = Repeater"
+                      viewButtonLabel="Edit Student Course"
                     />
-                    {this.state.semesterCourse.grades_locked ?
-                      <CustomButton
-                        color='error'
-                        variant="outlined"
-                        sx={{ margin: "10px" }}
-                        onClick={() =>
-                          this.setState({
-                            confirmationModalShow: true,
-                            confirmationModalMessage:
-                              "Are you sure you want to unlock grades for this course?",
-                            confirmationModalExecute: () => this.unlockGrades()
-                          })
-                        }
-                        label="Unlock Grades"
-                      /> : <></>}
                   </Grid>
-                }
+                  <Grid item xs={12}>
+                    <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                      <Alert variant="outlined" severity={this.state.alertSeverity}>{this.state.alertMsg}</Alert>
+                    </Zoom>
+                  </Grid>
+                  {this.state.semesterCourse.changes_locked ? <></> :
+                    <Grid item container spacing={2}>
+                      <Grid item>
+                        <CustomButton
+                          disabled={this.state.callingApi}
+                          onClick={() => this.updateStudentsList()}
+                          label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <CustomButton
+                          onClick={() => this.fetchStudentCourses()}
+                          label="Reset"
+                        />
+                      </Grid>
+                      <Grid item>
+                        <CustomButton
+                          color='error'
+                          variant="outlined"
+                          onClick={() =>
+                            this.setState({
+                              confirmationModalShow: true,
+                              confirmationModalMessage:
+                                "Are you sure you want to lock this course? This change cannot be undone",
+                              confirmationModalExecute: () => this.lockCourse()
+                            })
+                          }
+                          label="Lock Changes"
+                        />
+                      </Grid>
+                      {this.state.semesterCourse.grades_locked ?
+                        <Grid item>
+                          <CustomButton
+                            color='error'
+                            variant="outlined"
+                            onClick={() =>
+                              this.setState({
+                                confirmationModalShow: true,
+                                confirmationModalMessage:
+                                  "Are you sure you want to unlock grades for this course?",
+                                confirmationModalExecute: () => this.unlockGrades()
+                              })
+                            }
+                            label="Unlock Grades"
+                          />
+                        </Grid> : <></>}
+                    </Grid>
+                  }
+                </Grid>
               </CustomCard>
           }
         </Grid>

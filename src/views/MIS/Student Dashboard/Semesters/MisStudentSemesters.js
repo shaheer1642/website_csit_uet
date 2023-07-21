@@ -64,26 +64,30 @@ class MisStudentSemesters extends React.Component {
     ];
     return (
       !this.student_batch_id ? <Typography>error: missing student_batch_id</Typography> :
-      <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate} />
-        <Grid item xs={12}>
-          <CustomCard>
-            <Grid container>
-              <Typography variant="h2" style={{ margin: "10px" }}>
-                Select Semester
-              </Typography>
-              <CustomTable
-                loadingState={this.state.loading}
-                onRowClick={(studentSemester) => {
-                  this.props.navigate(this.props.location.state.redirect, { state: { ...this.props.location?.state, student_semester: studentSemester } })
-                }}
-                rows={this.state.studentSemestersArr}
-                columns={columns}
-              />
-            </Grid>
-          </CustomCard>
+        <Grid container spacing={2}>
+          <GoBackButton context={this.props.navigate} />
+          <Grid item xs={12}>
+            <CustomCard>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Typography variant="h2">
+                    Select Semester
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <CustomTable
+                    loadingState={this.state.loading}
+                    onRowClick={(studentSemester) => {
+                      this.props.navigate(this.props.location.state.redirect, { state: { ...this.props.location?.state, student_semester: studentSemester } })
+                    }}
+                    rows={this.state.studentSemestersArr}
+                    columns={columns}
+                  />
+                </Grid>
+              </Grid>
+            </CustomCard>
+          </Grid>
         </Grid>
-      </Grid>
     );
   }
 }

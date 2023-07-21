@@ -8,13 +8,13 @@ import GoBackButton from "../../../components/GoBackButton";
 class MisThesisCreate extends React.Component {
   constructor(props) {
     super(props);
-   
+
   }
 
   render() {
     return (
-      <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
+      <Grid container spacing={2}>
+        <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <FormGenerator
             endpoint="studentsThesis"
@@ -28,7 +28,7 @@ class MisThesisCreate extends React.Component {
                 xs: 6,
                 fieldType: 'select',
                 endpoint: 'autocomplete/batchStudents',
-                endpointData: {constraints: ['exclude_thesis_students']}
+                endpointData: { constraints: ['exclude_thesis_students'] }
               },
               thesis_type: {
                 label: "Thesis Type",
@@ -60,7 +60,7 @@ class MisThesisCreate extends React.Component {
           />
         </Grid>
       </Grid>
-  
+
     );
   }
 }

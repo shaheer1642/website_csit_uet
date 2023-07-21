@@ -1,7 +1,6 @@
 // @ts-nocheck
 import React from 'react';
 import { TextField } from '@mui/material';
-import * as Color from '@mui/material/colors';
 import { SxProps, Theme } from '@mui/material';
 
 const defaultStyles = {
@@ -54,6 +53,7 @@ interface IProps {
 export default class CustomTextField extends React.Component<IProps> {
   constructor(props) {
     super(props);
+    this.inputRef = React.createRef()
   }
 
   render() {
@@ -82,6 +82,7 @@ export default class CustomTextField extends React.Component<IProps> {
 
     return (
         <TextField
+            inputRef={this.inputRef}
             fullWidth={this.props.fullWidth}
             color="primary"
             size={this.props.size}
@@ -113,6 +114,10 @@ export default class CustomTextField extends React.Component<IProps> {
                 if (e.key == 'Enter') return this.props.onPressEnter ? this.props.onPressEnter() : {}
             }}
             InputLabelProps={this.props.InputLabelProps}
+            onClick={(e) => {
+                if (this.props.type == 'date' && !this.props.readOnly) 
+                    this.inputRef.current.showPicker()
+            }}
         />
     )
   }

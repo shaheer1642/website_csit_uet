@@ -11,18 +11,18 @@ class MisSemestersUpdate extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      semester_year:'',
-      semester_season:'',
-      semester_start_timestamp:0,
-      semester_end_timestamp:0,
-      semester_coordinator_id:''
+      semester_year: '',
+      semester_season: '',
+      semester_start_timestamp: 0,
+      semester_end_timestamp: 0,
+      semester_coordinator_id: ''
     }
     this.semester_id = this.props.location.state.semester_id
   }
 
   componentDidMount() {
-    socket.emit('semesters/fetch', {semester_id: this.semester_id}, (res) => {
-      console.log('[semesters/fetch] response:',res)
+    socket.emit('semesters/fetch', { semester_id: this.semester_id }, (res) => {
+      console.log('[semesters/fetch] response:', res)
       if (res.code == 200) {
         const semester = res.data[0]
         console.log('setting state')
@@ -40,63 +40,63 @@ class MisSemestersUpdate extends React.Component {
 
   render() {
     return (
-      this.state.loading ? <LoadingIcon />:
-      <Grid container rowSpacing={"20px"}>
-      <GoBackButton context={this.props.navigate}/>
-      <Grid item xs={12}>
-      <FormGenerator 
-        endpoint="semesters"
-        formType="update" 
-        submitSuccessMessage='Semester Edited Successfully'
-        backgroundColor='white'
-        options={{
-          semester_id: {
-            label: "Semester ID",
-            defaultValue: this.semester_id,
-            disabled: true,
-            position: 1,
-            xs: 6,
-            hidden: true
-          },
-          semester_year: {
-            label: "Semester Year",
-            defaultValue: this.state.semester_year,
-            position: 1,
-            xs: 6,
-          },
-          semester_season: {
-            label: "Semester Season",
-            defaultValue: this.state.semester_season,
-            position: 1,
-            xs: 6,
-            fieldType: 'radiobox',
-            fieldTypeOptions: ['spring', 'fall']
-          },
-          semester_start_timestamp: {
-            label: 'Semester Start Time',
-            position: 2,
-            xs: 6,
-            defaultValue: this.state.semester_start_timestamp
-          },
-          semester_end_timestamp: {
-            label: 'Semester End Time',
-            position: 2,
-            xs: 6,
-            defaultValue: this.state.semester_end_timestamp
-          },
-          semester_coordinator_id: {
-            label: "Semester Coordinator",
-            defaultValue: this.state.semester_coordinator_id,
-            position: 10,
-            xs: 6,
-            fieldType: 'select',
-            endpoint: 'autocomplete/teachers',
-            selectMenuItems: [{id: '', label: 'None'}]
-          },
-        }}
-      />
-      </Grid>
-      </Grid>
+      this.state.loading ? <LoadingIcon /> :
+        <Grid container spacing={2}>
+          <GoBackButton context={this.props.navigate} />
+          <Grid item xs={12}>
+            <FormGenerator
+              endpoint="semesters"
+              formType="update"
+              submitSuccessMessage='Semester Edited Successfully'
+              backgroundColor='white'
+              options={{
+                semester_id: {
+                  label: "Semester ID",
+                  defaultValue: this.semester_id,
+                  disabled: true,
+                  position: 1,
+                  xs: 6,
+                  hidden: true
+                },
+                semester_year: {
+                  label: "Semester Year",
+                  defaultValue: this.state.semester_year,
+                  position: 1,
+                  xs: 6,
+                },
+                semester_season: {
+                  label: "Semester Season",
+                  defaultValue: this.state.semester_season,
+                  position: 1,
+                  xs: 6,
+                  fieldType: 'radiobox',
+                  fieldTypeOptions: ['spring', 'fall']
+                },
+                semester_start_timestamp: {
+                  label: 'Semester Start Time',
+                  position: 2,
+                  xs: 6,
+                  defaultValue: this.state.semester_start_timestamp
+                },
+                semester_end_timestamp: {
+                  label: 'Semester End Time',
+                  position: 2,
+                  xs: 6,
+                  defaultValue: this.state.semester_end_timestamp
+                },
+                semester_coordinator_id: {
+                  label: "Semester Coordinator",
+                  defaultValue: this.state.semester_coordinator_id,
+                  position: 10,
+                  xs: 6,
+                  fieldType: 'select',
+                  endpoint: 'autocomplete/teachers',
+                  selectMenuItems: [{ id: '', label: 'None' }]
+                },
+              }}
+            />
+          </Grid>
+        </Grid>
 
     );
   }

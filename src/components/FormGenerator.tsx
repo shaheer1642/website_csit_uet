@@ -151,7 +151,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
     this.setState({ formFields: { ...this.state.formFields, [key]: value } })
   }
 
-  
+
   timeoutAlert = () => {
     clearTimeout(this.timeoutAlertRef)
     this.timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 5000)
@@ -160,66 +160,66 @@ export default class FormGenerator extends React.Component<IProps, IState> {
   render(): React.ReactNode {
     return (
       this.state.formLoading ? <LoadingIcon /> :
-      <CustomCard>
-        <Grid container spacing={3} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
+        <CustomCard>
+          <Grid container spacing={2} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
             <Grid item xs={12}>
               <Typography variant='h2'>
                 {this.props.formType == 'create' ? 'Create New' : 'Update Info'}
               </Typography>
             </Grid>
-            {this.state.schema.map((attribute,index) => {
+            {this.state.schema.map((attribute, index) => {
               return (
                 this.props.options[attribute.key]?.hidden ? <React.Fragment key={index}></React.Fragment> :
-                <Grid item key={index} xs={this.props.options[attribute.key]?.xs || "auto"}>
-                  {
-                    attribute.type == 'string' || attribute.type == 'email' || attribute.type == 'uuid' || attribute.type == 'number' || attribute.type == 'array' ?
-                      this.props.options[attribute.key]?.fieldType == 'radiobox' ? 
-                        <FormControl disabled={this.props.options[attribute.key]?.disabled} required={attribute.required}>
-                          <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
-                          <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)}>
-                            {
-                              this.props.options[attribute.key]?.fieldTypeOptions.map((option,index) => {
-                                return <FormControlLabel key={index} value={option} control={<Radio/>} label={convertUpper(option)} />
-                              })
-                            }
-                          </RadioGroup>
-                        </FormControl>
-                        :
-                      this.props.options[attribute.key]?.fieldType == 'select' ? 
-                        <CustomSelect 
-                          value={this.state.formFields[attribute.key]}
-                          endpoint={this.props.options[attribute.key]?.endpoint} 
-                          endpointData={this.props.options[attribute.key]?.endpointData} 
-                          menuItems={this.props.options[attribute.key]?.selectMenuItems} 
-                          label={this.props.options[attribute.key]?.label}
-                          onChange={(e,option) => this.handleFormFieldChange(attribute.key, option.id)}
-                          required={attribute.required}
-                        />:
-                        <CustomTextField 
-                          disabled={this.props.options[attribute.key]?.disabled}
-                          type={attribute.type == 'number' ? 'number':'text'}
-                          required={attribute.required}
-                          placeholder={this.props.options[attribute.key]?.placeholder}
-                          value={this.state.formFields[attribute.key]}
-                          multiline ={attribute.multiline}
-                          maxRows={attribute.multiline ? 10:1}
-                          variant="filled" 
-                          style={{ width: this.props.options[attribute.key]?.width || '100%' }}
-                          label={this.props.options[attribute.key]?.label}
-                          onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.value)} />
+                  <Grid item key={index} xs={this.props.options[attribute.key]?.xs || "auto"}>
+                    {
+                      attribute.type == 'string' || attribute.type == 'email' || attribute.type == 'uuid' || attribute.type == 'number' || attribute.type == 'array' ?
+                        this.props.options[attribute.key]?.fieldType == 'radiobox' ?
+                          <FormControl disabled={this.props.options[attribute.key]?.disabled} required={attribute.required}>
+                            <FormLabel>{this.props.options[attribute.key]?.label}</FormLabel>
+                            <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.value)}>
+                              {
+                                this.props.options[attribute.key]?.fieldTypeOptions.map((option, index) => {
+                                  return <FormControlLabel key={index} value={option} control={<Radio />} label={convertUpper(option)} />
+                                })
+                              }
+                            </RadioGroup>
+                          </FormControl>
+                          :
+                          this.props.options[attribute.key]?.fieldType == 'select' ?
+                            <CustomSelect
+                              value={this.state.formFields[attribute.key]}
+                              endpoint={this.props.options[attribute.key]?.endpoint}
+                              endpointData={this.props.options[attribute.key]?.endpointData}
+                              menuItems={this.props.options[attribute.key]?.selectMenuItems}
+                              label={this.props.options[attribute.key]?.label}
+                              onChange={(e, option) => this.handleFormFieldChange(attribute.key, option.id)}
+                              required={attribute.required}
+                            /> :
+                            <CustomTextField
+                              disabled={this.props.options[attribute.key]?.disabled}
+                              type={attribute.type == 'number' ? 'number' : 'text'}
+                              required={attribute.required}
+                              placeholder={this.props.options[attribute.key]?.placeholder}
+                              value={this.state.formFields[attribute.key]}
+                              multiline={attribute.multiline}
+                              maxRows={attribute.multiline ? 10 : 1}
+                              variant="filled"
+                              style={{ width: this.props.options[attribute.key]?.width || '100%' }}
+                              label={this.props.options[attribute.key]?.label}
+                              onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.value)} />
                         : attribute.type == 'boolean' ?
-                        <FormControlLabel control={<Checkbox defaultChecked={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key,e.target.checked)} />} label={this.props.options[attribute.key]?.label} />
-                        : attribute.type == 'unix_timestamp_milliseconds' ?
-                        <TextField
-                          label={this.props.options[attribute.key]?.label}
-                          type="date"
-                          defaultValue={new Date(Number(this.props.options[attribute.key]?.defaultValue) || null).toISOString().split('T')[0]}
-                          InputLabelProps={{ shrink: true, }}
-                          onChange={(e) => this.handleFormFieldChange(attribute.key,new Date(e.target.value).getTime())}
-                        />
-                        : <Typography>Could not determine attribute type for {attribute.key}</Typography>
-                  }
-                </Grid>
+                          <FormControlLabel control={<Checkbox defaultChecked={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.checked)} />} label={this.props.options[attribute.key]?.label} />
+                          : attribute.type == 'unix_timestamp_milliseconds' ?
+                            <TextField
+                              label={this.props.options[attribute.key]?.label}
+                              type="date"
+                              defaultValue={new Date(Number(this.props.options[attribute.key]?.defaultValue) || null).toISOString().split('T')[0]}
+                              InputLabelProps={{ shrink: true, }}
+                              onChange={(e) => this.handleFormFieldChange(attribute.key, new Date(e.target.value).getTime())}
+                            />
+                            : <Typography>Could not determine attribute type for {attribute.key}</Typography>
+                    }
+                  </Grid>
               )
             })}
             <Grid item xs={12}>
@@ -228,17 +228,17 @@ export default class FormGenerator extends React.Component<IProps, IState> {
               </Zoom>
             </Grid>
             <Grid item xs={'auto'}>
-              <CustomButton 
+              <CustomButton
                 label={this.state.callingApi ? <CircularProgress size='20px' /> : this.props.formType == 'create' ? 'Create' : 'Update'}
                 disabled={this.state.callingApi}
                 onClick={() => {
-                  this.setState({callingApi: true})
+                  this.setState({ callingApi: true })
                   socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
-                    this.setState({callingApi: false})
-                    console.log(`[${this.props.endpoint}/${this.props.formType}] response`,res)
+                    this.setState({ callingApi: false })
+                    console.log(`[${this.props.endpoint}/${this.props.formType}] response`, res)
                     this.setState({
-                      alertMsg: res.code == 200 ? this.props.submitSuccessMessage:`${res.status}: ${res.message}`,
-                      alertSeverity: res.code == 200 ? 'success':'warning'
+                      alertMsg: res.code == 200 ? this.props.submitSuccessMessage : `${res.status}: ${res.message}`,
+                      alertSeverity: res.code == 200 ? 'success' : 'warning'
                     }, this.timeoutAlert)
                   })
                 }}
@@ -246,7 +246,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
             </Grid>
             {this.props.children}
           </Grid>
-      </CustomCard>
+        </CustomCard>
     )
   }
 }

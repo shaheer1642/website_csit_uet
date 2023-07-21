@@ -59,9 +59,9 @@ class SubmitApplication extends React.Component {
 
   applicationCard = (applicationTemplate) => {
     return (
-        <Card onClick={() => this.props.navigate('draft', {state: {template_id: applicationTemplate.template_id}})}>
+        <Card sx={{":hover": {backgroundColor: 'primary.main', color: 'common.white', padding: 3}, padding: 2, transition: '0.2s', color: 'primary.dark', border: '2px solid', borderColor: 'primary.main'}} onClick={() => this.props.navigate('draft', {state: {template_id: applicationTemplate.template_id}})}>
             <CardContent>
-                <Typography color="text.secondary" variant='h5'> 
+                <Typography variant='h3'> 
                     {applicationTemplate.application_title}
                 </Typography>
             </CardContent>
@@ -72,16 +72,18 @@ class SubmitApplication extends React.Component {
   render() {
     return (
         this.state.loading ? <CircularProgress /> :
-        <Grid container spacing={1}>
+        <CustomCard>
+        <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant='h2'>Please choose application type:</Typography>
+              <Typography variant='h3'>Please choose application type:</Typography>
             </Grid>
-            {this.state.applicationsTemplatesArr.map(applicationTemplate => {
-                return <Grid item xs='auto'>
+            {this.state.applicationsTemplatesArr.map((applicationTemplate,index) => {
+                return <Grid key={index} item xs='auto'>
                     {this.applicationCard(applicationTemplate)}
                 </Grid>
             })}
         </Grid>
+        </CustomCard>
     );
   }
 }

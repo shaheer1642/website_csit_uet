@@ -112,15 +112,19 @@ class MisTeachersPerformance extends React.Component {
     ];
     return (
       <CustomCard>
-        <Grid container>
-          <Typography variant="h2" style={{ margin: "10px" }}>
-            {`Instructors Performance`}
-          </Typography>
-          <CustomTable
-            loadingState={this.state.loadingTeachers}
-            rows={this.state.teachersArr}
-            columns={columns}
-          />
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h2">
+              {`Instructors Performance`}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTable
+              loadingState={this.state.loadingTeachers}
+              rows={this.state.teachersArr}
+              columns={columns}
+            />
+          </Grid>
         </Grid>
       </CustomCard>
     );

@@ -52,7 +52,7 @@ class MisCourses extends React.Component {
 
           confirmationModalShow: false,
           confirmationModalMessage: "",
-          confirmationModalExecute: () => {},
+          confirmationModalExecute: () => { },
         });
       }
     });
@@ -114,7 +114,7 @@ class MisCourses extends React.Component {
     this.setState({
       confirmationModalShow: false,
       confirmationModalMessage: "",
-      confirmationModalExecute: () => {},
+      confirmationModalExecute: () => { },
     });
   };
 
@@ -128,34 +128,39 @@ class MisCourses extends React.Component {
     ];
     return (
       <CustomCard>
-        <Grid container>
-          <Typography variant="h2" style={{ margin: "10px" }}>
-            {`Courses`}
-          </Typography>
-          <CustomTable
-            loadingState={this.state.loadingCourses}
-            onEditClick={(course) =>
-              this.props.navigate("update", {
-                state: { course_id: course.course_id },
-              })
-            }
-            onDeleteClick={(courses) => {
-              this.setState({
-                confirmationModalShow: true,
-                confirmationModalMessage:
-                  "Are you sure you want to remove this course?",
-                confirmationModalExecute: () =>
-                  socket.emit("courses/delete", { course_id: courses.course_id }),
-              });
-            }}
-            rows={this.state.coursesArr}
-            columns={columns}
-          />
-          <CustomButton
-            sx={{ margin: "10px" }}
-            onClick={() => this.props.navigate("create")}
-            label="Create New"
-          />
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h2">
+              {`Courses`}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTable
+              loadingState={this.state.loadingCourses}
+              onEditClick={(course) =>
+                this.props.navigate("update", {
+                  state: { course_id: course.course_id },
+                })
+              }
+              onDeleteClick={(courses) => {
+                this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage:
+                    "Are you sure you want to remove this course?",
+                  confirmationModalExecute: () =>
+                    socket.emit("courses/delete", { course_id: courses.course_id }),
+                });
+              }}
+              rows={this.state.coursesArr}
+              columns={columns}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <CustomButton
+              onClick={() => this.props.navigate("create")}
+              label="Create New"
+            />
+          </Grid>
           <CustomModal
             title={this.state.modalTitle}
             body={this.state.modalBody}

@@ -114,19 +114,19 @@ class MisBatches extends React.Component {
       { id: 'registered_students', label: 'Registered Students', format: (value) => value },
     ];
     return (
-      <Grid container rowSpacing={"20px"}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <ContextInfo contextInfo={{ department_name: 'Computer Science & Information Technology' }} />
         </Grid>
         <Grid item xs={12}>
           <CustomCard>
-            <Grid container spacing={3} padding={1}>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography variant="h2" >Batches</Typography>
               </Grid>
               <Grid item xs={'auto'}>
-                <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})}>
-                  <Tab label="MS"/>
+                <Tabs sx={{ border: 2, borderColor: 'primary.main', borderRadius: 5 }} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({ tabIndex: newIndex })}>
+                  <Tab label="MS" />
                   <Tab label="PhD" />
                 </Tabs>
               </Grid>
@@ -145,11 +145,11 @@ class MisBatches extends React.Component {
                       confirmationModalExecute: () => socket.emit('batches/delete', { batch_id: batch.batch_id })
                     })
                   }}
-                  rows={this.state.batchesArr.filter(batch => (this.state.tabIndex == 0 && batch.degree_type == 'ms') || (this.state.tabIndex == 1 && batch.degree_type == 'phd'))} 
+                  rows={this.state.batchesArr.filter(batch => (this.state.tabIndex == 0 && batch.degree_type == 'ms') || (this.state.tabIndex == 1 && batch.degree_type == 'phd'))}
                   columns={columns}
                   rowSx={(row) => {
                     return row.batch_expiration_timestamp < new Date().getTime() ? {
-                        backgroundColor: Color.red[100]
+                      backgroundColor: Color.red[100]
                     } : undefined
                   }}
                   footerText='Red = Time barred'

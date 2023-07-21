@@ -8,7 +8,7 @@ interface IProps {
 
 const defaultStyles = {
   borderRadius: 5,
-  padding: 3
+  padding: 4
 }
 
 export default class CustomCard extends React.Component<IProps> {

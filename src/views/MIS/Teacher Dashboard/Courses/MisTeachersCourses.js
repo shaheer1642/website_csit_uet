@@ -95,23 +95,27 @@ class MisTeachersCourses extends React.Component {
     ];
     return (
       <CustomCard>
-        <Grid container >
-          <Typography variant="h2" style={{ margin: "10px" }}>
-            Select Course
-          </Typography>
-          <CustomTable
-            loadingState={this.state.loadingSemesterCourses}
-            onRowClick={(semesterCourse) =>
-              this.props.navigate('grading', {
-                state: {
-                  sem_course_id: semesterCourse.sem_course_id,
-                  context_info: semesterCourse
-                }
-              })
-            }
-            rows={this.state.semestersCoursesArr}
-            columns={columns}
-          />
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h2">
+              Select Course
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTable
+              loadingState={this.state.loadingSemesterCourses}
+              onRowClick={(semesterCourse) =>
+                this.props.navigate('grading', {
+                  state: {
+                    sem_course_id: semesterCourse.sem_course_id,
+                    context_info: semesterCourse
+                  }
+                })
+              }
+              rows={this.state.semestersCoursesArr}
+              columns={columns}
+            />
+          </Grid>
         </Grid>
       </CustomCard>
     );

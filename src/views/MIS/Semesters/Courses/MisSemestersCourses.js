@@ -97,60 +97,65 @@ class MisSemestersCourses extends React.Component {
       { id: "registered_students", label: "Total Students", format: (value) => value },
     ];
     return (
-      <Grid container rowSpacing={"20px"}>
+      <Grid container spacing={2}>
         <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <ContextInfo contextInfo={this.context_info} />
         </Grid>
         <Grid item xs={12}>
           <CustomCard>
-            <Grid container>
-              <Typography variant="h2" style={{ margin: "10px" }}>
-                Courses
-              </Typography>
-              <CustomTable
-                loadingState={this.state.loadingSemesterCourses}
-                viewButtonLabel='Manage Students'
-                onViewClick={(semesterCourse) =>
-                  this.props.navigate('students', {
-                    state: {
-                      sem_course_id: semesterCourse.sem_course_id,
-                      context_info: { ...semesterCourse, ...this.context_info }
-                    }
-                  })
-                }
-                onRowClick={(semesterCourse) =>
-                  this.props.navigate('students', {
-                    state: {
-                      sem_course_id: semesterCourse.sem_course_id,
-                      context_info: { ...semesterCourse, ...this.context_info }
-                    }
-                  })
-                }
-                onEditClick={(semesterCourse) =>
-                  this.props.navigate('update', {
-                    state: {
-                      sem_course_id: semesterCourse.sem_course_id,
-                      context_info: { ...semesterCourse, ...this.context_info }
-                    }
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h2">
+                  Courses
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <CustomTable
+                  loadingState={this.state.loadingSemesterCourses}
+                  viewButtonLabel='Manage Students'
+                  onViewClick={(semesterCourse) =>
+                    this.props.navigate('students', {
+                      state: {
+                        sem_course_id: semesterCourse.sem_course_id,
+                        context_info: { ...semesterCourse, ...this.context_info }
+                      }
+                    })
                   }
-                  )
-                }
-                onDeleteClick={(semesterCourse) => {
-                  this.setState({
-                    confirmationModalShow: true,
-                    confirmationModalMessage: 'Are you sure you want to remove this course?',
-                    confirmationModalExecute: () => socket.emit('semestersCourses/delete', { sem_course_id: semesterCourse.sem_course_id })
-                  })
-                }}
-                rows={this.state.semestersCoursesArr}
-                columns={columns}
-              />
-              <CustomButton
-                sx={{ margin: "10px" }}
-                onClick={() => this.props.navigate("create", { state: { semester_id: this.semester_id } })}
-                label="Create New"
-              />
+                  onRowClick={(semesterCourse) =>
+                    this.props.navigate('students', {
+                      state: {
+                        sem_course_id: semesterCourse.sem_course_id,
+                        context_info: { ...semesterCourse, ...this.context_info }
+                      }
+                    })
+                  }
+                  onEditClick={(semesterCourse) =>
+                    this.props.navigate('update', {
+                      state: {
+                        sem_course_id: semesterCourse.sem_course_id,
+                        context_info: { ...semesterCourse, ...this.context_info }
+                      }
+                    }
+                    )
+                  }
+                  onDeleteClick={(semesterCourse) => {
+                    this.setState({
+                      confirmationModalShow: true,
+                      confirmationModalMessage: 'Are you sure you want to remove this course?',
+                      confirmationModalExecute: () => socket.emit('semestersCourses/delete', { sem_course_id: semesterCourse.sem_course_id })
+                    })
+                  }}
+                  rows={this.state.semestersCoursesArr}
+                  columns={columns}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomButton
+                  onClick={() => this.props.navigate("create", { state: { semester_id: this.semester_id } })}
+                  label="Create New"
+                />
+              </Grid>
               <ConfirmationModal
                 open={this.state.confirmationModalShow}
                 message={this.state.confirmationModalMessage}

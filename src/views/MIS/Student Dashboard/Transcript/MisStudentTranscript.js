@@ -46,8 +46,8 @@ class MisStudentTranscript extends React.Component {
 
   fetchStudenTranscript = () => {
     if (!this.student_batch) return
-    this.setState({loading: true})
-    socket.emit("forms/studentTranscript", {student_batch_id: this.student_batch?.student_batch_id}, (res) => {
+    this.setState({ loading: true })
+    socket.emit("forms/studentTranscript", { student_batch_id: this.student_batch?.student_batch_id }, (res) => {
       if (res.code == 200) {
         return this.setState({
           studentTranscript: res.data,
@@ -66,17 +66,17 @@ class MisStudentTranscript extends React.Component {
   }
 
   render() {
-    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{...this.props.location?.state, redirect: '/mis/sportal/transcript', student_id: this.props.user?.user_id}} />
+    if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/sportal/transcript', student_id: this.props.user?.user_id }} />
     return (
       this.state.loading ? <LoadingIcon /> :
-      <Grid container rowSpacing={"20px"}>
-        <Grid item xs={12}>
-          <CustomButton label='Print & Download' onClick={this.downloadPDF} />
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <CustomButton label='Print & Download' onClick={this.downloadPDF} />
+          </Grid>
+          <Grid item xs={12}>
+            <div dangerouslySetInnerHTML={{ __html: this.state.studentTranscript.replace('<button class="noprint" type="button" onClick="print()">Print Form</button>', '') }} />
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <div dangerouslySetInnerHTML={{__html: this.state.studentTranscript.replace('<button class="noprint" type="button" onClick="print()">Print Form</button>','')}} />
-        </Grid>
-      </Grid>
     );
   }
 }

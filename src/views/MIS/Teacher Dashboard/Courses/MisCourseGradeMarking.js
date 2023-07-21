@@ -101,6 +101,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 14,
   },
 }));
+
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   backgroundColor: defaultStyles.colors.rowBackgroundColor,
   '&:nth-of-type(odd)': {
@@ -145,6 +146,7 @@ class MisCourseGradeMarking extends React.Component {
       confirmationModalExecute: () => { },
     };
     this.sem_course_id = this.props.location.state.sem_course_id
+    this.student_view = this.props.user.user_type == 'student'
     this.timeoutAlertRef = null;
   }
 
@@ -265,151 +267,134 @@ class MisCourseGradeMarking extends React.Component {
 
   render() {
     return (
-      <Grid container>
-        {this.state.callingApi == 'fetchData' ? <LoadingIcon /> :
-          <CustomCard>
-            <Grid container style={{ padding: '10px' }}>
-              <Grid item xs={'auto'}>
-                <Typography variant="h3">
-                  Students Marking
-                </Typography>
-              </Grid>
-              <Grid item xs={'auto'}>
-                <IconButton onClick={() => this.setState((state) => ({ collapseOpen: !state.collapseOpen }))}>
-                  {this.state.collapseOpen ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
-              </Grid>
+      this.state.callingApi == 'fetchData' ? <LoadingIcon /> :
+        <CustomCard>
+          <Grid container spacing={2}>
+            <Grid item xs={'auto'}>
+              <Typography variant="h3">
+                Students Marking
+              </Typography>
             </Grid>
-            <Collapse in={this.state.collapseOpen}>
-              <Grid container spacing={1} style={{ padding: '10px' }}>
-                <Grid key={`griditem-1`} item xs={12}>
-                  <TableContainer>
-                    <Table size="small">
-                      {/* Headers */}
-                      <TableHead>
-                        <StyledTableRow>
-                          <StyledTableCell key={`tablecell-header-0`} align="left">
-                            Reg #
-                          </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-1`} align="left" style={stickyHeaderCell}>
-                            Student Name
-                          </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-2`} align="left">
-                            Result ({this.state.semesterCourse.grade_distribution.marking.type})
-                          </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-3`} align="left">
-                            Grade ({this.state.semesterCourse.grade_distribution.marking.type})
-                          </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-4`} align="left">
-                            Final Grade
-                          </StyledTableCell>
-                          {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute, index) => {
+            <Grid item xs={'auto'}>
+              <IconButton onClick={() => this.setState((state) => ({ collapseOpen: !state.collapseOpen }))}>
+                {this.state.collapseOpen ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+            </Grid>
+            <Grid item xs={12}>
+              <Collapse in={this.state.collapseOpen}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TableContainer>
+                      <Table size="small">
+                        {/* Headers */}
+                        <TableHead>
+                          <StyledTableRow>
+                            <StyledTableCell align="left"> Reg # </StyledTableCell>
+                            <StyledTableCell align="left" style={stickyHeaderCell}> Student Name </StyledTableCell>
+                            <StyledTableCell align="left"> Result ({this.state.semesterCourse.grade_distribution.marking.type}) </StyledTableCell>
+                            <StyledTableCell align="left"> Grade ({this.state.semesterCourse.grade_distribution.marking.type}) </StyledTableCell>
+                            <StyledTableCell align="left"> Final Grade </StyledTableCell>
+                            {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute, index) => {
+                              return (
+                                <StyledTableCell align="center" >
+                                  {convertUpper(attribute)} ({
+                                    ['final_term', 'mid_term'].includes(attribute) ? this.state.semesterCourse.grade_distribution[attribute]?.total_marks :
+                                      attribute.startsWith('assignment_') ? this.state.semesterCourse.grade_distribution.sessional.division.assignments?.total_marks_per_assignment :
+                                        attribute.startsWith('quiz_') ? this.state.semesterCourse.grade_distribution.sessional.division.quizzes?.total_marks_per_quiz :
+                                          this.state.semesterCourse.grade_distribution.sessional.division[attribute]?.total_marks
+                                  })
+                                </StyledTableCell>
+                              )
+                            })}
+                          </StyledTableRow>
+                        </TableHead>
+                        {/* Rows */}
+                        <TableBody>
+                          {(this.student_view ? this.state.courseStudents.filter(s => s.student_id == this.props.user.user_id) : this.state.courseStudents).map((student, studentsIndex) => {
                             return (
-                              <StyledTableCell key={`tablecell-header-${index + 5}`} align="center" >
-                                {convertUpper(attribute)} ({
-                                  ['final_term', 'mid_term'].includes(attribute) ? this.state.semesterCourse.grade_distribution[attribute]?.total_marks :
-                                    attribute.startsWith('assignment_') ? this.state.semesterCourse.grade_distribution.sessional.division.assignments?.total_marks_per_assignment :
-                                      attribute.startsWith('quiz_') ? this.state.semesterCourse.grade_distribution.sessional.division.quizzes?.total_marks_per_quiz :
-                                        this.state.semesterCourse.grade_distribution.sessional.division[attribute]?.total_marks
-                                })
-                              </StyledTableCell>
+                              <StyledTableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }} >
+                                <StyledTableCell component="th" scope="row"> {student.reg_no || student.cnic} </StyledTableCell>
+                                <StyledTableCell align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
+                                <StyledTableCell align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0}`}</StyledTableCell>
+                                <StyledTableCell align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
+                                <StyledTableCell align="left">{student.grade}</StyledTableCell>
+                                {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute, index) => {
+                                  return (
+                                    <StyledTableCell align="center">
+                                      {attribute == 'attendance' ? this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute] :
+                                        <TextField
+                                          disabled={this.state.semesterCourse.grades_locked || this.student_view}
+                                          InputProps={{ inputProps: { tabIndex: (studentsIndex + 1) + (index * this.state.courseStudents.length) } }}
+                                          key={`input-${(studentsIndex + 1) + (index * this.state.courseStudents.length)}`}
+                                          onFocus={(e) => e.target.select()}
+                                          value={this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]}
+                                          onChange={(e) => this.updateStudentMarking(attribute, student.student_batch_id, e.target.value)}
+                                          sx={{ '.MuiInputBase-input': { fontSize: '15px' }, width: '50px' }}
+                                          type="tel" size="small" />
+                                      }
+                                    </StyledTableCell>
+                                  )
+                                })}
+                              </StyledTableRow>
                             )
                           })}
-                        </StyledTableRow>
-                      </TableHead>
-                      {/* Rows */}
-                      <TableBody>
-                        {this.state.courseStudents.map((student, studentsIndex) => {
-                          return (
-                            <StyledTableRow
-                              key={`tablerow-${studentsIndex}`}
-                              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                              <StyledTableCell key={`tablecell-0`} component="th" scope="row">
-                                {student.reg_no || student.cnic}
-                              </StyledTableCell>
-                              <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
-                              <StyledTableCell key={`tablecell-2`} align="left">{`${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.obtained_marks || 0}/${student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.total_marks || 0}`}</StyledTableCell>
-                              <StyledTableCell key={`tablecell-3`} align="left">{student.marking.result?.[this.state.semesterCourse.grade_distribution.marking.type]?.grade}</StyledTableCell>
-                              <StyledTableCell key={`tablecell-4`} align="left">{student.grade}</StyledTableCell>
-                              {Object.keys(this.state.markings[0] || {}).filter(key => key != 'student_batch_id').map((attribute, index) => {
-                                return (
-                                  <StyledTableCell key={`tablecell-${index + 4}`} align="center">
-                                    {attribute == 'attendance' ? this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute] :
-                                      <TextField
-                                        disabled={this.state.semesterCourse.grades_locked}
-                                        InputProps={{ inputProps: { tabIndex: (studentsIndex + 1) + (index * this.state.courseStudents.length) } }}
-                                        key={`input-${(studentsIndex + 1) + (index * this.state.courseStudents.length)}`}
-                                        onFocus={(e) => e.target.select()}
-                                        value={this.state.markings.filter(marking => marking.student_batch_id == student.student_batch_id)[0][attribute]}
-                                        onChange={(e) => this.updateStudentMarking(attribute, student.student_batch_id, e.target.value)}
-                                        sx={{ '.MuiInputBase-input': { fontSize: '15px' }, width: '50px' }}
-                                        type="tel" size="small" />
-                                    }
-                                  </StyledTableCell>
-
-                                )
-                              })}
-                            </StyledTableRow>
-                          )
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                      <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
+                    </Zoom>
+                  </Grid>
+                  {this.state.semesterCourse.grades_locked || this.student_view ? <></> :
+                    <React.Fragment>
+                      <Grid item xs={"auto"}>
+                        <CustomButton
+                          callingApiState={this.state.callingApi == 'updateMarkings'}
+                          label={"Save"}
+                          onClick={this.updateMarkings}
+                        />
+                      </Grid>
+                      <Grid item xs={"auto"}>
+                        <CustomButton
+                          label="Reset"
+                          onClick={() => this.fetchData()}
+                        />
+                      </Grid>
+                      <Grid item xs={"auto"}>
+                        <CustomButton
+                          callingApiState={this.state.callingApi == 'lockGrades'}
+                          color='error'
+                          variant="outlined"
+                          onClick={() =>
+                            this.setState({
+                              confirmationModalShow: true,
+                              confirmationModalMessage:
+                                "Are you sure you want to lock grades? This change cannot be undone",
+                              confirmationModalExecute: () => this.lockGrades()
+                            })
+                          }
+                          label="Lock Grades"
+                        />
+                      </Grid>
+                    </React.Fragment>
+                  }
                 </Grid>
-                <Grid key={`griditem-2`} item xs={12}>
-                  <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
-                    <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
-                  </Zoom>
-                </Grid>
-                {this.state.semesterCourse.grades_locked ? <></> :
-                  <React.Fragment>
-                    <Grid key={`griditem-3`} item xs={"auto"}>
-                      <CustomButton
-                        callingApiState={this.state.callingApi == 'updateMarkings'}
-                        label={"Save"}
-                        onClick={this.updateMarkings}
-                      />
-                    </Grid>
-                    <Grid key={`griditem-4`} item xs={"auto"}>
-                      <CustomButton
-                        label="Reset"
-                        onClick={() => this.fetchData()}
-                      />
-                    </Grid>
-                    <Grid key={`griditem-5`} item xs={"auto"}>
-                      <CustomButton
-                        callingApiState={this.state.callingApi == 'lockGrades'}
-                        color='error'
-                        variant="outlined"
-                        onClick={() =>
-                          this.setState({
-                            confirmationModalShow: true,
-                            confirmationModalMessage:
-                              "Are you sure you want to lock grades? This change cannot be undone",
-                            confirmationModalExecute: () => this.lockGrades()
-                          })
-                        }
-                        label="Lock Grades"
-                      />
-                    </Grid>
-                  </React.Fragment>
-                }
-              </Grid>
-            </Collapse>
-          </CustomCard>
-        }
-        <ConfirmationModal
-          open={this.state.confirmationModalShow}
-          message={this.state.confirmationModalMessage}
-          onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
-          onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
-          onClickYes={() => {
-            this.state.confirmationModalExecute();
-            this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })
-          }}
-        />
-      </Grid>
+              </Collapse>
+            </Grid>
+            <ConfirmationModal
+              open={this.state.confirmationModalShow}
+              message={this.state.confirmationModalMessage}
+              onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
+              onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
+              onClickYes={() => {
+                this.state.confirmationModalExecute();
+                this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })
+              }}
+            />
+          </Grid>
+        </CustomCard>
     );
   }
 }

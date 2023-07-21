@@ -69,14 +69,14 @@ class MisDepartmentsUpdate extends React.Component {
   render() {
     return (
       this.state.loading ? <LoadingIcon /> :
-        <Grid container rowSpacing={"20px"}>
+        <Grid container spacing={2}>
           <GoBackButton context={this.props.navigate} />
           <Grid item xs={12}>
             <ContextInfo contextInfo={this.context_info} overrideIncludeKeys={['department_id', 'department_name']} />
           </Grid>
           <Grid item xs={12}>
             <CustomCard>
-              <Grid container spacing={3} padding={2}>
+              <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Typography variant='h2'>Update Info</Typography>
                 </Grid>

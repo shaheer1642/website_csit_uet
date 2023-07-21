@@ -13,17 +13,17 @@ class MisSemestersCoursesUpdate extends React.Component {
     super(props);
     this.state = {
       loading: true,
-      semester_id:'',
-      course_id:'',
-      teacher_id:'',
+      semester_id: '',
+      course_id: '',
+      teacher_id: '',
     }
     this.sem_course_id = this.props.location.state.sem_course_id
     this.context_info = this.props.location.state.context_info
   }
 
   componentDidMount() {
-    socket.emit('semestersCourses/fetch', {sem_course_id: this.sem_course_id}, (res) => {
-      console.log('[semestersCourses/fetch] response:',res)
+    socket.emit('semestersCourses/fetch', { sem_course_id: this.sem_course_id }, (res) => {
+      console.log('[semestersCourses/fetch] response:', res)
       if (res.code == 200) {
         const semestersCourses = res.data[0]
         console.log('setting state')
@@ -39,54 +39,54 @@ class MisSemestersCoursesUpdate extends React.Component {
 
   render() {
     return (
-      this.state.loading ? <LoadingIcon />:
-      <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
-        <Grid item xs={12}>
-          <ContextInfo contextInfo={this.context_info} omitIncludeKeys={['teacher_name']}/>
+      this.state.loading ? <LoadingIcon /> :
+        <Grid container spacing={2}>
+          <GoBackButton context={this.props.navigate} />
+          <Grid item xs={12}>
+            <ContextInfo contextInfo={this.context_info} omitIncludeKeys={['teacher_name']} />
+          </Grid>
+          <Grid item xs={12}>
+            <FormGenerator
+              endpoint="semestersCourses"
+              formType="updateTeacher"
+              submitSuccessMessage='Course Edited Successfully'
+              backgroundColor='white'
+              options={{
+                sem_course_id: {
+                  label: "Semester Course ID",
+                  defaultValue: this.sem_course_id,
+                  disabled: true,
+                  position: 1,
+                  xs: 6,
+                  hidden: true
+                },
+                semester_id: {
+                  label: "Semester ID",
+                  defaultValue: this.state.semester_id,
+                  disabled: true,
+                  position: 1,
+                  xs: 6,
+                  hidden: true
+                },
+                course_id: {
+                  label: "Course ID",
+                  defaultValue: this.state.course_id,
+                  disabled: true,
+                  position: 2,
+                  xs: 6,
+                },
+                teacher_id: {
+                  label: "Teacher",
+                  defaultValue: this.state.teacher_id,
+                  position: 1,
+                  xs: 6,
+                  fieldType: 'select',
+                  endpoint: 'autocomplete/teachers'
+                },
+              }}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <FormGenerator 
-            endpoint="semestersCourses"
-            formType="updateTeacher" 
-            submitSuccessMessage='Course Edited Successfully'
-            backgroundColor='white'
-            options={{
-              sem_course_id: {
-                label: "Semester Course ID",
-                defaultValue: this.sem_course_id,
-                disabled: true,
-                position: 1,
-                xs: 6,
-                hidden: true
-              },
-              semester_id: {
-                label: "Semester ID",
-                defaultValue: this.state.semester_id,
-                disabled: true,
-                position: 1,
-                xs: 6,
-                hidden: true
-              },
-              course_id: {
-                label: "Course ID",
-                defaultValue: this.state.course_id,
-                disabled: true,
-                position: 2,
-                xs: 6,
-              },
-              teacher_id: {
-                label: "Teacher",
-                defaultValue: this.state.teacher_id,
-                position: 1,
-                xs: 6,
-                fieldType: 'select',
-                endpoint: 'autocomplete/teachers'
-              },
-            }}
-          />
-        </Grid>
-      </Grid>
     );
   }
 }

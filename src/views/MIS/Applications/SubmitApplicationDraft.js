@@ -77,16 +77,16 @@ class SubmitApplicationDraft extends React.Component {
     if (!prevState.alertMsg && !this.state.alertMsg) return
     clearTimeout(this.alertTimeout)
     this.alertTimeout = setTimeout(() => {
-      this.setState({alertMsg: ''})
+      this.setState({ alertMsg: '' })
     }, 3000);
   }
   componentWillUnmount() {
   }
 
   fetchApplicationTemplate = () => {
-    this.setState({loading: true})
-    socket.emit("applicationsTemplates/fetch", {template_id: this.template_id}, (res) => {
-      this.setState({loading: false})
+    this.setState({ loading: true })
+    socket.emit("applicationsTemplates/fetch", { template_id: this.template_id }, (res) => {
+      this.setState({ loading: false })
       if (res.code == 200 && res.data.length == 1) {
         const applicationTemplate = res.data[0]
         console.log('fetchApplicationTemplate', applicationTemplate)
@@ -100,7 +100,7 @@ class SubmitApplicationDraft extends React.Component {
     });
   }
 
-  updateField = (key,value,index) => {
+  updateField = (key, value, index) => {
     var applicationTemplate = this.state.applicationTemplate
     applicationTemplate.detail_structure[index][key] = value
     return this.setState({
@@ -109,13 +109,13 @@ class SubmitApplicationDraft extends React.Component {
   }
 
   submitApplication = () => {
-    this.setState({callingApi: true})
-    socket.emit('applications/create',{
-      application_title: this.state.applicationTemplate.application_title, 
-      detail_structure: this.state.applicationTemplate.detail_structure, 
-      submitted_to: this.state.applicationTemplate.submit_to, 
+    this.setState({ callingApi: true })
+    socket.emit('applications/create', {
+      application_title: this.state.applicationTemplate.application_title,
+      detail_structure: this.state.applicationTemplate.detail_structure,
+      submitted_to: this.state.applicationTemplate.submit_to,
     }, (res) => {
-      this.setState({callingApi: false})
+      this.setState({ callingApi: false })
       if (res.code == 200) {
         this.setState({
           alertMsg: 'Application has been submitted!',
@@ -135,7 +135,7 @@ class SubmitApplicationDraft extends React.Component {
     if (application_title.toLowerCase() == 'course withdrawal') {
       return (
         <React.Fragment>
-          
+
         </React.Fragment>
       )
     }
@@ -144,60 +144,62 @@ class SubmitApplicationDraft extends React.Component {
   render() {
     return (
       this.state.loading ? <CircularProgress /> :
-      <Grid container spacing={2}>
-        <GoBackButton context={this.props.navigate}/>
-        <Grid item xs={12}>
-          <Typography variant='h4'>{this.state.applicationTemplate.application_title}</Typography>
-        </Grid>
-        {this.state.applicationTemplate.is_custom ? 
-          <Grid item xs={12}>
-            <RenderCustomTemplates applicationTemplate={this.state.applicationTemplate} onChange={(applicationTemplate) => this.setState({applicationTemplate: applicationTemplate})} /> 
-          </Grid> :
-          <React.Fragment>
-            {this.state.applicationTemplate.detail_structure.map((field,index) => 
-              <Grid item xs={field.multi_line ? 12 : 6}>
-                {field.field_type == 'string' ? 
-                  <CustomTextField multiline={field.multi_line} rows={field.multi_line ? 4 : 1} fullWidth={field.multi_line} placeholder={field.placeholder} variant='filled' label={field.field_name} disabled={field.disabled} required={field.required} value={field.field_value} onChange={(e) => this.updateField('field_value',e.target.value,index)}/>
-                  : 'Field type could not be determined'
-                }
-              </Grid>
-            )}
-            {this.state.submit_to_change ? 
+        <CustomCard>
+          <Grid container spacing={2}>
+            <GoBackButton context={this.props.navigate} />
+            <Grid item xs={12}>
+              <Typography variant='h4'>{this.state.applicationTemplate.application_title}</Typography>
+            </Grid>
+            {this.state.applicationTemplate.is_custom ?
               <Grid item xs={12}>
-                <Grid container spacing={2}>
+                <RenderCustomTemplates applicationTemplate={this.state.applicationTemplate} onChange={(applicationTemplate) => this.setState({ applicationTemplate: applicationTemplate })} />
+              </Grid> :
+              <React.Fragment>
+                {this.state.applicationTemplate.detail_structure.map((field, index) =>
+                  <Grid key={index} item xs={field.multi_line ? 12 : 6}>
+                    {field.field_type == 'string' ?
+                      <CustomTextField multiline={field.multi_line} rows={field.multi_line ? 4 : 1} fullWidth={field.multi_line} placeholder={field.placeholder} variant='filled' label={field.field_name} disabled={field.disabled} required={field.required} value={field.field_value} onChange={(e) => this.updateField('field_value', e.target.value, index)} />
+                      : 'Field type could not be determined'
+                    }
+                  </Grid>
+                )}
+                {this.state.submit_to_change ?
                   <Grid item xs={12}>
-                    <Typography variant='h4'>Submit to</Typography>
-                  </Grid>
-                  <Grid item xs={'auto'}>
-                    <CustomSelect
-                      label= "Submit to"
-                      fieldType= 'select'
-                      endpoint= 'autocomplete/users'
-                      endpointData={{
-                        exclude_user_types: this.state.applicationTemplate.submit_to_type == 'teacher_only' ? ['admin','pga','student'] : ['student'],
-                        exclude_user_ids: [this.props.user?.user_id]
-                      }}
-                      sx={{minWidth: '150px'}}
-                      onChange={(e,option) => this.setState({submit_to: option.id})}
-                      value={this.state.applicationTemplate.submit_to}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid> : <></>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant='h4'>Submit to</Typography>
+                      </Grid>
+                      <Grid item xs={'auto'}>
+                        <CustomSelect
+                          label="Submit to"
+                          fieldType='select'
+                          endpoint='autocomplete/users'
+                          endpointData={{
+                            exclude_user_types: this.state.applicationTemplate.submit_to_type == 'teacher_only' ? ['admin', 'pga', 'student'] : ['student'],
+                            exclude_user_ids: [this.props.user?.user_id]
+                          }}
+                          sx={{ minWidth: '150px' }}
+                          onChange={(e, option) => this.setState({ submit_to: option.id })}
+                          value={this.state.applicationTemplate.submit_to}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid> : <></>
+                }
+              </React.Fragment>
             }
-          </React.Fragment>
-        }
-        <Grid item xs={12}>
-          <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
-        </Grid>
-        <Grid item xs={'auto'}>
-          <CustomButton 
-            variant="contained" 
-            disabled={this.state.callingApi ? true : false}
-            label={this.state.callingApi ? <CircularProgress color="secondary" size='20px'/> : "Submit Application"} 
-            onClick={this.submitApplication}/>
-        </Grid>
-      </Grid>
+            <Grid item xs={12}>
+              <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton
+                variant="contained"
+                disabled={this.state.callingApi ? true : false}
+                label={this.state.callingApi ? <CircularProgress color="secondary" size='20px' /> : "Submit Application"}
+                onClick={this.submitApplication} />
+            </Grid>
+          </Grid>
+        </CustomCard>
     );
   }
 }

@@ -49,7 +49,7 @@ class MisDepartments extends React.Component {
   }
 
   fetchData = () => {
-    this.setState({loading: true})
+    this.setState({ loading: true })
     socket.emit("departments/fetch", {}, (res) => {
       if (res.code == 200) {
         return this.setState({
@@ -68,20 +68,22 @@ class MisDepartments extends React.Component {
     ];
     return (
       <CustomCard>
-        <Grid container>
-          <Typography variant="h2" style={{ margin: "10px" }}>
-            Departments
-          </Typography>
-          <CustomTable
-            loadingState={this.state.loading}
-            onEditClick={(department) =>
-              this.props.navigate("update", {
-                state: { department_id: department.department_id, context_info: department },
-              })
-            }
-            rows={this.state.departmentsArr}
-            columns={columns}
-          />
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h2"> Departments </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTable
+              loadingState={this.state.loading}
+              onEditClick={(department) =>
+                this.props.navigate("update", {
+                  state: { department_id: department.department_id, context_info: department },
+                })
+              }
+              rows={this.state.departmentsArr}
+              columns={columns}
+            />
+          </Grid>
         </Grid>
       </CustomCard>
     );

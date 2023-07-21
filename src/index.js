@@ -43,7 +43,6 @@ import SubmitApplicationDraft from "./views/MIS/Applications/SubmitApplicationDr
 import ViewApplications from "./views/MIS/Applications/viewApplications";
 import ViewApplicationsDetail from "./views/MIS/Applications/viewApplicationsDetail";
 import MisCoursesStudentsUpdate from "./views/MIS/Semesters/Courses/Students/MisCoursesStudentsUpdate";
-import MisStudentCourseGradeManagement from "./views/MIS/Student Dashboard/Courses/MisStudentCourseGradeManagement";
 import MisStudentBatches from "./views/MIS/Student Dashboard/Batches/MisStudentBatches";
 import MisStudentSemesters from "./views/MIS/Student Dashboard/Semesters/MisStudentSemesters";
 import MisStudentCourses from "./views/MIS/Student Dashboard/Courses/MisStudentCourses";
@@ -66,9 +65,9 @@ import './localStorage'
 import { AuthContext } from "./contexts/AuthContext";
 
 if (process.env.REACT_APP_ENV === 'production') {
-  console.log = () => {}
-  console.error = () => {}
-  console.debug = () => {}
+  console.log = () => { }
+  console.error = () => { }
+  console.debug = () => { }
 }
 
 class Router extends React.Component {
@@ -157,7 +156,6 @@ class Router extends React.Component {
               <Route path="sportal/semesters" element={<MisStudentSemesters />} />
 
               <Route path="sportal/courses" element={<MisStudentCourses />} />
-              <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
 
               <Route path="sportal/transcript" element={<MisStudentTranscript />} />
 
@@ -169,99 +167,6 @@ class Router extends React.Component {
     )
   }
 }
-// export default function Router() {
-//   return (
-//     <AuthContext.Provider value={{ user: this.state.user, setUser: (user, callback) => this.setState({ user: user }, () => callback ? callback() : null) }}>
-//       <BrowserRouter>
-//         <Routes>
-//           <Route path="/" element={<MainLayout />}>
-//             <Route index element={<MainHome />} />
-//             <Route path="courses" element={<MainCourses />} />
-//             <Route path="instructors" element={<MainFaculty />} />
-//             <Route path="downloads" element={<MainDownloads />} />
-//             <Route path="newsAndEvents" element={<MainNewsAndEvents />} />
-//           </Route>
-//           <Route path="/login" element={<LoginLayout />}>
-//             <Route index element={<Login />} />
-//           </Route>
-//           <Route path="/mis" element={<MisLayout />}>
-//             <Route index element={<MisHome />} />
-
-//             <Route path="profile" element={<MisProfile />} />
-
-//             <Route path="events" element={<MisEvents />} />
-//             <Route path="events/create" element={<MisEventsCreate />} />
-//             <Route path="events/update" element={<MisEventsUpdate />} />
-
-//             <Route path="departments" element={<MisDepartments />} />
-//             <Route path="departments/update" element={<MisDepartmentsUpdate />} />
-
-//             <Route path="batches" element={<MisBatches />} />
-//             <Route path="batches/create" element={<MisBatchesCreate />} />
-//             <Route path="batches/update" element={<MisBatchesUpdate />} />
-//             <Route path="batches/students" element={<MisBatchStudents />} />
-//             <Route path="batches/students/create" element={<MisBatchStudentsCreate />} />
-//             <Route path="batches/students/update" element={<MisBatchStudentsUpdate />} />
-
-//             <Route path="students" element={<MisStudents />} />
-//             <Route path="students/manage" element={<MisStudentsManagement />} />
-
-//             <Route path="semesters" element={<MisSemesters />} />
-//             <Route path="semesters/create" element={<MisSemestersCreate />} />
-//             <Route path="semesters/update" element={<MisSemestersUpdate />} />
-//             <Route path="semesters/courses" element={<MisSemestersCourses />} />
-//             <Route path="semesters/courses/create" element={<MisSemestersCoursesCreate />} />
-//             <Route path="semesters/courses/update" element={<MisSemestersCoursesUpdate />} />
-//             <Route path="semesters/courses/students" element={<MisCoursesStudents />} />
-//             <Route path="semesters/courses/students/update" element={<MisCoursesStudentsUpdate />} />
-
-//             <Route path="teachers" element={<MisTeachers />} />
-//             <Route path="teachers/create" element={<MisTeachersCreate />} />
-//             <Route path="teachers/update" element={<MisTeachersUpdate />} />
-
-//             <Route path="courses" element={<MisCourses />} />
-//             <Route path="courses/create" element={<MisCoursesCreate />} />
-//             <Route path="courses/update" element={<MisCoursesUpdate />} />
-
-//             <Route path="thesis" element={<MisThesis />} />
-//             <Route path="thesis/create" element={<MisThesisCreate />} />
-//             <Route path="thesis/manage" element={<MisThesisManagement />} />
-//             <Route path="thesis/grading" element={<MisThesisGrading />} />
-
-//             <Route path="documents" element={<MisDocuments />} />
-
-//             <Route path="studentPerformance" element={<MisStudentPerformance />} />
-//             <Route path="teachersPerformance" element={<MisTeachersPerformance />} />
-
-//             <Route path="applications/applicationsTemplates" element={<MisApplicationsTemplates />} />
-//             <Route path="applications/applicationsTemplates/create" element={<MisApplicationsTemplatesCreateUpdate />} />
-//             <Route path="applications/applicationsTemplates/update" element={<MisApplicationsTemplatesCreateUpdate />} />
-//             <Route path="applications/submitApplication" element={<SubmitApplication />} />
-//             <Route path="applications/submitApplication/draft" element={<SubmitApplicationDraft />} />
-//             <Route path="applications/viewApplications" element={<ViewApplications />} />
-//             <Route path="applications/viewApplications/detail" element={<ViewApplicationsDetail />} />
-
-//             <Route path="tportal/courses" element={<MisTeachersCourses />} />
-//             <Route path="tportal/courses/grading" element={<MisCourseGradeManagement />} />
-
-//             <Route path="tportal/performance" element={<MisTeacherPerformance />} />
-
-//             <Route path="sportal/batches" element={<MisStudentBatches />} />
-
-//             <Route path="sportal/semesters" element={<MisStudentSemesters />} />
-
-//             <Route path="sportal/courses" element={<MisStudentCourses />} />
-//             <Route path="sportal/courses/grading" element={<MisStudentCourseGradeManagement />} />
-
-//             <Route path="sportal/transcript" element={<MisStudentTranscript />} />
-
-//             <Route path="help" element={<MisHelp />} />
-//           </Route>
-//         </Routes>
-//       </BrowserRouter>
-//     </AuthContext.Provider>
-//   );
-// }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

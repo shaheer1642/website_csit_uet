@@ -187,29 +187,29 @@ class MisCoursesStudentsUpdate extends React.Component {
                     )}
                   </Grid>
                   <Grid item xs={6}>
-                    {this.state.studentCourse.grades_locked ? <Typography fontStyle={'italic'}>Grades have been locked for this course</Typography> : 
-                    this.state.studentCourse.grade == 'W' ? <Typography fontStyle={'italic'}>Grade cannot be changed for this student</Typography> : 
-                      <CustomSelect
-                        sx={{ minWidth: '250px' }}
-                        required
-                        label="Change Grade"
-                        value={this.state.updatedGrade || this.state.studentCourse.grade}
-                        menuItems={[
-                          { id: 'A', label: 'A' }, 
-                          { id: 'A-', label: 'A-' }, 
-                          { id: 'B+', label: 'B+' }, 
-                          { id: 'B', label: 'B' }, 
-                          { id: 'B-', label: 'B-' }, 
-                          { id: 'C+', label: 'C+' }, 
-                          { id: 'C', label: 'C' }, 
-                          { id: 'C-', label: 'C-' }, 
-                          { id: 'D+', label: 'D+' }, 
-                          { id: 'D', label: 'D' }, 
-                          { id: 'F', label: 'F' }, 
-                          { id: 'I', label: 'I' }, 
-                        ]}
-                        onChange={(e, option) => this.setState({updatedGrade: option.id})}
-                      />
+                    {this.state.studentCourse.grades_locked ? <Typography fontStyle={'italic'}>Grades have been locked for this course</Typography> :
+                      this.state.studentCourse.grade == 'W' ? <Typography fontStyle={'italic'}>Grade cannot be changed for this student</Typography> :
+                        <CustomSelect
+                          sx={{ minWidth: '250px' }}
+                          required
+                          label="Change Grade"
+                          value={this.state.updatedGrade || this.state.studentCourse.grade}
+                          menuItems={[
+                            { id: 'A', label: 'A' },
+                            { id: 'A-', label: 'A-' },
+                            { id: 'B+', label: 'B+' },
+                            { id: 'B', label: 'B' },
+                            { id: 'B-', label: 'B-' },
+                            { id: 'C+', label: 'C+' },
+                            { id: 'C', label: 'C' },
+                            { id: 'C-', label: 'C-' },
+                            { id: 'D+', label: 'D+' },
+                            { id: 'D', label: 'D' },
+                            { id: 'F', label: 'F' },
+                            { id: 'I', label: 'I' },
+                          ]}
+                          onChange={(e, option) => this.setState({ updatedGrade: option.id })}
+                        />
                     }
                   </Grid>
                   <Grid item xs={12}>
@@ -218,7 +218,7 @@ class MisCoursesStudentsUpdate extends React.Component {
                     </Zoom>
                   </Grid>
                   <Grid item xs={'auto'}>
-                    <CustomButton label='Assign Grade' callingApiState={this.state.callingApi == 'updateGrade'} onClick={this.updateGrade} />
+                    <CustomButton disabled={this.state.studentCourse.grades_locked} label='Assign Grade' callingApiState={this.state.callingApi == 'updateGrade'} onClick={this.updateGrade} />
                   </Grid>
                   <Grid item xs={'auto'}>
                     <CustomButton

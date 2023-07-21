@@ -47,7 +47,7 @@ class MisTeachersUpdate extends React.Component {
   render() {
     return (
       this.state.loading ? <LoadingIcon /> :
-        <Grid container rowSpacing={"20px"}>
+        <Grid container spacing={2}>
           <GoBackButton context={this.props.navigate} />
           <Grid item xs={12}>
             <FormGenerator

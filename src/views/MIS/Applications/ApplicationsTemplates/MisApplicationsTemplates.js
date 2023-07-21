@@ -33,15 +33,15 @@ class MisApplicationsTemplates extends React.Component {
 
   componentDidMount() {
     this.fetchApplicationsTemplates()
-    socket.addEventListener("applicationsTemplates/listener/changed",this.fetchApplicationsTemplates);
+    socket.addEventListener("applicationsTemplates/listener/changed", this.fetchApplicationsTemplates);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("applicationsTemplates/listener/changed",this.fetchApplicationsTemplates);
+    socket.removeEventListener("applicationsTemplates/listener/changed", this.fetchApplicationsTemplates);
   }
 
   fetchApplicationsTemplates = () => {
-    socket.emit("applicationsTemplates/fetch", {restrict_visibility: false}, (res) => {
+    socket.emit("applicationsTemplates/fetch", { restrict_visibility: false }, (res) => {
       if (res.code == 200) {
         return this.setState({
           applicationsTemplatesArr: res.data,
@@ -53,55 +53,60 @@ class MisApplicationsTemplates extends React.Component {
 
   timeoutAlert = () => {
     clearTimeout(this.timeoutAlertRef)
-    this.timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 10000)
+    this.timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 10000)
   }
 
   updateApplicationTemplate = (applicationTemplate) => {
-    this.props.navigate("update", {state: { template_id: applicationTemplate.template_id }})
+    this.props.navigate("update", { state: { template_id: applicationTemplate.template_id } })
   }
 
   deleteApplicationTemplate = (applicationTemplate) => {
-    this.setState({callingDeleteApi: true})
-    socket.emit('applicationsTemplates/delete',{
+    this.setState({ callingDeleteApi: true })
+    socket.emit('applicationsTemplates/delete', {
       template_id: applicationTemplate.template_id
     }, (res) => {
-      this.setState({callingDeleteApi: false})
+      this.setState({ callingDeleteApi: false })
     })
   }
 
   applicationCard = (applicationTemplate) => {
     return (
-        <Card>
-            <CardContent>
-                <Typography color="text.secondary" variant='h5'> 
-                    {applicationTemplate.application_title}
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <IconButton color="info" onClick={() => this.updateApplicationTemplate(applicationTemplate)} disabled={!applicationTemplate.editable}>
-                    <Edit/>
-                </IconButton>
-                <IconButton color='error' onClick={() => this.deleteApplicationTemplate(applicationTemplate)} disabled={!applicationTemplate.deletable}>
-                    <DeleteOutline />
-                </IconButton>
-            </CardActions>
-        </Card>
+      <Card>
+        <CardContent>
+          <Typography variant='h5'>
+            {applicationTemplate.application_title}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <IconButton color="info" onClick={() => this.updateApplicationTemplate(applicationTemplate)} disabled={!applicationTemplate.editable}>
+            <Edit />
+          </IconButton>
+          <IconButton color='error' onClick={() => this.deleteApplicationTemplate(applicationTemplate)} disabled={!applicationTemplate.deletable}>
+            <DeleteOutline />
+          </IconButton>
+        </CardActions>
+      </Card>
     )
   }
 
   render() {
     return (
-        this.state.loading ? <CircularProgress /> :
-        <Grid container spacing={1}>
+      this.state.loading ? <CircularProgress /> :
+        <CustomCard>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h2">Application Templates</Typography>
+            </Grid>
             {this.state.applicationsTemplatesArr.map(applicationTemplate => {
-                return <Grid item xs='auto'>
-                    {this.applicationCard(applicationTemplate)}
-                </Grid>
+              return <Grid item xs='auto'>
+                {this.applicationCard(applicationTemplate)}
+              </Grid>
             })}
             <Grid item xs={12}>
-                <CustomButton label="Create New" onClick={() => this.props.navigate("create")}/>
+              <CustomButton label="Create New" onClick={() => this.props.navigate("create")} />
             </Grid>
-        </Grid>
+          </Grid>
+        </CustomCard>
     );
   }
 }

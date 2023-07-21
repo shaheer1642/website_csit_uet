@@ -81,29 +81,33 @@ class MisStudentCourses extends React.Component {
     if (!this.student_batch) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses', student_id: this.props.user?.user_id }} />
     else if (!this.student_semester) return <Navigate to='/mis/sportal/semesters' state={{ ...this.props.location?.state, redirect: '/mis/sportal/courses', student_batch_id: this.student_batch?.student_batch_id }} />
     return (
-      <Grid container rowSpacing={"20px"}>
+      <Grid container spacing={2}>
         <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <CustomCard>
-            <Grid container>
-              <Typography variant="h2" style={{ margin: "10px" }}>
-                Select Course
-              </Typography>
-              <CustomTable
-                loadingState={this.state.loading}
-                onRowClick={(semesterCourse) =>
-                  this.props.navigate('grading', {
-                    state: {
-                      semester_id: this.student_batch.semester_id,
-                      student_batch_id: this.student_batch.student_batch_id,
-                      sem_course_id: semesterCourse.sem_course_id,
-                      context_info: { ...semesterCourse, ...this.student_semester }
-                    }
-                  })
-                }
-                rows={this.state.studentCoursesArr}
-                columns={columns}
-              />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h2">
+                  Select Course
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <CustomTable
+                  loadingState={this.state.loading}
+                  onRowClick={(semesterCourse) =>
+                    this.props.navigate('/mis/tportal/courses/grading', {
+                      state: {
+                        semester_id: this.student_batch.semester_id,
+                        student_batch_id: this.student_batch.student_batch_id,
+                        sem_course_id: semesterCourse.sem_course_id,
+                        context_info: { ...semesterCourse, ...this.student_semester }
+                      }
+                    })
+                  }
+                  rows={this.state.studentCoursesArr}
+                  columns={columns}
+                />
+              </Grid>
             </Grid>
           </CustomCard>
         </Grid>

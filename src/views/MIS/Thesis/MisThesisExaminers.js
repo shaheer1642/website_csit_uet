@@ -88,7 +88,7 @@ class MisThesisExaminers extends React.Component {
 
       confirmationModalShow: false,
       confirmationModalMessage: "",
-      confirmationModalExecute: () => {},
+      confirmationModalExecute: () => { },
     }
 
     this.alertTimeout = null
@@ -101,15 +101,15 @@ class MisThesisExaminers extends React.Component {
     if (!prevState.alertMsg && !this.state.alertMsg) return
     clearTimeout(this.alertTimeout)
     this.alertTimeout = setTimeout(() => {
-      this.setState({alertMsg: ''})
+      this.setState({ alertMsg: '' })
     }, 3000);
   }
   componentWillUnmount() {
   }
 
   addExaminer = () => {
-    this.setState({addingExaminer: true})
-    socket.emit('studentsThesisExaminers/create',{
+    this.setState({ addingExaminer: true })
+    socket.emit('studentsThesisExaminers/create', {
       examiner_name: this.state.addExaminerName,
       examiner_university: this.state.addExaminerUniversity,
       examiner_designation: this.state.addExaminerDesignation,
@@ -121,20 +121,20 @@ class MisThesisExaminers extends React.Component {
       }
       this.setState({
         alertMsg: res.code == 200 ? 'Examiner Added' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success':'warning',
+        alertSeverity: res.code == 200 ? 'success' : 'warning',
         addingExaminer: false
       })
     })
   }
 
   deleteExaminer = (examiner_id) => {
-    socket.emit('studentsThesisExaminers/delete',{
+    socket.emit('studentsThesisExaminers/delete', {
       examiner_id: examiner_id
     }, (res) => {
       if (res.code == 200) this.fetchExaminers()
       this.setState({
         alertMsg: res.code == 200 ? 'Examiner Deleted' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success':'warning',
+        alertSeverity: res.code == 200 ? 'success' : 'warning',
       })
     })
   }
@@ -149,31 +149,31 @@ class MisThesisExaminers extends React.Component {
 
   createExaminerPanel = () => {
     return (
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-          <CustomTextField required label='Examiner Name' value={this.state.addExaminerName} onChange={(e) => this.setState({addExaminerName: e.target.value})} />
+          <CustomTextField required label='Examiner Name' value={this.state.addExaminerName} onChange={(e) => this.setState({ addExaminerName: e.target.value })} />
         </Grid>
         <Grid item xs={12}>
-          <CustomTextField label='Department/University' placeholder='CS&IT UET' value={this.state.addExaminerUniversity} onChange={(e) => this.setState({addExaminerUniversity: e.target.value})} />
+          <CustomTextField label='Department/University' placeholder='CS&IT UET' value={this.state.addExaminerUniversity} onChange={(e) => this.setState({ addExaminerUniversity: e.target.value })} />
         </Grid>
         <Grid item xs={12}>
-          <CustomTextField label='Designation' placeholder='Assistant Professor' value={this.state.addExaminerDesignation} onChange={(e) => this.setState({addExaminerDesignation: e.target.value})} />
+          <CustomTextField label='Designation' placeholder='Assistant Professor' value={this.state.addExaminerDesignation} onChange={(e) => this.setState({ addExaminerDesignation: e.target.value })} />
         </Grid>
         <Grid item xs={12}>
           <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
         </Grid>
         <Grid item xs={'auto'}>
-          <CustomButton 
-            disabled={this.state.addingExaminer} 
-            label={this.state.addingExaminer ? <CircularProgress size='20px' /> : 'Add'} 
-            onClick={this.addExaminer} 
+          <CustomButton
+            disabled={this.state.addingExaminer}
+            label={this.state.addingExaminer ? <CircularProgress size='20px' /> : 'Add'}
+            onClick={this.addExaminer}
           />
         </Grid>
         <Grid item xs={'auto'}>
-          <CustomButton 
+          <CustomButton
             variant='outlined'
             label={'Manage Examiners'}
-            onClick={() => this.setState({panel: 'manage'})} 
+            onClick={() => this.setState({ panel: 'manage' })}
           />
         </Grid>
       </Grid>
@@ -181,8 +181,8 @@ class MisThesisExaminers extends React.Component {
   }
 
   fetchExaminers = () => {
-    this.setState({fetchingExaminers: true})
-    socket.emit('studentsThesisExaminers/fetch',{},(res) => {
+    this.setState({ fetchingExaminers: true })
+    socket.emit('studentsThesisExaminers/fetch', {}, (res) => {
       if (res.code == 200) {
         this.setState({
           examinersArr: res.data,
@@ -199,9 +199,9 @@ class MisThesisExaminers extends React.Component {
       { id: "examiner_designation", label: "Designation", format: (value) => value },
     ];
     return (
-      <Grid container spacing={3}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-          <CustomTable 
+          <CustomTable
             margin="0px"
             columns={columns}
             rows={this.state.examinersArr}
@@ -219,10 +219,10 @@ class MisThesisExaminers extends React.Component {
           <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
         </Grid>
         <Grid item xs={'auto'}>
-          <CustomButton 
+          <CustomButton
             variant='outlined'
             label={'Create Examiner'}
-            onClick={() => this.setState({panel: 'create'})} 
+            onClick={() => this.setState({ panel: 'create' })}
           />
         </Grid>
       </Grid>
@@ -231,20 +231,20 @@ class MisThesisExaminers extends React.Component {
 
   render() {
     return (
-      <CustomModal containerStyle={{width: this.state.panel == 'create' ? 400 : 600}} open={this.props.open} onClose={this.props.onClose}>
+      <CustomModal containerStyle={{ width: this.state.panel == 'create' ? 400 : 600 }} open={this.props.open} onClose={this.props.onClose}>
         {
-          this.state.panel == 'create' ? this.createExaminerPanel() : 
-          this.state.panel == 'manage' ? this.manageExaminersPanel() : 
-          <></>
+          this.state.panel == 'create' ? this.createExaminerPanel() :
+            this.state.panel == 'manage' ? this.manageExaminersPanel() :
+              <></>
         }
         <ConfirmationModal
           open={this.state.confirmationModalShow}
           message={this.state.confirmationModalMessage}
-          onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
-          onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })}
+          onClose={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
+          onClickNo={() => this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })}
           onClickYes={() => {
             this.state.confirmationModalExecute();
-            this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => {}, })
+            this.setState({ confirmationModalShow: false, confirmationModalMessage: "", confirmationModalExecute: () => { }, })
           }}
         />
       </CustomModal>

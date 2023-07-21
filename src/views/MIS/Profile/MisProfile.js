@@ -362,7 +362,7 @@ class MisProfile extends React.Component {
     return (
       this.state.callingApi == 'fetchUser' ? <LoadingIcon /> :
         <CustomCard>
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant='h2'>My Profile</Typography>
             </Grid>
@@ -371,8 +371,8 @@ class MisProfile extends React.Component {
                 <React.Fragment>
                   <div class="avatar-wrapper">
                     <img class="profile-pic" src={this.state.userInfo.avatar} alt="Avatar" />
-                    <div class="upload-button" onClick={() => this.avatarInputRef.current.click()} style={{alignItems: 'center'}}>
-		                  <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+                    <div class="upload-button" onClick={() => this.avatarInputRef.current.click()} style={{ alignItems: 'center' }}>
+                      <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
                     </div>
                     <input ref={this.avatarInputRef} class="file-upload" type="file" accept="image/*" onChange={(e) => this.updateAvatar(e.target.files[0])} />
                   </div>

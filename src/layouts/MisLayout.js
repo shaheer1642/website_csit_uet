@@ -394,7 +394,16 @@ function MisLayout(props) {
 
           </List>
         </Drawer>
-        <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: Color.grey[100], minHeight: '100vh' }}>
+        <Box component="main" sx={{
+          flexGrow: 1,
+          p: 3,
+          backgroundColor: Color.grey[100],
+          minHeight: '100vh',
+          maxWidth: open ? `calc(100% - ${drawerWidth}px)` : `calc(100% - (${theme.spacing(7)} + 1px))`,
+          [theme.breakpoints.up('sm')]: {
+            maxWidth: open ? `calc(100% - ${drawerWidth}px)` : `calc(100% - (${theme.spacing(8)} + 1px))`,
+          },
+        }}>
           <DrawerHeader />
           <Outlet />
         </Box>

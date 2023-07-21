@@ -8,13 +8,13 @@ import { withRouter } from "../../../withRouter";
 class MisCoursesCreate extends React.Component {
   constructor(props) {
     super(props);
-   
+
   }
 
   render() {
     return (
-      <Grid container rowSpacing={"20px"}>
-        <GoBackButton context={this.props.navigate}/>
+      <Grid container spacing={2}>
+        <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <FormGenerator
             endpoint="courses"

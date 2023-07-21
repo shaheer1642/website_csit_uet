@@ -163,7 +163,7 @@ class MisThesisManagement extends React.Component {
     return (
       this.state.loading ? <LoadingIcon /> :
         Object.keys(this.state.student_thesis) == 0 ? <Typography variant='h4'>No Thesis Found</Typography> :
-          <Grid container rowSpacing={"20px"} columnSpacing={'10px'}>
+          <Grid container spacing={2} columnSpacing={'10px'}>
             <GoBackButton context={this.props.navigate} />
             <Grid item xs={12}>
               <ContextInfo contextInfo={this.context_info} />
@@ -171,7 +171,7 @@ class MisThesisManagement extends React.Component {
             {/* Thesis basic info */}
             <Grid item xs={12}>
               <CustomCard>
-                <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                <Grid container spacing={2} direction='row'>
                   <Grid item xs={12}>
                     <Typography variant='h3'>Thesis Report</Typography>
                   </Grid>
@@ -367,12 +367,12 @@ class MisThesisManagement extends React.Component {
                         </Grid>
                       </React.Fragment> : <></>
                   }
-                  {this.props.user.user_type == 'pga' ? 
+                  {this.props.user.user_type == 'pga' ?
                     <Grid item xs={12}>
                       <CustomButton
-                        label = 'Grade Management'
+                        label='Grade Management'
                         variant='outlined'
-                        onClick={() => this.props.navigate('/mis/thesis/grading', {state: this.props.location.state})}
+                        onClick={() => this.props.navigate('/mis/thesis/grading', { state: this.props.location.state })}
                       />
                     </Grid> : <></>
                   }
@@ -385,7 +385,7 @@ class MisThesisManagement extends React.Component {
                   {/* Phase 1: Proposal Submission */}
                   <Grid item xs={12}>
                     <CustomCard>
-                      <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid container spacing={2} direction='row'>
                         <Grid item xs={12}>
                           <Typography variant='h3' display='flex' alignItems='center'>
                             {'Phase 1: Proposal Submission'}
@@ -404,7 +404,7 @@ class MisThesisManagement extends React.Component {
                             InputLabelProps={{ shrink: true }}
                             label='BOASAR Notification Date'
                             readOnly={this.student_view || this.teacher_view}
-                            value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
+                            value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : ''}
                             onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp', new Date(e.target.value).getTime())} />
                         </Grid>
                         <Grid item xs={12}>
@@ -428,7 +428,7 @@ class MisThesisManagement extends React.Component {
                   {/* Phase 2: Pre-Defense */}
                   <Grid item xs={12}>
                     <CustomCard>
-                      <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid container spacing={2} direction='row'>
                         <Grid item xs={12}>
                           <Typography variant='h3' display='flex' alignItems='center'>
                             {'Phase 2: Pre-Defense'}
@@ -447,7 +447,7 @@ class MisThesisManagement extends React.Component {
                             InputLabelProps={{ shrink: true }}
                             label='Committee Notification Date'
                             readOnly={this.student_view || this.teacher_view}
-                            value={this.state.student_thesis.committee_notification_timestamp ? new Date(Number(this.state.student_thesis.committee_notification_timestamp)).toISOString().split('T')[0] : null}
+                            value={this.state.student_thesis.committee_notification_timestamp ? new Date(Number(this.state.student_thesis.committee_notification_timestamp)).toISOString().split('T')[0] : ''}
                             onChange={(e) => this.updateStudentThesis('committee_notification_timestamp', new Date(e.target.value).getTime())} />
                         </Grid>
                         <Grid item xs={'auto'}>
@@ -457,7 +457,7 @@ class MisThesisManagement extends React.Component {
                             InputLabelProps={{ shrink: true }}
                             label='Thesis Defense Date'
                             readOnly={this.student_view || this.teacher_view}
-                            value={this.state.student_thesis.defense_day_timestamp ? new Date(Number(this.state.student_thesis.defense_day_timestamp)).toISOString().split('T')[0] : null}
+                            value={this.state.student_thesis.defense_day_timestamp ? new Date(Number(this.state.student_thesis.defense_day_timestamp)).toISOString().split('T')[0] : ''}
                             onChange={(e) => this.updateStudentThesis('defense_day_timestamp', new Date(e.target.value).getTime())} />
                         </Grid>
                         <Grid item xs={12}>
@@ -474,7 +474,7 @@ class MisThesisManagement extends React.Component {
                   {/* Phase 3: Post-Defense */}
                   <Grid item xs={12}>
                     <CustomCard>
-                      <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                      <Grid container spacing={2} direction='row'>
                         <Grid item xs={12}>
                           <Typography variant='h3' display='flex' alignItems='center'>
                             {'Phase 3: Post-Defense'}
@@ -504,7 +504,7 @@ class MisThesisManagement extends React.Component {
                     {/* Phase 1: Proposal Submission */}
                     <Grid item xs={12}>
                       <CustomCard>
-                        <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                        <Grid container spacing={2} direction='row'>
                           <Grid item xs={12}>
                             <Typography variant='h3' display='flex' alignItems='center'>
                               {'Phase 1: Proposal Submission'}
@@ -523,17 +523,17 @@ class MisThesisManagement extends React.Component {
                               InputLabelProps={{ shrink: true }}
                               label='BOASAR Notification Date'
                               readOnly={this.student_view || this.teacher_view}
-                              value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
+                              value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : ''}
                               onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp', new Date(e.target.value).getTime())} />
                           </Grid>
                           <Grid item xs={'auto'}>
-                            <TextField
+                            <CustomTextField
                               type="date"
                               sx={{ width: '200px' }}
                               InputLabelProps={{ shrink: true }}
                               label='Proposal Submission Date'
                               readOnly={this.student_view || this.teacher_view}
-                              value={this.state.student_thesis.proposal_submission_timestamp ? new Date(Number(this.state.student_thesis.proposal_submission_timestamp)).toISOString().split('T')[0] : null}
+                              value={this.state.student_thesis.proposal_submission_timestamp ? new Date(Number(this.state.student_thesis.proposal_submission_timestamp)).toISOString().split('T')[0] : ''}
                               onChange={(e) => this.updateStudentThesis('proposal_submission_timestamp', new Date(e.target.value).getTime())} />
                           </Grid>
                           <Grid item xs={12}>
@@ -550,7 +550,7 @@ class MisThesisManagement extends React.Component {
                     {/* Phase 2: Thesis Submission */}
                     <Grid item xs={12}>
                       <CustomCard>
-                        <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                        <Grid container spacing={2} direction='row'>
                           <Grid item xs={12}>
                             <Typography variant='h3' display='flex' alignItems='center'>
                               {'Phase 2: Thesis Submission'}
@@ -605,7 +605,7 @@ class MisThesisManagement extends React.Component {
                       {/* Phase 0: Qualifying Exam */}
                       <Grid item xs={12}>
                         <CustomCard>
-                          <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                          <Grid container spacing={2} direction='row'>
                             <Grid item xs={12}>
                               <Typography variant='h3'>{'Phase 0: Qualifying Exam'}</Typography>
                             </Grid>
@@ -622,7 +622,7 @@ class MisThesisManagement extends React.Component {
                                 InputLabelProps={{ shrink: true }}
                                 label='QE Notification Date'
                                 readOnly={this.student_view || this.teacher_view}
-                                value={this.state.student_thesis.qe_notification_timestamp ? new Date(Number(this.state.student_thesis.qe_notification_timestamp)).toISOString().split('T')[0] : null}
+                                value={this.state.student_thesis.qe_notification_timestamp ? new Date(Number(this.state.student_thesis.qe_notification_timestamp)).toISOString().split('T')[0] : ''}
                                 onChange={(e) => this.updateStudentThesis('qe_notification_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={'auto'}>
@@ -632,7 +632,7 @@ class MisThesisManagement extends React.Component {
                                 InputLabelProps={{ shrink: true }}
                                 label='REC Notification Date'
                                 readOnly={this.student_view || this.teacher_view}
-                                value={this.state.student_thesis.rec_notification_timestamp ? new Date(Number(this.state.student_thesis.rec_notification_timestamp)).toISOString().split('T')[0] : null}
+                                value={this.state.student_thesis.rec_notification_timestamp ? new Date(Number(this.state.student_thesis.rec_notification_timestamp)).toISOString().split('T')[0] : ''}
                                 onChange={(e) => this.updateStudentThesis('rec_notification_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={'auto'}>
@@ -642,7 +642,7 @@ class MisThesisManagement extends React.Component {
                                 InputLabelProps={{ shrink: true }}
                                 label='BOASAR Notification Date'
                                 readOnly={this.student_view || this.teacher_view}
-                                value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : null}
+                                value={this.state.student_thesis.boasar_notification_timestamp ? new Date(Number(this.state.student_thesis.boasar_notification_timestamp)).toISOString().split('T')[0] : ''}
                                 onChange={(e) => this.updateStudentThesis('boasar_notification_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={'auto'}>
@@ -652,7 +652,7 @@ class MisThesisManagement extends React.Component {
                                 InputLabelProps={{ shrink: true }}
                                 label='FE Notification Date'
                                 readOnly={this.student_view || this.teacher_view}
-                                value={this.state.student_thesis.fe_notification_timestamp ? new Date(Number(this.state.student_thesis.fe_notification_timestamp)).toISOString().split('T')[0] : null}
+                                value={this.state.student_thesis.fe_notification_timestamp ? new Date(Number(this.state.student_thesis.fe_notification_timestamp)).toISOString().split('T')[0] : ''}
                                 onChange={(e) => this.updateStudentThesis('fe_notification_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
@@ -669,7 +669,7 @@ class MisThesisManagement extends React.Component {
                       {/* Phase 1: REC-I (Proposal Defense) */}
                       <Grid item xs={12}>
                         <CustomCard>
-                          <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                          <Grid container spacing={2} direction='row'>
                             <Grid item xs={12}>
                               <Typography variant='h3'>{'Phase 1: REC-I (Proposal Defense)'}</Typography>
                             </Grid>
@@ -686,7 +686,7 @@ class MisThesisManagement extends React.Component {
                                 InputLabelProps={{ shrink: true }}
                                 label='REC-I Meeting Date'
                                 readOnly={this.student_view || this.teacher_view}
-                                value={this.state.student_thesis.rec_i_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_i_meeting_timestamp)).toISOString().split('T')[0] : null}
+                                value={this.state.student_thesis.rec_i_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_i_meeting_timestamp)).toISOString().split('T')[0] : ''}
                                 onChange={(e) => this.updateStudentThesis('rec_i_meeting_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
@@ -703,7 +703,7 @@ class MisThesisManagement extends React.Component {
                       {/* Phase 2: REC-II (Progress Report) */}
                       <Grid item xs={12}>
                         <CustomCard>
-                          <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                          <Grid container spacing={2} direction='row'>
                             <Grid item xs={12}>
                               <Typography variant='h3'>{'Phase 2: REC-II (Progress Report)'}</Typography>
                             </Grid>
@@ -720,7 +720,7 @@ class MisThesisManagement extends React.Component {
                                 InputLabelProps={{ shrink: true }}
                                 label='REC-II Meeting Date'
                                 readOnly={this.student_view || this.teacher_view}
-                                value={this.state.student_thesis.rec_ii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_ii_meeting_timestamp)).toISOString().split('T')[0] : null}
+                                value={this.state.student_thesis.rec_ii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_ii_meeting_timestamp)).toISOString().split('T')[0] : ''}
                                 onChange={(e) => this.updateStudentThesis('rec_ii_meeting_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
@@ -737,7 +737,7 @@ class MisThesisManagement extends React.Component {
                       {/* Phase 3: REC-III (Progress Report) */}
                       <Grid item xs={12}>
                         <CustomCard>
-                          <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                          <Grid container spacing={2} direction='row'>
                             <Grid item xs={12}>
                               <Typography variant='h3'>{'Phase 3: REC-III (Progress Report)'}</Typography>
                             </Grid>
@@ -754,7 +754,7 @@ class MisThesisManagement extends React.Component {
                                 InputLabelProps={{ shrink: true }}
                                 label='REC-III Meeting Date'
                                 readOnly={this.student_view || this.teacher_view}
-                                value={this.state.student_thesis.rec_iii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_iii_meeting_timestamp)).toISOString().split('T')[0] : null}
+                                value={this.state.student_thesis.rec_iii_meeting_timestamp ? new Date(Number(this.state.student_thesis.rec_iii_meeting_timestamp)).toISOString().split('T')[0] : ''}
                                 onChange={(e) => this.updateStudentThesis('rec_iii_meeting_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
@@ -771,7 +771,7 @@ class MisThesisManagement extends React.Component {
                       {/* Phase 4: Pre-Defense */}
                       <Grid item xs={12}>
                         <CustomCard>
-                          <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                          <Grid container spacing={2} direction='row'>
                             <Grid item xs={12}>
                               <Typography variant='h3'>{'Phase 4: Pre-Defense'}</Typography>
                             </Grid>
@@ -788,7 +788,7 @@ class MisThesisManagement extends React.Component {
                                 InputLabelProps={{ shrink: true }}
                                 label='Thesis Defense Date'
                                 readOnly={this.student_view || this.teacher_view}
-                                value={this.state.student_thesis.defense_day_timestamp ? new Date(Number(this.state.student_thesis.defense_day_timestamp)).toISOString().split('T')[0] : null}
+                                value={this.state.student_thesis.defense_day_timestamp ? new Date(Number(this.state.student_thesis.defense_day_timestamp)).toISOString().split('T')[0] : ''}
                                 onChange={(e) => this.updateStudentThesis('defense_day_timestamp', new Date(e.target.value).getTime())} />
                             </Grid>
                             <Grid item xs={12}>
@@ -805,7 +805,7 @@ class MisThesisManagement extends React.Component {
                       {/* Phase 5: Post-Defense */}
                       <Grid item xs={12}>
                         <CustomCard>
-                          <Grid container rowSpacing={"20px"} columnSpacing={"20px"} direction='row'>
+                          <Grid container spacing={2} direction='row'>
                             <Grid item xs={12}>
                               <Typography variant='h3'>{'Phase 5: Post-Defense'}</Typography>
                             </Grid>

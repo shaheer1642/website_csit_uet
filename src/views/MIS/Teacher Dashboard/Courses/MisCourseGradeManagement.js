@@ -37,6 +37,7 @@ class MisCourseGradeManagement extends React.Component {
     };
     this.sem_course_id = this.props.location.state.sem_course_id
     this.context_info = this.props.location.state.context_info
+    this.student_view = this.props.user.user_type == 'student'
   }
 
   componentDidMount() {
@@ -46,28 +47,26 @@ class MisCourseGradeManagement extends React.Component {
   }
 
   fetchForm = (endpoint) => {
-    this.setState({fetchingForm: endpoint})
+    this.setState({ fetchingForm: endpoint })
     socket.emit(`forms/${endpoint}`, {
       sem_course_id: this.sem_course_id,
     }, (res) => {
       console.log(res)
-      this.setState({fetchingForm: ''})
+      this.setState({ fetchingForm: '' })
       var printWindow = window.open('', '', 'height=800,width=600');
-      printWindow.document.write(res.code == 200 ? res.data : `<html><body><p>${res.message || 'Error occured fetching form'}</p></body></html>`); 
+      printWindow.document.write(res.code == 200 ? res.data : `<html><body><p>${res.message || 'Error occured fetching form'}</p></body></html>`);
     })
   }
 
   render() {
     return (
-      <Grid container rowSpacing={"20px"} maxWidth='90vw'>
-        <GoBackButton context={this.props.navigate}/>
+      <Grid container spacing={2}>
+        <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <ContextInfo contextInfo={this.context_info} />
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h2">
-            {this.course_name}
-          </Typography>
+          <Typography variant="h2"> {this.course_name} </Typography>
         </Grid>
         <Grid item xs={12}>
           <MisCourseGradeDistribution />
@@ -78,18 +77,19 @@ class MisCourseGradeManagement extends React.Component {
         <Grid item xs={12}>
           <MisCourseAttendance />
         </Grid>
-        <Grid container item xs={12} spacing={1}>
-          <Grid item xs={'auto'}>
-            <CustomButton disabled={this.state.fetchingForm == 'resultFormG2A'} label={this.state.fetchingForm == 'resultFormG2A' ? <CircularProgress size='20px'/> : "Generate Form G-2A"} onClick={() => this.fetchForm('resultFormG2A')}/>
-          </Grid>
-          <Grid item xs={'auto'}>
-            <CustomButton disabled={this.state.fetchingForm == 'resultFormG2B'} label={this.state.fetchingForm == 'resultFormG2B' ? <CircularProgress size='20px'/> : "Generate Form G-2B"} onClick={() => this.fetchForm('resultFormG2B')}/>
-          </Grid>
-          <Grid item xs={'auto'}>
-            <CustomButton disabled={this.state.fetchingForm == 'resultFormCB5'} label={this.state.fetchingForm == 'resultFormCB5' ? <CircularProgress size='20px'/> : "Generate Form CB-5"} onClick={() => this.fetchForm('resultFormCB5')}/>
-          </Grid>
-        </Grid>
-        <FormCB5 open={this.state.fetchingForm == 'resultFormCB5' ? true : false} onClose={() => this.setState({fetchingForm: ''})} />
+        {this.student_view ? <></> :
+          <Grid container item spacing={2}>
+            <Grid item xs={'auto'}>
+              <CustomButton disabled={this.state.fetchingForm == 'resultFormG2A'} label={this.state.fetchingForm == 'resultFormG2A' ? <CircularProgress size='20px' /> : "Generate Form G-2A"} onClick={() => this.fetchForm('resultFormG2A')} />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton disabled={this.state.fetchingForm == 'resultFormG2B'} label={this.state.fetchingForm == 'resultFormG2B' ? <CircularProgress size='20px' /> : "Generate Form G-2B"} onClick={() => this.fetchForm('resultFormG2B')} />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton disabled={this.state.fetchingForm == 'resultFormCB5'} label={this.state.fetchingForm == 'resultFormCB5' ? <CircularProgress size='20px' /> : "Generate Form CB-5"} onClick={() => this.fetchForm('resultFormCB5')} />
+            </Grid>
+          </Grid>}
+        <FormCB5 open={this.state.fetchingForm == 'resultFormCB5' ? true : false} onClose={() => this.setState({ fetchingForm: '' })} />
       </Grid>
     );
   }

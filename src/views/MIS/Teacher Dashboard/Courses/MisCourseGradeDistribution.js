@@ -91,6 +91,7 @@ class MisGradeDistribution extends React.Component {
       collapseOpen: false
     };
     this.sem_course_id = this.props.location.state.sem_course_id
+    this.student_view = this.props.user.user_type == 'student'
   }
 
   componentDidMount() {
@@ -159,39 +160,35 @@ class MisGradeDistribution extends React.Component {
     }
 
     return (
-      <Grid container>
-        {this.state.loadingSemesterCourse ? <LoadingIcon /> :
-          <React.Fragment>
-            <CustomCard>
-              <Grid container style={{ padding: '10px' }}>
-                <Grid item xs={'auto'}>
-                  <Typography variant="h3">
-                    Grade Distribution
-                  </Typography>
-                </Grid>
-                <Grid item xs={'auto'}>
-                  <IconButton onClick={() => this.setState((state) => ({ collapseOpen: !state.collapseOpen }))}>
-                    {this.state.collapseOpen ? <ExpandLess /> : <ExpandMore />}
-                  </IconButton>
-                </Grid>
-              </Grid>
+      this.state.loadingSemesterCourse ? <LoadingIcon /> :
+        <CustomCard>
+          <Grid container spacing={2}>
+            <Grid item xs={'auto'}>
+              <Typography variant="h3"> Grade Distribution </Typography>
+            </Grid>
+            <Grid item xs={'auto'}>
+              <IconButton onClick={() => this.setState((state) => ({ collapseOpen: !state.collapseOpen }))}>
+                {this.state.collapseOpen ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+            </Grid>
+            <Grid item xs={12}>
               <Collapse in={this.state.collapseOpen}>
-                <Grid container direction={"row"} spacing={1} style={{ padding: '10px' }}>
-                  <Grid key={'griditem-100'} item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
+                <Grid container spacing={1} padding={2}>
+                  <Grid item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
                     <Typography variant="h4">Marking Type</Typography>
                   </Grid>
-                  <Grid key={'griditem-101'} item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
+                  <Grid item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
                     <RadioGroup
                       value={this.state.semesterCourse.grade_distribution.marking.type}
                       onChange={(e) => this.changeGradeDistribution('marking.type', e.target.value)}
                       row
                     >
-                      <FormControlLabel value="absolute" control={<Radio disabled={this.state.semesterCourse.grades_locked} />} label="Absolute" />
-                      <FormControlLabel value="relative" control={<Radio disabled={this.state.semesterCourse.grades_locked} />} label="Relative" />
+                      <FormControlLabel value="absolute" control={<Radio disabled={this.state.semesterCourse.grades_locked || this.student_view} />} label="Absolute" />
+                      <FormControlLabel value="relative" control={<Radio disabled={this.state.semesterCourse.grades_locked || this.student_view} />} label="Relative" />
                     </RadioGroup>
                     {this.state.semesterCourse.grade_distribution.marking.type == 'relative' ?
                       <CustomTextField
-                        disabled={this.state.semesterCourse.grades_locked}
+                        disabled={this.state.semesterCourse.grades_locked || this.student_view}
                         type='number'
                         size="small"
                         style={{ width: '120px' }}
@@ -207,13 +204,13 @@ class MisGradeDistribution extends React.Component {
                       /> : <></>
                     }
                   </Grid>
-                  <Grid key={'griditem-102'} item xs={12}></Grid>
-                  <Grid key={'griditem-1'} item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
+                  <Grid item xs={12}></Grid>
+                  <Grid item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
                     <Typography variant="h4">Final Term</Typography>
                   </Grid>
-                  <Grid key={'griditem-2'} item xs={"auto"}>
+                  <Grid item xs={"auto"}>
                     <CustomTextField
-                      disabled={this.state.semesterCourse.grades_locked}
+                      disabled={this.state.semesterCourse.grades_locked || this.student_view}
                       type='number'
                       size="small"
                       style={{ width: '100px' }}
@@ -228,9 +225,9 @@ class MisGradeDistribution extends React.Component {
                       }}
                     />
                   </Grid>
-                  <Grid key={'griditem-3'} item xs={"auto"}>
+                  <Grid item xs={"auto"}>
                     <CustomTextField
-                      disabled={this.state.semesterCourse.grades_locked}
+                      disabled={this.state.semesterCourse.grades_locked || this.student_view}
                       type='number'
                       size="small"
                       style={{ width: '100px' }}
@@ -245,13 +242,13 @@ class MisGradeDistribution extends React.Component {
                       }}
                     />
                   </Grid>
-                  <Grid key={'griditem-4'} item xs={12}></Grid>
-                  <Grid key={'griditem-5'} item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
+                  <Grid item xs={12}></Grid>
+                  <Grid item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
                     <Typography variant="h4">Mid Term</Typography>
                   </Grid>
-                  <Grid key={'griditem-6'} item xs={"auto"}>
+                  <Grid item xs={"auto"}>
                     <CustomTextField
-                      disabled={this.state.semesterCourse.grades_locked}
+                      disabled={this.state.semesterCourse.grades_locked || this.student_view}
                       type='number'
                       size="small"
                       style={{ width: '100px' }}
@@ -266,9 +263,9 @@ class MisGradeDistribution extends React.Component {
                       }}
                     />
                   </Grid>
-                  <Grid key={'griditem-7'} item xs={"auto"}>
+                  <Grid item xs={"auto"}>
                     <CustomTextField
-                      disabled={this.state.semesterCourse.grades_locked}
+                      disabled={this.state.semesterCourse.grades_locked || this.student_view}
                       type='number'
                       size="small"
                       style={{ width: '100px' }}
@@ -283,13 +280,13 @@ class MisGradeDistribution extends React.Component {
                       }}
                     />
                   </Grid>
-                  <Grid key={'griditem-8'} item xs={12}></Grid>
-                  <Grid key={'griditem-9'} item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
+                  <Grid item xs={12}></Grid>
+                  <Grid item xs={"auto"} style={{ minWidth: '150px' }} alignItems='center' display={"flex"}>
                     <Typography variant="h4">Sessional</Typography>
                   </Grid>
-                  <Grid key={'griditem-10'} item xs={"auto"}>
+                  <Grid item xs={"auto"}>
                     <CustomTextField
-                      disabled={this.state.semesterCourse.grades_locked}
+                      disabled={this.state.semesterCourse.grades_locked || this.student_view}
                       type='number'
                       size="small"
                       style={{ width: '100px' }}
@@ -304,24 +301,24 @@ class MisGradeDistribution extends React.Component {
                       }}
                     />
                   </Grid>
-                  <Grid key={'griditem-11'} item xs={12}></Grid>
+                  <Grid item xs={12}></Grid>
                   {Object.values(this.state.semesterCourse.grade_distribution.sessional.division).map((division, index) => {
                     const key = Object.keys(this.state.semesterCourse.grade_distribution.sessional.division)[index]
                     return (
                       key == 'assignments' ?
                         <React.Fragment key={`fragment-${index}`}>
-                          <Grid key={`griditem-map-${index}`} item xs={"auto"} style={{ minWidth: '200px', marginLeft: '50px' }} alignItems='center' display={"flex"}>
+                          <Grid item xs={"auto"} style={{ minWidth: '200px', marginLeft: '50px' }} alignItems='center' display={"flex"}>
                             <Checkbox
-                              disabled={this.state.semesterCourse.grades_locked}
+                              disabled={this.state.semesterCourse.grades_locked || this.student_view}
                               key={`checkbox-${index}`}
                               checked={division.include}
                               onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.include`, e.target.checked)}
                             />
                             <Typography key={`text-${index}`} variant="h6">{convertUpper(key)}</Typography>
                           </Grid>
-                          <Grid key={`griditem-map-${index + 1}`} item xs={"auto"}>
+                          <Grid item xs={"auto"}>
                             <CustomTextField
-                              disabled={this.state.semesterCourse.grades_locked}
+                              disabled={this.state.semesterCourse.grades_locked || this.student_view}
                               type='number'
                               size="small"
                               style={{ width: '200px' }}
@@ -336,9 +333,9 @@ class MisGradeDistribution extends React.Component {
                               }}
                             />
                           </Grid>
-                          <Grid key={`griditem-map-${index + 2}`} item xs={"auto"}>
+                          <Grid item xs={"auto"}>
                             <CustomTextField
-                              disabled={this.state.semesterCourse.grades_locked}
+                              disabled={this.state.semesterCourse.grades_locked || this.student_view}
                               type='number'
                               size="small"
                               style={{ width: '150px' }}
@@ -353,22 +350,22 @@ class MisGradeDistribution extends React.Component {
                               }}
                             />
                           </Grid>
-                          <Grid key={`griditem-map-${index + 3}`} item xs={12}></Grid>
+                          <Grid item xs={12}></Grid>
                         </React.Fragment>
                         : key == 'quizzes' ?
                           <React.Fragment key={`fragment-${index}`}>
-                            <Grid key={`griditem-map-${index}`} item xs={"auto"} style={{ minWidth: '200px', marginLeft: '50px' }} alignItems='center' display={"flex"}>
+                            <Grid item xs={"auto"} style={{ minWidth: '200px', marginLeft: '50px' }} alignItems='center' display={"flex"}>
                               <Checkbox
-                                disabled={this.state.semesterCourse.grades_locked}
+                                disabled={this.state.semesterCourse.grades_locked || this.student_view}
                                 key={`checkbox-${index}`}
                                 checked={division.include}
                                 onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.include`, e.target.checked)}
                               />
                               <Typography key={`text-${index}`} variant="h6">{convertUpper(key)}</Typography>
                             </Grid>
-                            <Grid key={`griditem-map-${index + 1}`} item xs={"auto"}>
+                            <Grid item xs={"auto"}>
                               <CustomTextField
-                                disabled={this.state.semesterCourse.grades_locked}
+                                disabled={this.state.semesterCourse.grades_locked || this.student_view}
                                 type='number'
                                 size="small"
                                 style={{ width: '200px' }}
@@ -383,9 +380,9 @@ class MisGradeDistribution extends React.Component {
                                 }}
                               />
                             </Grid>
-                            <Grid key={`griditem-map-${index + 2}`} item xs={"auto"}>
+                            <Grid item xs={"auto"}>
                               <CustomTextField
-                                disabled={this.state.semesterCourse.grades_locked}
+                                disabled={this.state.semesterCourse.grades_locked || this.student_view}
                                 type='number'
                                 size="small"
                                 style={{ width: '150px' }}
@@ -400,22 +397,22 @@ class MisGradeDistribution extends React.Component {
                                 }}
                               />
                             </Grid>
-                            <Grid key={`griditem-map-${index + 3}`} item xs={12}></Grid>
+                            <Grid item xs={12}></Grid>
                           </React.Fragment>
                           :
                           <React.Fragment key={`fragment-${index}`}>
-                            <Grid key={`griditem-map-${index}`} item xs={"auto"} style={{ minWidth: '200px', marginLeft: '50px' }} alignItems='center' display={"flex"}>
+                            <Grid item xs={"auto"} style={{ minWidth: '200px', marginLeft: '50px' }} alignItems='center' display={"flex"}>
                               <Checkbox
-                                disabled={this.state.semesterCourse.grades_locked}
+                                disabled={this.state.semesterCourse.grades_locked || this.student_view}
                                 key={`checkbox-${index}`}
                                 checked={division.include}
                                 onChange={(e) => this.changeGradeDistribution(`sessional.division.${key}.include`, e.target.checked)}
                               />
                               <Typography key={`text-${index}`} variant="h6">{convertUpper(key)}</Typography>
                             </Grid>
-                            <Grid key={`griditem-map-${index + 1}`} item xs={"auto"}>
+                            <Grid item xs={"auto"}>
                               <CustomTextField
-                                disabled={this.state.semesterCourse.grades_locked}
+                                disabled={this.state.semesterCourse.grades_locked || this.student_view}
                                 type='number'
                                 size="small"
                                 style={{ width: '100px' }}
@@ -430,18 +427,18 @@ class MisGradeDistribution extends React.Component {
                                 }}
                               />
                             </Grid>
-                            <Grid key={`griditem-map-${index + 2}`} item xs={12}></Grid>
+                            <Grid item xs={12}></Grid>
                           </React.Fragment>
                     )
                   })}
-                  <Grid key={`griditem-12`} item xs={12}>
+                  <Grid item xs={12}>
                     <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
                       <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
                     </Zoom>
                   </Grid>
-                  {this.state.semesterCourse.grades_locked ? <></> :
+                  {this.state.semesterCourse.grades_locked || this.student_view ? <></> :
                     <React.Fragment>
-                      <Grid key={`griditem-13`} item xs={"auto"}>
+                      <Grid item xs={"auto"}>
                         <CustomButton
                           label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
                           disabled={this.state.callingApi}
@@ -457,7 +454,7 @@ class MisGradeDistribution extends React.Component {
                           }}
                         />
                       </Grid>
-                      <Grid key={`griditem-14`} item xs={"auto"}>
+                      <Grid item xs={"auto"}>
                         <CustomButton
                           label="Reset"
                           onClick={() => this.fetchSemesterCourse()}
@@ -467,11 +464,10 @@ class MisGradeDistribution extends React.Component {
                   }
                 </Grid>
               </Collapse>
-            </CustomCard>
-          </React.Fragment>
-        }
-      </Grid>
-    );
+            </Grid>
+          </Grid>
+        </CustomCard>
+    )
   }
 }
 

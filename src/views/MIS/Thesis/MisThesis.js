@@ -57,10 +57,10 @@ class MisThesis extends React.Component {
   }
 
   fetchStudentsThesis = () => {
-    socket.emit("studentsThesis/fetch", this.props.user.user_type == 'teacher' ? {supervisor_id: this.props.user.user_id} : {}, (res) => {
+    socket.emit("studentsThesis/fetch", this.props.user.user_type == 'teacher' ? { supervisor_id: this.props.user.user_id } : {}, (res) => {
       if (res.code == 200) {
         return this.setState({
-          studentsThesisArr: res.data.map(thesis => ({...thesis, supervisor_id: getUserNameById(thesis.supervisor_id) })),
+          studentsThesisArr: res.data.map(thesis => ({ ...thesis, supervisor_id: getUserNameById(thesis.supervisor_id) })),
           loadingStudentsThesis: false,
         });
       }
@@ -88,69 +88,72 @@ class MisThesis extends React.Component {
       { id: "thesis_title", label: "Title", format: (value) => value },
       { id: "thesis_type", label: "Type", format: (value) => convertUpper(value) },
       { id: "supervisor_id", label: "Supervisor", format: (value) => value },
-      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value), valueFunc: (row) => calculateDegreeExpiry(row)},
+      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value), valueFunc: (row) => calculateDegreeExpiry(row) },
     ];
     return (
       <CustomCard>
-        <Grid container>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Typography variant="h2" style={{ margin: "10px" }}>
+            <Typography variant="h2">
               {`Thesis`}
             </Typography>
           </Grid>
-          <Grid item xs={'auto'} style={{ margin: "10px" }}>
-            <Tabs sx={{border: 2, borderColor: 'primary.main', borderRadius: 5}} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({tabIndex: newIndex})}>
-              <Tab label="MS"/>
+          <Grid item xs={'auto'}>
+            <Tabs sx={{ border: 2, borderColor: 'primary.main', borderRadius: 5 }} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({ tabIndex: newIndex })}>
+              <Tab label="MS" />
               <Tab label="PhD" />
             </Tabs>
           </Grid>
-          <CustomTable
-            loadingState={this.state.loadingStudentsThesis}
-            onRowClick={(student_thesis) =>
-              this.props.navigate("manage", {
-                state: {
-                  student_batch_id: student_thesis.student_batch_id,
-                  context_info: student_thesis
-                },
-              })
-            }
-            onEditClick={(student_thesis) =>
-              this.props.navigate("manage", {
-                state: {
-                  student_batch_id: student_thesis.student_batch_id,
-                  context_info: student_thesis
-                },
-              })
-            }
-            onDeleteClick={(student_thesis) => {
-              this.setState({
-                confirmationModalShow: true,
-                confirmationModalMessage:
-                  "Are you sure you want to remove this record?",
-                confirmationModalExecute: () =>
-                  socket.emit("studentsThesis/delete", {
+          <Grid item xs={12}>
+            <CustomTable
+              loadingState={this.state.loadingStudentsThesis}
+              onRowClick={(student_thesis) =>
+                this.props.navigate("manage", {
+                  state: {
                     student_batch_id: student_thesis.student_batch_id,
-                  }, (res) => this.fetchStudentsThesis())
-              });
-            }}
-            rows={this.state.studentsThesisArr.filter(thesis => (this.state.tabIndex == 0 && thesis.degree_type == 'ms') || (this.state.tabIndex == 1 && thesis.degree_type == 'phd'))}
-            columns={columns}
-            rowSx={(row) => {
-              return row.grade == 'S' ? {
+                    context_info: student_thesis
+                  },
+                })
+              }
+              onEditClick={(student_thesis) =>
+                this.props.navigate("manage", {
+                  state: {
+                    student_batch_id: student_thesis.student_batch_id,
+                    context_info: student_thesis
+                  },
+                })
+              }
+              onDeleteClick={(student_thesis) => {
+                this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage:
+                    "Are you sure you want to remove this record?",
+                  confirmationModalExecute: () =>
+                    socket.emit("studentsThesis/delete", {
+                      student_batch_id: student_thesis.student_batch_id,
+                    }, (res) => this.fetchStudentsThesis())
+                });
+              }}
+              rows={this.state.studentsThesisArr.filter(thesis => (this.state.tabIndex == 0 && thesis.degree_type == 'ms') || (this.state.tabIndex == 1 && thesis.degree_type == 'phd'))}
+              columns={columns}
+              rowSx={(row) => {
+                return row.grade == 'S' ? {
                   backgroundColor: Color.green[100]
-              } : row.grade == 'U' ? {
-                backgroundColor: Color.yellow[100]
-              } : calculateDegreeExpiry(row) < new Date().getTime() ? {
-                backgroundColor: Color.red[100]
-            } : undefined
-            }}
-            footerText='Green = Satifactory Grade\nYellow = Unsatisfactory Grade\nRed = Time barred'
-          />
-          <CustomButton
-            sx={{ margin: "10px" }}
-            onClick={() => this.props.navigate("create")}
-            label="Create New"
-          />
+                } : row.grade == 'U' ? {
+                  backgroundColor: Color.yellow[100]
+                } : calculateDegreeExpiry(row) < new Date().getTime() ? {
+                  backgroundColor: Color.red[100]
+                } : undefined
+              }}
+              footerText='Green = Satifactory Grade\nYellow = Unsatisfactory Grade\nRed = Time barred'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <CustomButton
+              onClick={() => this.props.navigate("create")}
+              label="Create New"
+            />
+          </Grid>
           <ConfirmationModal
             open={this.state.confirmationModalShow}
             message={this.state.confirmationModalMessage}

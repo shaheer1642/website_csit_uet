@@ -13,40 +13,40 @@ class MisSemestersCoursesCreate extends React.Component {
 
   render() {
     return (
-      <Grid container rowSpacing={"20px"}>
-      <GoBackButton context={this.props.navigate}/>
-      <Grid item xs={12}>
-      <FormGenerator
-        endpoint="semestersCourses"
-        formType="create"
-        submitSuccessMessage="Course Created Successfully"
-        backgroundColor="white"
-        options={{
-          semester_id: {
-            label: "Semester ID",
-            defaultValue: this.semester_id,
-            disabled: true,
-            position: 1,
-            xs: 12,
-            hidden: true
-          },
-          teacher_id: {
-            label: "Teacher",
-            position: 2,
-            xs: 6,
-            fieldType: 'select',
-            endpoint: 'autocomplete/teachers'
-          },
-          course_id: {
-            label: "Course",
-            position: 3,
-            xs: 6,
-            fieldType: 'select',
-            endpoint: 'autocomplete/courses'
-          },
-        }}
-      />
-      </Grid>
+      <Grid container spacing={2}>
+        <GoBackButton context={this.props.navigate} />
+        <Grid item xs={12}>
+          <FormGenerator
+            endpoint="semestersCourses"
+            formType="create"
+            submitSuccessMessage="Course Created Successfully"
+            backgroundColor="white"
+            options={{
+              semester_id: {
+                label: "Semester ID",
+                defaultValue: this.semester_id,
+                disabled: true,
+                position: 1,
+                xs: 12,
+                hidden: true
+              },
+              teacher_id: {
+                label: "Teacher",
+                position: 2,
+                xs: 6,
+                fieldType: 'select',
+                endpoint: 'autocomplete/teachers'
+              },
+              course_id: {
+                label: "Course",
+                position: 3,
+                xs: 6,
+                fieldType: 'select',
+                endpoint: 'autocomplete/courses'
+              },
+            }}
+          />
+        </Grid>
       </Grid>
     );
   }

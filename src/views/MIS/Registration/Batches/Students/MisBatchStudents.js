@@ -193,22 +193,22 @@ class MisStudent extends React.Component {
                 student_info[key] = (attribute == 'm' || attribute == 'male') ? 'male' : (attribute == 'f' || attribute == 'female') ? 'female' : null
               } else if (key == 'student_admission_status') {
                 student_info[key] = (
-                    attribute == 'open' || 
-                    attribute == 'open_merit' || 
-                    attribute == 'open merit' || 
-                    attribute == 'open merit basis' || 
-                    attribute == 'open basis'
-                  ) ? 'open_merit' : (
-                    attribute == 'rationalize' || 
-                    attribute == 'rationalized' ||
-                    attribute == 'rationalize basis' || 
-                    attribute == 'rationalized basis' || 
-                    attribute == 'rationalized_basis'
-                  ) ? 'rationalized' : (
-                    attribute == 'afghan' || 
-                    attribute == 'afghan student' || 
-                    attribute == 'afghan_student'
-                  ) ? 'afghan_student' : null
+                  attribute == 'open' ||
+                  attribute == 'open_merit' ||
+                  attribute == 'open merit' ||
+                  attribute == 'open merit basis' ||
+                  attribute == 'open basis'
+                ) ? 'open_merit' : (
+                  attribute == 'rationalize' ||
+                  attribute == 'rationalized' ||
+                  attribute == 'rationalize basis' ||
+                  attribute == 'rationalized basis' ||
+                  attribute == 'rationalized_basis'
+                ) ? 'rationalized' : (
+                  attribute == 'afghan' ||
+                  attribute == 'afghan student' ||
+                  attribute == 'afghan_student'
+                ) ? 'afghan_student' : null
               } else if (key == 'student_name' || key == 'student_father_name') {
                 student_info[key] = convertUpper(attribute.toLowerCase())
               } else {
@@ -236,7 +236,7 @@ class MisStudent extends React.Component {
           student_address: -1,
         }
         headers.split(',').forEach((col, index) => {
-          col = col.toLowerCase().replace(/\*/g,'')
+          col = col.toLowerCase().replace(/\*/g, '')
           if (col.match(/^registration$/) || col.match(/^reg_no$/)) attributes.reg_no = index
           if (col.match(/^cnic$/)) attributes.cnic = index
           if (col.match(/^name$/) || col.match(/^student_name$/)) attributes.student_name = index
@@ -288,84 +288,89 @@ class MisStudent extends React.Component {
       { id: "user_email", label: "Email", format: (value) => value },
       { id: "student_address", label: "Home Address", format: (value) => value },
       { id: "student_gender", label: "Gender", format: (value) => convertUpper(value) },
-      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value), valueFunc: (row) => calculateDegreeExpiry(row)},
+      { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value), valueFunc: (row) => calculateDegreeExpiry(row) },
     ];
     return (
-      <Grid container rowSpacing={"20px"}>
+      <Grid container spacing={2}>
         <GoBackButton context={this.props.navigate} />
         <Grid item xs={12}>
           <ContextInfo contextInfo={this.context_info} />
         </Grid>
         <Grid item xs={12}>
           <CustomCard>
-            <Grid container>
-              <Typography variant="h2" style={{ margin: "10px" }}>
-                Students
-              </Typography>
-              <CustomTable
-                loadingState={this.state.loadingStudents}
-                onRowClick={(student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } })}
-                onEditClick={(student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } })}
-                onDeleteClick={(student) => {
-                  this.setState({
-                    confirmationModalShow: true,
-                    confirmationModalMessage: 'Are you sure you want to remove this student?',
-                    confirmationModalExecute: () => this.deleteStudent(student.student_id, this.batch_id)
-                  })
-                }}
-                rows={this.state.studentsArr}
-                columns={columns}
-                rowSx={(student) => {
-                  return student.degree_completed ? {
-                    backgroundColor: Color.green[100]
-                  }
-                  : student.admission_cancelled ? {
-                    backgroundColor: Color.red[100]
-                  }
-                  : student.semester_frozen ? {
-                    backgroundColor: Color.yellow[100]
-                  }
-                  : undefined
-                }}
-                footerText="Green = Degree Completed\nYellow = Semester Frozen\nRed = Admission Cancelled"
-              />
-              <Grid item xs={12} sx={{ margin: "10px" }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h2"> Students </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <CustomTable
+                  loadingState={this.state.loadingStudents}
+                  onRowClick={(student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } })}
+                  onEditClick={(student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } })}
+                  onDeleteClick={(student) => {
+                    this.setState({
+                      confirmationModalShow: true,
+                      confirmationModalMessage: 'Are you sure you want to remove this student?',
+                      confirmationModalExecute: () => this.deleteStudent(student.student_id, this.batch_id)
+                    })
+                  }}
+                  rows={this.state.studentsArr}
+                  columns={columns}
+                  rowSx={(student) => {
+                    return student.degree_completed ? {
+                      backgroundColor: Color.green[100]
+                    }
+                      : student.admission_cancelled ? {
+                        backgroundColor: Color.red[100]
+                      }
+                        : student.semester_frozen ? {
+                          backgroundColor: Color.yellow[100]
+                        }
+                          : undefined
+                  }}
+                  footerText="Green = Degree Completed\nYellow = Semester Frozen\nRed = Admission Cancelled"
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
                   <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
                 </Zoom>
               </Grid>
-              <CustomButton
-                sx={{ margin: "10px" }}
-                onClick={() => this.props.navigate("create", { state: { batch_id: this.batch_id } })}
-                label="Create New"
-              />
+              <Grid item xs={12}>
+                <CustomButton
+                  onClick={() => this.props.navigate("create", { state: { batch_id: this.batch_id } })}
+                  label="Create New"
+                />
+              </Grid>
               <Grid item xs={12}></Grid>
-              <CustomButton
-                sx={{ margin: "10px" }}
-                variant='contained'
-                component="label"
-                disabled={this.state.uploadingStudentsList}
-                label={
-                  this.state.uploadingStudentsList ? <CircularProgress size='20px' /> :
-                    <React.Fragment>
-                      Upload Students List
-                      <input hidden accept=".csv" type="file" onChange={this.processStudentsList} />
-                    </React.Fragment>
-                }
-              />
-              <CustomButton
-                sx={{ margin: "10px" }}
-                variant='outlined'
-                label={
-                  <Link
-                    href={process.env.PUBLIC_URL + "/templates/students-list.csv"}
-                    download={"students-list.csv"}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    Download Students List Template
-                  </Link>
-                }
-              />
+              <Grid item>
+                <CustomButton
+                  variant='contained'
+                  component="label"
+                  disabled={this.state.uploadingStudentsList}
+                  label={
+                    this.state.uploadingStudentsList ? <CircularProgress size='20px' /> :
+                      <React.Fragment>
+                        Upload Students List
+                        <input hidden accept=".csv" type="file" onChange={this.processStudentsList} />
+                      </React.Fragment>
+                  }
+                />
+              </Grid>
+              <Grid item>
+                <CustomButton
+                  variant='outlined'
+                  label={
+                    <Link
+                      href={process.env.PUBLIC_URL + "/templates/students-list.csv"}
+                      download={"students-list.csv"}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      Download Students List Template
+                    </Link>
+                  }
+                />
+              </Grid>
               <Tooltip title="Download the .csv template to add students using excel. Starred colums cannot be left empty. Either CNIC or Reg# should be filled">
                 <IconButton>
                   <Info />

@@ -128,45 +128,50 @@ class MisDocuments extends React.Component {
     ];
     return (
       <CustomCard>
-        <Grid container>
-          <Typography variant="h2" style={{ margin: "10px" }}>
-            {`Documents`}
-          </Typography>
-          <CustomTable
-            loadingState={this.state.loadingDocuments}
-            onDeleteClick={(document) => {
-              this.setState({
-                confirmationModalShow: true,
-                confirmationModalMessage:
-                  "Are you sure you want to remove this document?",
-                confirmationModalExecute: () =>
-                  socket.emit("documents/delete", {
-                    document_id: document.document_id,
-                  }),
-              });
-            }}
-            rows={this.state.documentsArr}
-            columns={columns}
-          />
-          <Grid item xs={12} sx={{ margin: "10px" }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h2">
+              {`Documents`}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTable
+              loadingState={this.state.loadingDocuments}
+              onDeleteClick={(document) => {
+                this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage:
+                    "Are you sure you want to remove this document?",
+                  confirmationModalExecute: () =>
+                    socket.emit("documents/delete", {
+                      document_id: document.document_id,
+                    }),
+                });
+              }}
+              rows={this.state.documentsArr}
+              columns={columns}
+            />
+          </Grid>
+          <Grid item xs={12}>
             <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
               <Alert variant="outlined" severity='info' sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
             </Zoom>
           </Grid>
-          <CustomButton
-            sx={{ margin: "10px" }}
-            variant='contained'
-            component="label"
-            disabled={this.state.uploadingDocuments}
-            label={
-              this.state.uploadingDocuments ? <CircularProgress size='20px' /> :
-                <React.Fragment>
-                  Upload Documents
-                  <input multiple hidden type="file" onChange={this.uploadDocuments} />
-                </React.Fragment>
-            }
-            startIcon={<UploadFile />}
-          />
+          <Grid item xs={12}>
+            <CustomButton
+              variant='contained'
+              component="label"
+              disabled={this.state.uploadingDocuments}
+              label={
+                this.state.uploadingDocuments ? <CircularProgress size='20px' /> :
+                  <React.Fragment>
+                    Upload Documents
+                    <input multiple hidden type="file" onChange={this.uploadDocuments} />
+                  </React.Fragment>
+              }
+              startIcon={<UploadFile />}
+            />
+          </Grid>
           <ConfirmationModal
             open={this.state.confirmationModalShow}
             message={this.state.confirmationModalMessage}

@@ -18,26 +18,26 @@ class FormCB5 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        loading: true,
+      loading: true,
 
-        instructor_name: '',
-        digital_signature: undefined,
-        department: 'CS & IT',
-        department_full: 'Computer Science and Information Technology (CS & IT)',
-        course_no: '',
-        course_title: '',
-        credit_hours: '',
-        total_credit_hours: '',
-        semester_year: '',
-        semester_season: '',
-        semester_start: '',
-        semester_end: '',
-        dated: new Date().toLocaleDateString(...timeLocale),
-        bill_amount: '',
-        designation: '',
-        program: '',
+      instructor_name: '',
+      digital_signature: undefined,
+      department: 'CS & IT',
+      department_full: 'Computer Science and Information Technology (CS & IT)',
+      course_no: '',
+      course_title: '',
+      credit_hours: '',
+      total_credit_hours: '',
+      semester_year: '',
+      semester_season: '',
+      semester_start: '',
+      semester_end: '',
+      dated: new Date().toLocaleDateString(...timeLocale),
+      bill_amount: '',
+      designation: '',
+      program: '',
 
-        formHtml: '<html><body></body></html>'
+      formHtml: '<html><body></body></html>'
     };
     this.sem_course_id = this.props.location.state.sem_course_id
   }
@@ -50,52 +50,52 @@ class FormCB5 extends React.Component {
   }
 
   fetchData = () => {
-    this.setState({loading: true})
-    socket.emit('semestersCourses/fetch', {sem_course_id: this.sem_course_id}, (res) => {
-        if (res.code == 200 && res.data.length == 1) {
-            this.setState({loading: false})
-            const data = res.data[0]
-            this.setState({
-                instructor_name: data.teacher_name,
-                digital_signature: data.digital_signature,
-                course_no: data.course_id,
-                course_title: data.course_name,
-                credit_hours: data.credit_hours,
-                semester_year: data.semester_year,
-                semester_season: data.semester_season,
-                semester_start: new Date(Number(data.semester_start_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
-                semester_end: new Date(Number(data.semester_end_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
-                dated: new Date().toLocaleDateString(...timeLocale),
-            })
-        }
+    this.setState({ loading: true })
+    socket.emit('semestersCourses/fetch', { sem_course_id: this.sem_course_id }, (res) => {
+      if (res.code == 200 && res.data.length == 1) {
+        this.setState({ loading: false })
+        const data = res.data[0]
+        this.setState({
+          instructor_name: data.teacher_name,
+          digital_signature: data.digital_signature,
+          course_no: data.course_id,
+          course_title: data.course_name,
+          credit_hours: data.credit_hours,
+          semester_year: data.semester_year,
+          semester_season: data.semester_season,
+          semester_start: new Date(Number(data.semester_start_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
+          semester_end: new Date(Number(data.semester_end_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
+          dated: new Date().toLocaleDateString(...timeLocale),
+        })
+      }
     })
   }
 
   generateModal = () => {
     return (
-        <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant={'h5'}>Please input the following fields</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <CustomTextField fullWidth label={'Total Credit Hours'} placeholder={'54 | 72'} value={this.state.total_credit_hours} onChange={(e) => this.setState({total_credit_hours: e.target.value})}/>
-            </Grid>
-            <Grid item xs={12}>
-              <CustomTextField fullWidth label={'Program'} placeholder={'M.Sc. | PhD'} value={this.state.program} onChange={(e) => this.setState({program: e.target.value})}/>
-            </Grid>
-            <Grid item xs={12}>
-              <CustomTextField fullWidth label={'Designation'} placeholder={'Professor | Associate Professor | Assistant Professor | Lecturer'} value={this.state.designation} onChange={(e) => this.setState({designation: e.target.value})}/>
-            </Grid>
-            <Grid item xs={12}>
-              <CustomTextField fullWidth label={'Total Bill Amount (In figure/in words)'} placeholder={'78,300/- Seventy-Eight Thousand & Three Hundred'} value={this.state.bill_amount} onChange={(e) => this.setState({bill_amount: e.target.value})}/>
-            </Grid>
-            <Grid item xs={'auto'}>
-              <CustomButton label="Generate" variant="contained" onClick={() => this.generateForm()}/>
-            </Grid>
-            <Grid item xs={'auto'}>
-              <CustomButton label="Cancel" variant="outlined" onClick={() => this.props.onClose()}/>
-            </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography variant={'h5'}>Please input the following fields</Typography>
         </Grid>
+        <Grid item xs={12}>
+          <CustomTextField fullWidth label={'Total Credit Hours'} placeholder={'54 | 72'} value={this.state.total_credit_hours} onChange={(e) => this.setState({ total_credit_hours: e.target.value })} />
+        </Grid>
+        <Grid item xs={12}>
+          <CustomTextField fullWidth label={'Program'} placeholder={'M.Sc. | PhD'} value={this.state.program} onChange={(e) => this.setState({ program: e.target.value })} />
+        </Grid>
+        <Grid item xs={12}>
+          <CustomTextField fullWidth label={'Designation'} placeholder={'Professor | Associate Professor | Assistant Professor | Lecturer'} value={this.state.designation} onChange={(e) => this.setState({ designation: e.target.value })} />
+        </Grid>
+        <Grid item xs={12}>
+          <CustomTextField fullWidth label={'Total Bill Amount (In figure/in words)'} placeholder={'78,300/- Seventy-Eight Thousand & Three Hundred'} value={this.state.bill_amount} onChange={(e) => this.setState({ bill_amount: e.target.value })} />
+        </Grid>
+        <Grid item xs={'auto'}>
+          <CustomButton label="Generate" variant="contained" onClick={() => this.generateForm()} />
+        </Grid>
+        <Grid item xs={'auto'}>
+          <CustomButton label="Cancel" variant="outlined" onClick={() => this.props.onClose()} />
+        </Grid>
+      </Grid>
     )
   }
 
@@ -104,8 +104,8 @@ class FormCB5 extends React.Component {
   }
 
   generateForm = () => {
-    const html = 
-`<html>
+    const html =
+      `<html>
     <style>
         .row {
             display: flex;
@@ -155,20 +155,20 @@ class FormCB5 extends React.Component {
           The Result on official Form G-2B is attached herewith complete in all respects.<br>
           The Honorarium Bill for Rs. ${this.htmlFunctions.formatUnderlined(this.state.bill_amount)} for teaching the above-mentioned course for its full duration is being submitted herewith for payment.        
         </p>
-        <p style="text-align:left; ${this.state.digital_signature ? 'position: relative; padding-top: 20px; padding-bottom: 20px;' : '' }">
+        <p style="text-align:left; ${this.state.digital_signature ? 'position: relative; padding-top: 20px; padding-bottom: 20px;' : ''}">
             Dated: ${this.state.dated}
             <span style="float:right;">
                 ${this.htmlFunctions.formatUnderlined('&nbsp;'.repeat(20))}
             </span>
             ${this.state.digital_signature ? `
                 <img style="position: absolute; right: 50; top: 0" src='${this.state.digital_signature}' width="40px"/>
-            `:''}
+            `: ''}
         </p>
         <p align="right">
           (Please sign herein full)
         </p>
         <p align="right">
-            Name: ${this.htmlFunctions.formatUnderlined(this.state.instructor_name,{bold: true})}
+            Name: ${this.htmlFunctions.formatUnderlined(this.state.instructor_name, { bold: true })}
         </p>
         <p align="right">
             Designation: ${this.htmlFunctions.formatUnderlined(this.state.designation)}
@@ -192,12 +192,12 @@ class FormCB5 extends React.Component {
   }
 
   fetchForm = (endpoint) => {
-    this.setState({fetchingForm: endpoint})
+    this.setState({ fetchingForm: endpoint })
     socket.emit(`forms/${endpoint}`, {
       sem_course_id: this.sem_course_id,
     }, (res) => {
       console.log(res)
-      this.setState({fetchingForm: ''})
+      this.setState({ fetchingForm: '' })
       var printWindow = window.open('', '', 'height=800,width=600');
       printWindow.document.write(res.code == 200 ? res.data : `<html><body><p>${res.message || 'Error occured fetching form'}</p></body></html>`);
     })
@@ -205,9 +205,9 @@ class FormCB5 extends React.Component {
 
   render() {
     return (
-        this.state.loading ? <LoadingIcon /> :
-        <CustomModal open={this.props.open} onClose={this.props.onClose} containerStyle={{width: 600}}>
-            {this.generateModal()}
+      this.state.loading ? <LoadingIcon /> :
+        <CustomModal open={this.props.open} onClose={this.props.onClose} containerStyle={{ width: 600 }}>
+          {this.generateModal()}
         </CustomModal>
     );
   }

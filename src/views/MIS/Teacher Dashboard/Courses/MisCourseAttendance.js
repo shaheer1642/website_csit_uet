@@ -154,6 +154,7 @@ class MisCourseAttendance extends React.Component {
       collapseOpen: false,
     };
     this.sem_course_id = this.props.location.state.sem_course_id
+    this.student_view = this.props.user.user_type == 'student'
     this.timeoutAlertRef = null;
   }
 
@@ -296,9 +297,9 @@ class MisCourseAttendance extends React.Component {
     this.state.courseStudents.map(studentCourse => {
       if (studentCourse.attendance) {
         Object.keys(studentCourse.attendance).filter(k => k.startsWith('week')).forEach((week) => {
-          if (!attendance_obj[week]) attendance_obj[week] = {classes: []}
+          if (!attendance_obj[week]) attendance_obj[week] = { classes: [] }
           studentCourse.attendance[week].classes.forEach((weekClass, c_index) => {
-            if (!attendance_obj[week].classes[c_index]) attendance_obj[week].classes[c_index] = {...weekClass, attendance: ""}
+            if (!attendance_obj[week].classes[c_index]) attendance_obj[week].classes[c_index] = { ...weekClass, attendance: "" }
           })
         })
       }
@@ -317,7 +318,7 @@ class MisCourseAttendance extends React.Component {
       })
       attendances.push(obj)
     })
-    
+
     console.log('generateAttendances', attendances)
     this.setState({
       attendances: [...attendances]
@@ -400,204 +401,197 @@ class MisCourseAttendance extends React.Component {
 
   render() {
     return (
-      <Grid container>
-        {this.state.loading ? <LoadingIcon /> :
-          <CustomCard>
-            <Grid container style={{ padding: '10px' }}>
-              <Grid item xs={'auto'}>
-                <Typography variant="h3">
-                  Students Attendance
-                </Typography>
-              </Grid>
-              <Grid item xs={'auto'}>
-                <IconButton onClick={() => this.setState((state) => ({ collapseOpen: !state.collapseOpen }))}>
-                  {this.state.collapseOpen ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
-              </Grid>
+      this.state.loading ? <LoadingIcon /> :
+        <CustomCard>
+          <Grid container spacing={2}>
+            <Grid item xs={'auto'}>
+              <Typography variant="h3">
+                Students Attendance
+              </Typography>
             </Grid>
-            <Collapse in={this.state.collapseOpen}>
-              <Grid container spacing={1} style={{ padding: '10px' }}>
-                <Grid key={`griditem-1`} item xs={12}>
-                  <TableContainer>
-                    <Table size="small">
-                      {/* Headers */}
-                      <TableHead>
-                        <StyledTableRow>
-                          <StyledTableCell key={`tablecell-header-0`} align="left">
-                            Reg #
-                          </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-1`} align="left" style={stickyHeaderCell}>
-                            Student Name
-                          </StyledTableCell>
-                          <StyledTableCell key={`tablecell-header-2`} align="left">
-                            %age
-                          </StyledTableCell>
-                          {Object.keys(this.state.attendances[0] || []).filter(k => k.startsWith('week')).map((week, index) => {
-                            return (
-                              <StyledTableCell colSpan={this.state.attendances?.[0][week].classes.length} align='center' sx={{ borderLeft: 1 }}>
-                                {`Week ${week.split('week')[1]}`}
-                                {this.state.showSettings ?
-                                  <Tooltip title='Add class'>
-                                    <IconButton sx={{ color: 'secondary.light' }} onClick={() => this.addClassInWeek(`week${index + 1}`)}><AddOutlined /></IconButton>
-                                  </Tooltip> : <></>
-                                }
-                              </StyledTableCell>
-                            )
-                          })}
-                        </StyledTableRow>
-                        <StyledTableRow>
-                          <StyledTableCell></StyledTableCell>
-                          <StyledTableCell style={stickyHeaderCell}></StyledTableCell>
-                          <StyledTableCell></StyledTableCell>
-                          {Object.keys(this.state.attendances[0] || []).filter(k => k.startsWith('week')).map((week, index) => {
-                            return this.state.attendances?.[0][week].classes.map((weekClass, index) => {
+            <Grid item xs={'auto'}>
+              <IconButton onClick={() => this.setState((state) => ({ collapseOpen: !state.collapseOpen }))}>
+                {this.state.collapseOpen ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+            </Grid>
+            <Grid item xs={12}>
+              <Collapse in={this.state.collapseOpen}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TableContainer>
+                      <Table size="small">
+                        {/* Headers */}
+                        <TableHead>
+                          <StyledTableRow>
+                            <StyledTableCell align="left"> Reg # </StyledTableCell>
+                            <StyledTableCell align="left" style={stickyHeaderCell}> Student Name </StyledTableCell>
+                            <StyledTableCell align="left"> %age </StyledTableCell>
+                            {Object.keys(this.state.attendances[0] || []).filter(k => k.startsWith('week')).map((week, index) => {
                               return (
-                                <StyledTableCell align='center' sx={{ borderLeft: 1 }}>
-                                  {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString()})`}
+                                <StyledTableCell key={index} colSpan={this.state.attendances?.[0][week].classes.length} align='center' sx={{ borderLeft: 1 }}>
+                                  {`Week ${week.split('week')[1]}`}
                                   {this.state.showSettings ?
-                                    <React.Fragment>
-                                      <TextField
-                                        type='date'
-                                        onChange={(e) => {
-                                          this.editWeekClassDate(week, index, new Date(e.target.value).getTime())
-                                        }}
-                                        sx={{ color: 'secondary.light', width: '46px' }}
-                                      />
-                                      <CustomButton
-                                        sx={{ color: 'secondary.light', borderColor: 'secondary.light', fontSize: '10px' }}
-                                        variant='outlined'
-                                        label="Cancel Class"
-                                        disabled={weekClass.cancelled}
-                                        onClick={() => this.setState({ cancelClassModalOpen: true, cancelClassWeek: week, cancelClassIndex: index })}
-                                      />
-                                      <Tooltip title='Reset class'>
-                                        <IconButton onClick={() => this.resetWeekClass(week, index)}>
-                                          <Replay />
-                                        </IconButton>
-                                      </Tooltip>
-                                      <Tooltip title='Remove class'>
-                                        <span>
-                                          <IconButton onClick={() => this.removeClassInWeek(week, index)} disabled={index == 0 ? true : false}>
-                                            <Cancel />
-                                          </IconButton>
-                                        </span>
-                                      </Tooltip>
-                                    </React.Fragment> : <></>
+                                    <Tooltip title='Add class'>
+                                      <IconButton sx={{ color: 'secondary.light' }} onClick={() => this.addClassInWeek(`week${index + 1}`)}><AddOutlined /></IconButton>
+                                    </Tooltip> : <></>
                                   }
                                 </StyledTableCell>
                               )
-                            })
-                          })}
-                        </StyledTableRow>
-                      </TableHead>
-                      {/* Rows */}
-                      {this.state.showSettings ? <></> :
-                        <TableBody>
-                          {this.state.courseStudents.map((student, studentsIndex) => {
-                            var classesCounter = -1
-                            return (
-                              <StyledTableRow>
-                                <StyledTableCell key={`tablecell-0`} component="th" scope="row">
-                                  {student.reg_no || student.cnic}
-                                </StyledTableCell>
-                                <StyledTableCell key={`tablecell-1`} align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
-                                <StyledTableCell key={`tablecell-2`} align="left">{student.attendance.percentage || 0}%</StyledTableCell>
-                                {Object.keys(this.state.attendances[0] || {}).filter(k => k.startsWith('week')).map((attribute, weekIndex, clas) => {
-                                  return this.state.attendances.filter(attendance => attendance.student_batch_id == student.student_batch_id)[0][`week${weekIndex + 1}`].classes.map((weekClass, classIndex) => {
-                                    weekClass.cancelled ? classesCounter += 0 : classesCounter += 1;
-                                    return (
-                                      weekClass.cancelled ?
-                                        studentsIndex != 0 ? <></> :
-                                          <StyledTableCell align='center' rowSpan={this.state.attendances.length} sx={{ transform: 'rotate(-90deg)', color: Color.red[500] }}>
-                                            {weekClass.remarks}
+                            })}
+                          </StyledTableRow>
+                          <StyledTableRow>
+                            <StyledTableCell></StyledTableCell>
+                            <StyledTableCell style={stickyHeaderCell}></StyledTableCell>
+                            <StyledTableCell></StyledTableCell>
+                            {Object.keys(this.state.attendances[0] || []).filter(k => k.startsWith('week')).map((week, index) => {
+                              return this.state.attendances?.[0][week].classes.map((weekClass, index) => {
+                                return (
+                                  <StyledTableCell key={index} align='center' sx={{ borderLeft: 1 }}>
+                                    {`C${index + 1} (${new Date(weekClass.timestamp).toLocaleDateString()})`}
+                                    {this.state.showSettings ?
+                                      <React.Fragment>
+                                        <TextField
+                                          type='date'
+                                          onChange={(e) => {
+                                            this.editWeekClassDate(week, index, new Date(e.target.value).getTime())
+                                          }}
+                                          sx={{ color: 'secondary.light', width: '46px' }}
+                                        />
+                                        <CustomButton
+                                          sx={{ color: 'secondary.light', borderColor: 'secondary.light', fontSize: '10px' }}
+                                          variant='outlined'
+                                          label="Cancel Class"
+                                          disabled={weekClass.cancelled}
+                                          onClick={() => this.setState({ cancelClassModalOpen: true, cancelClassWeek: week, cancelClassIndex: index })}
+                                        />
+                                        <Tooltip title='Reset class'>
+                                          <IconButton onClick={() => this.resetWeekClass(week, index)}>
+                                            <Replay />
+                                          </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title='Remove class'>
+                                          <span>
+                                            <IconButton onClick={() => this.removeClassInWeek(week, index)} disabled={index == 0 ? true : false}>
+                                              <Cancel />
+                                            </IconButton>
+                                          </span>
+                                        </Tooltip>
+                                      </React.Fragment> : <></>
+                                    }
+                                  </StyledTableCell>
+                                )
+                              })
+                            })}
+                          </StyledTableRow>
+                        </TableHead>
+                        {/* Rows */}
+                        {this.state.showSettings ? <></> :
+                          <TableBody>
+                            {(this.student_view ? this.state.courseStudents.filter(s => s.student_id == this.props.user.user_id) : this.state.courseStudents).map((student, studentsIndex) => {
+                              var classesCounter = -1
+                              return (
+                                <StyledTableRow key={studentsIndex}>
+                                  <StyledTableCell component="th" scope="row">
+                                    {student.reg_no || student.cnic}
+                                  </StyledTableCell>
+                                  <StyledTableCell align="left" style={stickyBodyCell}>{student.student_name}</StyledTableCell>
+                                  <StyledTableCell align="left">{student.attendance.percentage || 0}%</StyledTableCell>
+                                  {Object.keys(this.state.attendances[0] || {}).filter(k => k.startsWith('week')).map((attribute, weekIndex, clas) => {
+                                    return this.state.attendances.filter(attendance => attendance.student_batch_id == student.student_batch_id)[0][`week${weekIndex + 1}`].classes.map((weekClass, classIndex) => {
+                                      weekClass.cancelled ? classesCounter += 0 : classesCounter += 1;
+                                      return (
+                                        weekClass.cancelled ?
+                                          studentsIndex != 0 ? <React.Fragment key={classIndex}></React.Fragment> :
+                                            <StyledTableCell key={classIndex} align='center' rowSpan={this.state.attendances.length} sx={{ transform: 'rotate(-90deg)', color: Color.red[500] }}>
+                                              {weekClass.remarks}
+                                            </StyledTableCell>
+                                          :
+                                          <StyledTableCell key={classIndex} align='center'>
+                                            <TextField
+                                              disabled={this.state.semesterCourse.grades_locked || this.student_view}
+                                              // inputRef={(ref) => (this.inputRefs.current[(studentsIndex+1) + (weekIndex*this.state.courseStudents.length)] = ref)} 
+                                              InputProps={{ inputProps: { tabIndex: (studentsIndex + 1) + (classesCounter * this.state.courseStudents.length) } }}
+                                              autoComplete="off"
+                                              key={`input-${(studentsIndex + 1) + (classesCounter * this.state.courseStudents.length)}`}
+                                              onFocus={(e) => e.target.select()}
+                                              value={weekClass.attendance}
+                                              onChange={(e) => this.updateStudentAttendace(`week${weekIndex + 1}`, classIndex, student.student_batch_id, e.target.value)}
+                                              sx={{ '.MuiInputBase-input': { fontSize: '15px' }, width: '40px' }}
+                                              type="tel" size="small" />
                                           </StyledTableCell>
-                                        :
-                                        <StyledTableCell align='center'>
-                                          <TextField
-                                            disabled={this.state.semesterCourse.grades_locked}
-                                            // inputRef={(ref) => (this.inputRefs.current[(studentsIndex+1) + (weekIndex*this.state.courseStudents.length)] = ref)} 
-                                            InputProps={{ inputProps: { tabIndex: (studentsIndex + 1) + (classesCounter * this.state.courseStudents.length) } }}
-                                            autoComplete="off"
-                                            key={`input-${(studentsIndex + 1) + (classesCounter * this.state.courseStudents.length)}`}
-                                            onFocus={(e) => e.target.select()}
-                                            value={weekClass.attendance}
-                                            onChange={(e) => this.updateStudentAttendace(`week${weekIndex + 1}`, classIndex, student.student_batch_id, e.target.value)}
-                                            sx={{ '.MuiInputBase-input': { fontSize: '15px' }, width: '40px' }}
-                                            type="tel" size="small" />
-                                        </StyledTableCell>
 
-                                    )
+                                      )
+                                    })
                                   })
-                                })
-                                }
-                              </StyledTableRow>
-                            )
-                          })}
-                        </TableBody>}
-                    </Table>
-                  </TableContainer>
+                                  }
+                                </StyledTableRow>
+                              )
+                            })}
+                          </TableBody>}
+                      </Table>
+                    </TableContainer>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
+                      <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
+                    </Zoom>
+                  </Grid>
+                  {this.state.semesterCourse.grades_locked || this.student_view ? <></> :
+                    this.state.showSettings ? this.settingsActions() :
+                      <React.Fragment>
+                        <Grid item xs={"auto"}>
+                          <CustomButton
+                            label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
+                            disabled={this.state.callingApi}
+                            onClick={() => {
+                              this.setState({ callingApi: true })
+                              socket.emit(`studentsCourses/updateAttendances`, { sem_course_id: this.sem_course_id, attendances: this.state.attendances }, res => {
+                                this.setState({ callingApi: false })
+                                this.setState({
+                                  alertMsg: res.code == 200 ? 'Updated students attendance' : `${res.status}: ${res.message}`,
+                                  alertSeverity: res.code == 200 ? 'success' : 'warning'
+                                }, this.timeoutAlert)
+                              })
+                            }}
+                          />
+                        </Grid>
+                        <Grid item xs={"auto"}>
+                          <CustomButton
+                            label="Reset"
+                            onClick={() => this.fetchData()}
+                          />
+                        </Grid>
+                        <Grid item xs={"auto"}>
+                          <CustomButton
+                            startIcon={<Settings />}
+                            label="Settings"
+                            variant="outlined"
+                            onClick={() => this.setState({ showSettings: true })}
+                          />
+                        </Grid>
+                      </React.Fragment>
+                  }
                 </Grid>
-                <Grid key={`griditem-2`} item xs={12}>
-                  <Zoom in={this.state.alertMsg == '' ? false : true} unmountOnExit mountOnEnter>
-                    <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}>{this.state.alertMsg}</Alert>
-                  </Zoom>
+              </Collapse>
+            </Grid>
+            <CustomModal open={this.state.cancelClassModalOpen}>
+              <Grid container spacing={1}>
+                <Grid item xs={12}>
+                  <Typography>{`Reason for cancelling ${this.state.cancelClassWeek} class${this.state.cancelClassIndex + 1}`}</Typography>
                 </Grid>
-                {this.state.semesterCourse.grades_locked ? <></> :
-                  this.state.showSettings ? this.settingsActions() :
-                    <React.Fragment>
-                      <Grid key={`griditem-3`} item xs={"auto"}>
-                        <CustomButton
-                          label={this.state.callingApi ? <CircularProgress size='20px' /> : "Save"}
-                          disabled={this.state.callingApi}
-                          onClick={() => {
-                            this.setState({ callingApi: true })
-                            socket.emit(`studentsCourses/updateAttendances`, { sem_course_id: this.sem_course_id, attendances: this.state.attendances }, res => {
-                              this.setState({ callingApi: false })
-                              this.setState({
-                                alertMsg: res.code == 200 ? 'Updated students attendance' : `${res.status}: ${res.message}`,
-                                alertSeverity: res.code == 200 ? 'success' : 'warning'
-                              }, this.timeoutAlert)
-                            })
-                          }}
-                        />
-                      </Grid>
-                      <Grid key={`griditem-4`} item xs={"auto"}>
-                        <CustomButton
-                          label="Reset"
-                          onClick={() => this.fetchData()}
-                        />
-                      </Grid>
-                      <Grid item xs={"auto"}>
-                        <CustomButton
-                          startIcon={<Settings />}
-                          label="Settings"
-                          variant="outlined"
-                          onClick={() => this.setState({ showSettings: true })}
-                        />
-                      </Grid>
-                    </React.Fragment>
-                }
+                <Grid item xs={12}>
+                  <CustomTextField variant="filled" onChange={(e) => this.setState({ cancelClassRemarks: e.target.value })} />
+                </Grid>
+                <Grid item xs={'auto'}>
+                  <CustomButton label="OK" onClick={() => this.cancelWeekClass()} />
+                </Grid>
+                <Grid item xs={'auto'}>
+                  <CustomButton label="Cancel" onClick={() => this.setState({ cancelClassRemarks: '', cancelClassModalOpen: false })} />
+                </Grid>
               </Grid>
-            </Collapse>
-          </CustomCard>
-        }
-        <CustomModal open={this.state.cancelClassModalOpen}>
-          <Grid container spacing={1}>
-            <Grid item xs={12}>
-              <Typography>{`Reason for cancelling ${this.state.cancelClassWeek} class${this.state.cancelClassIndex + 1}`}</Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <CustomTextField variant="filled" onChange={(e) => this.setState({ cancelClassRemarks: e.target.value })} />
-            </Grid>
-            <Grid item xs={'auto'}>
-              <CustomButton label="OK" onClick={() => this.cancelWeekClass()} />
-            </Grid>
-            <Grid item xs={'auto'}>
-              <CustomButton label="Cancel" onClick={() => this.setState({ cancelClassRemarks: '', cancelClassModalOpen: false })} />
-            </Grid>
+            </CustomModal>
           </Grid>
-        </CustomModal>
-      </Grid>
+        </CustomCard>
     );
   }
 }

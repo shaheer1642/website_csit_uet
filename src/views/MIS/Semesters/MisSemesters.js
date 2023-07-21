@@ -94,51 +94,56 @@ class MisSemesters extends React.Component {
       { id: "offered_courses", label: "Offered Courses", format: (value) => value },
     ];
     return (
-      <Grid container rowSpacing={"20px"}>
+      <Grid container spacing={2}>
         <Grid item xs={12}>
           <ContextInfo contextInfo={{ department_name: 'Computer Science & Information Technology' }} />
         </Grid>
         <Grid item xs={12}>
           <CustomCard>
-            <Grid container>
-              <Typography variant="h2" style={{ margin: "10px" }}>
-                Semesters
-              </Typography>
-              <CustomTable
-                loadingState={this.state.loadingSemesters}
-                viewButtonLabel='Manage Courses'
-                onViewClick={(semester) =>
-                  this.props.navigate('courses', {
-                    state: {
-                      ...this.props.location.state,
-                      semester_id: semester.semester_id,
-                      context_info: semester
-                    }
-                  })}
-                onRowClick={(semester) =>
-                  this.props.navigate('courses', {
-                    state: {
-                      ...this.props.location.state,
-                      semester_id: semester.semester_id,
-                      context_info: semester
-                    }
-                  })}
-                onEditClick={(semester) => this.props.navigate('update', { state: { semester_id: semester.semester_id } })}
-                onDeleteClick={(semester) => {
-                  this.setState({
-                    confirmationModalShow: true,
-                    confirmationModalMessage: 'Are you sure you want to remove this semester?',
-                    confirmationModalExecute: () => socket.emit('semesters/delete', { semester_id: semester.semester_id })
-                  })
-                }}
-                rows={this.state.semestersArr}
-                columns={columns}
-              />
-              <CustomButton
-                sx={{ margin: "10px" }}
-                onClick={() => this.props.navigate("create")}
-                label="Create New"
-              />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h2">
+                  Semesters
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <CustomTable
+                  loadingState={this.state.loadingSemesters}
+                  viewButtonLabel='Manage Courses'
+                  onViewClick={(semester) =>
+                    this.props.navigate('courses', {
+                      state: {
+                        ...this.props.location.state,
+                        semester_id: semester.semester_id,
+                        context_info: semester
+                      }
+                    })}
+                  onRowClick={(semester) =>
+                    this.props.navigate('courses', {
+                      state: {
+                        ...this.props.location.state,
+                        semester_id: semester.semester_id,
+                        context_info: semester
+                      }
+                    })}
+                  onEditClick={(semester) => this.props.navigate('update', { state: { semester_id: semester.semester_id } })}
+                  onDeleteClick={(semester) => {
+                    this.setState({
+                      confirmationModalShow: true,
+                      confirmationModalMessage: 'Are you sure you want to remove this semester?',
+                      confirmationModalExecute: () => socket.emit('semesters/delete', { semester_id: semester.semester_id })
+                    })
+                  }}
+                  rows={this.state.semestersArr}
+                  columns={columns}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomButton
+                  onClick={() => this.props.navigate("create")}
+                  label="Create New"
+                />
+              </Grid>
               <ConfirmationModal
                 open={this.state.confirmationModalShow}
                 message={this.state.confirmationModalMessage}

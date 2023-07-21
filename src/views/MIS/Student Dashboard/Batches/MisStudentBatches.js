@@ -74,12 +74,16 @@ class MisStudentBatches extends React.Component {
     ];
     return (
       <CustomCard>
-        <Grid container>
-          <Typography variant="h2" style={{ margin: '10px' }}>Select Batch</Typography>
-          <CustomTable
-            loadingState={this.state.loading}
-            onRowClick={this.redirect}
-            rows={this.state.studentBatchesArr} columns={columns} />
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h2" style={{ margin: '10px' }}>Select Batch</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTable
+              loadingState={this.state.loading}
+              onRowClick={this.redirect}
+              rows={this.state.studentBatchesArr} columns={columns} />
+          </Grid>
         </Grid>
       </CustomCard>
     );

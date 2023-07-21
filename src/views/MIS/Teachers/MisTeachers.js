@@ -128,36 +128,41 @@ class MisTeachers extends React.Component {
     ];
     return (
       <CustomCard>
-        <Grid container>
-          <Typography variant="h2" style={{ margin: "10px" }}>
-            {`Instructors`}
-          </Typography>
-          <CustomTable
-            loadingState={this.state.loadingTeachers}
-            onEditClick={(teacher) =>
-              this.props.navigate("update", {
-                state: { teacher_id: teacher.teacher_id },
-              })
-            }
-            onDeleteClick={(teacher) => {
-              this.setState({
-                confirmationModalShow: true,
-                confirmationModalMessage:
-                  "Are you sure you want to remove this instructor?",
-                confirmationModalExecute: () =>
-                  socket.emit("teachers/delete", {
-                    teacher_id: teacher.teacher_id,
-                  }),
-              });
-            }}
-            rows={this.state.teachersArr}
-            columns={columns}
-          />
-          <CustomButton
-            sx={{ margin: "10px" }}
-            onClick={() => this.props.navigate("create")}
-            label="Create New"
-          />
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="h2">
+              {`Instructors`}
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <CustomTable
+              loadingState={this.state.loadingTeachers}
+              onEditClick={(teacher) =>
+                this.props.navigate("update", {
+                  state: { teacher_id: teacher.teacher_id },
+                })
+              }
+              onDeleteClick={(teacher) => {
+                this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage:
+                    "Are you sure you want to remove this instructor?",
+                  confirmationModalExecute: () =>
+                    socket.emit("teachers/delete", {
+                      teacher_id: teacher.teacher_id,
+                    }),
+                });
+              }}
+              rows={this.state.teachersArr}
+              columns={columns}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <CustomButton
+              onClick={() => this.props.navigate("create")}
+              label="Create New"
+            />
+          </Grid>
           <CustomModal
             title={this.state.modalTitle}
             body={this.state.modalBody}

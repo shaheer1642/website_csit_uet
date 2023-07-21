@@ -320,7 +320,7 @@ class MisStudentsManagement extends React.Component {
   render() {
     return (
       this.state.callingApi == 'fetchStudent' ? <LoadingIcon /> :
-        <Grid container rowSpacing={"20px"}>
+        <Grid container spacing={2}>
           <GoBackButton context={this.props.navigate} />
           <Grid item xs={12}>
             {this.cards.Info()}
