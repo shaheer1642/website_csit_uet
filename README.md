@@ -6,6 +6,7 @@ Frontend source code for the departmenal MIS website developed for CS&IT, UET, P
 - Semester management
 - Application Tracking System
 - Thesis Management
+
 The project has been developed by the FYP team Muhammad Shaheer Qureshi, Sameer Shahzad, and Muqaddas Ishaq under the supervision of Dr. M. Imran Khan Khalil
 
 # Technologies
