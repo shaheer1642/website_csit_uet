@@ -1,5 +1,5 @@
 import React from 'react';
-import {useLocation, useNavigate, useParams} from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AuthContext } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
 
@@ -8,10 +8,10 @@ export const withRouter = (Component) => {
     let location = useLocation();
     let navigate = useNavigate();
     let params = useParams();
-    const {login, logout} = useAuth()
+    const { login, logout, fetchUser } = useAuth()
     const { user } = React.useContext(AuthContext)
 
-    return <Component {...props} {...{location, navigate, params, login, logout, user}} />;
+    return <Component {...props} {...{ location, navigate, params, login, logout, fetchUser, user }} />;
   }
 
   return ComponentWithRouterProp;

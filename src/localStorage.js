@@ -7,10 +7,10 @@ socket.on('studentsBatch/listener/insert', () => emptyLocalStorage('students/fet
 socket.on('studentsBatch/listener/update', () => emptyLocalStorage('students/fetch'))
 socket.on('studentsBatch/listener/delete', () => emptyLocalStorage('students/fetch'))
 
-localStorage.clear()
+// localStorage.clear()
 
 function emptyLocalStorage(item) {
-    console.log('[localStorage.emptyLocalStorage]',item)
+    console.log('[localStorage.emptyLocalStorage]', item)
     localStorage.removeItem(item)
 }
 

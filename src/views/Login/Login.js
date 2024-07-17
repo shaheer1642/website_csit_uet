@@ -53,7 +53,7 @@ class Login extends React.Component {
 
       alertMsg: '',
       alertSeverity: "warning",
-      
+
       activePanel: 'loginPanel',
       resendCodeTimer: 0,
 
@@ -68,7 +68,7 @@ class Login extends React.Component {
     if (!prevState.alertMsg && !this.state.alertMsg) return
     clearTimeout(this.alertTimeout)
     this.alertTimeout = setTimeout(() => {
-      this.setState({alertMsg: ''})
+      this.setState({ alertMsg: '' })
     }, 3000);
   }
 
@@ -82,42 +82,36 @@ class Login extends React.Component {
   }
 
   login = async () => {
-    if (!this.state.userInput['username']) return this.setState({alertMsg: 'Enter username', alertSeverity: 'warning'})
-    if (!this.state.userInput['password']) return this.setState({alertMsg: 'Enter password', alertSeverity: 'warning'})
+    if (!this.state.userInput['username']) return this.setState({ alertMsg: 'Enter username', alertSeverity: 'warning' })
+    if (!this.state.userInput['password']) return this.setState({ alertMsg: 'Enter password', alertSeverity: 'warning' })
     this.setCallingApi('loginAuth')
-    this.props.login({ 
-      username: this.state.userInput['username'], 
+    this.props.login({
+      username: this.state.userInput['username'],
       password: this.state.userInput['password'],
       user_type: this.state.userInput['user_type']
-    }, (res) => {
-      this.setCallingApi('')
-      if (res.code == 200) {
-        // eventHandler.emit('login/auth', res.data)
-        this.props.navigate("/mis")
-      } else {
-        this.updateAlertMesg(res)
-      }
-    })
+    }).catch(err => {
+      this.updateAlertMesg(err)
+    }).finally(() => this.setCallingApi(''))
   }
 
   resendCodeTimer = (timeout) => {
     if (timeout) {
       clearTimeout(this.resendCodeTimerRef)
-      this.setState({resendCodeTimer: timeout}, () => this.resendCodeTimer())
+      this.setState({ resendCodeTimer: timeout }, () => this.resendCodeTimer())
     } else {
       this.resendCodeTimerRef = setTimeout(() => {
-        this.setState(state => ({resendCodeTimer: state.resendCodeTimer - 1}), () => this.state.resendCodeTimer > 0 ? this.resendCodeTimer() : null)
+        this.setState(state => ({ resendCodeTimer: state.resendCodeTimer - 1 }), () => this.state.resendCodeTimer > 0 ? this.resendCodeTimer() : null)
       }, 1000);
     }
   }
 
-  setCallingApi = (value) => this.setState({callingApi: value})
+  setCallingApi = (value) => this.setState({ callingApi: value })
 
-  setUserInput = (key,value) => this.setState(state => ({userInput: {...state.userInput, [key]: value}}))
+  setUserInput = (key, value) => this.setState(state => ({ userInput: { ...state.userInput, [key]: value } }))
 
-  setPanel = (value) => this.setState({activePanel: value})
+  setPanel = (value) => this.setState({ activePanel: value })
 
-  updateAlertMesg = (res,successMessage) => {
+  updateAlertMesg = (res, successMessage) => {
     if (res.code == 200 && !successMessage) return
     this.setState({
       alertMsg: res.code == 200 ? successMessage ? successMessage : '' : `${res.status}: ${res.message}`,
@@ -126,18 +120,18 @@ class Login extends React.Component {
   }
 
   sendEmailVerificationCode = (callback) => {
-    if (!this.state.userInput['username']) return this.setState({alertMsg: 'Enter username or email', alertSeverity: 'warning'})
-    if (!this.state.userInput['user_type']) return this.setState({alertMsg: 'User type cannot be empty', alertSeverity: 'warning'})
+    if (!this.state.userInput['username']) return this.setState({ alertMsg: 'Enter username or email', alertSeverity: 'warning' })
+    if (!this.state.userInput['user_type']) return this.setState({ alertMsg: 'User type cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('sendEmailVerificationCode')
     socket.emit('users/sendEmailVerificationCode', {
-      user_email: isEmailValid(this.state.userInput['username']) ? this.state.userInput['username'] : undefined, 
-      username: isEmailValid(this.state.userInput['username']) ? undefined : this.state.userInput['username'], 
+      user_email: isEmailValid(this.state.userInput['username']) ? this.state.userInput['username'] : undefined,
+      username: isEmailValid(this.state.userInput['username']) ? undefined : this.state.userInput['username'],
       user_type: this.state.userInput['user_type']
-    } , (res) => {
+    }, (res) => {
       console.log(res)
       this.setCallingApi('')
       if (res.code == 200 && callback) {
-        this.setState({user_obj : res.data}, () => callback(res))
+        this.setState({ user_obj: res.data }, () => callback(res))
       }
       this.updateAlertMesg(res)
       this.resendCodeTimer(15)
@@ -145,11 +139,11 @@ class Login extends React.Component {
   }
 
   resetPassword = (callback) => {
-    if (!this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password'] || !this.state.userInput['email_verification_code']) return this.setState({alertMsg: 'Fields cannot be empty', alertSeverity: 'warning'})
+    if (!this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password'] || !this.state.userInput['email_verification_code']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('resetPassword')
-    socket.emit('users/resetPassword', { 
-      user_id: this.state.user_obj?.user_id, 
-      email_verification_code: this.state.userInput['email_verification_code'], 
+    socket.emit('users/resetPassword', {
+      user_id: this.state.user_obj?.user_id,
+      email_verification_code: this.state.userInput['email_verification_code'],
       new_password: this.state.userInput['new_password']
     }, res => {
       this.setCallingApi('')
@@ -159,11 +153,11 @@ class Login extends React.Component {
   }
 
   clearFields = () => {
-    this.setUserInput('username','')
-    this.setUserInput('password','')
-    this.setUserInput('new_password','')
-    this.setUserInput('confirm_new_password','')
-    this.setUserInput('email_verification_code','')
+    this.setUserInput('username', '')
+    this.setUserInput('password', '')
+    this.setUserInput('new_password', '')
+    this.setUserInput('confirm_new_password', '')
+    this.setUserInput('email_verification_code', '')
   }
 
   panels = {
@@ -174,7 +168,7 @@ class Login extends React.Component {
             <Typography variant="h4" color='white'>Login</Typography>
           </Grid>
           <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'end', alignItems: 'flex-end', }}>
-            <AccountCircle sx={{color: 'white'}} />
+            <AccountCircle sx={{ color: 'white' }} />
           </Grid>
           <Grid item xs={6} sx={{ justifyContent: 'start', alignContent: 'center', }}>
             <CustomTextField
@@ -189,41 +183,41 @@ class Login extends React.Component {
               tabIndex={1}
               onPressEnter={this.login}
               value={this.state.userInput['username'] || ''}
-              onChange={(e) => this.setUserInput('username',e.target.value)}  />
+              onChange={(e) => this.setUserInput('username', e.target.value)} />
           </Grid>
           <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end', }}>
           </Grid>
           <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'end', alignItems: 'end' }}>
-            <Password sx={{color: 'white'}}/>
+            <Password sx={{ color: 'white' }} />
           </Grid>
           <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'start', }}>
-            <CustomTextField 
-              variant='standard' 
-              underlineColor='white' 
-              labelColor='white' 
-              labelFocusedColor='white' 
-              underlineFocusedColor='white' 
-              inputTextColor='white' 
-              label="Password" 
-              variant="standard" 
+            <CustomTextField
+              variant='standard'
+              underlineColor='white'
+              labelColor='white'
+              labelFocusedColor='white'
+              underlineFocusedColor='white'
+              inputTextColor='white'
+              label="Password"
+              variant="standard"
               tabIndex={2}
               onPressEnter={this.login}
               type={this.state.showPassword ? 'text' : 'password'}
               value={this.state.userInput['password'] || ''}
-              onChange={(e) => this.setUserInput('password',e.target.value)}
+              onChange={(e) => this.setUserInput('password', e.target.value)}
             />
           </Grid>
           <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'start', alignItems: 'flex-end' }}>
             <IconButton
               onClick={(e) => this.setState({ showPassword: !this.state.showPassword })}
-              sx={{color: 'white'}}
+              sx={{ color: 'white' }}
             >
               {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton>
           </Grid>
           {this.state.userInput['username'] == 'admin' || this.state.userInput['username'] == 'pga' ? <></> :
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
-              <RadioGroup sx={{ color: 'white' }} row value={this.state.userInput['user_type']} onChange={(e) => this.setUserInput('user_type',e.target.value)}>
+              <RadioGroup sx={{ color: 'white' }} row value={this.state.userInput['user_type']} onChange={(e) => this.setUserInput('user_type', e.target.value)}>
                 <FormControlLabel value="student" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Student" />
                 <FormControlLabel value="teacher" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Instructor" />
               </RadioGroup>
@@ -233,7 +227,7 @@ class Login extends React.Component {
             <CustomButton onClick={this.login} tabIndex={3} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Login"} disabled={this.state.callingApi == 'loginAuth'} />
           </Grid>
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
-            <Link href="#" sx={{":hover": {color: 'primary.light'}, color: 'white', textDecoration: 'underline'}} onClick={() => this.setState({ activePanel: 'resetPasswordPanel1' })}>Reset Password</Link>
+            <Link href="#" sx={{ ":hover": { color: 'primary.light' }, color: 'white', textDecoration: 'underline' }} onClick={() => this.setState({ activePanel: 'resetPasswordPanel1' })}>Reset Password</Link>
           </Grid>
         </Grid>
       )
@@ -248,7 +242,7 @@ class Login extends React.Component {
             <Typography variant="body1" color='white'>Please enter username or email</Typography>
           </Grid>
           <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'end', alignItems: 'flex-end', }}>
-            <AccountCircle sx={{color: 'white'}}/>
+            <AccountCircle sx={{ color: 'white' }} />
           </Grid>
           <Grid item xs={6} sx={{ justifyContent: 'start', alignContent: 'center', }}>
             <CustomTextField
@@ -262,11 +256,11 @@ class Login extends React.Component {
               variant="standard"
               tabIndex={1}
               value={this.state.userInput['username'] || ''}
-              onChange={(e) => this.setUserInput('username',e.target.value)} />
+              onChange={(e) => this.setUserInput('username', e.target.value)} />
           </Grid>
           {this.state.userInput['username'] == 'admin' || this.state.userInput['username'] == 'pga' ? <></> :
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
-              <RadioGroup sx={{ color: 'white' }} row value={this.state.userInput['user_type']} onChange={(e) => this.setUserInput('user_type',e.target.value)}>
+              <RadioGroup sx={{ color: 'white' }} row value={this.state.userInput['user_type']} onChange={(e) => this.setUserInput('user_type', e.target.value)}>
                 <FormControlLabel value="student" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Student" />
                 <FormControlLabel value="teacher" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Instructor" />
               </RadioGroup>
@@ -276,7 +270,7 @@ class Login extends React.Component {
             <CustomButton onClick={() => this.sendEmailVerificationCode(() => this.setPanel('resetPasswordPanel2'))} tabIndex={3} label={this.state.callingApi ? <CircularProgress size='20px' /> : "Next"} disabled={this.state.callingApi == 'sendEmailVerificationCode'} />
           </Grid>
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
-            <Link href="#" sx={{":hover": {color: 'primary.light'}, color: 'white', textDecoration: 'underline'}} onClick={() => this.setState({ activePanel: 'loginPanel' })}>Login</Link>
+            <Link href="#" sx={{ ":hover": { color: 'primary.light' }, color: 'white', textDecoration: 'underline' }} onClick={() => this.setState({ activePanel: 'loginPanel' })}>Login</Link>
           </Grid>
         </Grid>
       )
@@ -300,7 +294,7 @@ class Login extends React.Component {
               tabIndex={1}
               type='password'
               value={this.state.userInput['new_password'] || ''}
-              onChange={(e) => this.setUserInput('new_password',e.target.value)} />
+              onChange={(e) => this.setUserInput('new_password', e.target.value)} />
           </Grid>
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
             <CustomTextField
@@ -315,14 +309,14 @@ class Login extends React.Component {
               tabIndex={1}
               type='password'
               value={this.state.userInput['confirm_new_password'] || ''}
-              onChange={(e) => this.setUserInput('confirm_new_password',e.target.value)} />
+              onChange={(e) => this.setUserInput('confirm_new_password', e.target.value)} />
           </Grid>
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
             <CustomButton label='Reset Password' callingApiState={this.state.callingApi == 'resetPassword'} onClick={() => {
-              if (!this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password']) return this.setState({alertMsg: 'Please enter new password', alertSeverity: 'warning'})
-              if (this.state.userInput['new_password'] != this.state.userInput['confirm_new_password']) return this.setState({alertMsg: 'Passwords mismatch', alertSeverity: 'warning'})
+              if (!this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password']) return this.setState({ alertMsg: 'Please enter new password', alertSeverity: 'warning' })
+              if (this.state.userInput['new_password'] != this.state.userInput['confirm_new_password']) return this.setState({ alertMsg: 'Passwords mismatch', alertSeverity: 'warning' })
               this.setPanel('resetPasswordPanel3')
-            }}/>
+            }} />
           </Grid>
         </Grid>
       )
@@ -350,17 +344,17 @@ class Login extends React.Component {
               tabIndex={1}
               type='password'
               value={this.state.userInput['email_verification_code'] || ''}
-              onChange={(e) => this.setUserInput('email_verification_code',e.target.value)} />
+              onChange={(e) => this.setUserInput('email_verification_code', e.target.value)} />
           </Grid>
           <Grid item xs={12}></Grid>
           <Grid item xs={'auto'}>
             <CustomButton tabIndex={2} label='Submit' callingApiState={this.state.callingApi == 'resetPassword'} onClick={() => this.resetPassword(() => {
               this.clearFields()
               this.setPanel('resetPasswordPanel4')
-            })}/>
+            })} />
           </Grid>
           <Grid item xs={'auto'}>
-            <CustomButton disabled={this.state.resendCodeTimer > 0} label={this.state.resendCodeTimer > 0 ? `Resend Code (${this.state.resendCodeTimer})` : 'Resend Code'} callingApiState={this.state.callingApi == 'sendEmailVerificationCode'} variant='contained' onClick={() => this.sendEmailVerificationCode((res) => this.updateAlertMesg(res,'Code Sent'))}/>
+            <CustomButton disabled={this.state.resendCodeTimer > 0} label={this.state.resendCodeTimer > 0 ? `Resend Code (${this.state.resendCodeTimer})` : 'Resend Code'} callingApiState={this.state.callingApi == 'sendEmailVerificationCode'} variant='contained' onClick={() => this.sendEmailVerificationCode((res) => this.updateAlertMesg(res, 'Code Sent'))} />
           </Grid>
         </Grid>
       )
@@ -375,7 +369,7 @@ class Login extends React.Component {
             <Typography variant='h4' color='white'>Your password has been reset!</Typography>
           </Grid>
           <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Link href="#" sx={{":hover": {color: 'primary.light'}, color: 'white', textDecoration: 'underline' }} onClick={() => this.setState({ activePanel: 'loginPanel' })}>Login</Link>
+            <Link href="#" sx={{ ":hover": { color: 'primary.light' }, color: 'white', textDecoration: 'underline' }} onClick={() => this.setState({ activePanel: 'loginPanel' })}>Login</Link>
           </Grid>
         </Grid>
       )
@@ -386,7 +380,7 @@ class Login extends React.Component {
     return (
       <Grid container style={styles.container}>
         <Grid container style={styles.loginPanel}>
-          {this.state.alertMsg ? 
+          {this.state.alertMsg ?
             <Grid item xs={12}>
               <CustomAlert message={this.state.alertMsg} severity={this.state.alertSeverity} />
             </Grid> : <></>

@@ -72,6 +72,13 @@ class LoginLayout extends React.Component {
 
   componentDidMount() {
     console.log('[LoginLayout] componentDidMount')
+    this.props.fetchUser()
+  }
+
+  componentDidUpdate() {
+    if (this.props.user) {
+      this.props.navigate('/mis')
+    }
   }
 
   componentWillUnmount() {

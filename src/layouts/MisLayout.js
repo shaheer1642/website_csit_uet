@@ -105,18 +105,13 @@ function MisLayout(props) {
   const [applicationsOpen, setApplicationsOpen] = React.useState(false);
 
   useEffect(() => {
-    console.log('[MisLayout] componentDidMount')
-    if (!props.user) navigate("/login")
-    // else console.log('[MisLayout] user=',user)
-
-    return () => {
-      console.log('[MisLayout] componentWillUnmount')
-    }
-  })
+    props.fetchUser()
+  }, [])
 
   useEffect(() => {
-    console.log('[MisLayout] componentDidUpdate')
-  });
+    if (!props.user)
+      navigate('/')
+  }, [props.user])
 
   const handleDrawerOpen = () => {
     setOpen(true);
