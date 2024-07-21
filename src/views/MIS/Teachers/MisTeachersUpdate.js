@@ -6,6 +6,7 @@ import { withRouter } from '../../../withRouter';
 import LoadingIcon from '../../../components/LoadingIcon';
 import { Grid } from '@mui/material';
 import GoBackButton from '../../../components/GoBackButton';
+import { MakeGETCall } from '../../../api';
 
 class MisTeachersUpdate extends React.Component {
   constructor(props) {
@@ -25,10 +26,9 @@ class MisTeachersUpdate extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit('teachers/fetch', { teacher_id: this.teacher_id }, (res) => {
-      console.log('[teachers/fetch] response:', res)
-      if (res.code == 200) {
-        const teacher = res.data[0]
+
+    MakeGETCall('/api/teachers', {query: {teacher_id: this.teacher_id}}).then(res => {
+      const teacher = res
         this.setState({
           loading: false,
           cnic: teacher.cnic,
@@ -40,8 +40,26 @@ class MisTeachersUpdate extends React.Component {
           designation: teacher.designation,
           teacher_department_id: teacher.teacher_department_id,
         })
-      }
-    })
+    }).catch(console.error)
+
+
+    // socket.emit('teachers/fetch', { teacher_id: this.teacher_id }, (res) => {
+    //   console.log('[teachers/fetch] response:', res)
+    //   if (res.code == 200) {
+    //     const teacher = res.data[0]
+    //     this.setState({
+    //       loading: false,
+    //       cnic: teacher.cnic,
+    //       reg_no: teacher.reg_no,
+    //       teacher_name: teacher.teacher_name,
+    //       teacher_gender: teacher.teacher_gender,
+    //       user_email: teacher.user_email,
+    //       qualification: teacher.qualification,
+    //       designation: teacher.designation,
+    //       teacher_department_id: teacher.teacher_department_id,
+    //     })
+    //   }
+    // })
   }
 
   render() {

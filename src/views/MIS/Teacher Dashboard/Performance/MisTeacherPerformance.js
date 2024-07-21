@@ -13,6 +13,7 @@ import CustomCard from "../../../../components/CustomCard";
 import { convertUpper } from "../../../../extras/functions";
 import LoadingIcon from "../../../../components/LoadingIcon";
 import Field from "../../../../components/Field";
+import { MakeGETCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -53,15 +54,23 @@ class MisTeacherPerformance extends React.Component {
 
   fetchTeacher() {
     this.setState({callingApi: 'fetchTeacher'})
-    socket.emit("teachers/fetch", {teacher_id: this.props.user?.user_id}, (res) => {
-      console.log(res)
-      if (res.code == 200) {
-        return this.setState({
-          teacher: res.data[0],
-          callingApi: '',
-        });
-      }
-    });
+
+    MakeGETCall(`/api/teachers/`, {query: {teacher_id: this.props.user?.user_id}}).then(res => {
+      return this.setState({
+              teacher: res,
+              callingApi: '',
+            });
+    }).catch(console.error)
+
+    // socket.emit("teachers/fetch", {teacher_id: this.props.user?.user_id}, (res) => {
+    //   console.log(res)
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       teacher: res.data[0],
+    //       callingApi: '',
+    //     });
+    //   }
+    // });
   }
 
   render() {

@@ -14,6 +14,7 @@ import { convertUpper, filterObjectByKeys } from '../../../extras/functions';
 import './MisProfile.css';
 import "font-awesome/css/font-awesome.css";
 import { withRouter } from '../../../withRouter';
+import { MakeGETCall, MakePATCHCall, MakePOSTCall } from '../../../api';
 
 const palletes = {
   primary: '#439CEF',
@@ -337,20 +338,31 @@ class MisProfile extends React.Component {
 
   saveChanges = () => {
     this.setCallingApi('saveChanges')
-    socket.emit(
-      this.state.userInfo.user_type == 'teacher' ? 'teachers/update' : '',
-      {
-        ...filterObjectByKeys(this.state.userInfo, this.state.updatedKeys),
-        teacher_id: this.state.userInfo.user_id
-      },
-      (res) => {
+
+    if (this.state.userInfo.user_type == 'teacher') MakePOSTCall(`/api/teachers/${this.state.userInfo.user_id}`,
+      { body: filterObjectByKeys(this.state.userInfo, this.state.updatedKeys) })
+      .then(res => {
         this.setCallingApi('')
         this.updateAlertMesg(res, 'Saved changes!')
         this.setState({ updatedKeys: [] })
         this.fetchUser()
         this.autocompleteAreasOfInterest()
-      }
-    )
+      }).catch(console.error)
+
+    // socket.emit(
+    //   this.state.userInfo.user_type == 'teacher' ? 'teachers/update' : '',
+    //   {
+    //     ...filterObjectByKeys(this.state.userInfo, this.state.updatedKeys),
+    //     teacher_id: this.state.userInfo.user_id
+    //   },
+    //   (res) => {
+    //     this.setCallingApi('')
+    //     this.updateAlertMesg(res, 'Saved changes!')
+    //     this.setState({ updatedKeys: [] })
+    //     this.fetchUser()
+    //     this.autocompleteAreasOfInterest()
+    //   }
+    // )
   }
 
   resetChanges = () => {

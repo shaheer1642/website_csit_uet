@@ -11,6 +11,7 @@ import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
 import { convertUpper } from "../../../extras/functions";
+import { MakeDELETECall, MakeGETCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -48,14 +49,22 @@ class MisTeachers extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("teachers/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          teachersArr: res.data,
-          loadingTeachers: false,
-        });
-      }
-    });
+
+    MakeGETCall('/api/teachers').then(res => {
+      return this.setState({
+              teachersArr: res,
+              loadingTeachers: false,
+            });
+    }).catch(console.error)
+
+    // socket.emit("teachers/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       teachersArr: res.data,
+    //       loadingTeachers: false,
+    //     });
+    //   }
+    // });
 
     socket.addEventListener(
       "teachers/listener/insert",
@@ -148,9 +157,12 @@ class MisTeachers extends React.Component {
                   confirmationModalMessage:
                     "Are you sure you want to remove this instructor?",
                   confirmationModalExecute: () =>
-                    socket.emit("teachers/delete", {
-                      teacher_id: teacher.teacher_id,
-                    }),
+
+                    MakeDELETECall(`/api/teachers/${teacher.teacher_id}`).catch(console.error)
+
+                    // socket.emit("teachers/delete", {
+                    //   teacher_id: teacher.teacher_id,
+                    // }),
                 });
               }}
               rows={this.state.teachersArr}

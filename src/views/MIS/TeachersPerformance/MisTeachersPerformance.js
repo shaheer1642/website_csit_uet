@@ -6,6 +6,7 @@ import { withRouter } from "../../../withRouter";
 import CustomTable from "../../../components/CustomTable";
 import CustomCard from "../../../components/CustomCard";
 import { convertUpper } from "../../../extras/functions";
+import { MakeGETCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -36,14 +37,22 @@ class MisTeachersPerformance extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("teachers/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          teachersArr: res.data,
-          loadingTeachers: false,
-        });
-      }
-    });
+
+    MakeGETCall('/api/teachers').then(res => {
+      return this.setState({
+              teachersArr: res,
+              loadingTeachers: false,
+            });
+    }).catch(console.error)
+
+    // socket.emit("teachers/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       teachersArr: res.data,
+    //       loadingTeachers: false,
+    //     });
+    //   }
+    // });
 
     socket.addEventListener(
       "teachers/listener/insert",
