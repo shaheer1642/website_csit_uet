@@ -9,7 +9,7 @@
  */
 function MakeGETCall(endpoint, { query = {}, authorized = false } = {}) {
     return new Promise((resolve, reject) => {
-        fetch(`${process.env.REACT_APP_API_URL}${endpoint}${query ? `?${Object.keys(query).map(k => `${k}=${query[k]}`).join('&')}` : ''}`, {
+        fetch(`${process.env.REACT_APP_API_URL}${endpoint}${query ? `?${new URLSearchParams(query).toString()}` : ''}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('token')}`

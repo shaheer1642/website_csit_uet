@@ -1,28 +1,36 @@
+import { MakeGETCall } from "../api"
 import { socket, socketHasConnected } from "../websocket/socket"
 
-const users_list = []
+const users_list = {}
 
-socketHasConnected().then(() => {
-    fetchUsers()
-})
+// socketHasConnected().then(() => {
+//     fetchUsers()
+// })
+
+fetchUsers()
 
 function fetchUsers() {
-    socket.emit('users/fetch',{},(res) => {
-        if (res.code == 200) {
-            res.data.forEach(user => {
-                users_list[user.user_id] = user
-            })
-        }
-    })
+    MakeGETCall('/api/autocomplete/users').then(res => {
+        res.forEach(user => {
+            users_list[user.id] = { id: user.id, name: user.label }
+        })
+    }).catch(console.error)
+    // socket.emit('users/fetch',{},(res) => {
+    //     if (res.code == 200) {
+    //         res.data.forEach(user => {
+    //             users_list[user.user_id] = user
+    //         })
+    //     }
+    // })
 }
 
-socket.on('users/listener/insert',() => {
+socket.on('users/listener/insert', () => {
     fetchUsers()
 })
-socket.on('users/listener/update',() => {
+socket.on('users/listener/update', () => {
     fetchUsers()
 })
-socket.on('users/listener/delete',() => {
+socket.on('users/listener/delete', () => {
     fetchUsers()
 })
 

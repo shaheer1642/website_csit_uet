@@ -11,6 +11,7 @@ import CustomSelect from '../../../components/CustomSelect';
 import ContextInfo from '../../../components/ContextInfo';
 import CustomButton from '../../../components/CustomButton';
 import CustomAlert from '../../../components/CustomAlert';
+import { MakeGETCall, MakePATCHCall } from '../../../api';
 
 class MisDepartmentsUpdate extends React.Component {
   constructor(props) {
@@ -43,27 +44,49 @@ class MisDepartmentsUpdate extends React.Component {
 
   fetchData = () => {
     this.setState({ loading: true })
-    socket.emit('departments/fetch', { department_id: this.department_id }, (res) => {
-      if (res.code == 200) {
-        this.setState({
-          loading: false,
-          department: res.data[0],
-          chairman_id: res.data[0].chairman_id || 'NULL'
-        })
-      }
-    })
+    MakeGETCall('/api/departments', { query: { department_id: this.department_id } }).then(res => {
+      return this.setState({
+        loading: false,
+        department: res,
+        chairman_id: res.chairman_id || 'NULL'
+      });
+    }).catch(console.error)
+    // socket.emit('departments/fetch', { department_id: this.department_id }, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       loading: false,
+    //       department: res.data[0],
+    //       chairman_id: res.data[0].chairman_id || 'NULL'
+    //     })
+    //   }
+    // })
   }
 
   updateChairman = () => {
     this.setState({ callingApi: true })
-    socket.emit('departments/updateChairman', { department_id: this.department_id, chairman_id: this.state.chairman_id }, (res) => {
+    MakePATCHCall('/api/departments/' + this.department_id + '/updateChairman', { body: { chairman_id: this.state.chairman_id || null } }).then(res => {
       this.setState({
         callingApi: false,
-        alertMsg: res.code == 200 ? 'Chairman Updated' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning'
-      })
+        alertMsg: 'Chairman Updated',
+        alertSeverity: 'success'
+      });
       this.fetchData()
+    }).catch(err => {
+      console.error(err)
+      this.setState({
+        callingApi: false,
+        alertMsg: err.message,
+        alertSeverity: 'warning'
+      });
     })
+    // socket.emit('departments/updateChairman', { department_id: this.department_id, chairman_id: this.state.chairman_id }, (res) => {
+    //   this.setState({
+    //     callingApi: false,
+    //     alertMsg: res.code == 200 ? 'Chairman Updated' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+    //   })
+    //   this.fetchData()
+    // })
   }
 
   render() {
@@ -84,7 +107,7 @@ class MisDepartmentsUpdate extends React.Component {
                   <CustomSelect
                     label="Chairman"
                     menuItems={[{ id: '', label: 'None' }]}
-                    endpoint='autocomplete/teachers'
+                    endpoint='/api/autocomplete/teachers'
                     endpointData={{
                       include_roles: ['chairman']
                     }}
