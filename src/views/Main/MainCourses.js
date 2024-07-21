@@ -6,6 +6,7 @@ import * as Color from '@mui/material/colors'
 import LoadingIcon from "../../components/LoadingIcon";
 import { getCache, setCache } from "../../localStorage";
 import { withRouter } from "../../withRouter";
+import { MakeGETCall } from "../../api";
 
 class MainCourses extends React.Component {
   constructor(props) {
@@ -28,12 +29,16 @@ class MainCourses extends React.Component {
     const cachedData = getCache('courses/fetch')
     if (cachedData) return this.setState({ coursesArr: cachedData, callingApi: '' })
 
-    socket.emit('courses/fetch', {}, (res) => {
-      if (res.code == 200) {
-        this.setState({ coursesArr: res.data, callingApi: '' })
-        setCache('courses/fetch', res.data)
-      } else console.error(res)
-    })
+    MakeGETCall('/api/courses').then(res => {
+      this.setState({ coursesArr: res, callingApi: '' })
+      setCache('courses/fetch', res)
+    }).catch(console.error)
+    // socket.emit('courses/fetch', {}, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({ coursesArr: res.data, callingApi: '' })
+    //     setCache('courses/fetch', res.data)
+    //   } else console.error(res)
+    // })
   }
 
   render() {

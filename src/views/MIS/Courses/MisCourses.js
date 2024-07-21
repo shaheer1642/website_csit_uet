@@ -11,6 +11,7 @@ import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
 import { convertUpper } from "../../../extras/functions";
+import { MakeDELETECall, MakeGETCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -44,18 +45,28 @@ class MisCourses extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("courses/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          coursesArr: res.data,
-          loadingCourses: false,
+    MakeGETCall('/api/courses').then(res => {
+      return this.setState({
+        coursesArr: res,
+        loadingCourses: false,
 
-          confirmationModalShow: false,
-          confirmationModalMessage: "",
-          confirmationModalExecute: () => { },
-        });
-      }
-    });
+        confirmationModalShow: false,
+        confirmationModalMessage: "",
+        confirmationModalExecute: () => { },
+      });
+    }).catch(console.error)
+    // socket.emit("courses/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       coursesArr: res.data,
+    //       loadingCourses: false,
+
+    //       confirmationModalShow: false,
+    //       confirmationModalMessage: "",
+    //       confirmationModalExecute: () => { },
+    //     });
+    //   }
+    // });
 
     socket.addEventListener(
       "courses/listener/insert",
@@ -148,7 +159,8 @@ class MisCourses extends React.Component {
                   confirmationModalMessage:
                     "Are you sure you want to remove this course?",
                   confirmationModalExecute: () =>
-                    socket.emit("courses/delete", { course_id: courses.course_id }),
+                    MakeDELETECall('/api/courses/' + courses.course_id).catch(console.error)
+                  // socket.emit("courses/delete", { course_id: courses.course_id }),
                 });
               }}
               rows={this.state.coursesArr}
