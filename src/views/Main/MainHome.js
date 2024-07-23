@@ -5,6 +5,7 @@ import * as Color from '@mui/material/colors'
 import React, { useState, useEffect } from 'react';
 import { styled, alpha } from '@mui/system';
 import { withRouter } from "../../withRouter";
+import { MakeGETCall } from "../../api";
 
 function AnimatedText(props) {
   const { children, value, index, delay, Transition, ...other } = props;
@@ -36,13 +37,20 @@ class MainHome extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("events/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          eventsArr: res.data,
-        });
-      }
-    });
+
+    MakeGETCall('/api/events').then(res => {
+      return this.setState({
+        eventsArr: res,
+      });
+    }).catch(console.error)
+
+    // socket.emit("events/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       eventsArr: res.data,
+    //     });
+    //   }
+    // });
 
     socket.addEventListener(
       "events/listener/insert",
@@ -97,7 +105,7 @@ class MainHome extends React.Component {
         <Grid item xs={12} padding={2} pt={10} sx={{ backgroundColor: alpha(Color.grey[900], 0.7) }}>
           <Grid item container spacing={1}>
             <Grid item xs={12} display='flex' justifyContent='center'>
-              <AnimatedText Transition={Fade} delay='100ms' color='secondary' variant="h2" fontWeight={'bold'} style={{textShadow: `3px 3px 4px black`}}>
+              <AnimatedText Transition={Fade} delay='100ms' color='secondary' variant="h2" fontWeight={'bold'} style={{ textShadow: `3px 3px 4px black` }}>
                 Department Of Computer Science & Information Technology Peshawar Campus
               </AnimatedText>
             </Grid>
@@ -125,7 +133,7 @@ class MainHome extends React.Component {
               </AnimatedText>
             </Grid>
             <Grid item container xs={12}>
-              <Zoom in={true} style={{transitionDelay: '500ms'}}>
+              <Zoom in={true} style={{ transitionDelay: '500ms' }}>
                 <Grid item xs={12}>
                   <Tabs
                     variant="scrollable"
@@ -170,7 +178,7 @@ class MainHome extends React.Component {
                   </Tabs>
                 </Grid>
               </Zoom>
-              <Zoom in={true} style={{transitionDelay: '500ms'}}>
+              <Zoom in={true} style={{ transitionDelay: '500ms' }}>
                 <Grid item xs={12}>
                   <TabPanel value={this.state.tabValue} index={0}>
                     <AnimatedText color='secondary'>The mission of the CS & IT department is:</AnimatedText>
