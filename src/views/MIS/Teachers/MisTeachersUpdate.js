@@ -71,6 +71,7 @@ class MisTeachersUpdate extends React.Component {
             <FormGenerator
               endpoint="teachers"
               formType="update"
+              idField='teacher_id'
               submitSuccessMessage='Instructor Edited Successfully'
               backgroundColor='white'
               options={{
