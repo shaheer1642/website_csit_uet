@@ -27,7 +27,7 @@ class MisThesisCreate extends React.Component {
                 position: 1,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/batchStudents',
+                endpoint: '/api/autocomplete/batchStudents',
                 endpointData: { constraints: ['exclude_thesis_students'] }
               },
               thesis_type: {
@@ -47,14 +47,14 @@ class MisThesisCreate extends React.Component {
                 position: 2,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/teachers',
+                endpoint: '/api/autocomplete/teachers',
               },
               co_supervisor_id: {
                 label: "Co-Supervisor",
                 position: 2,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/studentsThesisExaminers'
+                endpoint: '/api/autocomplete/studentsThesisExaminers'
               },
             }}
           />

@@ -67,7 +67,7 @@ class MisBatchesCreate extends React.Component {
                 position: 7,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/teachers',
+                endpoint: '/api/autocomplete/teachers',
                 endpointData: { include_roles: ['batch_advisor'] },
                 selectMenuItems: [{ id: '', label: 'None' }]
               },

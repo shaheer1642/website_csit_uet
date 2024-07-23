@@ -66,7 +66,7 @@ class MisTeachersCreate extends React.Component {
                 position: 8,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/departments',
+                endpoint: '/api/autocomplete/departments',
               },
             }}
           />

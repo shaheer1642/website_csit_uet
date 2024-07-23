@@ -80,13 +80,18 @@ class MisProfile extends React.Component {
   fetchUser = () => {
     this.setCallingApi('fetchUser')
     if (!this.props.user?.user_id) return
-    socket.emit('users/fetch', { fetch_user_id: this.props.user.user_id }, (res) => {
-      if (res.code == 200) {
-        this.setState({
-          userInfo: res.data[0],
-        }, () => this.setCallingApi(''))
-      }
-    })
+    MakeGETCall('/api/users', { query: { fetch_user_id: this.props.user.user_id } }).then(res => {
+      this.setState({
+        userInfo: res[0],
+      }, () => this.setCallingApi(''))
+    }).catch(console.error)
+    // socket.emit('users/fetch', { fetch_user_id: this.props.user.user_id }, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       userInfo: res.data[0],
+    //     }, () => this.setCallingApi(''))
+    //   }
+    // })
   }
 
   setCallingApi = (value) => this.setState({ callingApi: value })

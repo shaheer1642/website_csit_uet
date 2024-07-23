@@ -35,14 +35,14 @@ class MisSemestersCoursesCreate extends React.Component {
                 position: 2,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/teachers'
+                endpoint: '/api/autocomplete/teachers'
               },
               course_id: {
                 label: "Course",
                 position: 3,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/courses'
+                endpoint: '/api/autocomplete/courses'
               },
             }}
           />

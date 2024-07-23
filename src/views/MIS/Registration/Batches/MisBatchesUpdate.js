@@ -109,7 +109,7 @@ class MisBatchesUpdate extends React.Component {
                   position: 8,
                   xs: 6,
                   fieldType: 'select',
-                  endpoint: 'autocomplete/teachers',
+                  endpoint: '/api/autocomplete/teachers',
                   endpointData: { include_roles: ['batch_advisor'] },
                   selectMenuItems: [{ id: '', label: 'None' }]
                 },

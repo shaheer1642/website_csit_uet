@@ -27,19 +27,19 @@ class MisTeachersUpdate extends React.Component {
 
   componentDidMount() {
 
-    MakeGETCall('/api/teachers', {query: {teacher_id: this.teacher_id}}).then(res => {
+    MakeGETCall('/api/teachers', { query: { teacher_id: this.teacher_id } }).then(res => {
       const teacher = res
-        this.setState({
-          loading: false,
-          cnic: teacher.cnic,
-          reg_no: teacher.reg_no,
-          teacher_name: teacher.teacher_name,
-          teacher_gender: teacher.teacher_gender,
-          user_email: teacher.user_email,
-          qualification: teacher.qualification,
-          designation: teacher.designation,
-          teacher_department_id: teacher.teacher_department_id,
-        })
+      this.setState({
+        loading: false,
+        cnic: teacher.cnic,
+        reg_no: teacher.reg_no,
+        teacher_name: teacher.teacher_name,
+        teacher_gender: teacher.teacher_gender,
+        user_email: teacher.user_email,
+        qualification: teacher.qualification,
+        designation: teacher.designation,
+        teacher_department_id: teacher.teacher_department_id,
+      })
     }).catch(console.error)
 
 
@@ -141,7 +141,7 @@ class MisTeachersUpdate extends React.Component {
                   xs: 6,
                   defaultValue: this.state.teacher_department_id,
                   fieldType: 'select',
-                  endpoint: 'autocomplete/departments',
+                  endpoint: '/api/autocomplete/departments',
                 },
               }}
             />

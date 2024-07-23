@@ -51,7 +51,7 @@ class MisSemestersCreate extends React.Component {
                 position: 10,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/teachers',
+                endpoint: '/api/autocomplete/teachers',
                 selectMenuItems: [{ id: '', label: 'None' }]
               },
             }}

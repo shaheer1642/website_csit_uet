@@ -81,7 +81,7 @@ class MisSemestersCoursesUpdate extends React.Component {
                   position: 1,
                   xs: 6,
                   fieldType: 'select',
-                  endpoint: 'autocomplete/teachers'
+                  endpoint: '/api/autocomplete/teachers'
                 },
               }}
             />

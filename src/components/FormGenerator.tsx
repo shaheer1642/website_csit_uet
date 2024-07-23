@@ -139,7 +139,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
       console.log(schema_temp)
       var formFields: Object = {}
       schema_temp.map((attribute) => {
-        formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue
+        formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue || undefined
       })
       this.setState({ formLoading: false, schema: schema_temp, formFields: formFields })
     }).catch(console.error)
@@ -262,7 +262,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                     }, this.timeoutAlert)
                   }).catch(err => {
                     this.setState({
-                      alertMsg: `Error ${res.code}: ${res.message}`,
+                      alertMsg: `Error ${err.code}: ${err.message}`,
                       alertSeverity: 'warning'
                     }, this.timeoutAlert)
                   }).finally(() => this.setState({ callingApi: false }))
