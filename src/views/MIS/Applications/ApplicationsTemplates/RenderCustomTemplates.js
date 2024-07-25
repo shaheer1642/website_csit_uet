@@ -16,6 +16,7 @@ import { IndexKind } from "typescript";
 import CustomAlert from "../../../../components/CustomAlert";
 import GoBackButton from "../../../../components/GoBackButton";
 import { convertUpper } from "../../../../extras/functions";
+import { MakeGETCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -81,21 +82,36 @@ class RenderCustomTemplates extends React.Component {
   fetchData = () => {
     console.log('fetchData')
     if (this.state.applicationTemplate.template_id == '6f1a4a0e-fe49-11ed-95ef-0242ac110032') {
-      this.setState({callingApi: 'fetchData'})
-      socket.emit("students/fetch", {student_id: this.props.user?.user_id}, (res) => {
-        if (res.code != 200) return
-        const student = res.data[1] || res.data[0]
-        socket.emit("studentsCourses/fetch", {student_batch_id: student.student_batch_id}, (res) => {
-          if (res.code != 200) return
-          const studentCourses = res.data.filter(o => o.grade == 'N')
-          console.log('fetchData',studentCourses)
-          this.setState(state => ({
-            fields_options: {...state.fields_options , studentCourses: studentCourses},
+      this.setState({ callingApi: 'fetchData' })
 
+      MakeGETCall('/api/students', { query: { student_id: this.props.user?.user_id } }).then(res => {
+        const student = res[1] || res
+        MakeGETCall('/api/studentsCourses', { query: { student_batch_id: student.student_batch_id } }).then(res => {
+          const studentCourses = res.filter(o => o.grade == 'N')
+          console.log('fetchData', studentCourses)
+          this.setState(state => ({
+            fields_options: { ...state.fields_options, studentCourses: studentCourses },
             callingApi: ''
           }))
-        })
-      });
+        }).catch(console.error)
+      }).catch(console.error)
+
+      // socket.emit("students/fetch", { student_id: this.props.user?.user_id }, (res) => {
+      //   if (res.code != 200) return
+      //   const student = res.data[1] || res.data[0]
+      //   socket.emit("studentsCourses/fetch", { student_batch_id: student.student_batch_id }, (res) => {
+      //     if (res.code != 200) return
+      //     const studentCourses = res.data.filter(o => o.grade == 'N')
+      //     console.log('fetchData', studentCourses)
+      //     this.setState(state => ({
+      //       fields_options: { ...state.fields_options, studentCourses: studentCourses },
+
+      //       callingApi: ''
+      //     }))
+      //   })
+      // });
+
+
     }
   }
 
@@ -110,8 +126,8 @@ class RenderCustomTemplates extends React.Component {
             }))}
             getOptionLabel={(option) => option.label}
             // value={this.getFieldValue('Course title')}
-            renderInput={(params) => ( <TextField required {...params} variant="outlined" label="Course Title" color='primary' /> )}
-            onChange={(e,option) => this.updateField('Course title', option.label, option.teacher_id)}
+            renderInput={(params) => (<TextField required {...params} variant="outlined" label="Course Title" color='primary' />)}
+            onChange={(e, option) => this.updateField('Course title', option.label, option.teacher_id)}
           />
         </Grid>
         <Grid item xs={12}>
@@ -134,7 +150,7 @@ class RenderCustomTemplates extends React.Component {
     return this.state.applicationTemplate.detail_structure.filter(field => field.field_name == field_name)[0]?.field_value
   }
 
-  updateField = (field_name,field_value, ...extras) => {
+  updateField = (field_name, field_value, ...extras) => {
     var applicationTemplate = this.state.applicationTemplate
     applicationTemplate.detail_structure = applicationTemplate.detail_structure.map(field => {
       return field.field_name == field_name ? {
@@ -151,9 +167,9 @@ class RenderCustomTemplates extends React.Component {
 
   render() {
     return (
-      this.state.callingApi == 'fetchData' ? <CircularProgress /> 
-      : this.state.applicationTemplate.template_id == '6f1a4a0e-fe49-11ed-95ef-0242ac110032' ? this.courseWithdrawalTemplate() 
-      : <Typography>Error creating template</Typography>
+      this.state.callingApi == 'fetchData' ? <CircularProgress />
+        : this.state.applicationTemplate.template_id == '6f1a4a0e-fe49-11ed-95ef-0242ac110032' ? this.courseWithdrawalTemplate()
+          : <Typography>Error creating template</Typography>
     );
   }
 }

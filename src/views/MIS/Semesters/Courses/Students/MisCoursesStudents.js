@@ -28,6 +28,7 @@ import CustomSelect from "../../../../../components/CustomSelect";
 import ContextInfo from "../../../../../components/ContextInfo";
 import { calculateDegreeExpiry, convertUpper } from "../../../../../extras/functions";
 import { getCache, setCache } from "../../../../../localStorage";
+import { MakeGETCall } from "../../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -115,19 +116,36 @@ class MisCoursesStudents extends React.Component {
             const studentBatchIds = studentsCourses.map(studentCourse => studentCourse.student_batch_id)
             const students = getCache('students/fetch')
             if (students) return this.setState({ students, semesterCourse, studentBatchIds, studentsCourses, loading: false })
-            socket.emit("students/fetch", {}, (res) => {
-              if (res.code == 200) {
-                const students = res.data
-                setCache('students/fetch', students)
-                return this.setState({
-                  students,
-                  semesterCourse,
-                  studentBatchIds,
-                  studentsCourses,
-                  loading: false,
-                });
-              }
-            });
+
+
+            MakeGETCall('/api/students').then(res => {
+              const students = res
+              setCache('students/fetch', students)
+              return this.setState({
+                students,
+                semesterCourse,
+                studentBatchIds,
+                studentsCourses,
+                loading: false,
+              });
+            }).catch(console.error)
+
+            // socket.emit("students/fetch", {}, (res) => {
+            //   if (res.code == 200) {
+            //     const students = res.data
+            //     setCache('students/fetch', students)
+            //     return this.setState({
+            //       students,
+            //       semesterCourse,
+            //       studentBatchIds,
+            //       studentsCourses,
+            //       loading: false,
+            //     });
+            //   }
+            // });
+
+
+
           }
         });
       }

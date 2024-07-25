@@ -17,6 +17,7 @@ import CustomCard from "../../../components/CustomCard";
 import { calculateDegreeExpiry, convertTimestampToSeasonYear, convertUpper } from "../../../extras/functions";
 import CustomTable from "../../../components/CustomTable";
 import { getCache, setCache } from "../../../localStorage";
+import { MakeGETCall } from "../../../api";
 
 class MisStudents extends React.Component {
   constructor(props) {
@@ -41,15 +42,23 @@ class MisStudents extends React.Component {
     const cachedData = getCache('students/fetch')
     if (cachedData) return this.setState({ studentsArr: cachedData, callingApi: '' })
 
-    socket.emit('students/fetch', {}, (res) => {
-      if (res.code == 200) {
-        this.setState({
-          studentsArr: res.data,
-          callingApi: ''
-        })
-        setCache('students/fetch', res.data)
-      }
-    })
+    MakeGETCall('/api/students').then(res => {
+      this.setState({
+        studentsArr: res,
+        callingApi: ''
+      })
+      setCache('students/fetch', res)
+    }).catch(console.error)
+
+    // socket.emit('students/fetch', {}, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       studentsArr: res.data,
+    //       callingApi: ''
+    //     })
+    //     setCache('students/fetch', res.data)
+    //   }
+    // })
   }
 
   render() {

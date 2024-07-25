@@ -11,6 +11,7 @@ import ConfirmationModal from '../../../../../components/ConfirmationModal';
 import CustomCard from '../../../../../components/CustomCard';
 import Field from '../../../../../components/Field';
 import CustomTextField from '../../../../../components/CustomTextField';
+import { MakeGETCall } from '../../../../../api';
 
 class MisStudentsUpdate extends React.Component {
   constructor(props) {
@@ -33,14 +34,22 @@ class MisStudentsUpdate extends React.Component {
 
   fetchData = () => {
     this.setState({ callingApi: 'fetchData' })
-    socket.emit('students/fetch', { student_id: this.student_id, batch_id: this.batch_id }, (res) => {
-      if (res.code == 200) {
-        this.setState({
-          callingApi: '',
-          student: res.data[0]
-        })
-      }
-    })
+
+    MakeGETCall('/api/students', { query: { student_id: this.student_id, batch_id: this.batch_id } }).then(res => {
+      this.setState({
+        callingApi: '',
+        student: res
+      })
+    }).catch(console.error)
+
+    // socket.emit('students/fetch', { student_id: this.student_id, batch_id: this.batch_id }, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       callingApi: '',
+    //       student: res.data[0]
+    //     })
+    //   }
+    // })
   }
 
   render() {
