@@ -251,7 +251,7 @@ class viewApplicationsDetail extends React.Component {
                           required
                           label="Forward to"
                           fieldType='select'
-                          endpoint={['autocomplete/faculty', 'autocomplete/teachers']}
+                          endpoint={['/api/autocomplete/faculty', '/api/autocomplete/teachers']}
                           endpointData={[{}, { include_roles: ['chairman', 'batch_advisor', 'semester_coordinator'] }]}
                           sx={{ minWidth: '150px' }}
                           onChange={(e, option) => this.setState({ forward_to: option.id })}

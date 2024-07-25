@@ -3,6 +3,7 @@ import { getMessaging, getToken } from "firebase/messaging";
 // import { this.props.user, authorizationCompleted } from '../objects/user_login';
 import { socket } from '../websocket/socket';
 import { getCookie } from '../cookie_handler';
+import { MakePATCHCall } from '../api';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAjqJrNf8OsEU4JEYsNb6VRAYg5UjwAQyk",
@@ -22,9 +23,10 @@ export const fetchToken = async (callback) => {
     if (currentToken) {
       // console.log('[Firebase FCM] Current token for client:', currentToken);
       // console.log('[FCM] login_token',getCookie('login_token'))
-      socket.emit('users/FCMTokenUpdate', { login_token: getCookie('login_token'), fcm_token: currentToken }, (res) => {
-        if (res.code != 200) console.log('[FCM] error', res)
-      })
+      MakePATCHCall('/api/user/updateFCMToken', { body: { fcm_token: currentToken } }).catch(console.error)
+      // socket.emit('users/FCMTokenUpdate', { login_token: getCookie('login_token'), fcm_token: currentToken }, (res) => {
+      //   if (res.code != 200) console.log('[FCM] error', res)
+      // })
       callback(true);
     } else {
       console.log('[Firebase FCM] No registration token available. Request permission to generate one.');

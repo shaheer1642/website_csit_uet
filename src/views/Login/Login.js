@@ -9,6 +9,7 @@ import CustomButton from '../../components/CustomButton';
 import CustomTextField from '../../components/CustomTextField';
 import { isEmailValid } from '../../extras/functions';
 import CustomAlert from '../../components/CustomAlert';
+import { MakePATCHCall, MakePOSTCall } from '../../api';
 
 const styles = {
   container: {
@@ -90,7 +91,7 @@ class Login extends React.Component {
       password: this.state.userInput['password'],
       user_type: this.state.userInput['user_type']
     }).catch(err => {
-      this.updateAlertMesg(err)
+      this.updateAlertMesg(err.message, 'warning')
     }).finally(() => this.setCallingApi(''))
   }
 
@@ -111,11 +112,10 @@ class Login extends React.Component {
 
   setPanel = (value) => this.setState({ activePanel: value })
 
-  updateAlertMesg = (res, successMessage) => {
-    if (res.code == 200 && !successMessage) return
+  updateAlertMesg = (msg, severity) => {
     this.setState({
-      alertMsg: res.code == 200 ? successMessage ? successMessage : '' : `${res.status}: ${res.message}`,
-      alertSeverity: res.code == 200 ? successMessage ? 'success' : '' : 'warning'
+      alertMsg: msg,
+      alertSeverity: severity
     })
   }
 
@@ -123,33 +123,63 @@ class Login extends React.Component {
     if (!this.state.userInput['username']) return this.setState({ alertMsg: 'Enter username or email', alertSeverity: 'warning' })
     if (!this.state.userInput['user_type']) return this.setState({ alertMsg: 'User type cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('sendEmailVerificationCode')
-    socket.emit('users/sendEmailVerificationCode', {
-      user_email: isEmailValid(this.state.userInput['username']) ? this.state.userInput['username'] : undefined,
-      username: isEmailValid(this.state.userInput['username']) ? undefined : this.state.userInput['username'],
-      user_type: this.state.userInput['user_type']
-    }, (res) => {
-      console.log(res)
-      this.setCallingApi('')
-      if (res.code == 200 && callback) {
-        this.setState({ user_obj: res.data }, () => callback(res))
+    MakePOSTCall('/api/user/sendEmailVerificationCode', {
+      body: {
+        user_email: isEmailValid(this.state.userInput['username']) ? this.state.userInput['username'] : undefined,
+        username: isEmailValid(this.state.userInput['username']) ? undefined : this.state.userInput['username'],
+        user_type: this.state.userInput['user_type']
       }
-      this.updateAlertMesg(res)
+    }).then(res => {
+      this.updateAlertMesg(res.message, 'success')
+      callback && callback(res)
+    }).catch(err => {
+      this.updateAlertMesg(err.message, 'warning')
+    }).finally(() => {
+      this.setCallingApi('')
       this.resendCodeTimer(15)
     })
+    // socket.emit('users/sendEmailVerificationCode', {
+    //   user_email: isEmailValid(this.state.userInput['username']) ? this.state.userInput['username'] : undefined,
+    //   username: isEmailValid(this.state.userInput['username']) ? undefined : this.state.userInput['username'],
+    //   user_type: this.state.userInput['user_type']
+    // }, (res) => {
+    //   console.log(res)
+    //   this.setCallingApi('')
+    //   if (res.code == 200 && callback) {
+    //     this.setState({ user_obj: res.data }, () => callback(res))
+    //   }
+    //   this.updateAlertMesg(res)
+    //   this.resendCodeTimer(15)
+    // })
   }
 
   resetPassword = (callback) => {
-    if (!this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password'] || !this.state.userInput['email_verification_code']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
+    if (!this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password'] || !this.state.userInput['email_verification_code'])
+      return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
+
     this.setCallingApi('resetPassword')
-    socket.emit('users/resetPassword', {
-      user_id: this.state.user_obj?.user_id,
-      email_verification_code: this.state.userInput['email_verification_code'],
-      new_password: this.state.userInput['new_password']
-    }, res => {
+    MakePATCHCall('/api/user/resetPassword', {
+      body: {
+        email_verification_code: this.state.userInput['email_verification_code'],
+        new_password: this.state.userInput['new_password']
+      }
+    }).then((res) => {
+      this.updateAlertMesg(res.message, 'success')
+      callback && callback(res)
+    }).catch(err => {
+      this.updateAlertMesg(err.message, 'warning')
+    }).finally(() => {
       this.setCallingApi('')
-      if (res.code == 200 && callback) callback(res)
-      this.updateAlertMesg(res)
     })
+    // socket.emit('users/resetPassword', {
+    //   user_id: this.state.user_obj?.user_id,
+    //   email_verification_code: this.state.userInput['email_verification_code'],
+    //   new_password: this.state.userInput['new_password']
+    // }, res => {
+    //   this.setCallingApi('')
+    //   if (res.code == 200 && callback) callback(res)
+    //   this.updateAlertMesg(res)
+    // })
   }
 
   clearFields = () => {
@@ -354,7 +384,7 @@ class Login extends React.Component {
             })} />
           </Grid>
           <Grid item xs={'auto'}>
-            <CustomButton disabled={this.state.resendCodeTimer > 0} label={this.state.resendCodeTimer > 0 ? `Resend Code (${this.state.resendCodeTimer})` : 'Resend Code'} callingApiState={this.state.callingApi == 'sendEmailVerificationCode'} variant='contained' onClick={() => this.sendEmailVerificationCode((res) => this.updateAlertMesg(res, 'Code Sent'))} />
+            <CustomButton disabled={this.state.resendCodeTimer > 0} label={this.state.resendCodeTimer > 0 ? `Resend Code (${this.state.resendCodeTimer})` : 'Resend Code'} callingApiState={this.state.callingApi == 'sendEmailVerificationCode'} variant='contained' onClick={this.sendEmailVerificationCode} />
           </Grid>
         </Grid>
       )

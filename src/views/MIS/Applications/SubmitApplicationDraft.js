@@ -173,7 +173,7 @@ class SubmitApplicationDraft extends React.Component {
                         <CustomSelect
                           label="Submit to"
                           fieldType='select'
-                          endpoint='autocomplete/users'
+                          endpoint='/api/autocomplete/users'
                           endpointData={{
                             exclude_user_types: this.state.applicationTemplate.submit_to_type == 'teacher_only' ? ['admin', 'pga', 'student'] : ['student'],
                             exclude_user_ids: [this.props.user?.user_id]

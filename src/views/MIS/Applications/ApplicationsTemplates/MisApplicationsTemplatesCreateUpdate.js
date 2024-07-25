@@ -221,7 +221,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
                   <CustomSelect
                     label="Received by"
                     menuItems={[{ id: '', label: 'None' }]}
-                    endpoint={['autocomplete/faculty', 'autocomplete/teachers']}
+                    endpoint={['/api/autocomplete/faculty', '/api/autocomplete/teachers']}
                     endpointData={[{}, { include_roles: ['chairman', 'batch_advisor', 'semester_coordinator'] }]}
                     sx={{ minWidth: '300px' }}
                     onChange={(e, option) => this.setState({ submit_to: option.id })}

@@ -205,7 +205,7 @@ class MisThesisManagement extends React.Component {
                     <CustomSelect
                       readOnly={this.student_view || this.teacher_view}
                       menuItems={[{ id: '', label: 'None' }]}
-                      endpoint='autocomplete/teachers'
+                      endpoint='/api/autocomplete/teachers'
                       label='Supervisor'
                       onChange={(e, option) => this.updateStudentThesis('supervisor_id', option.id)}
                       value={this.state.student_thesis.supervisor_id || ''}
@@ -215,7 +215,7 @@ class MisThesisManagement extends React.Component {
                     <CustomSelect
                       readOnly={this.student_view || this.teacher_view}
                       menuItems={[{ id: '', label: 'None' }]}
-                      endpoint='autocomplete/studentsThesisExaminers'
+                      endpoint='/api/autocomplete/studentsThesisExaminers'
                       label='Co-Supervisor'
                       onChange={(e, option) => this.updateStudentThesis('co_supervisor_id', option.id)}
                       value={this.state.student_thesis.co_supervisor_id || ''}
@@ -231,7 +231,7 @@ class MisThesisManagement extends React.Component {
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
                             menuItems={[{ id: 'add_option', label: '+ Add New' }, { id: '', label: 'None' }]}
-                            endpoint='autocomplete/studentsThesisExaminers'
+                            endpoint='/api/autocomplete/studentsThesisExaminers'
                             endpointData={{ examiner_type: 'internal_examiner' }}
                             sx={{ minWidth: '300px' }}
                             onChange={(e, option) => {
@@ -248,7 +248,7 @@ class MisThesisManagement extends React.Component {
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
                             menuItems={[{ id: 'add_option', label: '+ Add New' }, { id: '', label: 'None' }]}
-                            endpoint='autocomplete/studentsThesisExaminers'
+                            endpoint='/api/autocomplete/studentsThesisExaminers'
                             endpointData={{ examiner_type: 'external_examiner' }}
                             sx={{ minWidth: '300px' }}
                             onChange={(e, option) => {
@@ -270,7 +270,7 @@ class MisThesisManagement extends React.Component {
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
                             menuItems={[{ id: 'add_option', label: '+ Add New' }, { id: '', label: 'None' }]}
-                            endpoint='autocomplete/studentsThesisExaminers'
+                            endpoint='/api/autocomplete/studentsThesisExaminers'
                             endpointData={{ examiner_type: 'internal_examiner' }}
                             sx={{ minWidth: '300px' }}
                             onChange={(e, option) => {
@@ -287,7 +287,7 @@ class MisThesisManagement extends React.Component {
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
                             menuItems={[{ id: 'add_option', label: '+ Add New' }, { id: '', label: 'None' }]}
-                            endpoint='autocomplete/studentsThesisExaminers'
+                            endpoint='/api/autocomplete/studentsThesisExaminers'
                             endpointData={{ examiner_type: 'internal_examiner' }}
                             sx={{ minWidth: '300px' }}
                             onChange={(e, option) => {
@@ -304,7 +304,7 @@ class MisThesisManagement extends React.Component {
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
                             menuItems={[{ id: 'add_option', label: '+ Add New' }, { id: '', label: 'None' }]}
-                            endpoint='autocomplete/studentsThesisExaminers'
+                            endpoint='/api/autocomplete/studentsThesisExaminers'
                             endpointData={{ examiner_type: 'external_examiner' }}
                             sx={{ minWidth: '300px' }}
                             onChange={(e, option) => {
@@ -321,7 +321,7 @@ class MisThesisManagement extends React.Component {
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
                             menuItems={[{ id: 'add_option', label: '+ Add New' }, { id: '', label: 'None' }]}
-                            endpoint='autocomplete/studentsThesisExaminers'
+                            endpoint='/api/autocomplete/studentsThesisExaminers'
                             endpointData={{ examiner_type: 'external_examiner' }}
                             sx={{ minWidth: '300px' }}
                             onChange={(e, option) => {
@@ -338,7 +338,7 @@ class MisThesisManagement extends React.Component {
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
                             menuItems={[{ id: 'add_option', label: '+ Add New' }, { id: '', label: 'None' }]}
-                            endpoint='autocomplete/studentsThesisExaminers'
+                            endpoint='/api/autocomplete/studentsThesisExaminers'
                             endpointData={{ examiner_type: 'foreign_examiner' }}
                             sx={{ minWidth: '300px' }}
                             onChange={(e, option) => {
@@ -355,7 +355,7 @@ class MisThesisManagement extends React.Component {
                             fieldType='select'
                             forceCallApi={this.state.refreshExaminers ? () => this.setState({ refreshExaminers: false }) : undefined}
                             menuItems={[{ id: 'add_option', label: '+ Add New' }, { id: '', label: 'None' }]}
-                            endpoint='autocomplete/studentsThesisExaminers'
+                            endpoint='/api/autocomplete/studentsThesisExaminers'
                             endpointData={{ examiner_type: 'foreign_examiner' }}
                             sx={{ minWidth: '300px' }}
                             onChange={(e, option) => {
