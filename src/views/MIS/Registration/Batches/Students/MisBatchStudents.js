@@ -293,7 +293,7 @@ class MisStudent extends React.Component {
 
   deleteStudent = (student_id, batch_id) => {
 
-    MakeDELETECall(`/api/students`, { body: { student_id: student_id, batch_id: batch_id } }).then(res => {
+    MakeDELETECall(`/api/students/${student_id}/${batch_id}`).then(res => {
       this.setState({
         alertMsg: 'Student removed',
         alertSeverity: 'success',
