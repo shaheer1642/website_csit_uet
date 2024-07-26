@@ -64,7 +64,7 @@ class MainNewsAndEvents extends React.Component {
   updateEvent = () => {
     this.setCallingApi('updateEvent')
 
-    MakePOSTCall('/api/events', {
+    MakePOSTCall('/api/events' + (this.state.event.type == 'create' ? '' : `/${this.state.event.event_id}`), {
       body: {
         ...this.state.event,
         body: JSON.stringify(convertToRaw(this.state.event.body.getCurrentContent()))
@@ -203,7 +203,10 @@ class MainNewsAndEvents extends React.Component {
                     <CustomButton callingApiState={this.state.callingApi == 'updateEvent'} variant="contained" label="Save" onClick={this.updateEvent} />
                   </Grid>
                   <Grid item>
-                    <CustomButton variant="outlined" label="Cancel" onClick={this.fetchData} />
+                    <CustomButton variant="outlined" label="Cancel" onClick={() => {
+                      this.fetchData()
+                      this.setState({ editing: false, event: undefined })
+                    }} />
                   </Grid>
                 </Grid> : <></>
               }
