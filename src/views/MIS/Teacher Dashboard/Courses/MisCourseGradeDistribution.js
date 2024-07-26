@@ -28,6 +28,7 @@ import CustomCard from "../../../../components/CustomCard";
 import CustomTextField from "../../../../components/CustomTextField";
 import LoadingIcon from "../../../../components/LoadingIcon";
 import { convertUpper } from "../../../../extras/functions";
+import { MakeGETCall, MakePATCHCall } from "../../../../api";
 
 
 const palletes = {
@@ -110,15 +111,23 @@ class MisGradeDistribution extends React.Component {
   }
 
   fetchSemesterCourse = () => {
-    socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
-      console.log(res)
-      if (res.code == 200) {
-        return this.setState({
-          semesterCourse: res.data[0],
-          loadingSemesterCourse: false,
-        });
-      }
-    });
+
+    MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+      return this.setState({
+        semesterCourse: res,
+        loadingSemesterCourse: false,
+      });
+    }).catch(console.error)
+
+    // socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
+    //   console.log(res)
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       semesterCourse: res.data[0],
+    //       loadingSemesterCourse: false,
+    //     });
+    //   }
+    // });
   }
 
   changeGradeDistribution = (key, value) => {
@@ -444,13 +453,28 @@ class MisGradeDistribution extends React.Component {
                           disabled={this.state.callingApi}
                           onClick={() => {
                             this.setState({ callingApi: true })
-                            socket.emit(`semestersCourses/updateGradeDistribution`, { sem_course_id: this.sem_course_id, grade_distribution: this.state.semesterCourse.grade_distribution }, res => {
+
+                            MakePATCHCall('/api/semestersCourses/updateGradeDistribution', { body: { sem_course_id: this.sem_course_id, grade_distribution: this.state.semesterCourse.grade_distribution } }).then(res => {
                               this.setState({ callingApi: false })
                               this.setState({
-                                alertMsg: res.code == 200 ? 'Updated grade distribution' : `${res.status}: ${res.message}`,
-                                alertSeverity: res.code == 200 ? 'success' : 'warning'
+                                alertMsg: 'Updated grade distribution',
+                                alertSeverity: 'success'
+                              }, timeoutAlert)
+                            }).catch(res => {
+                              this.setState({ callingApi: false })
+                              this.setState({
+                                alertMsg: `${res.status}: ${res.message}`,
+                                alertSeverity: 'warning'
                               }, timeoutAlert)
                             })
+
+                            // socket.emit(`semestersCourses/updateGradeDistribution`, { sem_course_id: this.sem_course_id, grade_distribution: this.state.semesterCourse.grade_distribution }, res => {
+                            //   this.setState({ callingApi: false })
+                            //   this.setState({
+                            //     alertMsg: res.code == 200 ? 'Updated grade distribution' : `${res.status}: ${res.message}`,
+                            //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+                            //   }, timeoutAlert)
+                            // })
                           }}
                         />
                       </Grid>

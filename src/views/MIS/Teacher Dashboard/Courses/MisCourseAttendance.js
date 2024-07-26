@@ -38,6 +38,7 @@ import LoadingIcon from "../../../../components/LoadingIcon";
 import { convertUpper } from "../../../../extras/functions";
 import { timeLocale } from "../../../../objects/Time";
 import theme from "../../../../theme";
+import { MakeGETCall, MakePATCHCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -177,19 +178,32 @@ class MisCourseAttendance extends React.Component {
 
   fetchData = () => {
     this.setState({ loading: true })
-    socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
-      if (res.code == 200 && res.data.length == 1) {
-        const semesterCourse = res.data[0];
-        socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
-          if (res.code == 200) {
-            return this.setState({
-              semesterCourse: semesterCourse,
-              courseStudents: res.data.filter(o => o.grade != 'W'),
-            }, () => this.generateAttendances(() => this.setState({ loading: false })));
-          }
-        });
+
+    MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+      if (res.length == 1) {
+        const semesterCourse = res;
+        MakeGETCall('/api/studentsCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+          return this.setState({
+            semesterCourse: semesterCourse,
+            courseStudents: res.filter(o => o.grade != 'W'),
+          }, () => this.generateAttendances(() => this.setState({ loading: false })));
+        }).catch(console.error)
       }
-    });
+    }).catch(console.error)
+
+    // socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
+    //   if (res.code == 200 && res.data.length == 1) {
+    //     const semesterCourse = res.data[0];
+    //     socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
+    //       if (res.code == 200) {
+    //         return this.setState({
+    //           semesterCourse: semesterCourse,
+    //           courseStudents: res.data.filter(o => o.grade != 'W'),
+    //         }, () => this.generateAttendances(() => this.setState({ loading: false })));
+    //       }
+    //     });
+    //   }
+    // });
   }
 
   addWeek = () => {
@@ -374,14 +388,32 @@ class MisCourseAttendance extends React.Component {
             disabled={this.state.callingApi}
             onClick={() => {
               this.setState({ callingApi: true })
-              socket.emit(`studentsCourses/updateAttendances`, { sem_course_id: this.sem_course_id, attendances: this.state.attendances }, res => {
+
+              MakePATCHCall('/api/studentsCourses/updateAttendances', { body: { sem_course_id: this.sem_course_id, attendances: this.state.attendances } }).then(res => {
                 this.setState({
-                  alertMsg: res.code == 200 ? 'Updated students attendance' : `${res.status}: ${res.message}`,
-                  alertSeverity: res.code == 200 ? 'success' : 'warning',
+                  alertMsg: 'Updated students attendance',
+                  alertSeverity: 'success',
                   showSettings: false,
                   callingApi: false
                 }, this.timeoutAlert)
+              }).catch(res => {
+                this.setState({
+                  alertMsg: `${res.status}: ${res.message}`,
+                  alertSeverity: 'warning',
+                  showSettings: false,
+                  callingApi: false
+                }, this.timeoutAlert)
+
               })
+
+              // socket.emit(`studentsCourses/updateAttendances`, { sem_course_id: this.sem_course_id, attendances: this.state.attendances }, res => {
+              //   this.setState({
+              //     alertMsg: res.code == 200 ? 'Updated students attendance' : `${res.status}: ${res.message}`,
+              //     alertSeverity: res.code == 200 ? 'success' : 'warning',
+              //     showSettings: false,
+              //     callingApi: false
+              //   }, this.timeoutAlert)
+              // })
             }}
           />
         </Grid>
@@ -545,13 +577,28 @@ class MisCourseAttendance extends React.Component {
                             disabled={this.state.callingApi}
                             onClick={() => {
                               this.setState({ callingApi: true })
-                              socket.emit(`studentsCourses/updateAttendances`, { sem_course_id: this.sem_course_id, attendances: this.state.attendances }, res => {
+
+                              MakePATCHCall('/api/studentsCourses/updateAttendances').then(res => {
                                 this.setState({ callingApi: false })
                                 this.setState({
-                                  alertMsg: res.code == 200 ? 'Updated students attendance' : `${res.status}: ${res.message}`,
-                                  alertSeverity: res.code == 200 ? 'success' : 'warning'
+                                  alertMsg: 'Updated students attendance',
+                                  alertSeverity: 'success'
+                                }, this.timeoutAlert)
+                              }).catch(res => {
+                                this.setState({ callingApi: false })
+                                this.setState({
+                                  alertMsg: `${res.status}: ${res.message}`,
+                                  alertSeverity: 'warning'
                                 }, this.timeoutAlert)
                               })
+
+                              // socket.emit(`studentsCourses/updateAttendances`, { sem_course_id: this.sem_course_id, attendances: this.state.attendances }, res => {
+                              //   this.setState({ callingApi: false })
+                              //   this.setState({
+                              //     alertMsg: res.code == 200 ? 'Updated students attendance' : `${res.status}: ${res.message}`,
+                              //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+                              //   }, this.timeoutAlert)
+                              // })
                             }}
                           />
                         </Grid>

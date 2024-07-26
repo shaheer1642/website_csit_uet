@@ -61,14 +61,22 @@ class MisStudentsManagement extends React.Component {
   }
 
   fetchStudentCourses = () => {
-    socket.emit('studentsCourses/fetch', { student_batch_id: this.student_batch_id }, (res) => {
-      if (res.code == 200) {
-        this.setState({
-          callingApi: '',
-          studentCoursesArr: res.data
-        })
-      }
-    })
+
+    MakeGETCall('/api/studentsCourses', { query: { student_batch_id: this.student_batch_id } }).then(res => {
+      this.setState({
+        callingApi: '',
+        studentCoursesArr: res
+      })
+    }).catch(console.error)
+
+    // socket.emit('studentsCourses/fetch', { student_batch_id: this.student_batch_id }, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       callingApi: '',
+    //       studentCoursesArr: res.data
+    //     })
+    //   }
+    // })
   }
 
   extendDegreeTime = () => {

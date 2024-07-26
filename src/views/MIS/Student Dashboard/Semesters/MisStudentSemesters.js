@@ -11,6 +11,7 @@ import { timeLocale } from "../../../../objects/Time";
 import { socket } from "../../../../websocket/socket";
 import GoBackButton from "../../../../components/GoBackButton";
 import { convertUpper } from "../../../../extras/functions";
+import { MakeGETCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -42,14 +43,22 @@ class MisStudentSemesters extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("semesters/fetch", { student_batch_id: this.student_batch_id }, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          studentSemestersArr: res.data,
-          loading: false,
-        });
-      }
-    });
+
+    MakeGETCall('/api/semesters', { query: { student_batch_id: this.student_batch_id } }).then(res => {
+      return this.setState({
+        studentSemestersArr: res,
+        loading: false,
+      });
+    }).catch(console.error)
+
+    // socket.emit("semesters/fetch", { student_batch_id: this.student_batch_id }, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       studentSemestersArr: res.data,
+    //       loading: false,
+    //     });
+    //   }
+    // });
   }
 
   componentWillUnmount() {

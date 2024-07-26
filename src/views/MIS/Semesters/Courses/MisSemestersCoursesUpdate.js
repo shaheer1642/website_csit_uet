@@ -7,6 +7,7 @@ import LoadingIcon from '../../../../components/LoadingIcon';
 import GoBackButton from '../../../../components/GoBackButton';
 import { Grid } from '@mui/material';
 import ContextInfo from '../../../../components/ContextInfo';
+import { MakeGETCall } from '../../../../api';
 
 class MisSemestersCoursesUpdate extends React.Component {
   constructor(props) {
@@ -22,19 +23,31 @@ class MisSemestersCoursesUpdate extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit('semestersCourses/fetch', { sem_course_id: this.sem_course_id }, (res) => {
-      console.log('[semestersCourses/fetch] response:', res)
-      if (res.code == 200) {
-        const semestersCourses = res.data[0]
-        console.log('setting state')
-        this.setState({
-          loading: false,
-          semester_id: semestersCourses.semester_id,
-          course_id: semestersCourses.course_id,
-          teacher_id: semestersCourses.teacher_id,
-        })
-      }
-    })
+
+    MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+      const semestersCourses = res
+      console.log('setting state')
+      this.setState({
+        loading: false,
+        semester_id: semestersCourses.semester_id,
+        course_id: semestersCourses.course_id,
+        teacher_id: semestersCourses.teacher_id,
+      })
+    }).catch(console.error)
+
+    // socket.emit('semestersCourses/fetch', { sem_course_id: this.sem_course_id }, (res) => {
+    //   console.log('[semestersCourses/fetch] response:', res)
+    //   if (res.code == 200) {
+    //     const semestersCourses = res.data[0]
+    //     console.log('setting state')
+    //     this.setState({
+    //       loading: false,
+    //       semester_id: semestersCourses.semester_id,
+    //       course_id: semestersCourses.course_id,
+    //       teacher_id: semestersCourses.teacher_id,
+    //     })
+    //   }
+    // })
   }
 
   render() {
