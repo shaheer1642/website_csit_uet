@@ -400,11 +400,11 @@ class MainLayout extends React.Component {
     this.props.fetchUser()
   }
 
-  componentDidUpdate() {
-    if (this.props.user) {
-      this.props.navigate('/mis')
-    }
-  }
+  // componentDidUpdate() {
+  //   if (this.props.user) {
+  //     this.props.navigate('/mis')
+  //   }
+  // }
 
   componentWillUnmount() {
     console.log('[MainLayout] componentWillUnmount')
