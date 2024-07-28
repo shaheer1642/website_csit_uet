@@ -19,6 +19,7 @@ import { timeLocale } from "../../../objects/Time";
 import { convertUpper } from "../../../extras/functions";
 import ContextInfo from "../../../components/ContextInfo";
 import { getUserNameById } from "../../../objects/Users_List";
+import { MakeDELETECall, MakeGETCall } from "../../../api";
 
 class MisSemesters extends React.Component {
   constructor(props) {
@@ -34,24 +35,31 @@ class MisSemesters extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("semesters/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          semestersArr: res.data,
-          loadingSemesters: false,
-        });
-      }
-    });
 
-    socket.addEventListener('semesters/listener/insert', this.semestersListenerInsert)
-    socket.addEventListener('semesters/listener/update', this.semestersListenerUpdate)
-    socket.addEventListener('semesters/listener/delete', this.semestersListenerDelete)
+    this.fetchSemesters()
+    // socket.emit("semesters/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       semestersArr: res.data,
+    //       loadingSemesters: false,
+    //     });
+    //   }
+    // });
+
+    socket.addEventListener('semesters_changed', this.fetchSemesters)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semesters/listener/insert', this.semestersListenerInsert)
-    socket.removeEventListener('semesters/listener/update', this.semestersListenerUpdate)
-    socket.removeEventListener('semesters/listener/delete', this.semestersListenerDelete)
+    socket.removeEventListener('semesters_changed', this.fetchSemesters)
+  }
+
+  fetchSemesters = () => {
+    MakeGETCall('/api/semesters').then(res => {
+      return this.setState({
+        semestersArr: res,
+        loadingSemesters: false,
+      });
+    }).catch(console.error)
   }
 
   semestersListenerInsert = (data) => {
@@ -131,7 +139,10 @@ class MisSemesters extends React.Component {
                     this.setState({
                       confirmationModalShow: true,
                       confirmationModalMessage: 'Are you sure you want to remove this semester?',
-                      confirmationModalExecute: () => socket.emit('semesters/delete', { semester_id: semester.semester_id })
+                      confirmationModalExecute: () => {
+                        MakeDELETECall(`/api/semesters/${semester.semester_id}`).catch(console.error)
+                        // socket.emit('semesters/delete', { semester_id: semester.semester_id })
+                      }
                     })
                   }}
                   rows={this.state.semestersArr}

@@ -16,6 +16,7 @@ import { IndexKind } from "typescript";
 import CustomAlert from "../../../components/CustomAlert";
 import GoBackButton from "../../../components/GoBackButton";
 import RenderCustomTemplates from "./ApplicationsTemplates/RenderCustomTemplates";
+import { MakeGETCall, MakePOSTCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -85,19 +86,28 @@ class SubmitApplicationDraft extends React.Component {
 
   fetchApplicationTemplate = () => {
     this.setState({ loading: true })
-    socket.emit("applicationsTemplates/fetch", { template_id: this.template_id }, (res) => {
-      this.setState({ loading: false })
-      if (res.code == 200 && res.data.length == 1) {
-        const applicationTemplate = res.data[0]
-        console.log('fetchApplicationTemplate', applicationTemplate)
-        return this.setState({
-          applicationTemplate: applicationTemplate,
-          submit_to_change: applicationTemplate.submit_to ? false : true
-        });
-      } else {
-        this.template_id = null
-      }
-    });
+    MakeGETCall('/api/applicationsTemplates', { query: { template_id: this.template_id } }).then(res => {
+      const applicationTemplate = res[0]
+      return this.setState({
+        applicationTemplate: applicationTemplate,
+        submit_to_change: applicationTemplate.submit_to ? false : true
+      });
+    }).catch(err => {
+      this.template_id = null
+    }).finally(() => this.setState({ loading: false }))
+    // socket.emit("applicationsTemplates/fetch", { template_id: this.template_id }, (res) => {
+    //   this.setState({ loading: false })
+    //   if (res.code == 200 && res.data.length == 1) {
+    //     const applicationTemplate = res.data[0]
+    //     console.log('fetchApplicationTemplate', applicationTemplate)
+    //     return this.setState({
+    //       applicationTemplate: applicationTemplate,
+    //       submit_to_change: applicationTemplate.submit_to ? false : true
+    //     });
+    //   } else {
+    //     this.template_id = null
+    //   }
+    // });
   }
 
   updateField = (key, value, index) => {
@@ -110,25 +120,44 @@ class SubmitApplicationDraft extends React.Component {
 
   submitApplication = () => {
     this.setState({ callingApi: true })
-    socket.emit('applications/create', {
-      application_title: this.state.applicationTemplate.application_title,
-      detail_structure: this.state.applicationTemplate.detail_structure,
-      submitted_to: this.state.applicationTemplate.submit_to,
-    }, (res) => {
-      this.setState({ callingApi: false })
-      if (res.code == 200) {
-        this.setState({
-          alertMsg: 'Application has been submitted!',
-          alertSeverity: 'success'
-        })
-        this.fetchApplicationTemplate()
-      } else {
-        this.setState({
-          alertMsg: `Error: ${res.message}`,
-          alertSeverity: 'warning'
-        })
+    MakePOSTCall('/api/applications', {
+      body: {
+        application_title: this.state.applicationTemplate.application_title,
+        detail_structure: this.state.applicationTemplate.detail_structure,
+        submitted_to: this.state.applicationTemplate.submit_to,
       }
-    })
+    }).then(res => {
+      this.setState({
+        alertMsg: 'Application has been submitted!',
+        alertSeverity: 'success'
+      })
+      this.fetchApplicationTemplate()
+    }).catch(err => {
+      console.error(err)
+      this.setState({
+        alertMsg: `Error: ${err.message}`,
+        alertSeverity: 'warning'
+      })
+    }).finally(() => this.setState({ callingApi: false }))
+    // socket.emit('applications/create', {
+    //   application_title: this.state.applicationTemplate.application_title,
+    //   detail_structure: this.state.applicationTemplate.detail_structure,
+    //   submitted_to: this.state.applicationTemplate.submit_to,
+    // }, (res) => {
+    //   this.setState({ callingApi: false })
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       alertMsg: 'Application has been submitted!',
+    //       alertSeverity: 'success'
+    //     })
+    //     this.fetchApplicationTemplate()
+    //   } else {
+    //     this.setState({
+    //       alertMsg: `Error: ${res.message}`,
+    //       alertSeverity: 'warning'
+    //     })
+    //   }
+    // })
   }
 
   renderCustomTemplate = (application_title) => {
@@ -173,7 +202,7 @@ class SubmitApplicationDraft extends React.Component {
                         <CustomSelect
                           label="Submit to"
                           fieldType='select'
-                          endpoint='autocomplete/users'
+                          endpoint='/api/autocomplete/users'
                           endpointData={{
                             exclude_user_types: this.state.applicationTemplate.submit_to_type == 'teacher_only' ? ['admin', 'pga', 'student'] : ['student'],
                             exclude_user_ids: [this.props.user?.user_id]

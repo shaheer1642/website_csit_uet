@@ -6,6 +6,7 @@ import { withRouter } from "../../../withRouter";
 import CustomTable from "../../../components/CustomTable";
 import CustomCard from "../../../components/CustomCard";
 import { convertUpper } from "../../../extras/functions";
+import { MakeGETCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -36,67 +37,32 @@ class MisTeachersPerformance extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("teachers/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          teachersArr: res.data,
-          loadingTeachers: false,
-        });
-      }
-    });
 
-    socket.addEventListener(
-      "teachers/listener/insert",
-      this.teachersListenerInsert
-    );
-    socket.addEventListener(
-      "teachers/listener/update",
-      this.teachersListenerUpdate
-    );
-    socket.addEventListener(
-      "teachers/listener/delete",
-      this.teachersListenerDelete
-    );
+    this.fetchTeachers()
+    // socket.emit("teachers/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       teachersArr: res.data,
+    //       loadingTeachers: false,
+    //     });
+    //   }
+    // });
+
+    socket.addEventListener("teachers_changed", this.fetchTeachers);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener(
-      "teachers/listener/insert",
-      this.teachersListenerInsert
-    );
-    socket.removeEventListener(
-      "teachers/listener/update",
-      this.teachersListenerUpdate
-    );
-    socket.removeEventListener(
-      "teachers/listener/delete",
-      this.teachersListenerDelete
-    );
+    socket.removeEventListener("teachers_changed", this.fetchTeachers);
   }
 
-  teachersListenerInsert = (data) => {
-    return this.setState({
-      teachersArr: [data, ...this.state.teachersArr],
-    });
-  };
-  teachersListenerUpdate = (data) => {
-    return this.setState((state) => {
-      const teachersArr = state.teachersArr.map((teacher, index) => {
-        if (teacher.teacher_id === data.teacher_id) return data;
-        else return teacher;
+  fetchTeachers = () => {
+    MakeGETCall('/api/teachers').then(res => {
+      return this.setState({
+        teachersArr: res,
+        loadingTeachers: false,
       });
-      return {
-        teachersArr,
-      };
-    });
-  };
-  teachersListenerDelete = (data) => {
-    return this.setState({
-      teachersArr: this.state.teachersArr.filter(
-        (teacher) => teacher.teacher_id != data.teacher_id
-      ),
-    });
-  };
+    }).catch(console.error)
+  }
 
   render() {
     const columns = [

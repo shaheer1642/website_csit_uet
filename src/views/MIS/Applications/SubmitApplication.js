@@ -10,6 +10,7 @@ import CustomButton from "../../../components/CustomButton";
 import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
+import { MakeGETCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -33,56 +34,62 @@ class SubmitApplication extends React.Component {
 
   componentDidMount() {
     this.fetchApplicationsTemplates()
-    socket.addEventListener("applicationsTemplates/listener/changed",this.fetchApplicationsTemplates);
+    socket.addEventListener("applications_templates_changed", this.fetchApplicationsTemplates);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("applicationsTemplates/listener/changed",this.fetchApplicationsTemplates);
+    socket.removeEventListener("applications_templates_changed", this.fetchApplicationsTemplates);
   }
 
   fetchApplicationsTemplates = () => {
-    this.setState({loading: true})
-    socket.emit("applicationsTemplates/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          applicationsTemplatesArr: res.data.filter(o => o.submit_to != this.props.user?.user_id),
-          loading: false,
-        });
-      }
-    });
+    this.setState({ loading: true })
+    MakeGETCall('/api/applicationsTemplates').then(res => {
+      return this.setState({
+        applicationsTemplatesArr: res.filter(o => o.submit_to != this.props.user?.user_id),
+        loading: false,
+      });
+    }).catch(console.error)
+    // socket.emit("applicationsTemplates/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       applicationsTemplatesArr: res.data.filter(o => o.submit_to != this.props.user?.user_id),
+    //       loading: false,
+    //     });
+    //   }
+    // });
   }
 
   timeoutAlert = () => {
     clearTimeout(this.timeoutAlertRef)
-    this.timeoutAlertRef = setTimeout(() => this.setState({alertMsg: ''}), 10000)
+    this.timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 10000)
   }
 
   applicationCard = (applicationTemplate) => {
     return (
-        <Card sx={{":hover": {backgroundColor: 'primary.main', color: 'common.white', padding: 3}, padding: 2, transition: '0.2s', color: 'primary.dark', border: '2px solid', borderColor: 'primary.main'}} onClick={() => this.props.navigate('draft', {state: {template_id: applicationTemplate.template_id}})}>
-            <CardContent>
-                <Typography variant='h3'> 
-                    {applicationTemplate.application_title}
-                </Typography>
-            </CardContent>
-        </Card>
+      <Card sx={{ ":hover": { backgroundColor: 'primary.main', color: 'common.white', padding: 3 }, padding: 2, transition: '0.2s', color: 'primary.dark', border: '2px solid', borderColor: 'primary.main' }} onClick={() => this.props.navigate('draft', { state: { template_id: applicationTemplate.template_id } })}>
+        <CardContent>
+          <Typography variant='h3'>
+            {applicationTemplate.application_title}
+          </Typography>
+        </CardContent>
+      </Card>
     )
   }
 
   render() {
     return (
-        this.state.loading ? <CircularProgress /> :
+      this.state.loading ? <CircularProgress /> :
         <CustomCard>
-        <Grid container spacing={2}>
+          <Grid container spacing={2}>
             <Grid item xs={12}>
               <Typography variant='h3'>Please choose application type:</Typography>
             </Grid>
-            {this.state.applicationsTemplatesArr.map((applicationTemplate,index) => {
-                return <Grid key={index} item xs='auto'>
-                    {this.applicationCard(applicationTemplate)}
-                </Grid>
+            {this.state.applicationsTemplatesArr.map((applicationTemplate, index) => {
+              return <Grid key={index} item xs='auto'>
+                {this.applicationCard(applicationTemplate)}
+              </Grid>
             })}
-        </Grid>
+          </Grid>
         </CustomCard>
     );
   }

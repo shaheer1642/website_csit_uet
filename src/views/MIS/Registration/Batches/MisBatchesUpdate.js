@@ -6,6 +6,7 @@ import { withRouter } from '../../../../withRouter';
 import LoadingIcon from '../../../../components/LoadingIcon';
 import { Grid } from '@mui/material';
 import GoBackButton from '../../../../components/GoBackButton';
+import { MakeGETCall } from '../../../../api';
 
 class MisBatchesUpdate extends React.Component {
   constructor(props) {
@@ -22,22 +23,37 @@ class MisBatchesUpdate extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit('batches/fetch', { batch_id: this.batch_id }, (res) => {
-      console.log('[batches/fetch] response:', res)
-      if (res.code == 200) {
-        const batch = res.data[0]
-        this.setState({
-          loading: false,
-          batch_no: batch.batch_no,
-          batch_stream: batch.batch_stream,
-          enrollment_year: batch.enrollment_year,
-          enrollment_season: batch.enrollment_season,
-          degree_type: batch.degree_type,
-          batch_expiration_timestamp: batch.batch_expiration_timestamp,
-          batch_advisor_id: batch.batch_advisor_id
-        })
-      }
-    })
+
+    MakeGETCall('/api/batches', { query: { batch_id: this.batch_id } }).then(res => {
+      const batch = res[0]
+      this.setState({
+        loading: false,
+        batch_no: batch.batch_no,
+        batch_stream: batch.batch_stream,
+        enrollment_year: batch.enrollment_year,
+        enrollment_season: batch.enrollment_season,
+        degree_type: batch.degree_type,
+        batch_expiration_timestamp: batch.batch_expiration_timestamp,
+        batch_advisor_id: batch.batch_advisor_id
+      })
+    }).catch(console.error)
+
+    // socket.emit('batches/fetch', { batch_id: this.batch_id }, (res) => {
+    //   console.log('[batches/fetch] response:', res)
+    //   if (res.code == 200) {
+    //     const batch = res.data[0]
+    //     this.setState({
+    //       loading: false,
+    //       batch_no: batch.batch_no,
+    //       batch_stream: batch.batch_stream,
+    //       enrollment_year: batch.enrollment_year,
+    //       enrollment_season: batch.enrollment_season,
+    //       degree_type: batch.degree_type,
+    //       batch_expiration_timestamp: batch.batch_expiration_timestamp,
+    //       batch_advisor_id: batch.batch_advisor_id
+    //     })
+    //   }
+    // })
   }
 
   render() {
@@ -49,6 +65,7 @@ class MisBatchesUpdate extends React.Component {
             <FormGenerator
               endpoint="batches"
               formType="update"
+              idField='batch_id'
               submitSuccessMessage='Batch Edited Successfully'
               backgroundColor='white'
               options={{
@@ -109,7 +126,7 @@ class MisBatchesUpdate extends React.Component {
                   position: 8,
                   xs: 6,
                   fieldType: 'select',
-                  endpoint: 'autocomplete/teachers',
+                  endpoint: '/api/autocomplete/teachers',
                   endpointData: { include_roles: ['batch_advisor'] },
                   selectMenuItems: [{ id: '', label: 'None' }]
                 },

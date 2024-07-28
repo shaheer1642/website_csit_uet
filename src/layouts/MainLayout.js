@@ -46,7 +46,7 @@ function HeaderAppBar(props) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [value, setValue] = React.useState(tabs.findIndex((tab) => tab.path == location.pathname));
   const navigate = useNavigate()
-  console.log('location',location.pathname,value)
+  console.log('location', location.pathname, value)
   const handleChange = (event, newValue) => {
     console.log('handleChange', newValue)
     setValue(newValue);
@@ -120,7 +120,7 @@ function HeaderAppBar(props) {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {tabs.map((page,index) => (
+              {tabs.map((page, index) => (
                 <MenuItem key={index} onClick={() => {
                   navigate(page.path)
                   handleCloseNavMenu()
@@ -144,7 +144,7 @@ function HeaderAppBar(props) {
                 },
               }}
             >
-              {tabs.map((page,index) => <Tab key={index} value={index} label={page.label} onClick={() => navigate(page.path)} />)}
+              {tabs.map((page, index) => <Tab key={index} value={index} label={page.label} onClick={() => navigate(page.path)} />)}
             </Tabs>
           </Box>
           {LogoText({ xs: 'flex', md: 'none' })}
@@ -397,8 +397,14 @@ class MainLayout extends React.Component {
 
   componentDidMount() {
     console.log('[MainLayout] componentDidMount')
-    this.props.login()
+    this.props.fetchUser()
   }
+
+  // componentDidUpdate() {
+  //   if (this.props.user) {
+  //     this.props.navigate('/mis')
+  //   }
+  // }
 
   componentWillUnmount() {
     console.log('[MainLayout] componentWillUnmount')

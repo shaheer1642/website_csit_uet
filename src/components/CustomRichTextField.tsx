@@ -7,6 +7,7 @@ import { Box, ButtonGroup, IconButton, Tooltip } from '@mui/material';
 import { CancelOutlined, Check, Edit } from '@mui/icons-material';
 import { global_documents } from '../objects/Documents';
 import { socket } from '../websocket/socket';
+import { MakePOSTCall } from '../api';
 
 interface IProps {
   readOnly?: boolean,
@@ -44,9 +45,9 @@ export default class CustomRichTextField extends React.Component<IProps, IState>
     return new Promise((resolve, reject) => {
       const data = new FormData();
       data.append(file.name, file)
-      socket.emit('documents/create', { document: file, document_name: file.name }, (res) => {
-        resolve({ data: { link: res.data.document_url } });
-      })
+      MakePOSTCall('/api/documents', { body: { document: file, document_name: file.name } }).then(res => {
+        resolve({ data: { link: res.document_url } });
+      }).catch(console.error)
     });
   }
 

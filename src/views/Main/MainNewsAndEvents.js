@@ -16,6 +16,7 @@ import CustomTextField from "../../components/CustomTextField";
 import CustomButton from "../../components/CustomButton";
 import { Delete, Edit } from "@mui/icons-material";
 import ConfirmationModal from "../../components/ConfirmationModal";
+import { MakeDELETECall, MakeGETCall, MakePOSTCall } from "../../api";
 
 class MainNewsAndEvents extends React.Component {
   constructor(props) {
@@ -41,13 +42,19 @@ class MainNewsAndEvents extends React.Component {
   fetchData = () => {
     this.setCallingApi('fetchData')
 
-    socket.emit('events/fetch', {}, (res) => {
-      if (res.code == 200) {
-        this.setState({ eventsArr: this.parseBody(res.data), callingApi: '' })
-        if (this.state.event) this.setState((prevState) => ({ event: this.parseBody(res.data).filter(ev => ev.event_id == prevState.event.event_id)?.[0] || undefined }))
-        setCache('events/fetch', res.data)
-      } else console.error(res)
-    })
+    MakeGETCall('/api/events').then(res => {
+      this.setState({ eventsArr: this.parseBody(res), callingApi: '' })
+      if (this.state.event) this.setState((prevState) => ({ event: this.parseBody(res).filter(ev => ev.event_id == prevState.event.event_id)?.[0] || undefined }))
+      setCache('events/fetch', res)
+    }).catch(res => console.error(res))
+
+    // socket.emit('events/fetch', {}, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({ eventsArr: this.parseBody(res.data), callingApi: '' })
+    //     if (this.state.event) this.setState((prevState) => ({ event: this.parseBody(res.data).filter(ev => ev.event_id == prevState.event.event_id)?.[0] || undefined }))
+    //     setCache('events/fetch', res.data)
+    //   } else console.error(res)
+    // })
   }
 
   parseBody = (data) => {
@@ -57,28 +64,41 @@ class MainNewsAndEvents extends React.Component {
   updateEvent = () => {
     this.setCallingApi('updateEvent')
 
-    socket.emit(this.state.event.type == 'create' ? 'events/create' : 'events/update',
-      {
+    MakePOSTCall('/api/events' + (this.state.event.type == 'create' ? '' : `/${this.state.event.event_id}`), {
+      body: {
         ...this.state.event,
         body: JSON.stringify(convertToRaw(this.state.event.body.getCurrentContent()))
       }
-      , (res) => {
-        this.setCallingApi('')
-        if (res.code == 200) {
-          this.fetchData()
-        }
-      })
+    }).then(res => {
+      this.fetchData()
+    }).catch(console.error).finally(() => this.setCallingApi(''))
+
+    // socket.emit(this.state.event.type == 'create' ? 'events/create' : 'events/update',
+    //   {
+    //     ...this.state.event,
+    //     body: JSON.stringify(convertToRaw(this.state.event.body.getCurrentContent()))
+    //   }
+    //   , (res) => {
+    //     this.setCallingApi('')
+    //     if (res.code == 200) {
+    //       this.fetchData()
+    //     }
+    //   })
   }
 
   deleteEvent = (event_id) => {
     this.setCallingApi('updateEvent')
 
-    socket.emit('events/delete', { event_id }, (res) => {
-      this.setCallingApi('')
-      if (res.code == 200) {
-        this.fetchData()
-      }
-    })
+    MakeDELETECall(`/api/events/${event_id}`).then(res => {
+      this.fetchData()
+    }).catch(console.error).finally(() => this.setCallingApi(''))
+
+    // socket.emit('events/delete', { event_id }, (res) => {
+    //   this.setCallingApi('')
+    //   if (res.code == 200) {
+    //     this.fetchData()
+    //   }
+    // })
   }
 
   handleCardClick = (event) => {
@@ -183,7 +203,10 @@ class MainNewsAndEvents extends React.Component {
                     <CustomButton callingApiState={this.state.callingApi == 'updateEvent'} variant="contained" label="Save" onClick={this.updateEvent} />
                   </Grid>
                   <Grid item>
-                    <CustomButton variant="outlined" label="Cancel" onClick={this.fetchData} />
+                    <CustomButton variant="outlined" label="Cancel" onClick={() => {
+                      this.fetchData()
+                      this.setState({ editing: false, event: undefined })
+                    }} />
                   </Grid>
                 </Grid> : <></>
               }

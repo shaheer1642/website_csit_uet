@@ -1,17 +1,17 @@
+import { MakeGETCall } from "../api";
 import eventHandler from "../eventHandler"
 import { socket } from "../websocket/socket"
 
 var global_documents = []
 
 fetchDocuments()
-socket.addEventListener("documents/listener/changed", fetchDocuments);
+socket.addEventListener("documents_changed", fetchDocuments);
 
 function fetchDocuments() {
-    socket.emit("documents/fetch", {}, (res) => {
-        if (res.code == 200) {
-            global_documents = res.data
-        }
-    });
+    MakeGETCall('/api/documents')
+        .then(res => {
+            global_documents = res
+        }).catch(console.error)
 }
 
 function getNameForUrl(url) {
@@ -23,4 +23,4 @@ function getNameForUrl(url) {
     else return name
 }
 
-export {global_documents, getNameForUrl};
+export { global_documents, getNameForUrl };

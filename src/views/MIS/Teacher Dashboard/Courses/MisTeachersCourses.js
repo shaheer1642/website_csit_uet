@@ -17,6 +17,7 @@ import ConfirmationModal from "../../../../components/ConfirmationModal";
 import GoBackButton from "../../../../components/GoBackButton";
 import CustomCard from "../../../../components/CustomCard";
 import { convertUpper } from "../../../../extras/functions";
+import { MakeGETCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -52,11 +53,11 @@ class MisTeachersCourses extends React.Component {
 
   componentDidMount() {
     this.fetchSemesterCourses();
-    socket.addEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.addEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.removeEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
 
@@ -65,14 +66,22 @@ class MisTeachersCourses extends React.Component {
   }
 
   fetchSemesterCourses = () => {
-    socket.emit("semestersCourses/fetch", { teacher_id: this.props.user.user_id }, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          semestersCoursesArr: res.data,
-          loadingSemesterCourses: false,
-        });
-      }
-    });
+
+    MakeGETCall('/api/semestersCourses', { query: { teacher_id: this.props.user.user_id } }).then(res => {
+      return this.setState({
+        semestersCoursesArr: res,
+        loadingSemesterCourses: false,
+      });
+    }).catch(console.error)
+
+    // socket.emit("semestersCourses/fetch", { teacher_id: this.props.user.user_id }, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       semestersCoursesArr: res.data,
+    //       loadingSemesterCourses: false,
+    //     });
+    //   }
+    // });
   }
 
   confirmationModalDestroy = () => {

@@ -12,6 +12,7 @@ import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
 import { convertUpper } from "../../../extras/functions";
 import { getUserNameById } from "../../../objects/Users_List";
+import { MakeGETCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -50,14 +51,20 @@ class MisDepartments extends React.Component {
 
   fetchData = () => {
     this.setState({ loading: true })
-    socket.emit("departments/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          departmentsArr: res.data,
-          loading: false,
-        });
-      }
-    });
+    MakeGETCall('/api/departments').then(res => {
+      return this.setState({
+        departmentsArr: res,
+        loading: false,
+      });
+    }).catch(console.error)
+    // socket.emit("departments/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       departmentsArr: res.data,
+    //       loading: false,
+    //     });
+    //   }
+    // });
   }
 
   render() {

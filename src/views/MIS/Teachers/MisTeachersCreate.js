@@ -18,6 +18,7 @@ class MisTeachersCreate extends React.Component {
           <FormGenerator
             endpoint="teachers"
             formType="create"
+            idField="teacher_id"
             submitSuccessMessage="Instructor Created Successfully"
             backgroundColor="white"
             options={{
@@ -65,7 +66,7 @@ class MisTeachersCreate extends React.Component {
                 position: 8,
                 xs: 6,
                 fieldType: 'select',
-                endpoint: 'autocomplete/departments',
+                endpoint: '/api/autocomplete/departments',
               },
             }}
           />

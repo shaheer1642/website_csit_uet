@@ -16,6 +16,7 @@ import { convertTimestampToSeasonYear, convertUpper } from '../../../../extras/f
 import CustomSelect from '../../../../components/CustomSelect';
 import ContextInfo from '../../../../components/ContextInfo';
 import { getUserNameById } from '../../../../objects/Users_List';
+import { MakeDELETECall, MakeGETCall } from '../../../../api';
 
 const palletes = {
   primary: '#439CEF',
@@ -51,47 +52,33 @@ class MisBatches extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit('batches/fetch', {}, (res) => {
-      console.log(res)
-      if (res.code == 200) {
-        return this.setState({
-          batchesArr: res.data,
-          loadingBatches: false
-        })
-      }
-    })
 
-    socket.addEventListener('batches/listener/insert', this.batchesListenerInsert)
-    socket.addEventListener('batches/listener/update', this.batchesListenerUpdate)
-    socket.addEventListener('batches/listener/delete', this.batchesListenerDelete)
+    this.fetchBatches()
+
+    // socket.emit('batches/fetch', {}, (res) => {
+    //   console.log(res)
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       batchesArr: res.data,
+    //       loadingBatches: false
+    //     })
+    //   }
+    // })
+
+    socket.addEventListener('batches_changed', this.fetchBatches)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('batches/listener/insert', this.batchesListenerInsert)
-    socket.removeEventListener('batches/listener/update', this.batchesListenerUpdate)
-    socket.removeEventListener('batches/listener/delete', this.batchesListenerDelete)
+    socket.removeEventListener('batches_changed', this.fetchBatches)
   }
 
-  batchesListenerInsert = (data) => {
-    return this.setState({
-      batchesArr: [data, ...this.state.batchesArr]
-    })
-  }
-  batchesListenerUpdate = (data) => {
-    return this.setState(state => {
-      const batchesArr = state.batchesArr.map((batch, index) => {
-        if (batch.batch_id === data.batch_id) return data;
-        else return batch
-      });
-      return {
-        batchesArr,
-      }
-    });
-  }
-  batchesListenerDelete = (data) => {
-    return this.setState({
-      batchesArr: this.state.batchesArr.filter((batch) => batch.batch_id != data.batch_id)
-    })
+  fetchBatches = () => {
+    MakeGETCall('/api/batches').then(res => {
+      return this.setState({
+        batchesArr: res,
+        loadingBatches: false
+      })
+    }).catch(console.error)
   }
 
   confirmationModalDestroy = () => {
@@ -142,7 +129,10 @@ class MisBatches extends React.Component {
                     this.setState({
                       confirmationModalShow: true,
                       confirmationModalMessage: 'Are you sure you want to delete this batch? This will also delete all the students in the batch',
-                      confirmationModalExecute: () => socket.emit('batches/delete', { batch_id: batch.batch_id })
+                      confirmationModalExecute: () => {
+                        MakeDELETECall(`/api/batches/${batch.batch_id}`).catch(console.error)
+                        // socket.emit('batches/delete', { batch_id: batch.batch_id })
+                      }
                     })
                   }}
                   rows={this.state.batchesArr.filter(batch => (this.state.tabIndex == 0 && batch.degree_type == 'ms') || (this.state.tabIndex == 1 && batch.degree_type == 'phd'))}

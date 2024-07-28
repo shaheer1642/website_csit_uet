@@ -6,6 +6,7 @@ import { withRouter } from '../../../withRouter';
 import LoadingIcon from '../../../components/LoadingIcon';
 import GoBackButton from "../../../components/GoBackButton";
 import { Grid } from "@mui/material";
+import { MakeGETCall } from '../../../api';
 
 class MisCoursesUpdate extends React.Component {
   constructor(props) {
@@ -21,16 +22,23 @@ class MisCoursesUpdate extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit('courses/fetch', { course_id: this.course_id }, (res) => {
-      console.log('[courses/fetch] response:', res)
-      if (res.code == 200) {
-        const course = res.data[0]
-        this.setState({
-          loading: false,
-          course: course,
-        })
-      }
-    })
+    MakeGETCall('/api/courses', { query: { course_id: this.course_id } }).then(res => {
+      console.log('got res', res)
+      this.setState({
+        loading: false,
+        course: res,
+      })
+    }).catch(console.error)
+    // socket.emit('courses/fetch', { course_id: this.course_id }, (res) => {
+    //   console.log('[courses/fetch] response:', res)
+    //   if (res.code == 200) {
+    //     const course = res.data[0]
+    //     this.setState({
+    //       loading: false,
+    //       course: course,
+    //     })
+    //   }
+    // })
   }
 
   render() {
@@ -42,6 +50,7 @@ class MisCoursesUpdate extends React.Component {
             <FormGenerator
               endpoint="courses"
               formType="update"
+              idField='course_id'
               submitSuccessMessage='Course Edited Successfully'
               backgroundColor='white'
               options={{

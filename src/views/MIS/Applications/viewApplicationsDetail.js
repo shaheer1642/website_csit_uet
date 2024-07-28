@@ -22,6 +22,7 @@ import { convertUpper } from "../../../extras/functions";
 import { getUserNameById } from "../../../objects/Users_List";
 import { timeLocale } from "../../../objects/Time";
 import Field from "../../../components/Field";
+import { MakeGETCall, MakePATCHCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -52,9 +53,7 @@ class viewApplicationsDetail extends React.Component {
   componentDidMount() {
     if (!this.application_id) this.props.navigate(-1)
     this.fetchApplication()
-    socket.addEventListener("applications/listener/insert", this.fetchApplication);
-    socket.addEventListener("applications/listener/update", this.fetchApplication);
-    socket.addEventListener("applications/listener/delete", this.fetchApplication);
+    socket.addEventListener("applications_changed", this.fetchApplication);
   }
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (!prevState.alertMsg && !this.state.alertMsg) return
@@ -64,21 +63,22 @@ class viewApplicationsDetail extends React.Component {
     }, 3000);
   }
   componentWillUnmount() {
-    socket.removeEventListener("applications/listener/insert", this.fetchApplication);
-    socket.removeEventListener("applications/listener/update", this.fetchApplication);
-    socket.removeEventListener("applications/listener/delete", this.fetchApplication);
+    socket.removeEventListener("applications_changed", this.fetchApplication);
   }
 
   fetchApplication = () => {
     this.setState({ loading: true })
-    socket.emit("applications/fetch", { application_id: this.application_id }, (res) => {
-      this.setState({ loading: false })
-      console.log(res)
-      if (res.code == 200 && res.data.length == 1) {
-        console.log(res.data)
-        this.setState({ application: res.data[0] })
-      }
-    });
+    MakeGETCall('/api/applications', { query: { application_id: this.application_id } }).then(res => {
+      this.setState({ application: res[0] })
+    }).catch(console.error).finally(() => this.setState({ loading: false }))
+    // socket.emit("applications/fetch", { application_id: this.application_id }, (res) => {
+    //   this.setState({ loading: false })
+    //   console.log(res)
+    //   if (res.code == 200 && res.data.length == 1) {
+    //     console.log(res.data)
+    //     this.setState({ application: res.data[0] })
+    //   }
+    // });
   }
 
   fieldComponent = (title, body) => {
@@ -96,46 +96,78 @@ class viewApplicationsDetail extends React.Component {
 
   submitAction = () => {
     this.setState({ callingApi: true })
-    socket.emit("applications/updateStatus", {
-      application_id: this.application_id,
-      status: this.state.takeAction,
-      remarks: this.state.remarks
-    }, (res) => {
-      this.setState({ callingApi: false })
-      if (res.code == 200) {
-        this.setState({
-          alertMsg: `Marked as ${this.state.takeAction}`,
-          alertSeverity: 'success'
-        })
-      } else {
-        this.setState({
-          alertMsg: `Error: ${res.message}`,
-          alertSeverity: 'warning'
-        })
+    MakePATCHCall(`/api/applications/${this.application_id}/updateStatus`, {
+      body: {
+        status: this.state.takeAction,
+        remarks: this.state.remarks
       }
-    });
+    }).then(res => {
+      this.setState({
+        alertMsg: `Marked as ${this.state.takeAction}`,
+        alertSeverity: 'success'
+      })
+    }).catch(err => {
+      this.setState({
+        alertMsg: `Error: ${err.message}`,
+        alertSeverity: 'warning'
+      })
+    }).finally(() => this.setState({ callingApi: false }))
+    // socket.emit("applications/updateStatus", {
+    //   application_id: this.application_id,
+    //   status: this.state.takeAction,
+    //   remarks: this.state.remarks
+    // }, (res) => {
+    //   this.setState({ callingApi: false })
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       alertMsg: `Marked as ${this.state.takeAction}`,
+    //       alertSeverity: 'success'
+    //     })
+    //   } else {
+    //     this.setState({
+    //       alertMsg: `Error: ${res.message}`,
+    //       alertSeverity: 'warning'
+    //     })
+    //   }
+    // });
   }
 
   forwardApplication = () => {
     this.setState({ callingApi: true })
-    socket.emit("applications/forward", {
-      application_id: this.application_id,
-      forward_to: this.state.forward_to,
-      remarks: this.state.remarks
-    }, (res) => {
-      this.setState({ callingApi: false })
-      if (res.code == 200) {
-        this.setState({
-          alertMsg: `Application has been forwarded`,
-          alertSeverity: 'success'
-        })
-      } else {
-        this.setState({
-          alertMsg: `Error: ${res.message}`,
-          alertSeverity: 'warning'
-        })
+    MakePATCHCall(`/api/applications/${this.application_id}/forward`, {
+      body: {
+        forward_to: this.state.forward_to,
+        remarks: this.state.remarks
       }
-    });
+    }).then(res => {
+      this.setState({
+        alertMsg: `Application has been forwarded`,
+        alertSeverity: 'success'
+      })
+    }).catch(err => {
+      this.setState({
+        alertMsg: `Error: ${err.message}`,
+        alertSeverity: 'warning'
+      })
+    }).finally(() => this.setState({ callingApi: false }))
+    // socket.emit("applications/forward", {
+    //   application_id: this.application_id,
+    //   forward_to: this.state.forward_to,
+    //   remarks: this.state.remarks
+    // }, (res) => {
+    //   this.setState({ callingApi: false })
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       alertMsg: `Application has been forwarded`,
+    //       alertSeverity: 'success'
+    //     })
+    //   } else {
+    //     this.setState({
+    //       alertMsg: `Error: ${res.message}`,
+    //       alertSeverity: 'warning'
+    //     })
+    //   }
+    // });
   }
 
   getForwardersList = () => {
@@ -251,7 +283,7 @@ class viewApplicationsDetail extends React.Component {
                           required
                           label="Forward to"
                           fieldType='select'
-                          endpoint={['autocomplete/faculty', 'autocomplete/teachers']}
+                          endpoint={['/api/autocomplete/faculty', '/api/autocomplete/teachers']}
                           endpointData={[{}, { include_roles: ['chairman', 'batch_advisor', 'semester_coordinator'] }]}
                           sx={{ minWidth: '150px' }}
                           onChange={(e, option) => this.setState({ forward_to: option.id })}
@@ -264,7 +296,7 @@ class viewApplicationsDetail extends React.Component {
                       <CustomTextField required variant="filled" value={this.state.remarks} onChange={(e) => this.setState({ remarks: e.target.value })} label="Remarks" />
                     </Grid>
                     <Grid item xs={12}>
-                      <CustomButton label="Submit" onClick={() => this.state.takeAction == 'forward' ? this.forwardApplication() : this.submitAction()} />
+                      <CustomButton disabled={this.state.callingApi} label="Submit" onClick={() => this.state.takeAction == 'forward' ? this.forwardApplication() : this.submitAction()} />
                     </Grid>
                   </Grid>
                 </React.Fragment> : <></>

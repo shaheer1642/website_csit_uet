@@ -36,6 +36,7 @@ import CustomTextField from "../../../../components/CustomTextField";
 import LoadingIcon from "../../../../components/LoadingIcon";
 import { convertUpper } from "../../../../extras/functions";
 import theme from "../../../../theme";
+import { MakeGETCall, MakePATCHCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -152,13 +153,13 @@ class MisCourseGradeMarking extends React.Component {
 
   componentDidMount() {
     this.fetchData();
-    socket.addEventListener('semestersCourses/listener/changed', this.changeListener)
-    socket.addEventListener('studentsCourses/listener/changed', this.changeListener)
+    socket.addEventListener('semesters_courses_changed', this.changeListener)
+    socket.addEventListener('students_courses_changed', this.changeListener)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semestersCourses/listener/changed', this.changeListener)
-    socket.removeEventListener('studentsCourses/listener/changed', this.changeListener)
+    socket.removeEventListener('semesters_courses_changed', this.changeListener)
+    socket.removeEventListener('students_courses_changed', this.changeListener)
   }
 
   changeListener = (data) => {
@@ -168,19 +169,33 @@ class MisCourseGradeMarking extends React.Component {
 
   fetchData = () => {
     this.setState({ callingApi: 'fetchData' })
-    socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
-      if (res.code == 200 && res.data.length == 1) {
-        const semesterCourse = res.data[0]
-        socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
-          if (res.code == 200) {
-            return this.setState({
-              semesterCourse: semesterCourse,
-              courseStudents: res.data.filter(o => o.grade != 'W'),
-            }, () => this.generateMarkings(() => this.setState({ callingApi: '' })));
-          }
-        });
+
+    MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+      if (res.length == 1) {
+        const semesterCourse = res[0]
+        MakeGETCall('/api/studentsCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+          return this.setState({
+            semesterCourse: semesterCourse,
+            courseStudents: res.filter(o => o.grade != 'W'),
+          }, () => this.generateMarkings(() => this.setState({ callingApi: '' })));
+        }).catch(console.error)
       }
-    });
+
+    }).catch(console.error)
+
+    // socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
+    //   if (res.code == 200 && res.data.length == 1) {
+    //     const semesterCourse = res.data[0]
+    //     socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
+    //       if (res.code == 200) {
+    //         return this.setState({
+    //           semesterCourse: semesterCourse,
+    //           courseStudents: res.data.filter(o => o.grade != 'W'),
+    //         }, () => this.generateMarkings(() => this.setState({ callingApi: '' })));
+    //       }
+    //     });
+    //   }
+    // });
   }
 
   generateMarkings = (callback) => {
@@ -245,24 +260,54 @@ class MisCourseGradeMarking extends React.Component {
 
   lockGrades = () => {
     this.setState({ callingApi: 'lockGrades' })
-    socket.emit("semestersCourses/lockGrades", { sem_course_id: this.sem_course_id }, (res) => {
+
+    MakePATCHCall(`/api/semestersCourses/${this.sem_course_id}/lockGrades`).then(res => {
       this.setState({
         callingApi: '',
-        alertMsg: res.code == 200 ? 'Grades Locked' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning'
+        alertMsg: 'Grades Locked',
+        alertSeverity: 'success'
       }, this.timeoutAlert)
-    });
+    }).catch(res => {
+      this.setState({
+        callingApi: '',
+        alertMsg: `${res.status}: ${res.message}`,
+        alertSeverity: 'warning'
+      }, this.timeoutAlert)
+    })
+
+    // socket.emit("semestersCourses/lockGrades", { sem_course_id: this.sem_course_id }, (res) => {
+    //   this.setState({
+    //     callingApi: '',
+    //     alertMsg: res.code == 200 ? 'Grades Locked' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+    //   }, this.timeoutAlert)
+    // });
   }
 
   updateMarkings = () => {
     this.setState({ callingApi: 'updateMarkings' })
-    socket.emit(`studentsCourses/updateMarkings`, { sem_course_id: this.sem_course_id, markings: this.state.markings }, res => {
+
+    MakePATCHCall(`/api/studentsCourses/${this.sem_course_id}/updateMarkings`, { body: { markings: this.state.markings } }).then(res => {
       this.setState({
         callingApi: '',
-        alertMsg: res.code == 200 ? 'Updated student markings' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning'
+        alertMsg: 'Updated student markings',
+        alertSeverity: 'success'
+      }, this.timeoutAlert)
+    }).catch(res => {
+      this.setState({
+        callingApi: '',
+        alertMsg: `${res.status}: ${res.message}`,
+        alertSeverity: 'warning'
       }, this.timeoutAlert)
     })
+
+    // socket.emit(`studentsCourses/updateMarkings`, { sem_course_id: this.sem_course_id, markings: this.state.markings }, res => {
+    //   this.setState({
+    //     callingApi: '',
+    //     alertMsg: res.code == 200 ? 'Updated student markings' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+    //   }, this.timeoutAlert)
+    // })
   }
 
   render() {

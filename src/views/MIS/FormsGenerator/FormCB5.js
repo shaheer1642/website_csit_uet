@@ -12,6 +12,7 @@ import LoadingIcon from "../../../components/LoadingIcon";
 import CustomButton from "../../../components/CustomButton";
 import { convertUpper } from "../../../extras/functions";
 import { timeLocale } from "../../../objects/Time";
+import { MakeGETCall } from "../../../api";
 
 
 class FormCB5 extends React.Component {
@@ -51,24 +52,42 @@ class FormCB5 extends React.Component {
 
   fetchData = () => {
     this.setState({ loading: true })
-    socket.emit('semestersCourses/fetch', { sem_course_id: this.sem_course_id }, (res) => {
-      if (res.code == 200 && res.data.length == 1) {
-        this.setState({ loading: false })
-        const data = res.data[0]
-        this.setState({
-          instructor_name: data.teacher_name,
-          digital_signature: data.digital_signature,
-          course_no: data.course_id,
-          course_title: data.course_name,
-          credit_hours: data.credit_hours,
-          semester_year: data.semester_year,
-          semester_season: data.semester_season,
-          semester_start: new Date(Number(data.semester_start_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
-          semester_end: new Date(Number(data.semester_end_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
-          dated: new Date().toLocaleDateString(...timeLocale),
-        })
-      }
-    })
+
+    MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+      this.setState({ loading: false })
+      const data = res[0]
+      this.setState({
+        instructor_name: data.teacher_name,
+        digital_signature: data.digital_signature,
+        course_no: data.course_id,
+        course_title: data.course_name,
+        credit_hours: data.credit_hours,
+        semester_year: data.semester_year,
+        semester_season: data.semester_season,
+        semester_start: new Date(Number(data.semester_start_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
+        semester_end: new Date(Number(data.semester_end_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
+        dated: new Date().toLocaleDateString(...timeLocale),
+      })
+    }).catch(console.error)
+
+    // socket.emit('semestersCourses/fetch', { sem_course_id: this.sem_course_id }, (res) => {
+    //   if (res.code == 200 && res.data.length == 1) {
+    //     this.setState({ loading: false })
+    //     const data = res.data[0]
+    //     this.setState({
+    //       instructor_name: data.teacher_name,
+    //       digital_signature: data.digital_signature,
+    //       course_no: data.course_id,
+    //       course_title: data.course_name,
+    //       credit_hours: data.credit_hours,
+    //       semester_year: data.semester_year,
+    //       semester_season: data.semester_season,
+    //       semester_start: new Date(Number(data.semester_start_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
+    //       semester_end: new Date(Number(data.semester_end_timestamp)).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }),
+    //       dated: new Date().toLocaleDateString(...timeLocale),
+    //     })
+    //   }
+    // })
   }
 
   generateModal = () => {

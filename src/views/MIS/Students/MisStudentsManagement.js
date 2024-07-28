@@ -13,6 +13,7 @@ import CustomTextField from '../../../components/CustomTextField';
 import FormGenerator from '../../../components/FormGenerator';
 import CustomTable from '../../../components/CustomTable';
 import { convertUpper } from '../../../extras/functions';
+import { MakeGETCall, MakePATCHCall } from '../../../api';
 
 class MisStudentsManagement extends React.Component {
   constructor(props) {
@@ -39,71 +40,129 @@ class MisStudentsManagement extends React.Component {
   }
 
   fetchStudent = () => {
+    console.log('fetchStudent', this.student_batch_id)
     this.setState({ callingApi: 'fetchStudent' })
-    socket.emit('students/fetch', { student_batch_id: this.student_batch_id }, (res) => {
-      console.log('[students/fetch] response:', res)
-      if (res.code == 200) {
-        this.setState({
-          callingApi: '',
-          student: res.data[0]
-        })
-      }
-    })
+
+    MakeGETCall('/api/students', { query: { student_batch_id: this.student_batch_id } }).then(res => {
+      this.setState({
+        callingApi: '',
+        student: res[0]
+      })
+    }).catch(console.error)
+
+    // socket.emit('students/fetch', { student_batch_id: this.student_batch_id }, (res) => {
+    //   console.log('[students/fetch] response:', res)
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       callingApi: '',
+    //       student: res.data[0]
+    //     })
+    //   }
+    // })
   }
 
   fetchStudentCourses = () => {
-    socket.emit('studentsCourses/fetch', { student_batch_id: this.student_batch_id }, (res) => {
-      if (res.code == 200) {
-        this.setState({
-          callingApi: '',
-          studentCoursesArr: res.data
-        })
-      }
-    })
+
+    MakeGETCall('/api/studentsCourses', { query: { student_batch_id: this.student_batch_id } }).then(res => {
+      this.setState({
+        callingApi: '',
+        studentCoursesArr: res
+      })
+    }).catch(console.error)
+
+    // socket.emit('studentsCourses/fetch', { student_batch_id: this.student_batch_id }, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       callingApi: '',
+    //       studentCoursesArr: res.data
+    //     })
+    //   }
+    // })
   }
 
   extendDegreeTime = () => {
     this.setState({ callingApi: 'extendDegreeTime' })
-    socket.emit('students/extendDegreeTime', {
-      student_batch_id: this.state.student.student_batch_id,
-      degree_extension_period: { period: Number(this.state.degree_extension_period) * 86400000, reason: this.state.degree_extension_reason },
-    }, (res) => {
+
+    MakePATCHCall(`/api/students/${this.state.student.student_batch_id}/extendDegreeTime`, {
+      body: {
+        degree_extension_period: { period: Number(this.state.degree_extension_period) * 86400000, reason: this.state.degree_extension_reason },
+      }
+    }).finally(() => {
       this.setState({ callingApi: '' })
       this.fetchStudent()
-    })
+    }).catch(console.error)
+
+    // socket.emit('students/extendDegreeTime', {
+    //   student_batch_id: this.state.student.student_batch_id,
+    //   degree_extension_period: { period: Number(this.state.degree_extension_period) * 86400000, reason: this.state.degree_extension_reason },
+    // }, (res) => {
+    //   this.setState({ callingApi: '' })
+    //   this.fetchStudent()
+    // })
   }
 
   degreeComplete = () => {
     this.setState({ callingApi: 'degreeComplete' })
-    socket.emit('students/completeDegree', {
-      student_batch_id: this.state.student.student_batch_id,
-      degree_completed: !this.state.student.degree_completed
-    }, (res) => {
+
+
+    MakePATCHCall(`/api/students/${this.state.student.student_batch_id}/completeDegree`, {
+      body: {
+        degree_completed: !this.state.student.degree_completed
+      }
+    }).finally(() => {
       this.setState({ callingApi: '' })
       this.fetchStudent()
-    })
+    }).catch(console.error)
+
+    // socket.emit('students/completeDegree', {
+    //   student_batch_id: this.state.student.student_batch_id,
+    //   degree_completed: !this.state.student.degree_completed
+    // }, (res) => {
+    //   this.setState({ callingApi: '' })
+    //   this.fetchStudent()
+    // })
   }
 
   semesterFreeze = () => {
     this.setState({ callingApi: 'semesterFreeze' })
-    socket.emit('students/freezeSemester', {
-      student_batch_id: this.state.student.student_batch_id,
-      semester_frozen: !this.state.student.semester_frozen
-    }, (res) => {
+
+    MakePATCHCall(`/api/students/${this.state.student.student_batch_id}/freezeSemester`, {
+      body: {
+        semester_frozen: !this.state.student.semester_frozen
+      }
+    }).finally(() => {
       this.setState({ callingApi: '' })
       this.fetchStudent()
-    })
+    }).catch(console.error)
+
+    // socket.emit('students/freezeSemester', {
+    //   student_batch_id: this.state.student.student_batch_id,
+    //   semester_frozen: !this.state.student.semester_frozen
+    // }, (res) => {
+    //   this.setState({ callingApi: '' })
+    //   this.fetchStudent()
+    // })
   }
 
   cancelAdmission = () => {
     this.setState({ callingApi: 'cancelAdmission' })
-    socket.emit('students/cancelAdmission', {
-      student_batch_id: this.state.student.student_batch_id,
-      admission_cancelled: !this.state.student.admission_cancelled
-    }, (res) => {
+
+    MakePATCHCall(`/api/students/${this.state.student.student_batch_id}/cancelAdmission`, {
+      body: {
+        admission_cancelled: !this.state.student.admission_cancelled
+      }
+    }).finally(() => {
       this.setState({ callingApi: '' })
       this.fetchStudent()
-    })
+    }).catch(console.error)
+
+    // socket.emit('students/cancelAdmission', {
+    //   student_batch_id: this.state.student.student_batch_id,
+    //   admission_cancelled: !this.state.student.admission_cancelled
+    // }, (res) => {
+    //   this.setState({ callingApi: '' })
+    //   this.fetchStudent()
+    // })
   }
 
   cards = {
@@ -112,6 +171,7 @@ class MisStudentsManagement extends React.Component {
         <FormGenerator
           endpoint="students"
           formType="update"
+          idField='student_id'
           submitSuccessMessage='Student Edited Successfully'
           backgroundColor='white'
           options={{

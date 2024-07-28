@@ -18,6 +18,7 @@ import GoBackButton from "../../../../components/GoBackButton";
 import CustomCard from "../../../../components/CustomCard";
 import ContextInfo from "../../../../components/ContextInfo";
 import { convertUpper } from "../../../../extras/functions";
+import { MakeDELETECall, MakeGETCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -55,11 +56,11 @@ class MisSemestersCourses extends React.Component {
 
   componentDidMount() {
     this.fetchSemesterCourses();
-    socket.addEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.addEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.removeEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
 
@@ -68,14 +69,22 @@ class MisSemestersCourses extends React.Component {
   }
 
   fetchSemesterCourses = () => {
-    socket.emit("semestersCourses/fetch", { semester_id: this.semester_id }, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          semestersCoursesArr: res.data,
-          loadingSemesterCourses: false,
-        });
-      }
-    });
+
+    MakeGETCall('/api/semestersCourses', { query: { semester_id: this.semester_id } }).then(res => {
+      return this.setState({
+        semestersCoursesArr: res,
+        loadingSemesterCourses: false,
+      });
+    }).catch(console.error)
+
+    // socket.emit("semestersCourses/fetch", { semester_id: this.semester_id }, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       semestersCoursesArr: res.data,
+    //       loadingSemesterCourses: false,
+    //     });
+    //   }
+    // });
   }
 
   confirmationModalDestroy = () => {
@@ -143,7 +152,10 @@ class MisSemestersCourses extends React.Component {
                     this.setState({
                       confirmationModalShow: true,
                       confirmationModalMessage: 'Are you sure you want to remove this course?',
-                      confirmationModalExecute: () => socket.emit('semestersCourses/delete', { sem_course_id: semesterCourse.sem_course_id })
+                      confirmationModalExecute: () => {
+                        MakeDELETECall(`/api/semestersCourses/${semesterCourse.sem_course_id}`)
+                        // socket.emit('semestersCourses/delete', { sem_course_id: semesterCourse.sem_course_id })
+                      }
                     })
                   }}
                   rows={this.state.semestersCoursesArr}

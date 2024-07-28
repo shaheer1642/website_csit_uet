@@ -10,6 +10,7 @@ import CustomButton from './CustomButton';
 import CustomSelect from './CustomSelect';
 import CustomCard from './CustomCard';
 import { convertUpper } from '../extras/functions';
+import { MakeGETCall, MakePOSTCall } from '../api';
 
 const palletes = {
   primary: '#439CEF',
@@ -91,6 +92,7 @@ interface fieldOptions {
 
 interface IProps {
   formType: string,
+  idField?: string,
   endpoint: string,
   options: fieldOptions,
   submitSuccessMessage: string,
@@ -121,10 +123,10 @@ export default class FormGenerator extends React.Component<IProps, IState> {
   }
 
   componentDidMount(): void {
-    socket.emit(`schema/${this.props.endpoint}`, {}, res => {
+    MakeGETCall('/api/schema/' + this.props.endpoint).then(res => {
       var schema_temp: any[] = []
-      for (const key in res.data.data_types) {
-        const data_type = res.data.data_types[key]
+      for (const key in res.data_types) {
+        const data_type = res.data_types[key]
         if (data_type.required.includes(`${this.props.endpoint}/${this.props.formType}`) || data_type.optional.includes(`${this.props.endpoint}/${this.props.formType}`))
           schema_temp.push({
             ...data_type,
@@ -134,17 +136,37 @@ export default class FormGenerator extends React.Component<IProps, IState> {
           })
       }
       schema_temp = schema_temp.sort((a, b) => a.position - b.position)
-      console.log(schema_temp)
+      // console.log(schema_temp)
       var formFields: Object = {}
       schema_temp.map((attribute) => {
-        formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue
+        formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue || undefined
       })
       this.setState({ formLoading: false, schema: schema_temp, formFields: formFields })
-    })
+    }).catch(console.error)
+    // socket.emit(`schema/${this.props.endpoint}`, {}, res => {
+    //   var schema_temp: any[] = []
+    //   for (const key in res.data.data_types) {
+    //     const data_type = res.data.data_types[key]
+    //     if (data_type.required.includes(`${this.props.endpoint}/${this.props.formType}`) || data_type.optional.includes(`${this.props.endpoint}/${this.props.formType}`))
+    //       schema_temp.push({
+    //         ...data_type,
+    //         key: key,
+    //         position: this.props.options[key]?.position || null,
+    //         required: data_type.required.includes(`${this.props.endpoint}/${this.props.formType}`) ? true : false
+    //       })
+    //   }
+    //   schema_temp = schema_temp.sort((a, b) => a.position - b.position)
+    //   console.log(schema_temp)
+    //   var formFields: Object = {}
+    //   schema_temp.map((attribute) => {
+    //     formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue
+    //   })
+    //   this.setState({ formLoading: false, schema: schema_temp, formFields: formFields })
+    // })
   }
 
   componentDidUpdate(): void {
-    console.log(this.state.formFields)
+    // console.log(this.state.formFields)
   }
 
   handleFormFieldChange = (key: string, value: string | number | []) => {
@@ -233,14 +255,25 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                 disabled={this.state.callingApi}
                 onClick={() => {
                   this.setState({ callingApi: true })
-                  socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
-                    this.setState({ callingApi: false })
-                    console.log(`[${this.props.endpoint}/${this.props.formType}] response`, res)
+                  MakePOSTCall('/api/' + this.props.endpoint + (this.props.formType == 'update' ? `/${this.state.formFields[this.props.idField]}` : ''), { body: this.state.formFields }).then(res => {
                     this.setState({
-                      alertMsg: res.code == 200 ? this.props.submitSuccessMessage : `${res.status}: ${res.message}`,
-                      alertSeverity: res.code == 200 ? 'success' : 'warning'
+                      alertMsg: this.props.submitSuccessMessage,
+                      alertSeverity: 'success'
                     }, this.timeoutAlert)
-                  })
+                  }).catch(err => {
+                    this.setState({
+                      alertMsg: `Error ${err.code}: ${err.message}`,
+                      alertSeverity: 'warning'
+                    }, this.timeoutAlert)
+                  }).finally(() => this.setState({ callingApi: false }))
+                  // socket.emit(`${this.props.endpoint}/${this.props.formType}`, this.state.formFields, res => {
+                  //   this.setState({ callingApi: false })
+                  //   console.log(`[${this.props.endpoint}/${this.props.formType}] response`, res)
+                  //   this.setState({
+                  //     alertMsg: res.code == 200 ? this.props.submitSuccessMessage : `${res.status}: ${res.message}`,
+                  //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+                  //   }, this.timeoutAlert)
+                  // })
                 }}
               />
             </Grid>

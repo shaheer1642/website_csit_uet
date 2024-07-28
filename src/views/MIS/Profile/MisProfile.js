@@ -14,6 +14,7 @@ import { convertUpper, filterObjectByKeys } from '../../../extras/functions';
 import './MisProfile.css';
 import "font-awesome/css/font-awesome.css";
 import { withRouter } from '../../../withRouter';
+import { MakeGETCall, MakePATCHCall, MakePOSTCall } from '../../../api';
 
 const palletes = {
   primary: '#439CEF',
@@ -71,21 +72,30 @@ class MisProfile extends React.Component {
   }
 
   autocompleteAreasOfInterest = () => {
-    socket.emit('autocomplete/areasOfInterest', {}, (res) => {
-      if (res.code == 200) this.setState({ areasOfInterest: res.data })
-    })
+    MakeGETCall('/api/autocomplete/areasOfInterest').then(res => {
+      this.setState({ areasOfInterest: res })
+    }).catch(console.error)
+    // socket.emit('autocomplete/areasOfInterest', {}, (res) => {
+    //   if (res.code == 200) this.setState({ areasOfInterest: res.data })
+    // })
   }
 
   fetchUser = () => {
     this.setCallingApi('fetchUser')
+    console.log('MisProfile.fetchUser', this.props.user)
     if (!this.props.user?.user_id) return
-    socket.emit('users/fetch', { fetch_user_id: this.props.user.user_id }, (res) => {
-      if (res.code == 200) {
-        this.setState({
-          userInfo: res.data[0],
-        }, () => this.setCallingApi(''))
-      }
-    })
+    MakeGETCall('/api/user').then(res => {
+      this.setState({
+        userInfo: res,
+      }, () => this.setCallingApi(''))
+    }).catch(console.error)
+    // socket.emit('users/fetch', { fetch_user_id: this.props.user.user_id }, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       userInfo: res.data[0],
+    //     }, () => this.setCallingApi(''))
+    //   }
+    // })
   }
 
   setCallingApi = (value) => this.setState({ callingApi: value })
@@ -101,11 +111,11 @@ class MisProfile extends React.Component {
     }))
   }
 
-  updateAlertMesg = (res, successMessage) => {
-    if (res.code == 200 && !successMessage) return
+  updateAlertMesg = (msg, severity) => {
+    // if (res.code == 200 && !successMessage) return
     this.setState({
-      alertMsg: res.code == 200 ? successMessage : `${res.status}: ${res.message}`,
-      alertSeverity: res.code == 200 ? 'success' : 'warning'
+      alertMsg: msg,
+      alertSeverity: severity
     })
   }
 
@@ -123,35 +133,76 @@ class MisProfile extends React.Component {
   sendEmailVerificationCode = (callback) => {
     if (!this.state.userInput['new_email']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('sendEmailVerificationCode')
-    socket.emit('users/sendEmailVerificationCode', { user_email: this.state.userInput['new_email'], user_id: this.props.user.user_id }, (res) => {
+    MakePOSTCall('/api/user/sendEmailVerificationCode', {
+      body: {
+        user_id: this.props.user.user_id,
+        user_email: this.state.userInput['new_email']
+      }
+    }).then(res => {
+      this.updateAlertMesg('code sent', 'success')
+      callback && callback(res)
+    }).catch(err => {
+      this.updateAlertMesg(err.message, 'warning')
+    }).finally(() => {
       this.setCallingApi('')
-      if (res.code == 200 && callback) callback(res)
-      this.updateAlertMesg(res)
       this.resendCodeTimer(15)
     })
+    // socket.emit('users/sendEmailVerificationCode', { user_email: this.state.userInput['new_email'], user_id: this.props.user.user_id }, (res) => {
+    //   this.setCallingApi('')
+    //   if (res.code == 200 && callback) callback(res)
+    //   this.updateAlertMesg(res)
+    //   this.resendCodeTimer(15)
+    // })
   }
 
   updateEmail = (callback) => {
-    if (!this.state.userInput['new_email'] || !this.state.userInput['email_verification_code']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
+    if (!this.state.userInput['new_email'] || !this.state.userInput['email_verification_code'])
+      return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
+
     this.setCallingApi('updateEmail')
-    socket.emit('users/updateEmail', {
-      user_email: this.state.userInput['new_email'],
-      email_verification_code: this.state.userInput['email_verification_code']
-    }, (res) => {
+    MakePATCHCall('/api/user/updateEmail', {
+      body: {
+        user_email: this.state.userInput['new_email'],
+        email_verification_code: this.state.userInput['email_verification_code']
+      }
+    }).then(res => {
+      this.updateAlertMesg(res.message, 'success')
+    }).catch(err => {
+      this.updateAlertMesg(err.message, 'warning')
+    }).finally(() => {
       this.setCallingApi('')
-      if (res.code == 200 && callback) callback(res)
-      this.updateAlertMesg(res)
     })
+    // socket.emit('users/updateEmail', {
+    //   user_email: this.state.userInput['new_email'],
+    //   email_verification_code: this.state.userInput['email_verification_code']
+    // }, (res) => {
+    //   this.setCallingApi('')
+    //   if (res.code == 200 && callback) callback(res)
+    //   this.updateAlertMesg(res)
+    // })
   }
 
   changePassword = (callback) => {
     if (!this.state.userInput['current_password'] || !this.state.userInput['new_password'] || !this.state.userInput['confirm_new_password']) return this.setState({ alertMsg: 'Fields cannot be empty', alertSeverity: 'warning' })
     this.setCallingApi('changePassword')
-    socket.emit('users/changePassword', { current_password: this.state.userInput['current_password'], new_password: this.state.userInput['new_password'] }, res => {
+    MakePATCHCall('/api/user/changePassword', {
+      body: {
+        current_password: this.state.userInput['current_password'],
+        new_password: this.state.userInput['new_password']
+      }
+    }).then(res => {
+      this.updateAlertMesg(res.message, 'success')
+      callback && callback(res)
+    }).catch(err => {
+      this.updateAlertMesg(err.message, 'warning')
+    }).finally(() => {
       this.setCallingApi('')
-      if (res.code == 200 && callback) callback(res)
-      this.updateAlertMesg(res)
     })
+    // socket.emit('users/changePassword', { current_password: this.state.userInput['current_password'], new_password: this.state.userInput['new_password'] }, res => {
+    //   this.setCallingApi('')
+    //   if (res.code == 200 && callback) callback(res)
+    //   this.updateAlertMesg(res)
+    // })
   }
 
   closeModal = () => {
@@ -163,6 +214,17 @@ class MisProfile extends React.Component {
     this.setUserInput('current_password', '')
     this.setUserInput('new_password', '')
     this.setUserInput('confirm_new_password', '')
+  }
+
+  handleChangeSignature = (e) => {
+    e.preventDefault()
+    const file = e.target.files[0]
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const rawBase64 = e.target.result;
+      this.setUserInfo('digital_signature', rawBase64)
+    };
   }
 
   modalPanels = {
@@ -315,42 +377,73 @@ class MisProfile extends React.Component {
             </Grid> : <></>
           }
           <Grid item xs={12}>
-            <input accept="image/*" type='file' id="imgInp" onChange={(e) => this.setUserInfo('digital_signature', e.target.files[0])} />
+            <input accept="image/*" type='file' id="imgInp" onChange={this.handleChangeSignature} />
           </Grid>
         </Grid>
       </React.Fragment>
     )
   }
 
-  updateAvatar = (file) => {
-    this.setCallingApi('updateAvatar')
-    socket.emit(
-      'users/updateAvatar',
-      { avatar: file },
-      (res) => {
-        this.setCallingApi('')
-        this.updateAlertMesg(res, 'Avatar updated!')
+  updateAvatar = (e) => {
+    e.preventDefault()
+    const file = e.target.files[0]
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (e) => {
+      const rawBase64 = e.target.result;
+      this.setCallingApi('updateAvatar')
+      MakePATCHCall('/api/user/updateAvatar', { body: { avatar: rawBase64 } }).then(res => {
+        this.updateAlertMesg('Avatar updated', 'success')
         this.fetchUser()
-      }
-    )
+      }).catch(console.error).finally(() => this.setCallingApi(''))
+    };
+    // this.setCallingApi('updateAvatar')
+    // socket.emit(
+    //   'users/updateAvatar',
+    //   { avatar: file },
+    //   (res) => {
+    //     this.setCallingApi('')
+    //     this.updateAlertMesg(res, 'Avatar updated!')
+    //     this.fetchUser()
+    //   }
+    // )
   }
 
   saveChanges = () => {
     this.setCallingApi('saveChanges')
-    socket.emit(
-      this.state.userInfo.user_type == 'teacher' ? 'teachers/update' : '',
-      {
-        ...filterObjectByKeys(this.state.userInfo, this.state.updatedKeys),
-        teacher_id: this.state.userInfo.user_id
-      },
-      (res) => {
-        this.setCallingApi('')
-        this.updateAlertMesg(res, 'Saved changes!')
-        this.setState({ updatedKeys: [] })
-        this.fetchUser()
-        this.autocompleteAreasOfInterest()
-      }
-    )
+
+    if (this.state.userInfo.user_type == 'teacher') {
+      MakePOSTCall(`/api/teachers/${this.state.userInfo.user_id}`,
+        { body: filterObjectByKeys(this.state.userInfo, this.state.updatedKeys) })
+        .then(res => {
+          this.updateAlertMesg('Saved changes!', 'success')
+        }).catch(err => {
+          this.updateAlertMesg(err.message || JSON.stringify(err), 'warning')
+        }).finally(() => {
+          this.setCallingApi('')
+          this.setState({ updatedKeys: [] })
+          this.fetchUser()
+          this.autocompleteAreasOfInterest()
+          this.setCallingApi('')
+        })
+    } else {
+      this.updateAlertMesg('Not allowed to change settings for this user type', 'warning')
+    }
+
+    // socket.emit(
+    //   this.state.userInfo.user_type == 'teacher' ? 'teachers/update' : '',
+    //   {
+    //     ...filterObjectByKeys(this.state.userInfo, this.state.updatedKeys),
+    //     teacher_id: this.state.userInfo.user_id
+    //   },
+    //   (res) => {
+    //     this.setCallingApi('')
+    //     this.updateAlertMesg(res, 'Saved changes!')
+    //     this.setState({ updatedKeys: [] })
+    //     this.fetchUser()
+    //     this.autocompleteAreasOfInterest()
+    //   }
+    // )
   }
 
   resetChanges = () => {
@@ -369,21 +462,21 @@ class MisProfile extends React.Component {
             <Grid item xs={12} display='flex' justifyContent={'center'} alignItems={'center'} flexDirection={'column'} spacing={2}>
               {this.state.callingApi == 'updateAvatar' ? <CircularProgress /> :
                 <React.Fragment>
-                  <div class="avatar-wrapper">
-                    <img class="profile-pic" src={this.state.userInfo.avatar} alt="Avatar" />
-                    <div class="upload-button" onClick={() => this.avatarInputRef.current.click()} style={{ alignItems: 'center' }}>
-                      <i class="fa fa-arrow-circle-up" aria-hidden="true"></i>
+                  <div className="avatar-wrapper">
+                    <img className="profile-pic" src={this.state.userInfo.avatar} alt="Avatar" style={{ objectFit: 'cover' }} />
+                    <div className="upload-button" onClick={() => this.avatarInputRef.current.click()} style={{ alignItems: 'center' }}>
+                      <i className="fa fa-arrow-circle-up" aria-hidden="true"></i>
                     </div>
-                    <input ref={this.avatarInputRef} class="file-upload" type="file" accept="image/*" onChange={(e) => this.updateAvatar(e.target.files[0])} />
+                    <input ref={this.avatarInputRef} className="file-upload" type="file" accept="image/*" onChange={this.updateAvatar} />
                   </div>
                 </React.Fragment>
               }
             </Grid>
             <Grid item xs={'auto'}>
-              <CustomTextField readOnly variant='filled' label='Name' value={this.state.userInfo.name} />
+              <CustomTextField readOnly disabled variant='filled' label='Name' value={this.state.userInfo.name} />
             </Grid>
             <Grid item xs={'auto'}>
-              <CustomTextField readOnly variant='filled' label='Email' value={this.state.userInfo.user_email || 'Not found'} />
+              <CustomTextField readOnly disabled variant='filled' label='Email' value={this.state.userInfo.user_email || 'Not found'} />
             </Grid>
             <Grid item xs={12}></Grid>
             <Grid item xs={'auto'}>

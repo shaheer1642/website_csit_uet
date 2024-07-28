@@ -24,6 +24,7 @@ import GoBackButton from "../../../../../components/GoBackButton";
 import CustomCard from "../../../../../components/CustomCard";
 import ContextInfo from "../../../../../components/ContextInfo";
 import { calculateDegreeExpiry, convertTimestampToSeasonYear, convertUpper } from "../../../../../extras/functions";
+import { MakeDELETECall, MakeGETCall, MakePOSTCall } from "../../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -85,12 +86,8 @@ class MisStudent extends React.Component {
 
   componentDidMount() {
     this.fetchData()
-    socket.addEventListener('students/listener/insert', this.changeListener)
-    socket.addEventListener('students/listener/update', this.changeListener)
-    socket.addEventListener('students/listener/delete', this.changeListener)
-    socket.addEventListener('studentsBatch/listener/insert', this.changeListener)
-    socket.addEventListener('studentsBatch/listener/update', this.changeListener)
-    socket.addEventListener('studentsBatch/listener/delete', this.changeListener)
+    socket.addEventListener('students_changed', this.changeListener)
+    socket.addEventListener('students_batch_changed', this.changeListener)
   }
 
 
@@ -104,12 +101,8 @@ class MisStudent extends React.Component {
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('students/listener/insert', this.changeListener)
-    socket.removeEventListener('students/listener/update', this.changeListener)
-    socket.removeEventListener('students/listener/delete', this.changeListener)
-    socket.removeEventListener('studentsBatch/listener/insert', this.changeListener)
-    socket.removeEventListener('studentsBatch/listener/update', this.changeListener)
-    socket.removeEventListener('studentsBatch/listener/delete', this.changeListener)
+    socket.removeEventListener('students_changed', this.changeListener)
+    socket.removeEventListener('students_batch_changed', this.changeListener)
   }
 
   changeListener = (data) => {
@@ -121,14 +114,21 @@ class MisStudent extends React.Component {
 
   fetchData = () => {
     this.setState({ loadingStudents: true })
-    socket.emit("students/fetch", { batch_id: this.batch_id }, (res) => {
-      this.setState({ loadingStudents: false })
-      if (res.code == 200) {
-        return this.setState({
-          studentsArr: res.data,
-        });
-      }
-    });
+
+    MakeGETCall('/api/students', { query: { batch_id: this.batch_id } }).then(res => {
+      return this.setState({
+        studentsArr: res,
+      });
+    }).catch(console.error).finally(() => this.setState({ loadingStudents: false }))
+
+    // socket.emit("students/fetch", { batch_id: this.batch_id }, (res) => {
+    //   this.setState({ loadingStudents: false })
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       studentsArr: res.data,
+    //     });
+    //   }
+    // });
   }
 
   confirmationModalDestroy = () => {
@@ -157,9 +157,22 @@ class MisStudent extends React.Component {
       Promise.all(
         students_info.map(student => {
           return new Promise((resolve, reject) => {
-            socket.emit('students/create', { ...student, batch_id: this.batch_id }, (res) => {
-              resolve(res.code == 200 ? `✔️ Added student ${student.student_name} (${student.reg_no || student.cnic})` : `❌ Error adding student ${student.student_name} (${student.reg_no || student.cnic}): ${res.message}`)
+
+            MakePOSTCall('/api/students', { body: { ...student, batch_id: this.batch_id } }).then(res => {
+              resolve(`✔️ Added student ${student.student_name} (${student.reg_no || student.cnic})`)
+            }).catch(res => {
+              resolve(`❌ Error adding student ${student.student_name} (${student.reg_no || student.cnic}): ${res.message}`)
             })
+
+            // socket.emit('students/create', { ...student, batch_id: this.batch_id }, (res) => {
+            //   resolve(
+            //     res.code == 200 ?
+            //       `✔️ Added student ${student.student_name} (${student.reg_no || student.cnic})` :
+            //       `❌ Error adding student ${student.student_name} (${student.reg_no || student.cnic}): ${res.message}`
+            //   )
+            // })
+
+
           })
         })
       ).then(responses => {
@@ -271,12 +284,25 @@ class MisStudent extends React.Component {
   }
 
   deleteStudent = (student_id, batch_id) => {
-    socket.emit('students/delete', { student_id: student_id, batch_id: batch_id }, (res) => {
+
+    MakeDELETECall(`/api/students/${student_id}/${batch_id}`).then(res => {
       this.setState({
-        alertMsg: res.code == 200 ? 'Student removed' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning',
+        alertMsg: 'Student removed',
+        alertSeverity: 'success',
+      })
+    }).catch(res => {
+      this.setState({
+        alertMsg: `${res.status}: ${res.message}`,
+        alertSeverity: 'warning',
       })
     })
+
+    // socket.emit('students/delete', { student_id: student_id, batch_id: batch_id }, (res) => {
+    //   this.setState({
+    //     alertMsg: res.code == 200 ? 'Student removed' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning',
+    //   })
+    // })
   }
 
   render() {

@@ -6,6 +6,7 @@ import { withRouter } from '../../../withRouter';
 import LoadingIcon from '../../../components/LoadingIcon';
 import GoBackButton from '../../../components/GoBackButton';
 import { Grid } from '@mui/material';
+import { MakeGETCall } from '../../../api';
 class MisSemestersUpdate extends React.Component {
   constructor(props) {
     super(props);
@@ -21,21 +22,36 @@ class MisSemestersUpdate extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit('semesters/fetch', { semester_id: this.semester_id }, (res) => {
-      console.log('[semesters/fetch] response:', res)
-      if (res.code == 200) {
-        const semester = res.data[0]
-        console.log('setting state')
-        this.setState({
-          loading: false,
-          semester_year: semester.semester_year,
-          semester_season: semester.semester_season,
-          semester_start_timestamp: Number(semester.semester_start_timestamp),
-          semester_end_timestamp: Number(semester.semester_end_timestamp),
-          semester_coordinator_id: semester.semester_coordinator_id,
-        })
-      }
-    })
+
+    MakeGETCall('/api/semesters', { query: { semester_id: this.semester_id } }).then(res => {
+      const semester = res[0]
+      console.log('setting state')
+      this.setState({
+        loading: false,
+        semester_year: semester.semester_year,
+        semester_season: semester.semester_season,
+        semester_start_timestamp: Number(semester.semester_start_timestamp),
+        semester_end_timestamp: Number(semester.semester_end_timestamp),
+        semester_coordinator_id: semester.semester_coordinator_id,
+      })
+    }).catch(console.error)
+
+
+    // socket.emit('semesters/fetch', { semester_id: this.semester_id }, (res) => {
+    //   console.log('[semesters/fetch] response:', res)
+    //   if (res.code == 200) {
+    //     const semester = res.data[0]
+    //     console.log('setting state')
+    //     this.setState({
+    //       loading: false,
+    //       semester_year: semester.semester_year,
+    //       semester_season: semester.semester_season,
+    //       semester_start_timestamp: Number(semester.semester_start_timestamp),
+    //       semester_end_timestamp: Number(semester.semester_end_timestamp),
+    //       semester_coordinator_id: semester.semester_coordinator_id,
+    //     })
+    //   }
+    // })
   }
 
   render() {
@@ -47,6 +63,7 @@ class MisSemestersUpdate extends React.Component {
             <FormGenerator
               endpoint="semesters"
               formType="update"
+              idField="semester_id"
               submitSuccessMessage='Semester Edited Successfully'
               backgroundColor='white'
               options={{
@@ -90,7 +107,7 @@ class MisSemestersUpdate extends React.Component {
                   position: 10,
                   xs: 6,
                   fieldType: 'select',
-                  endpoint: 'autocomplete/teachers',
+                  endpoint: '/api/autocomplete/teachers',
                   selectMenuItems: [{ id: '', label: 'None' }]
                 },
               }}

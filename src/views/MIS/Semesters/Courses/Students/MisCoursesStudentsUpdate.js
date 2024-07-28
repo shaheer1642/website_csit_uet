@@ -28,6 +28,7 @@ import CustomSelect from "../../../../../components/CustomSelect";
 import { getUserNameById } from "../../../../../objects/Users_List";
 import { timeLocale } from "../../../../../objects/Time";
 import ContextInfo from "../../../../../components/ContextInfo";
+import { MakeGETCall, MakePATCHCall } from "../../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -91,7 +92,7 @@ class MisCoursesStudentsUpdate extends React.Component {
 
   componentDidMount() {
     this.fetchStudentCourse();
-    socket.addEventListener('studentsCourses/listener/changed', this.studentCourseListenerChanged)
+    socket.addEventListener('students_courses_changed', this.studentCourseListenerChanged)
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -103,7 +104,7 @@ class MisCoursesStudentsUpdate extends React.Component {
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('studentsCourses/listener/changed', this.studentCourseListenerChanged)
+    socket.removeEventListener('students_courses_changed', this.studentCourseListenerChanged)
   }
 
   studentCourseListenerChanged = (data) => {
@@ -112,36 +113,74 @@ class MisCoursesStudentsUpdate extends React.Component {
 
   fetchStudentCourse = () => {
     this.setState({ loading: true })
-    socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id }, (res) => {
-      if (res.code == 200 && res.data.length == 1) {
-        return this.setState({
-          studentCourse: res.data[0],
-          loading: false,
-        });
-      }
-    });
+
+    MakeGETCall('/api/studentsCourses', { query: { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id } }).then(res => {
+      return this.setState({
+        studentCourse: res[0],
+        loading: false,
+      });
+    }).catch(console.error)
+
+    // socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id }, (res) => {
+    //   if (res.code == 200 && res.data.length == 1) {
+    //     return this.setState({
+    //       studentCourse: res.data[0],
+    //       loading: false,
+    //     });
+    //   }
+    // });
   }
 
   updateGrade = () => {
     this.setState({ callingApi: 'updateGrade' })
-    socket.emit("studentsCourses/updateGrade", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: this.state.updatedGrade }, (res) => {
+
+    MakePATCHCall(`/api/studentsCourses/${this.student_batch_id}/${this.sem_course_id}/updateGrade`, { body: { grade: this.state.updatedGrade } }).then(res => {
       return this.setState({
-        alertMsg: res.code == 200 ? 'Grade Updated' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning',
+        alertMsg: 'Grade Updated',
+        alertSeverity: 'success',
         callingApi: ''
       });
-    });
+    }).catch(res => {
+      return this.setState({
+        alertMsg: `${res.status}: ${res.message}`,
+        alertSeverity: 'warning',
+        callingApi: ''
+      });
+    })
+
+    // socket.emit("studentsCourses/updateGrade", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: this.state.updatedGrade }, (res) => {
+    //   return this.setState({
+    //     alertMsg: res.code == 200 ? 'Grade Updated' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning',
+    //     callingApi: ''
+    //   });
+    // });
   }
 
   withdrawCourse = () => {
     this.setState({ callingApi: 'withdrawCourse' })
-    socket.emit("studentsCourses/updateGrade", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: 'W' }, (res) => {
+
+    MakePATCHCall(`/api/studentsCourses/${this.student_batch_id}/${this.sem_course_id}/updateGrade`, { body: { grade: 'W' } }).then(res => {
       return this.setState({
-        alertMsg: res.code == 200 ? 'Course withdrawn' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning',
+        alertMsg: 'Course withdrawn',
+        alertSeverity: 'success',
         callingApi: ''
       });
-    });
+    }).catch(res => {
+      return this.setState({
+        alertMsg: `${res.status}: ${res.message}`,
+        alertSeverity: 'warning',
+        callingApi: ''
+      });
+    })
+
+    // socket.emit("studentsCourses/updateGrade", { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: 'W' }, (res) => {
+    //   return this.setState({
+    //     alertMsg: res.code == 200 ? 'Course withdrawn' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning',
+    //     callingApi: ''
+    //   });
+    // });
   }
 
   render() {
@@ -218,7 +257,7 @@ class MisCoursesStudentsUpdate extends React.Component {
                     </Zoom>
                   </Grid>
                   <Grid item xs={'auto'}>
-                    <CustomButton disabled={this.state.studentCourse.grades_locked} label='Assign Grade' callingApiState={this.state.callingApi == 'updateGrade'} onClick={this.updateGrade} />
+                    <CustomButton disabled={this.state.studentCourse.grades_locked || this.state.studentCourse.grade == 'W'} label='Assign Grade' callingApiState={this.state.callingApi == 'updateGrade'} onClick={this.updateGrade} />
                   </Grid>
                   <Grid item xs={'auto'}>
                     <CustomButton

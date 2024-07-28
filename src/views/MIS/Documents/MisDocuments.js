@@ -10,6 +10,7 @@ import CustomButton from "../../../components/CustomButton";
 import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
+import { MakeDELETECall, MakeGETCall, MakePOSTCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -65,22 +66,21 @@ class MisDocuments extends React.Component {
 
   componentDidMount() {
     this.fetchDocuments()
-    socket.addEventListener("documents/listener/changed", this.fetchDocuments);
+    socket.addEventListener("documents_changed", this.fetchDocuments);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("documents/listener/changed", this.fetchDocuments);
+    socket.removeEventListener("documents_changed", this.fetchDocuments);
   }
 
   fetchDocuments = () => {
-    socket.emit("documents/fetch", {}, (res) => {
-      if (res.code == 200) {
+    MakeGETCall('/api/documents')
+      .then(res => {
         return this.setState({
-          documentsArr: res.data,
+          documentsArr: res,
           loadingDocuments: false,
         });
-      }
-    });
+      }).catch(console.error)
   }
 
   uploadDocuments = async (e) => {
@@ -89,13 +89,22 @@ class MisDocuments extends React.Component {
     e.preventDefault()
     const promises = []
     Array.from(e.target.files).forEach(file => {
-      promises.push(
-        new Promise((resolve, reject) => {
-          socket.emit('documents/create', { document: file, document_name: file.name }, (res) => {
-            resolve(res.code == 200 ? `✔️ Uploaded file ${file.name}` : `❌ Error uploaded file ${file.name}: ${res.message}`)
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        const rawBase64 = e.target.result;
+        promises.push(
+          new Promise((resolve, reject) => {
+            console.log('uploading file', rawBase64);
+            MakePOSTCall('/api/documents', { body: { document: rawBase64, document_name: file.name } })
+              .then(res => {
+                resolve(`✔️ Uploaded file ${file.name}`)
+              }).catch(err => {
+                resolve(`❌ Error uploading file ${file.name}: ${err.message || err}`)
+              })
           })
-        })
-      )
+        )
+      };
     })
     Promise.all(promises).then(responses => {
       this.setState({
@@ -123,7 +132,7 @@ class MisDocuments extends React.Component {
   render() {
     const columns = [
       { id: "document_name", label: "File Name", format: (value) => value },
-      { id: "document_url", label: "URL", format: (value) => <a href={value} class="active">{value}</a> },
+      { id: "document_url", label: "URL", format: (value) => <a href={value} className="active">{value}</a> },
       { id: 'document_creation_timestamp', label: 'Created at', format: (value) => new Date(Number(value)).toLocaleString() }
     ];
     return (
@@ -142,10 +151,7 @@ class MisDocuments extends React.Component {
                   confirmationModalShow: true,
                   confirmationModalMessage:
                     "Are you sure you want to remove this document?",
-                  confirmationModalExecute: () =>
-                    socket.emit("documents/delete", {
-                      document_id: document.document_id,
-                    }),
+                  confirmationModalExecute: () => MakeDELETECall('/api/documents/' + document.document_id).catch(console.error)
                 });
               }}
               rows={this.state.documentsArr}

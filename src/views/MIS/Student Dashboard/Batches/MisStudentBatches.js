@@ -7,6 +7,7 @@ import CustomTable from '../../../../components/CustomTable';
 import CustomCard from '../../../../components/CustomCard';
 import GoBackButton from '../../../../components/GoBackButton';
 import { convertUpper } from '../../../../extras/functions';
+import { MakeGETCall } from '../../../../api';
 
 const palletes = {
   primary: '#439CEF',
@@ -39,15 +40,25 @@ class MisStudentBatches extends React.Component {
 
   componentDidMount() {
     console.log('[MisStudentBatches] mounted')
-    socket.emit('students/fetch', { student_id: this.student_id }, (res) => {
-      if (res.code == 200) {
-        if (res.data.length == 1) return this.redirect(res.data[0])
-        return this.setState({
-          studentBatchesArr: res.data,
-          loading: false
-        })
-      }
-    })
+
+    MakeGETCall('/api/students', { query: { student_id: this.student_id } }).then(res => {
+      if (res.length == 1) return this.redirect(res[0])
+      return this.setState({
+        studentBatchesArr: res,
+        loading: false
+      })
+    }).catch(console.error)
+
+    // socket.emit('students/fetch', { student_id: this.student_id }, (res) => {
+    //   if (res.code == 200) {
+    //     if (res.data.length == 1) return this.redirect(res.data[0])
+    //     return this.setState({
+    //       studentBatchesArr: res.data,
+    //       loading: false
+    //     })
+    //   }
+    // })
+
   }
 
   componentWillUnmount() {

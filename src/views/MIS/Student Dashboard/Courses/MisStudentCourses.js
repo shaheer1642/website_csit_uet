@@ -19,6 +19,7 @@ import GoBackButton from "../../../../components/GoBackButton";
 import CustomCard from "../../../../components/CustomCard";
 import { getUserNameById } from "../../../../objects/Users_List";
 import { convertUpper } from "../../../../extras/functions";
+import { MakeGETCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -58,14 +59,22 @@ class MisStudentCourses extends React.Component {
 
   fetchStudentCourses = () => {
     if (!this.student_semester || !this.student_batch) return
-    socket.emit("studentsCourses/fetch", { student_batch_id: this.student_batch?.student_batch_id, semester_id: this.student_semester?.semester_id }, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          studentCoursesArr: res.data,
-          loading: false,
-        });
-      }
-    });
+
+    MakeGETCall('/api/studentsCourses', { query: { student_batch_id: this.student_batch?.student_batch_id, semester_id: this.student_semester?.semester_id } }).then(res => {
+      return this.setState({
+        studentCoursesArr: res,
+        loading: false,
+      });
+    }).catch(console.error)
+
+    // socket.emit("studentsCourses/fetch", { student_batch_id: this.student_batch?.student_batch_id, semester_id: this.student_semester?.semester_id }, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       studentCoursesArr: res.data,
+    //       loading: false,
+    //     });
+    //   }
+    // });
   }
 
   render() {

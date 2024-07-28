@@ -5,6 +5,7 @@ import * as Color from '@mui/material/colors'
 import React, { useState, useEffect } from 'react';
 import { styled, alpha } from '@mui/system';
 import { withRouter } from "../../withRouter";
+import { MakeGETCall } from "../../api";
 
 function AnimatedText(props) {
   const { children, value, index, delay, Transition, ...other } = props;
@@ -36,22 +37,17 @@ class MainHome extends React.Component {
   }
 
   componentDidMount() {
-    socket.emit("events/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          eventsArr: res.data,
-        });
-      }
-    });
+    this.fetchEvents()
 
-    socket.addEventListener(
-      "events/listener/insert",
-      this.eventsListenerInsert
-    );
-    socket.addEventListener(
-      "events/listener/delete",
-      this.eventsListenerDelete
-    );
+    // socket.emit("events/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       eventsArr: res.data,
+    //     });
+    //   }
+    // });
+
+    socket.addEventListener("events_changed", this.fetchEvents);
 
     // Automatically advance to the next image every 3 seconds
     this.interval = setInterval(() => {
@@ -59,34 +55,18 @@ class MainHome extends React.Component {
     }, 5000);
   }
 
-  componentWillUnmount() {
-    socket.removeEventListener(
-      "events/listener/insert",
-      this.eventsListenerInsert
-    );
-    socket.removeEventListener(
-      "events/listener/delete",
-      this.eventsListenerDelete
-    );
-    clearInterval(this.interval);
+  fetchEvents = () => {
+    MakeGETCall('/api/events').then(res => {
+      return this.setState({
+        eventsArr: res,
+      });
+    }).catch(console.error)
   }
 
-  eventsListenerInsert = (res) => {
-    if (res.code == 200) {
-      return this.setState({
-        eventsArr: [...this.state.eventsArr, res.data],
-      });
-    }
-  };
-  eventsListenerDelete = (res) => {
-    if (res.code == 200) {
-      return this.setState({
-        eventsArr: this.state.eventsArr.filter(
-          (event) => event.event_id != res.data.event_id
-        ),
-      });
-    }
-  };
+  componentWillUnmount() {
+    socket.removeEventListener("events_changed", this.fetchEvents);
+    clearInterval(this.interval);
+  }
 
   render() {
     return (
@@ -97,7 +77,7 @@ class MainHome extends React.Component {
         <Grid item xs={12} padding={2} pt={10} sx={{ backgroundColor: alpha(Color.grey[900], 0.7) }}>
           <Grid item container spacing={1}>
             <Grid item xs={12} display='flex' justifyContent='center'>
-              <AnimatedText Transition={Fade} delay='100ms' color='secondary' variant="h2" fontWeight={'bold'} style={{textShadow: `3px 3px 4px black`}}>
+              <AnimatedText Transition={Fade} delay='100ms' color='secondary' variant="h2" fontWeight={'bold'} style={{ textShadow: `3px 3px 4px black` }}>
                 Department Of Computer Science & Information Technology Peshawar Campus
               </AnimatedText>
             </Grid>
@@ -125,7 +105,7 @@ class MainHome extends React.Component {
               </AnimatedText>
             </Grid>
             <Grid item container xs={12}>
-              <Zoom in={true} style={{transitionDelay: '500ms'}}>
+              <Zoom in={true} style={{ transitionDelay: '500ms' }}>
                 <Grid item xs={12}>
                   <Tabs
                     variant="scrollable"
@@ -170,7 +150,7 @@ class MainHome extends React.Component {
                   </Tabs>
                 </Grid>
               </Zoom>
-              <Zoom in={true} style={{transitionDelay: '500ms'}}>
+              <Zoom in={true} style={{ transitionDelay: '500ms' }}>
                 <Grid item xs={12}>
                   <TabPanel value={this.state.tabValue} index={0}>
                     <AnimatedText color='secondary'>The mission of the CS & IT department is:</AnimatedText>

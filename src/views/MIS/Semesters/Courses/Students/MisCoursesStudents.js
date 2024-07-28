@@ -28,6 +28,7 @@ import CustomSelect from "../../../../../components/CustomSelect";
 import ContextInfo from "../../../../../components/ContextInfo";
 import { calculateDegreeExpiry, convertUpper } from "../../../../../extras/functions";
 import { getCache, setCache } from "../../../../../localStorage";
+import { MakeGETCall, MakePATCHCall } from "../../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -89,13 +90,13 @@ class MisCoursesStudents extends React.Component {
 
   componentDidMount() {
     this.fetchStudentCourses();
-    socket.addEventListener('semestersCourses/listener/changed', this.studentsCoursesListenerChanged)
-    socket.addEventListener('studentsCourses/listener/changed', this.studentsCoursesListenerChanged)
+    socket.addEventListener('semesters_courses_changed', this.studentsCoursesListenerChanged)
+    socket.addEventListener('students_courses_changed', this.studentsCoursesListenerChanged)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semestersCourses/listener/changed', this.studentsCoursesListenerChanged)
-    socket.removeEventListener('studentsCourses/listener/changed', this.studentsCoursesListenerChanged)
+    socket.removeEventListener('semesters_courses_changed', this.studentsCoursesListenerChanged)
+    socket.removeEventListener('students_courses_changed', this.studentsCoursesListenerChanged)
   }
 
   studentsCoursesListenerChanged = (data) => {
@@ -106,44 +107,100 @@ class MisCoursesStudents extends React.Component {
   fetchStudentCourses = () => {
     console.log('[fetchStudentCourses] called')
     this.setState({ loading: true })
-    socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
-      if (res.code == 200 && res.data.length == 1) {
-        const semesterCourse = res.data[0]
-        socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
-          if (res.code == 200) {
-            const studentsCourses = res.data
-            const studentBatchIds = studentsCourses.map(studentCourse => studentCourse.student_batch_id)
-            const students = getCache('students/fetch')
-            if (students) return this.setState({ students, semesterCourse, studentBatchIds, studentsCourses, loading: false })
-            socket.emit("students/fetch", {}, (res) => {
-              if (res.code == 200) {
-                const students = res.data
-                setCache('students/fetch', students)
-                return this.setState({
-                  students,
-                  semesterCourse,
-                  studentBatchIds,
-                  studentsCourses,
-                  loading: false,
-                });
-              }
+
+    MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+      if (res.length == 1) {
+        const semesterCourse = res[0]
+        MakeGETCall('/api/studentsCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+          const studentsCourses = res
+          const studentBatchIds = studentsCourses.map(studentCourse => studentCourse.student_batch_id)
+          const students = getCache('students/fetch')
+          if (students) return this.setState({ students, semesterCourse, studentBatchIds, studentsCourses, loading: false })
+
+          MakeGETCall('/api/students').then(res => {
+            const students = res
+            setCache('students/fetch', students)
+            return this.setState({
+              students,
+              semesterCourse,
+              studentBatchIds,
+              studentsCourses,
+              loading: false,
             });
-          }
-        });
+          }).catch(console.error)
+        }).catch(console.error)
       }
-    })
+    }).catch(console.error)
+
+    // socket.emit("semestersCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
+    //   if (res.code == 200 && res.data.length == 1) {
+    //     const semesterCourse = res.data[0]
+    //     socket.emit("studentsCourses/fetch", { sem_course_id: this.sem_course_id }, (res) => {
+    //       if (res.code == 200) {
+    //         const studentsCourses = res.data
+    //         const studentBatchIds = studentsCourses.map(studentCourse => studentCourse.student_batch_id)
+    //         const students = getCache('students/fetch')
+    //         if (students) return this.setState({ students, semesterCourse, studentBatchIds, studentsCourses, loading: false })
+
+
+    //         MakeGETCall('/api/students').then(res => {
+    //           const students = res
+    //           setCache('students/fetch', students)
+    //           return this.setState({
+    //             students,
+    //             semesterCourse,
+    //             studentBatchIds,
+    //             studentsCourses,
+    //             loading: false,
+    //           });
+    //         }).catch(console.error)
+
+    //         // socket.emit("students/fetch", {}, (res) => {
+    //         //   if (res.code == 200) {
+    //         //     const students = res.data
+    //         //     setCache('students/fetch', students)
+    //         //     return this.setState({
+    //         //       students,
+    //         //       semesterCourse,
+    //         //       studentBatchIds,
+    //         //       studentsCourses,
+    //         //       loading: false,
+    //         //     });
+    //         //   }
+    //         // });
+    //       }
+    //     });
+    //   }
+    // })
   }
 
   updateStudentsList = () => {
     this.setState({ callingApi: true })
-    socket.emit("studentsCourses/assignStudents", { sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds }, (res) => {
+
+    MakePATCHCall(`/api/studentsCourses/${this.sem_course_id}/assignStudents`, { body: { student_batch_ids: this.state.studentBatchIds } }).then(res => {
       this.setState({ callingApi: false })
       console.log(`[studentsCourses/assignStudents] response`, res)
       this.setState({
-        alertMsg: res.code == 200 ? 'Students list updated' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning'
+        alertMsg: 'Students list updated',
+        alertSeverity: 'success'
       }, this.timeoutAlert)
-    });
+    }).catch(res => {
+      this.setState({ callingApi: false })
+      console.log(`[studentsCourses/assignStudents] response`, res)
+      this.setState({
+        alertMsg: `${res.status}: ${res.message}`,
+        alertSeverity: 'warning'
+      }, this.timeoutAlert)
+    })
+
+    // socket.emit("studentsCourses/assignStudents", { sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds }, (res) => {
+    //   this.setState({ callingApi: false })
+    //   console.log(`[studentsCourses/assignStudents] response`, res)
+    //   this.setState({
+    //     alertMsg: res.code == 200 ? 'Students list updated' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+    //   }, this.timeoutAlert)
+    // });
   }
 
   timeoutAlert = () => {
@@ -180,21 +237,47 @@ class MisCoursesStudents extends React.Component {
   }
 
   lockCourse = () => {
-    socket.emit("semestersCourses/lockChanges", { sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds }, (res) => {
+
+    MakePATCHCall(`/api/semestersCourses/${this.sem_course_id}/lockChanges`).then(res => {
       this.setState({
-        alertMsg: res.code == 200 ? 'Course Locked' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning'
+        alertMsg: 'Course Locked',
+        alertSeverity: 'success'
       }, this.timeoutAlert)
-    });
+    }).catch(res => {
+      this.setState({
+        alertMsg: `${res.status}: ${res.message}`,
+        alertSeverity: 'warning'
+      }, this.timeoutAlert)
+    })
+
+    // socket.emit("semestersCourses/lockChanges", { sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds }, (res) => {
+    //   this.setState({
+    //     alertMsg: res.code == 200 ? 'Course Locked' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+    //   }, this.timeoutAlert)
+    // });
   }
 
   unlockGrades = () => {
-    socket.emit("semestersCourses/unlockGrades", { sem_course_id: this.sem_course_id }, (res) => {
+
+    MakePATCHCall(`/api/semestersCourses/${this.sem_course_id}/unlockGrades`).then(res => {
       this.setState({
-        alertMsg: res.code == 200 ? 'Course Grades Unlocked' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning'
+        alertMsg: 'Course Grades Unlocked',
+        alertSeverity: 'success'
       }, this.timeoutAlert)
-    });
+    }).catch(res => {
+      this.setState({
+        alertMsg: `${res.status}: ${res.message}`,
+        alertSeverity: 'warning'
+      }, this.timeoutAlert)
+    })
+
+    // socket.emit("semestersCourses/unlockGrades", { sem_course_id: this.sem_course_id }, (res) => {
+    //   this.setState({
+    //     alertMsg: res.code == 200 ? 'Course Grades Unlocked' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+    //   }, this.timeoutAlert)
+    // });
   }
 
   render() {

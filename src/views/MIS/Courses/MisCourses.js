@@ -11,6 +11,7 @@ import CustomModal from "../../../components/CustomModal";
 import ConfirmationModal from "../../../components/ConfirmationModal";
 import CustomCard from "../../../components/CustomCard";
 import { convertUpper } from "../../../extras/functions";
+import { MakeDELETECall, MakeGETCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -40,75 +41,42 @@ class MisCourses extends React.Component {
       modalTitle: "",
       modalBody: "",
       modalShow: false,
+      confirmationModalShow: false,
+      confirmationModalMessage: "",
+      confirmationModalExecute: () => { },
     };
   }
 
   componentDidMount() {
-    socket.emit("courses/fetch", {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          coursesArr: res.data,
-          loadingCourses: false,
+    this.fetchCourses()
+    // socket.emit("courses/fetch", {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       coursesArr: res.data,
+    //       loadingCourses: false,
 
-          confirmationModalShow: false,
-          confirmationModalMessage: "",
-          confirmationModalExecute: () => { },
-        });
-      }
-    });
+    //       confirmationModalShow: false,
+    //       confirmationModalMessage: "",
+    //       confirmationModalExecute: () => { },
+    //     });
+    //   }
+    // });
 
-    socket.addEventListener(
-      "courses/listener/insert",
-      this.coursesListenerInsert
-    );
-    socket.addEventListener(
-      "courses/listener/update",
-      this.coursesListenerUpdate
-    );
-    socket.addEventListener(
-      "courses/listener/delete",
-      this.coursesListenerDelete
-    );
+    socket.addEventListener("courses_changed", this.fetchCourses);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener(
-      "courses/listener/insert",
-      this.coursesListenerInsert
-    );
-    socket.removeEventListener(
-      "courses/listener/update",
-      this.coursesListenerUpdate
-    );
-    socket.removeEventListener(
-      "courses/listener/delete",
-      this.coursesListenerDelete
-    );
+    socket.removeEventListener("courses_changed", this.fetchCourses);
   }
 
-  coursesListenerInsert = (data) => {
-    return this.setState({
-      coursesArr: [data, ...this.state.coursesArr],
-    });
-  };
-  coursesListenerUpdate = (data) => {
-    return this.setState((state) => {
-      const coursesArr = state.coursesArr.map((course, index) => {
-        if (course.course_id === data.course_id) return data;
-        else return course;
+  fetchCourses = () => {
+    MakeGETCall('/api/courses').then(res => {
+      return this.setState({
+        coursesArr: res,
+        loadingCourses: false,
       });
-      return {
-        coursesArr,
-      };
-    });
-  };
-  coursesListenerDelete = (data) => {
-    return this.setState({
-      coursesArr: this.state.coursesArr.filter(
-        (course) => course.course_id != data.course_id
-      ),
-    });
-  };
+    }).catch(console.error)
+  }
 
   confirmationModalDestroy = () => {
     this.setState({
@@ -148,7 +116,8 @@ class MisCourses extends React.Component {
                   confirmationModalMessage:
                     "Are you sure you want to remove this course?",
                   confirmationModalExecute: () =>
-                    socket.emit("courses/delete", { course_id: courses.course_id }),
+                    MakeDELETECall('/api/courses/' + courses.course_id).catch(console.error)
+                  // socket.emit("courses/delete", { course_id: courses.course_id }),
                 });
               }}
               rows={this.state.coursesArr}
