@@ -136,7 +136,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
           })
       }
       schema_temp = schema_temp.sort((a, b) => a.position - b.position)
-      console.log(schema_temp)
+      // console.log(schema_temp)
       var formFields: Object = {}
       schema_temp.map((attribute) => {
         formFields[attribute.key] = this.props.options[attribute.key]?.defaultValue || undefined
@@ -166,7 +166,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
   }
 
   componentDidUpdate(): void {
-    console.log(this.state.formFields)
+    // console.log(this.state.formFields)
   }
 
   handleFormFieldChange = (key: string, value: string | number | []) => {

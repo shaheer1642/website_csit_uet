@@ -66,11 +66,11 @@ class MisDocuments extends React.Component {
 
   componentDidMount() {
     this.fetchDocuments()
-    socket.addEventListener("documents/listener/changed", this.fetchDocuments);
+    socket.addEventListener("documents_changed", this.fetchDocuments);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("documents/listener/changed", this.fetchDocuments);
+    socket.removeEventListener("documents_changed", this.fetchDocuments);
   }
 
   fetchDocuments = () => {

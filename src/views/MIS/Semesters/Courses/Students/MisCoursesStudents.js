@@ -90,13 +90,13 @@ class MisCoursesStudents extends React.Component {
 
   componentDidMount() {
     this.fetchStudentCourses();
-    socket.addEventListener('semestersCourses/listener/changed', this.studentsCoursesListenerChanged)
-    socket.addEventListener('studentsCourses/listener/changed', this.studentsCoursesListenerChanged)
+    socket.addEventListener('semesters_courses_changed', this.studentsCoursesListenerChanged)
+    socket.addEventListener('students_courses_changed', this.studentsCoursesListenerChanged)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semestersCourses/listener/changed', this.studentsCoursesListenerChanged)
-    socket.removeEventListener('studentsCourses/listener/changed', this.studentsCoursesListenerChanged)
+    socket.removeEventListener('semesters_courses_changed', this.studentsCoursesListenerChanged)
+    socket.removeEventListener('students_courses_changed', this.studentsCoursesListenerChanged)
   }
 
   studentsCoursesListenerChanged = (data) => {
@@ -110,7 +110,7 @@ class MisCoursesStudents extends React.Component {
 
     MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
       if (res.length == 1) {
-        const semesterCourse = res
+        const semesterCourse = res[0]
         MakeGETCall('/api/studentsCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
           const studentsCourses = res
           const studentBatchIds = studentsCourses.map(studentCourse => studentCourse.student_batch_id)
@@ -177,7 +177,7 @@ class MisCoursesStudents extends React.Component {
   updateStudentsList = () => {
     this.setState({ callingApi: true })
 
-    MakePATCHCall('/api/studentsCourses/assignStudents', { body: { sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds } }).then(res => {
+    MakePATCHCall(`/api/studentsCourses/${this.sem_course_id}/assignStudents`, { body: { student_batch_ids: this.state.studentBatchIds } }).then(res => {
       this.setState({ callingApi: false })
       console.log(`[studentsCourses/assignStudents] response`, res)
       this.setState({
@@ -238,7 +238,7 @@ class MisCoursesStudents extends React.Component {
 
   lockCourse = () => {
 
-    MakePATCHCall('/api/semestersCourses/lockChanges', { body: { sem_course_id: this.sem_course_id, student_batch_ids: this.state.studentBatchIds } }).then(res => {
+    MakePATCHCall(`/api/semestersCourses/${this.sem_course_id}/lockChanges`).then(res => {
       this.setState({
         alertMsg: 'Course Locked',
         alertSeverity: 'success'
@@ -260,7 +260,7 @@ class MisCoursesStudents extends React.Component {
 
   unlockGrades = () => {
 
-    MakePATCHCall('/api/semestersCourses/unlockGrades', { body: { sem_course_id: this.sem_course_id } }).then(res => {
+    MakePATCHCall(`/api/semestersCourses/${this.sem_course_id}/unlockGrades`).then(res => {
       this.setState({
         alertMsg: 'Course Grades Unlocked',
         alertSeverity: 'success'

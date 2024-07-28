@@ -37,12 +37,7 @@ class MainHome extends React.Component {
   }
 
   componentDidMount() {
-
-    MakeGETCall('/api/events').then(res => {
-      return this.setState({
-        eventsArr: res,
-      });
-    }).catch(console.error)
+    this.fetchEvents()
 
     // socket.emit("events/fetch", {}, (res) => {
     //   if (res.code == 200) {
@@ -52,14 +47,7 @@ class MainHome extends React.Component {
     //   }
     // });
 
-    socket.addEventListener(
-      "events/listener/insert",
-      this.eventsListenerInsert
-    );
-    socket.addEventListener(
-      "events/listener/delete",
-      this.eventsListenerDelete
-    );
+    socket.addEventListener("events_changed", this.fetchEvents);
 
     // Automatically advance to the next image every 3 seconds
     this.interval = setInterval(() => {
@@ -67,34 +55,18 @@ class MainHome extends React.Component {
     }, 5000);
   }
 
-  componentWillUnmount() {
-    socket.removeEventListener(
-      "events/listener/insert",
-      this.eventsListenerInsert
-    );
-    socket.removeEventListener(
-      "events/listener/delete",
-      this.eventsListenerDelete
-    );
-    clearInterval(this.interval);
+  fetchEvents = () => {
+    MakeGETCall('/api/events').then(res => {
+      return this.setState({
+        eventsArr: res,
+      });
+    }).catch(console.error)
   }
 
-  eventsListenerInsert = (res) => {
-    if (res.code == 200) {
-      return this.setState({
-        eventsArr: [...this.state.eventsArr, res.data],
-      });
-    }
-  };
-  eventsListenerDelete = (res) => {
-    if (res.code == 200) {
-      return this.setState({
-        eventsArr: this.state.eventsArr.filter(
-          (event) => event.event_id != res.data.event_id
-        ),
-      });
-    }
-  };
+  componentWillUnmount() {
+    socket.removeEventListener("events_changed", this.fetchEvents);
+    clearInterval(this.interval);
+  }
 
   render() {
     return (

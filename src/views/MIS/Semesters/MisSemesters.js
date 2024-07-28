@@ -36,13 +36,7 @@ class MisSemesters extends React.Component {
 
   componentDidMount() {
 
-    MakeGETCall('/api/semesters').then(res => {
-      return this.setState({
-        semestersArr: res,
-        loadingSemesters: false,
-      });
-    }).catch(console.error)
-
+    this.fetchSemesters()
     // socket.emit("semesters/fetch", {}, (res) => {
     //   if (res.code == 200) {
     //     return this.setState({
@@ -52,15 +46,20 @@ class MisSemesters extends React.Component {
     //   }
     // });
 
-    socket.addEventListener('semesters/listener/insert', this.semestersListenerInsert)
-    socket.addEventListener('semesters/listener/update', this.semestersListenerUpdate)
-    socket.addEventListener('semesters/listener/delete', this.semestersListenerDelete)
+    socket.addEventListener('semesters_changed', this.fetchSemesters)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semesters/listener/insert', this.semestersListenerInsert)
-    socket.removeEventListener('semesters/listener/update', this.semestersListenerUpdate)
-    socket.removeEventListener('semesters/listener/delete', this.semestersListenerDelete)
+    socket.removeEventListener('semesters_changed', this.fetchSemesters)
+  }
+
+  fetchSemesters = () => {
+    MakeGETCall('/api/semesters').then(res => {
+      return this.setState({
+        semestersArr: res,
+        loadingSemesters: false,
+      });
+    }).catch(console.error)
   }
 
   semestersListenerInsert = (data) => {

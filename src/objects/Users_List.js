@@ -24,13 +24,7 @@ function fetchUsers() {
     // })
 }
 
-socket.on('users/listener/insert', () => {
-    fetchUsers()
-})
-socket.on('users/listener/update', () => {
-    fetchUsers()
-})
-socket.on('users/listener/delete', () => {
+socket.on('users_changed', () => {
     fetchUsers()
 })
 

@@ -4,6 +4,7 @@ import { Button, TextField, Grid, Typography, Stack, Chip, Link, IconButton, Cir
 import { UploadFile } from '@mui/icons-material';
 import * as Color from '@mui/material/colors';
 import { socket } from '../websocket/socket';
+import { MakeGETCall } from '../api';
 
 const defaultStyles = {
   chip: {
@@ -38,11 +39,11 @@ export default class CustomFilesField extends React.Component<IProps> {
 
   componentDidMount(): void {
     this.fetchDocuments()
-    socket.addEventListener("documents/listener/changed", this.fetchDocuments);
+    socket.addEventListener("documents_changed", this.fetchDocuments);
   }
 
   componentWillUnmount(): void {
-    socket.removeEventListener("documents/listener/changed", this.fetchDocuments);
+    socket.removeEventListener("documents_changed", this.fetchDocuments);
   }
 
   fetchDocuments = () => {

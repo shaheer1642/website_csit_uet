@@ -92,7 +92,7 @@ class MisCoursesStudentsUpdate extends React.Component {
 
   componentDidMount() {
     this.fetchStudentCourse();
-    socket.addEventListener('studentsCourses/listener/changed', this.studentCourseListenerChanged)
+    socket.addEventListener('students_courses_changed', this.studentCourseListenerChanged)
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -104,7 +104,7 @@ class MisCoursesStudentsUpdate extends React.Component {
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('studentsCourses/listener/changed', this.studentCourseListenerChanged)
+    socket.removeEventListener('students_courses_changed', this.studentCourseListenerChanged)
   }
 
   studentCourseListenerChanged = (data) => {
@@ -116,7 +116,7 @@ class MisCoursesStudentsUpdate extends React.Component {
 
     MakeGETCall('/api/studentsCourses', { query: { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id } }).then(res => {
       return this.setState({
-        studentCourse: res,
+        studentCourse: res[0],
         loading: false,
       });
     }).catch(console.error)
@@ -134,7 +134,7 @@ class MisCoursesStudentsUpdate extends React.Component {
   updateGrade = () => {
     this.setState({ callingApi: 'updateGrade' })
 
-    MakePATCHCall('/api/studentsCourses/updateGrade', { body: { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: this.state.updatedGrade } }).then(res => {
+    MakePATCHCall(`/api/studentsCourses/${this.student_batch_id}/${this.sem_course_id}/updateGrade`, { body: { grade: this.state.updatedGrade } }).then(res => {
       return this.setState({
         alertMsg: 'Grade Updated',
         alertSeverity: 'success',
@@ -160,7 +160,7 @@ class MisCoursesStudentsUpdate extends React.Component {
   withdrawCourse = () => {
     this.setState({ callingApi: 'withdrawCourse' })
 
-    MakePATCHCall('/api/studentsCourses/updateGrade', { body: { sem_course_id: this.sem_course_id, student_batch_id: this.student_batch_id, grade: 'W' } }).then(res => {
+    MakePATCHCall(`/api/studentsCourses/${this.student_batch_id}/${this.sem_course_id}/updateGrade`, { body: { grade: 'W' } }).then(res => {
       return this.setState({
         alertMsg: 'Course withdrawn',
         alertSeverity: 'success',
@@ -257,7 +257,7 @@ class MisCoursesStudentsUpdate extends React.Component {
                     </Zoom>
                   </Grid>
                   <Grid item xs={'auto'}>
-                    <CustomButton disabled={this.state.studentCourse.grades_locked} label='Assign Grade' callingApiState={this.state.callingApi == 'updateGrade'} onClick={this.updateGrade} />
+                    <CustomButton disabled={this.state.studentCourse.grades_locked || this.state.studentCourse.grade == 'W'} label='Assign Grade' callingApiState={this.state.callingApi == 'updateGrade'} onClick={this.updateGrade} />
                   </Grid>
                   <Grid item xs={'auto'}>
                     <CustomButton

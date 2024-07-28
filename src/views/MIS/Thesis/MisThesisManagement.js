@@ -16,6 +16,7 @@ import { Navigate } from 'react-router';
 import ContextInfo from '../../../components/ContextInfo';
 import CustomModal from '../../../components/CustomModal';
 import MisThesisExaminers from './MisThesisExaminers';
+import { MakeGETCall, MakePOSTCall } from '../../../api';
 
 const palletes = {
   primary: '#439CEF',
@@ -91,25 +92,32 @@ class MisThesisManagement extends React.Component {
 
   componentDidMount() {
     this.fetchStudentThesis()
-    socket.addEventListener("studentsThesis/listener/changed", this.studentsThesisListenerChanged);
+    socket.addEventListener("students_thesis_changed", this.studentsThesisListenerChanged);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("studentsThesis/listener/changed", this.studentsThesisListenerChanged);
+    socket.removeEventListener("students_thesis_changed", this.studentsThesisListenerChanged);
   }
 
   componentDidUpdate() {
   }
 
   fetchStudentThesis = () => {
-    socket.emit('studentsThesis/fetch', { student_batch_id: this.student_batch_id }, (res) => {
-      if (res.code == 200) {
-        this.setState({
-          loading: false,
-          student_thesis: res.data[0] || {}
-        })
-      }
-    })
+    if (!this.student_batch_id) return
+    MakeGETCall('/api/studentsThesis', { query: { student_batch_id: this.student_batch_id } }).then(res => {
+      this.setState({
+        loading: false,
+        student_thesis: res[0] || {}
+      })
+    }).catch(console.error)
+    // socket.emit('studentsThesis/fetch', { student_batch_id: this.student_batch_id }, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       loading: false,
+    //       student_thesis: res.data[0] || {}
+    //     })
+    //   }
+    // })
   }
 
   studentsThesisListenerChanged = (data) => {
@@ -124,11 +132,30 @@ class MisThesisManagement extends React.Component {
   }
 
   fileUploadHandler = (key, e) => {
-    if (!this.updatedKeys.includes(key)) this.updatedKeys.push(key)
     e.preventDefault()
-    this.setState({
-      student_thesis: { ...this.state.student_thesis, [key]: [...this.state.student_thesis[key], ...Array.from(e.target.files).map(file => ({ document: file, document_name: file.name }))] }
-    }, () => console.log('fileUploadHandler', this.state.student_thesis))
+    if (!this.updatedKeys.includes(key)) this.updatedKeys.push(key)
+
+    Promise.all(
+      Array.from(e.target.files).map(file => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+
+        return new Promise((resolve) => {
+          reader.onload = (e) => {
+            const rawBase64 = e.target.result;
+            resolve({
+              base64: rawBase64,
+              name: file.name
+            })
+          };
+        })
+      })
+    ).then(files => {
+      this.setState({
+        student_thesis: { ...this.state.student_thesis, [key]: [...this.state.student_thesis[key], ...files.map(file => ({ document: file.base64, document_name: file.name }))] }
+      }, () => console.log('fileUploadHandler', this.state.student_thesis))
+    })
+
     e.target.value = null
   }
 
@@ -144,19 +171,30 @@ class MisThesisManagement extends React.Component {
     this.timeoutAlertRef = setTimeout(() => this.setState({ alertMsg: '' }), 5000)
   }
 
-  addExaminer = (callback) => {
-    if (!this.state.thesisExaminersType) return callback ? callback() : null
-    this.setState({ addingExaminer: true })
-    socket.emit('studentsThesisExaminers/create', {
-      examiner_name: this.state.addExaminerName,
-      examiner_university: this.state.addExaminerUniversity,
-      examiner_designation: this.state.addExaminerDesignation,
-      examiner_type: this.state.thesisExaminersType
-    }, (res) => {
-      this.setState({ addingExaminer: false })
-      if (callback) callback()
-    })
-  }
+  // addExaminer = (callback) => {
+  //   if (!this.state.thesisExaminersType) return callback ? callback() : null
+  //   this.setState({ addingExaminer: true })
+  //   MakePOSTCall('/api/studentsThesisExaminers', {
+  //     body: {
+  //       examiner_name: this.state.addExaminerName,
+  //       examiner_university: this.state.addExaminerUniversity,
+  //       examiner_designation: this.state.addExaminerDesignation,
+  //       examiner_type: this.state.thesisExaminersType
+  //     }
+  //   }).then(res => {
+  //     this.setState({ addingExaminer: false })
+  //     callback && callback()
+  //   }).catch(console.error)
+  //   // socket.emit('studentsThesisExaminers/create', {
+  //   //   examiner_name: this.state.addExaminerName,
+  //   //   examiner_university: this.state.addExaminerUniversity,
+  //   //   examiner_designation: this.state.addExaminerDesignation,
+  //   //   examiner_type: this.state.thesisExaminersType
+  //   // }, (res) => {
+  //   //   this.setState({ addingExaminer: false })
+  //   //   if (callback) callback()
+  //   // })
+  // }
 
   render() {
     if (this.student_view && !this.student_batch_id) return <Navigate to='/mis/sportal/batches' state={{ ...this.props.location?.state, redirect: '/mis/thesis/manage', student_id: this.props.user?.user_id }} />
@@ -845,15 +883,33 @@ class MisThesisManagement extends React.Component {
                     label='Save changes'
                     onClick={() => {
                       this.setState({ savingChanges: true })
-                      socket.emit(`studentsThesis/update`, Object.keys(this.state.student_thesis).filter(key => this.updatedKeys.includes(key) || key == 'student_batch_id').reduce((obj, key) => { obj[key] = this.state.student_thesis[key]; return obj; }, {}), res => {
+                      MakePOSTCall('/api/studentsThesis/' + this.state.student_thesis.student_batch_id, {
+                        body: Object.keys(this.state.student_thesis).filter(key => this.updatedKeys.includes(key) || key == 'student_batch_id').reduce((obj, key) => { obj[key] = this.state.student_thesis[key] || null; return obj; }, {})
+                      }).then(res => {
                         this.setState({
                           savingChanges: false,
-                          alertMsg: res.code == 200 ? 'Saved changes!' : `${res.status}: ${res.message}`,
-                          alertSeverity: res.code == 200 ? 'success' : 'warning'
+                          alertMsg: 'Saved changes!',
+                          alertSeverity: 'success'
                         }, this.timeoutAlert)
                         this.updatedKeys = []
                         this.fetchStudentThesis()
+                      }).catch(err => {
+                        console.error(err)
+                        this.setState({
+                          savingChanges: false,
+                          alertMsg: `${err.status}: ${err.message}`,
+                          alertSeverity: 'warning'
+                        }, this.timeoutAlert)
                       })
+                      // socket.emit(`studentsThesis/update`, Object.keys(this.state.student_thesis).filter(key => this.updatedKeys.includes(key) || key == 'student_batch_id').reduce((obj, key) => { obj[key] = this.state.student_thesis[key]; return obj; }, {}), res => {
+                      //   this.setState({
+                      //     savingChanges: false,
+                      //     alertMsg: res.code == 200 ? 'Saved changes!' : `${res.status}: ${res.message}`,
+                      //     alertSeverity: res.code == 200 ? 'success' : 'warning'
+                      //   }, this.timeoutAlert)
+                      //   this.updatedKeys = []
+                      //   this.fetchStudentThesis()
+                      // })
                     }}
                   />
                 </Grid>

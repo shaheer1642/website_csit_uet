@@ -8,6 +8,7 @@ import { socket } from "../../../../websocket/socket";
 import { withRouter } from "../../../../withRouter";
 import CustomButton from "../../../../components/CustomButton";
 import LoadingIcon from "../../../../components/LoadingIcon";
+import { MakeGETCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -47,14 +48,20 @@ class MisStudentTranscript extends React.Component {
   fetchStudenTranscript = () => {
     if (!this.student_batch) return
     this.setState({ loading: true })
-    socket.emit("forms/studentTranscript", { student_batch_id: this.student_batch?.student_batch_id }, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          studentTranscript: res.data,
-          loading: false,
-        });
-      }
-    });
+    MakeGETCall('/api/forms/studentTranscript', { query: { student_batch_id: this.student_batch?.student_batch_id } }).then(res => {
+      return this.setState({
+        studentTranscript: res.data,
+        loading: false,
+      });
+    }).catch(console.error)
+    // socket.emit("forms/studentTranscript", { student_batch_id: this.student_batch?.student_batch_id }, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       studentTranscript: res.data,
+    //       loading: false,
+    //     });
+    //   }
+    // });
   }
 
   downloadPDF = () => {

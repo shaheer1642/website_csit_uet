@@ -18,7 +18,7 @@ class MisSemestersCreate extends React.Component {
           <FormGenerator
             endpoint="semesters"
             formType="create"
-            submitSuccessMessage="Student Created Successfully"
+            submitSuccessMessage="Semester Created Successfully"
             backgroundColor="white"
             options={{
               semester_year: {

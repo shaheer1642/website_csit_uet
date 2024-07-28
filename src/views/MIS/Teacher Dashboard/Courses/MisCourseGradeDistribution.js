@@ -97,11 +97,11 @@ class MisGradeDistribution extends React.Component {
 
   componentDidMount() {
     this.fetchSemesterCourse();
-    socket.addEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.addEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.removeEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
 
@@ -112,9 +112,9 @@ class MisGradeDistribution extends React.Component {
 
   fetchSemesterCourse = () => {
 
-    MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
+    MakeGETCall(`/api/semestersCourses`, { query: { sem_course_id: this.sem_course_id } }).then(res => {
       return this.setState({
-        semesterCourse: res,
+        semesterCourse: res[0],
         loadingSemesterCourse: false,
       });
     }).catch(console.error)
@@ -454,7 +454,7 @@ class MisGradeDistribution extends React.Component {
                           onClick={() => {
                             this.setState({ callingApi: true })
 
-                            MakePATCHCall('/api/semestersCourses/updateGradeDistribution', { body: { sem_course_id: this.sem_course_id, grade_distribution: this.state.semesterCourse.grade_distribution } }).then(res => {
+                            MakePATCHCall(`/api/semestersCourses/${this.sem_course_id}/updateGradeDistribution`, { body: { grade_distribution: this.state.semesterCourse.grade_distribution } }).then(res => {
                               this.setState({ callingApi: false })
                               this.setState({
                                 alertMsg: 'Updated grade distribution',

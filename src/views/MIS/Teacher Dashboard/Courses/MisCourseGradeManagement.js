@@ -28,6 +28,7 @@ import MisCourseGradeMarking from "./MisCourseGradeMarking";
 import MisCourseAttendance from "./MisCourseAttendance";
 import FormCB5 from "../../FormsGenerator/FormCB5";
 import ContextInfo from "../../../../components/ContextInfo";
+import { MakeGETCall } from "../../../../api";
 
 class MisCourseGradeManagement extends React.Component {
   constructor(props) {
@@ -48,14 +49,20 @@ class MisCourseGradeManagement extends React.Component {
 
   fetchForm = (endpoint) => {
     this.setState({ fetchingForm: endpoint })
-    socket.emit(`forms/${endpoint}`, {
-      sem_course_id: this.sem_course_id,
-    }, (res) => {
+    if (endpoint == 'resultFormCB5') return
+    MakeGETCall('/api/forms/' + endpoint, { query: { sem_course_id: this.sem_course_id } }).then(res => {
       console.log(res)
-      this.setState({ fetchingForm: '' })
       var printWindow = window.open('', '', 'height=800,width=600');
-      printWindow.document.write(res.code == 200 ? res.data : `<html><body><p>${res.message || 'Error occured fetching form'}</p></body></html>`);
-    })
+      printWindow.document.write(res.data);
+    }).catch(err => {
+      var printWindow = window.open('', '', 'height=800,width=600');
+      printWindow.document.write(`<html><body><p>Error occured fetching form: ${err.message || JSON.stringify(err)}</p></body></html>`);
+    }).finally(() => this.setState({ fetchingForm: '' }))
+    // socket.emit(`forms/${endpoint}`, {
+    //   sem_course_id: this.sem_course_id,
+    // }, (res) => {
+    //   console.log(res)
+    // })
   }
 
   render() {

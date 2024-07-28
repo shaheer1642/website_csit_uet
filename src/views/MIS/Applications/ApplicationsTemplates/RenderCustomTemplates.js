@@ -85,10 +85,10 @@ class RenderCustomTemplates extends React.Component {
       this.setState({ callingApi: 'fetchData' })
 
       MakeGETCall('/api/students', { query: { student_id: this.props.user?.user_id } }).then(res => {
-        const student = res[1] || res
+        const student = res[1] || res[0]
         MakeGETCall('/api/studentsCourses', { query: { student_batch_id: student.student_batch_id } }).then(res => {
           const studentCourses = res.filter(o => o.grade == 'N')
-          console.log('fetchData', studentCourses)
+          // console.log('fetchData', studentCourses)
           this.setState(state => ({
             fields_options: { ...state.fields_options, studentCourses: studentCourses },
             callingApi: ''

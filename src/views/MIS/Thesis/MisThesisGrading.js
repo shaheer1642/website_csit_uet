@@ -19,6 +19,7 @@ import MisThesisExaminers from './MisThesisExaminers';
 import { getUserNameById } from '../../../objects/Users_List';
 import { timeLocale } from '../../../objects/Time';
 import CustomAlert from '../../../components/CustomAlert';
+import { MakeGETCall, MakePATCHCall } from '../../../api';
 
 const palletes = {
   primary: '#439CEF',
@@ -102,34 +103,48 @@ class MisThesisGrading extends React.Component {
     }, 3000);
   }
 
-  updateAlertMsg = ({ apiRes, successMsg, errorMsg, rawMsg }) => {
-    if (rawMsg) return this.setState({ alertMsg: apiRes, alertSeverity: 'warning' })
-    if (apiRes.code == 200 && !successMsg) return
+  updateAlertMsg = ({ msg, severity }) => {
     this.setState({
-      alertMsg: apiRes.code == 200 ? successMsg : errorMsg || `${apiRes.status}: ${apiRes.message}`,
-      alertSeverity: apiRes.code == 200 ? 'success' : 'warning'
+      alertMsg: msg,
+      alertSeverity: severity
     })
   }
 
   fetchStudentThesis = () => {
     this.setState({ callingApi: 'fetchStudentThesis' })
-    socket.emit('studentsThesis/fetch', { student_batch_id: this.student_batch_id }, (res) => {
-      this.setState({ callingApi: '' })
-      if (res.code == 200) {
-        this.setState({
-          student_thesis: res.data[0]
-        })
-      }
-    })
+    MakeGETCall('/api/studentsThesis', { query: { student_batch_id: this.student_batch_id } }).then(res => {
+      this.setState({
+        student_thesis: res[0]
+      })
+    }).catch(console.error).finally(() => this.setState({ callingApi: '' }))
+    // socket.emit('studentsThesis/fetch', { student_batch_id: this.student_batch_id }, (res) => {
+    //   this.setState({ callingApi: '' })
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       student_thesis: res.data[0]
+    //     })
+    //   }
+    // })
   }
 
   updateGrade = () => {
     this.setState({ callingApi: 'updateGrade' })
-    socket.emit('studentsThesis/updateGrade', { student_batch_id: this.student_batch_id, grade: this.state.student_thesis.grade, completion_timestamp: this.state.student_thesis.completion_timestamp }, (res) => {
-      this.setState({ callingApi: '' })
-      this.updateAlertMsg({ apiRes: res, successMsg: 'Grade Assigned!' })
+    MakePATCHCall(`/api/studentsThesis/${this.student_batch_id}/updateGrade`, {
+      body: {
+        grade: this.state.student_thesis.grade,
+        completion_timestamp: this.state.student_thesis.completion_timestamp
+      }
+    }).then(res => {
+      this.updateAlertMsg({ msg: 'Grade Assigned!', severity: 'success' })
       this.fetchStudentThesis()
-    })
+    }).catch(err => {
+      this.updateAlertMsg({ msg: `Error occured: ${err.message}`, severity: 'warning' })
+    }).finally(() => this.setState({ callingApi: '' }))
+    // socket.emit('studentsThesis/updateGrade', { student_batch_id: this.student_batch_id, grade: this.state.student_thesis.grade, completion_timestamp: this.state.student_thesis.completion_timestamp }, (res) => {
+    //   this.setState({ callingApi: '' })
+    //   this.updateAlertMsg({ apiRes: res, successMsg: 'Grade Assigned!' })
+    //   this.fetchStudentThesis()
+    // })
   }
 
   render() {

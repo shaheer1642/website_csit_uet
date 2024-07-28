@@ -145,10 +145,8 @@ function filterObjectByKeys(object, keysArr) {
 }
 
 var semesters_array = []
-socketHasConnected().then(fetchSemesters)
-socket.on('semesters/listener/insert', fetchSemesters)
-socket.on('semesters/listener/update', fetchSemesters)
-socket.on('semesters/listener/delete', fetchSemesters)
+fetchSemesters()
+socket.on('semesters_changed', fetchSemesters)
 function fetchSemesters() {
     console.log('[Functions.js] fetchSemesters called')
 

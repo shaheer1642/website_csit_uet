@@ -86,12 +86,8 @@ class MisStudent extends React.Component {
 
   componentDidMount() {
     this.fetchData()
-    socket.addEventListener('students/listener/insert', this.changeListener)
-    socket.addEventListener('students/listener/update', this.changeListener)
-    socket.addEventListener('students/listener/delete', this.changeListener)
-    socket.addEventListener('studentsBatch/listener/insert', this.changeListener)
-    socket.addEventListener('studentsBatch/listener/update', this.changeListener)
-    socket.addEventListener('studentsBatch/listener/delete', this.changeListener)
+    socket.addEventListener('students_changed', this.changeListener)
+    socket.addEventListener('students_batch_changed', this.changeListener)
   }
 
 
@@ -105,12 +101,8 @@ class MisStudent extends React.Component {
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('students/listener/insert', this.changeListener)
-    socket.removeEventListener('students/listener/update', this.changeListener)
-    socket.removeEventListener('students/listener/delete', this.changeListener)
-    socket.removeEventListener('studentsBatch/listener/insert', this.changeListener)
-    socket.removeEventListener('studentsBatch/listener/update', this.changeListener)
-    socket.removeEventListener('studentsBatch/listener/delete', this.changeListener)
+    socket.removeEventListener('students_changed', this.changeListener)
+    socket.removeEventListener('students_batch_changed', this.changeListener)
   }
 
   changeListener = (data) => {

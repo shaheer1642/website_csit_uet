@@ -55,7 +55,7 @@ class FormCB5 extends React.Component {
 
     MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
       this.setState({ loading: false })
-      const data = res
+      const data = res[0]
       this.setState({
         instructor_name: data.teacher_name,
         digital_signature: data.digital_signature,

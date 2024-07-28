@@ -1,11 +1,7 @@
 const { socket } = require("./websocket/socket");
 
-socket.on('students/listener/insert', () => emptyLocalStorage('students/fetch'))
-socket.on('students/listener/update', () => emptyLocalStorage('students/fetch'))
-socket.on('students/listener/delete', () => emptyLocalStorage('students/fetch'))
-socket.on('studentsBatch/listener/insert', () => emptyLocalStorage('students/fetch'))
-socket.on('studentsBatch/listener/update', () => emptyLocalStorage('students/fetch'))
-socket.on('studentsBatch/listener/delete', () => emptyLocalStorage('students/fetch'))
+socket.on('students_changed', () => emptyLocalStorage('students/fetch'))
+socket.on('students_batch_changed', () => emptyLocalStorage('students/fetch'))
 
 // localStorage.clear()
 

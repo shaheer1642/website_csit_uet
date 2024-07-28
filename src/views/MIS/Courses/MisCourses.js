@@ -41,20 +41,14 @@ class MisCourses extends React.Component {
       modalTitle: "",
       modalBody: "",
       modalShow: false,
+      confirmationModalShow: false,
+      confirmationModalMessage: "",
+      confirmationModalExecute: () => { },
     };
   }
 
   componentDidMount() {
-    MakeGETCall('/api/courses').then(res => {
-      return this.setState({
-        coursesArr: res,
-        loadingCourses: false,
-
-        confirmationModalShow: false,
-        confirmationModalMessage: "",
-        confirmationModalExecute: () => { },
-      });
-    }).catch(console.error)
+    this.fetchCourses()
     // socket.emit("courses/fetch", {}, (res) => {
     //   if (res.code == 200) {
     //     return this.setState({
@@ -68,58 +62,21 @@ class MisCourses extends React.Component {
     //   }
     // });
 
-    socket.addEventListener(
-      "courses/listener/insert",
-      this.coursesListenerInsert
-    );
-    socket.addEventListener(
-      "courses/listener/update",
-      this.coursesListenerUpdate
-    );
-    socket.addEventListener(
-      "courses/listener/delete",
-      this.coursesListenerDelete
-    );
+    socket.addEventListener("courses_changed", this.fetchCourses);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener(
-      "courses/listener/insert",
-      this.coursesListenerInsert
-    );
-    socket.removeEventListener(
-      "courses/listener/update",
-      this.coursesListenerUpdate
-    );
-    socket.removeEventListener(
-      "courses/listener/delete",
-      this.coursesListenerDelete
-    );
+    socket.removeEventListener("courses_changed", this.fetchCourses);
   }
 
-  coursesListenerInsert = (data) => {
-    return this.setState({
-      coursesArr: [data, ...this.state.coursesArr],
-    });
-  };
-  coursesListenerUpdate = (data) => {
-    return this.setState((state) => {
-      const coursesArr = state.coursesArr.map((course, index) => {
-        if (course.course_id === data.course_id) return data;
-        else return course;
+  fetchCourses = () => {
+    MakeGETCall('/api/courses').then(res => {
+      return this.setState({
+        coursesArr: res,
+        loadingCourses: false,
       });
-      return {
-        coursesArr,
-      };
-    });
-  };
-  coursesListenerDelete = (data) => {
-    return this.setState({
-      coursesArr: this.state.coursesArr.filter(
-        (course) => course.course_id != data.course_id
-      ),
-    });
-  };
+    }).catch(console.error)
+  }
 
   confirmationModalDestroy = () => {
     this.setState({

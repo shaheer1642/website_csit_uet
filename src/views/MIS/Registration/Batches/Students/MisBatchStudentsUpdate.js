@@ -38,7 +38,7 @@ class MisStudentsUpdate extends React.Component {
     MakeGETCall('/api/students', { query: { student_id: this.student_id, batch_id: this.batch_id } }).then(res => {
       this.setState({
         callingApi: '',
-        student: res
+        student: res[0]
       })
     }).catch(console.error)
 

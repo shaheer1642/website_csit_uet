@@ -53,11 +53,11 @@ class MisTeachersCourses extends React.Component {
 
   componentDidMount() {
     this.fetchSemesterCourses();
-    socket.addEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.addEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.removeEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
 

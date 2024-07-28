@@ -13,6 +13,7 @@ import CustomCard from "../../../components/CustomCard";
 import { timeLocale } from "../../../objects/Time";
 import { calculateDegreeExpiry, convertTimestampToSeasonYear, convertUpper } from "../../../extras/functions";
 import { getUserNameById } from "../../../objects/Users_List";
+import { MakeDELETECall, MakeGETCall } from "../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -49,22 +50,28 @@ class MisThesis extends React.Component {
 
   componentDidMount() {
     this.fetchStudentsThesis()
-    socket.addEventListener("studentsThesis/listener/changed", this.studentsThesisListenerChanged);
+    socket.addEventListener("students_thesis_changed", this.studentsThesisListenerChanged);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("studentsThesis/listener/changed", this.studentsThesisListenerChanged);
+    socket.removeEventListener("students_thesis_changed", this.studentsThesisListenerChanged);
   }
 
   fetchStudentsThesis = () => {
-    socket.emit("studentsThesis/fetch", this.props.user.user_type == 'teacher' ? { supervisor_id: this.props.user.user_id } : {}, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          studentsThesisArr: res.data.map(thesis => ({ ...thesis, supervisor_id: getUserNameById(thesis.supervisor_id) })),
-          loadingStudentsThesis: false,
-        });
-      }
-    });
+    MakeGETCall('/api/studentsThesis', { query: this.props.user.user_type == 'teacher' ? { supervisor_id: this.props.user.user_id } : {} }).then(res => {
+      return this.setState({
+        studentsThesisArr: res.map(thesis => ({ ...thesis, supervisor_id: getUserNameById(thesis.supervisor_id) })),
+        loadingStudentsThesis: false,
+      });
+    }).catch(console.error)
+    // socket.emit("studentsThesis/fetch", this.props.user.user_type == 'teacher' ? { supervisor_id: this.props.user.user_id } : {}, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       studentsThesisArr: res.data.map(thesis => ({ ...thesis, supervisor_id: getUserNameById(thesis.supervisor_id) })),
+    //       loadingStudentsThesis: false,
+    //     });
+    //   }
+    // });
   }
 
   studentsThesisListenerChanged = (data) => {
@@ -129,9 +136,12 @@ class MisThesis extends React.Component {
                   confirmationModalMessage:
                     "Are you sure you want to remove this record?",
                   confirmationModalExecute: () =>
-                    socket.emit("studentsThesis/delete", {
-                      student_batch_id: student_thesis.student_batch_id,
-                    }, (res) => this.fetchStudentsThesis())
+                    MakeDELETECall(`/api/studentsThesis/${student_thesis.student_batch_id}`).then(res => {
+                      this.fetchStudentsThesis()
+                    }).catch(console.error)
+                  // socket.emit("studentsThesis/delete", {
+                  //   student_batch_id: student_thesis.student_batch_id,
+                  // }, (res) => this.fetchStudentsThesis())
                 });
               }}
               rows={this.state.studentsThesisArr.filter(thesis => (this.state.tabIndex == 0 && thesis.degree_type == 'ms') || (this.state.tabIndex == 1 && thesis.degree_type == 'phd'))}

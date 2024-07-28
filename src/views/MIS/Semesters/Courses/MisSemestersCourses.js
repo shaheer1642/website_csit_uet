@@ -56,11 +56,11 @@ class MisSemestersCourses extends React.Component {
 
   componentDidMount() {
     this.fetchSemesterCourses();
-    socket.addEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.addEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semestersCourses/listener/changed', this.semestersCoursesListenerChanged)
+    socket.removeEventListener('semesters_courses_changed', this.semestersCoursesListenerChanged)
   }
 
 
@@ -70,7 +70,7 @@ class MisSemestersCourses extends React.Component {
 
   fetchSemesterCourses = () => {
 
-    MakeGETCall('/api/semestersCourses', { query: { ster_id: this.semester_id } }).then(res => {
+    MakeGETCall('/api/semestersCourses', { query: { semester_id: this.semester_id } }).then(res => {
       return this.setState({
         semestersCoursesArr: res,
         loadingSemesterCourses: false,
@@ -153,7 +153,7 @@ class MisSemestersCourses extends React.Component {
                       confirmationModalShow: true,
                       confirmationModalMessage: 'Are you sure you want to remove this course?',
                       confirmationModalExecute: () => {
-                        MakeDELETECall(`/api/semestersCourses/delete/${semesterCourse.sem_course_id}`)
+                        MakeDELETECall(`/api/semestersCourses/${semesterCourse.sem_course_id}`)
                         // socket.emit('semestersCourses/delete', { sem_course_id: semesterCourse.sem_course_id })
                       }
                     })

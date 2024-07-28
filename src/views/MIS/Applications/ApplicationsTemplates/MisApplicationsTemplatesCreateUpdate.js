@@ -16,6 +16,7 @@ import { IndexKind } from "typescript";
 import CustomAlert from "../../../../components/CustomAlert";
 import GoBackButton from "../../../../components/GoBackButton";
 import CustomMultiAutocomplete from "../../../../components/CustomMultiAutocomplete";
+import { MakeGETCall, MakePOSTCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -88,22 +89,34 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
 
   fetchApplicationTemplate = () => {
     this.setState({ loading: true })
-    socket.emit("applicationsTemplates/fetch", { template_id: this.template_id, restrict_visibility: false }, (res) => {
-      this.setState({ loading: false })
-      if (res.code == 200 && res.data.length == 1) {
-        const applicationTemplate = res.data[0]
-        console.log(applicationTemplate)
-        return this.setState({
-          detail_structure: applicationTemplate.detail_structure,
-          submit_to: applicationTemplate.submit_to,
-          degree_type: applicationTemplate.degree_type,
-          application_title: applicationTemplate.application_title,
-          visibility: applicationTemplate.visibility
-        });
-      } else {
-        this.template_id = null
-      }
-    });
+    MakeGETCall('/api/applicationsTemplates', { query: { template_id: this.template_id, restrict_visibility: false } }).then(res => {
+      const applicationTemplate = res[0]
+      return this.setState({
+        detail_structure: applicationTemplate.detail_structure,
+        submit_to: applicationTemplate.submit_to,
+        degree_type: applicationTemplate.degree_type,
+        application_title: applicationTemplate.application_title,
+        visibility: applicationTemplate.visibility
+      });
+    }).catch(err => {
+      this.template_id = null
+    }).finally(() => this.setState({ loading: false }))
+    // socket.emit("applicationsTemplates/fetch", { template_id: this.template_id, restrict_visibility: false }, (res) => {
+    //   this.setState({ loading: false })
+    //   if (res.code == 200 && res.data.length == 1) {
+    //     const applicationTemplate = res.data[0]
+    //     console.log(applicationTemplate)
+    //     return this.setState({
+    //       detail_structure: applicationTemplate.detail_structure,
+    //       submit_to: applicationTemplate.submit_to,
+    //       degree_type: applicationTemplate.degree_type,
+    //       application_title: applicationTemplate.application_title,
+    //       visibility: applicationTemplate.visibility
+    //     });
+    //   } else {
+    //     this.template_id = null
+    //   }
+    // });
   }
 
   addNewField = () => {
@@ -135,53 +148,93 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
 
   submitCreateTemplate = () => {
     this.setState({ callingApi: true })
-    socket.emit('applicationsTemplates/create', {
-      detail_structure: this.state.detail_structure,
-      degree_type: this.state.degree_type,
-      submit_to: this.state.submit_to,
-      application_title: this.state.application_title,
-      visibility: this.state.visibility
-    }, (res) => {
-      this.setState({ callingApi: false })
-      if (res.code == 200) {
-        this.setState({
-          alertMsg: 'Template created',
-          alertSeverity: 'success'
-        })
-      } else {
-        this.setState({
-          alertMsg: `Error: ${res.message}`,
-          alertSeverity: 'warning'
-        })
+    MakePOSTCall('/api/applicationsTemplates', {
+      body: {
+        detail_structure: this.state.detail_structure,
+        degree_type: this.state.degree_type,
+        submit_to: this.state.submit_to,
+        application_title: this.state.application_title,
+        visibility: this.state.visibility
       }
-    })
+    }).then(res => {
+      this.setState({
+        alertMsg: 'Template created',
+        alertSeverity: 'success'
+      })
+    }).catch(err => {
+      console.error(err)
+      this.setState({
+        alertMsg: `Error: ${err.message}`,
+        alertSeverity: 'warning'
+      })
+    }).finally(() => this.setState({ callingApi: false }))
+    // socket.emit('applicationsTemplates/create', {
+    //   detail_structure: this.state.detail_structure,
+    //   degree_type: this.state.degree_type,
+    //   submit_to: this.state.submit_to,
+    //   application_title: this.state.application_title,
+    //   visibility: this.state.visibility
+    // }, (res) => {
+    //   this.setState({ callingApi: false })
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       alertMsg: 'Template created',
+    //       alertSeverity: 'success'
+    //     })
+    //   } else {
+    //     this.setState({
+    //       alertMsg: `Error: ${res.message}`,
+    //       alertSeverity: 'warning'
+    //     })
+    //   }
+    // })
   }
 
   submitUpdateTemplate = () => {
     this.setState({ callingApi: true })
-    socket.emit('applicationsTemplates/update', {
-      template_id: this.template_id,
-      detail_structure: this.state.detail_structure,
-      degree_type: this.state.degree_type,
-      submit_to: this.state.submit_to,
-      application_title: this.state.application_title,
-      visibility: this.state.visibility
-    }, (res) => {
-      this.setState({ callingApi: false })
-      console.log(res)
-      if (res.code == 200) {
-        this.setState({
-          alertMsg: 'Template updated',
-          alertSeverity: 'success'
-        })
-      } else {
-        this.setState({
-          alertMsg: `Error: ${res.message}`,
-          alertSeverity: 'warning'
-        })
+    MakePOSTCall('/api/applicationsTemplates/' + this.template_id, {
+      body: {
+        detail_structure: this.state.detail_structure,
+        degree_type: this.state.degree_type,
+        submit_to: this.state.submit_to,
+        application_title: this.state.application_title,
+        visibility: this.state.visibility
       }
-      this.fetchApplicationTemplate()
-    })
+    }).then(res => {
+      this.setState({
+        alertMsg: 'Template updated',
+        alertSeverity: 'success'
+      })
+    }).catch(err => {
+      console.error(err)
+      this.setState({
+        alertMsg: `Error: ${err.message}`,
+        alertSeverity: 'warning'
+      })
+    }).finally(() => this.setState({ callingApi: false }))
+    // socket.emit('applicationsTemplates/update', {
+    //   template_id: this.template_id,
+    //   detail_structure: this.state.detail_structure,
+    //   degree_type: this.state.degree_type,
+    //   submit_to: this.state.submit_to,
+    //   application_title: this.state.application_title,
+    //   visibility: this.state.visibility
+    // }, (res) => {
+    //   this.setState({ callingApi: false })
+    //   console.log(res)
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       alertMsg: 'Template updated',
+    //       alertSeverity: 'success'
+    //     })
+    //   } else {
+    //     this.setState({
+    //       alertMsg: `Error: ${res.message}`,
+    //       alertSeverity: 'warning'
+    //     })
+    //   }
+    //   this.fetchApplicationTemplate()
+    // })
   }
 
   render() {

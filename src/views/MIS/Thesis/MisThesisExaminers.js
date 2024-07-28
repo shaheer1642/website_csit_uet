@@ -19,6 +19,7 @@ import CustomAlert from '../../../components/CustomAlert';
 import CustomTable from '../../../components/CustomTable';
 import { convertUpper } from '../../../extras/functions';
 import ConfirmationModal from '../../../components/ConfirmationModal';
+import { MakeDELETECall, MakeGETCall, MakePOSTCall } from '../../../api';
 
 const palletes = {
   primary: '#439CEF',
@@ -109,34 +110,70 @@ class MisThesisExaminers extends React.Component {
 
   addExaminer = () => {
     this.setState({ addingExaminer: true })
-    socket.emit('studentsThesisExaminers/create', {
-      examiner_name: this.state.addExaminerName,
-      examiner_university: this.state.addExaminerUniversity,
-      examiner_designation: this.state.addExaminerDesignation,
-      examiner_type: this.props.examiner_type
-    }, (res) => {
-      if (res.code == 200) {
-        this.clearAddFields()
-        this.fetchExaminers()
+    MakePOSTCall('/api/studentsThesisExaminers', {
+      body: {
+        examiner_name: this.state.addExaminerName,
+        examiner_university: this.state.addExaminerUniversity,
+        examiner_designation: this.state.addExaminerDesignation,
+        examiner_type: this.props.examiner_type
       }
+    }).then(res => {
+      this.clearAddFields()
+      this.fetchExaminers()
       this.setState({
-        alertMsg: res.code == 200 ? 'Examiner Added' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning',
+        alertMsg: 'Examiner Added',
+        alertSeverity: 'success',
+        addingExaminer: false
+      })
+    }).catch(err => {
+      console.error(err)
+      this.setState({
+        alertMsg: `${err.status}: ${err.message}`,
+        alertSeverity: 'warning',
         addingExaminer: false
       })
     })
+    // socket.emit('studentsThesisExaminers/create', {
+    //   examiner_name: this.state.addExaminerName,
+    //   examiner_university: this.state.addExaminerUniversity,
+    //   examiner_designation: this.state.addExaminerDesignation,
+    //   examiner_type: this.props.examiner_type
+    // }, (res) => {
+    //   if (res.code == 200) {
+    //     this.clearAddFields()
+    //     this.fetchExaminers()
+    //   }
+    //   this.setState({
+    //     alertMsg: res.code == 200 ? 'Examiner Added' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning',
+    //     addingExaminer: false
+    //   })
+    // })
   }
 
   deleteExaminer = (examiner_id) => {
-    socket.emit('studentsThesisExaminers/delete', {
-      examiner_id: examiner_id
-    }, (res) => {
-      if (res.code == 200) this.fetchExaminers()
+    MakeDELETECall('/api/studentsThesisExaminers/' + examiner_id).then(res => {
+      this.fetchExaminers()
       this.setState({
-        alertMsg: res.code == 200 ? 'Examiner Deleted' : `${res.status}: ${res.message}`,
-        alertSeverity: res.code == 200 ? 'success' : 'warning',
+        alertMsg: 'Examiner Deleted',
+        alertSeverity: 'success',
+      })
+    }).catch(err => {
+      console.error(err)
+      this.setState({
+        alertMsg: `${err.status}: ${err.message}`,
+        alertSeverity: 'warning',
       })
     })
+    // socket.emit('studentsThesisExaminers/delete', {
+    //   examiner_id: examiner_id
+    // }, (res) => {
+    //   if (res.code == 200) this.fetchExaminers()
+    //   this.setState({
+    //     alertMsg: res.code == 200 ? 'Examiner Deleted' : `${res.status}: ${res.message}`,
+    //     alertSeverity: res.code == 200 ? 'success' : 'warning',
+    //   })
+    // })
   }
 
   clearAddFields = () => {
@@ -182,14 +219,20 @@ class MisThesisExaminers extends React.Component {
 
   fetchExaminers = () => {
     this.setState({ fetchingExaminers: true })
-    socket.emit('studentsThesisExaminers/fetch', {}, (res) => {
-      if (res.code == 200) {
-        this.setState({
-          examinersArr: res.data,
-          fetchingExaminers: false
-        })
-      }
-    })
+    MakeGETCall('/api/studentsThesisExaminers').then(res => {
+      this.setState({
+        examinersArr: res,
+        fetchingExaminers: false
+      })
+    }).catch(console.error)
+    // socket.emit('studentsThesisExaminers/fetch', {}, (res) => {
+    //   if (res.code == 200) {
+    //     this.setState({
+    //       examinersArr: res.data,
+    //       fetchingExaminers: false
+    //     })
+    //   }
+    // })
   }
 
   manageExaminersPanel = () => {

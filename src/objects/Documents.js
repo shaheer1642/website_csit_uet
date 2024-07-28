@@ -5,7 +5,7 @@ import { socket } from "../websocket/socket"
 var global_documents = []
 
 fetchDocuments()
-socket.addEventListener("documents/listener/changed", fetchDocuments);
+socket.addEventListener("documents_changed", fetchDocuments);
 
 function fetchDocuments() {
     MakeGETCall('/api/documents')

@@ -40,12 +40,13 @@ class MisStudentsManagement extends React.Component {
   }
 
   fetchStudent = () => {
+    console.log('fetchStudent', this.student_batch_id)
     this.setState({ callingApi: 'fetchStudent' })
 
     MakeGETCall('/api/students', { query: { student_batch_id: this.student_batch_id } }).then(res => {
       this.setState({
         callingApi: '',
-        student: res
+        student: res[0]
       })
     }).catch(console.error)
 
@@ -82,9 +83,8 @@ class MisStudentsManagement extends React.Component {
   extendDegreeTime = () => {
     this.setState({ callingApi: 'extendDegreeTime' })
 
-    MakePATCHCall('/api/students/extendDegreeTime', {
+    MakePATCHCall(`/api/students/${this.state.student.student_batch_id}/extendDegreeTime`, {
       body: {
-        student_batch_id: this.state.student.student_batch_id,
         degree_extension_period: { period: Number(this.state.degree_extension_period) * 86400000, reason: this.state.degree_extension_reason },
       }
     }).finally(() => {
@@ -105,9 +105,8 @@ class MisStudentsManagement extends React.Component {
     this.setState({ callingApi: 'degreeComplete' })
 
 
-    MakePATCHCall('/api/students/completeDegree', {
+    MakePATCHCall(`/api/students/${this.state.student.student_batch_id}/completeDegree`, {
       body: {
-        student_batch_id: this.state.student.student_batch_id,
         degree_completed: !this.state.student.degree_completed
       }
     }).finally(() => {
@@ -127,9 +126,8 @@ class MisStudentsManagement extends React.Component {
   semesterFreeze = () => {
     this.setState({ callingApi: 'semesterFreeze' })
 
-    MakePATCHCall('/api/students/freezeSemester', {
+    MakePATCHCall(`/api/students/${this.state.student.student_batch_id}/freezeSemester`, {
       body: {
-        student_batch_id: this.state.student.student_batch_id,
         semester_frozen: !this.state.student.semester_frozen
       }
     }).finally(() => {
@@ -149,9 +147,8 @@ class MisStudentsManagement extends React.Component {
   cancelAdmission = () => {
     this.setState({ callingApi: 'cancelAdmission' })
 
-    MakePATCHCall('/api/students/cancelAdmission', {
+    MakePATCHCall(`/api/students/${this.state.student.student_batch_id}/cancelAdmission`, {
       body: {
-        student_batch_id: this.state.student.student_batch_id,
         admission_cancelled: !this.state.student.admission_cancelled
       }
     }).finally(() => {
@@ -174,6 +171,7 @@ class MisStudentsManagement extends React.Component {
         <FormGenerator
           endpoint="students"
           formType="update"
+          idField='student_id'
           submitSuccessMessage='Student Edited Successfully'
           backgroundColor='white'
           options={{

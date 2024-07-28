@@ -8,6 +8,7 @@ import { getUserNameById } from '../../../objects/Users_List';
 import * as Color from "@mui/material/colors";
 import { convertUpper } from '../../../extras/functions';
 import CustomCard from '../../../components/CustomCard';
+import { MakeGETCall } from '../../../api';
 
 class ViewApplications extends React.Component {
     constructor(props) {
@@ -24,30 +25,34 @@ class ViewApplications extends React.Component {
 
     componentDidMount() {
         this.fetchApplications()
-        socket.addEventListener("applications/listener/insert", this.fetchApplications);
-        socket.addEventListener("applications/listener/update", this.fetchApplications);
-        socket.addEventListener("applications/listener/delete", this.fetchApplications);
+        socket.addEventListener("applications_changed", this.fetchApplications);
     }
 
     componentWillUnmount() {
-        socket.removeEventListener("applications/listener/insert", this.fetchApplications);
-        socket.removeEventListener("applications/listener/update", this.fetchApplications);
-        socket.removeEventListener("applications/listener/delete", this.fetchApplications);
+        socket.removeEventListener("applications_changed", this.fetchApplications);
     }
 
     fetchApplications = () => {
         this.setState({ loadingApplications: true })
-        socket.emit("applications/fetch", {}, (res) => {
-            console.log(res)
-            if (res.code == 200) {
-                return this.setState({
-                    submittedApplicationsArr: res.data.filter(app => app.submitted_by == this.props.user?.user_id),
-                    receivedApplicationsArr: res.data.filter(app => app.submitted_to == this.props.user?.user_id),
-                    forwardedApplicationsArr: res.data.filter(app => app.forwarded_to.some(forward => forward.receiver_id == this.props.user?.user_id)),
-                    loadingApplications: false,
-                });
-            }
-        });
+        MakeGETCall('/api/applications').then(res => {
+            return this.setState({
+                submittedApplicationsArr: res.filter(app => app.submitted_by == this.props.user?.user_id),
+                receivedApplicationsArr: res.filter(app => app.submitted_to == this.props.user?.user_id),
+                forwardedApplicationsArr: res.filter(app => app.forwarded_to.some(forward => forward.receiver_id == this.props.user?.user_id)),
+                loadingApplications: false,
+            });
+        }).catch(console.error)
+        // socket.emit("applications/fetch", {}, (res) => {
+        //     console.log(res)
+        //     if (res.code == 200) {
+        //         return this.setState({
+        //             submittedApplicationsArr: res.data.filter(app => app.submitted_by == this.props.user?.user_id),
+        //             receivedApplicationsArr: res.data.filter(app => app.submitted_to == this.props.user?.user_id),
+        //             forwardedApplicationsArr: res.data.filter(app => app.forwarded_to.some(forward => forward.receiver_id == this.props.user?.user_id)),
+        //             loadingApplications: false,
+        //         });
+        //     }
+        // });
     }
 
     tableColumns = () => [

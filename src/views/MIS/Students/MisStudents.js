@@ -90,7 +90,7 @@ class MisStudents extends React.Component {
               loadingState={this.state.callingApi == 'fetchStudents'}
               viewButtonLabel='Manage Student'
               onRowClick={(student) => this.props.navigate('manage', { state: { student_batch_id: student.student_batch_id } })}
-              onViewClick={(student) => this.props.navigate('manage', { state: { batch_id: this.batch_id, student_id: student.student_id } })}
+              onViewClick={(student) => this.props.navigate('manage', { state: { student_batch_id: student.student_batch_id } })}
               rows={this.state.studentsArr.filter(student => (this.state.tabIndex == 0 && student.degree_type == 'ms') || (this.state.tabIndex == 1 && student.degree_type == 'phd'))}
               columns={columns}
             />

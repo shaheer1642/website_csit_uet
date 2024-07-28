@@ -10,6 +10,7 @@ import CustomButton from "../../../../components/CustomButton";
 import CustomModal from "../../../../components/CustomModal";
 import ConfirmationModal from "../../../../components/ConfirmationModal";
 import CustomCard from "../../../../components/CustomCard";
+import { MakeDELETECall, MakeGETCall } from "../../../../api";
 
 const palletes = {
   primary: "#439CEF",
@@ -33,22 +34,28 @@ class MisApplicationsTemplates extends React.Component {
 
   componentDidMount() {
     this.fetchApplicationsTemplates()
-    socket.addEventListener("applicationsTemplates/listener/changed", this.fetchApplicationsTemplates);
+    socket.addEventListener("applications_templates_changed", this.fetchApplicationsTemplates);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener("applicationsTemplates/listener/changed", this.fetchApplicationsTemplates);
+    socket.removeEventListener("applications_templates_changed", this.fetchApplicationsTemplates);
   }
 
   fetchApplicationsTemplates = () => {
-    socket.emit("applicationsTemplates/fetch", { restrict_visibility: false }, (res) => {
-      if (res.code == 200) {
-        return this.setState({
-          applicationsTemplatesArr: res.data,
-          loading: false,
-        });
-      }
-    });
+    MakeGETCall('/api/applicationsTemplates', { query: { restrict_visibility: false } }).then(res => {
+      return this.setState({
+        applicationsTemplatesArr: res,
+        loading: false,
+      });
+    }).catch(console.error)
+    // socket.emit("applicationsTemplates/fetch", { restrict_visibility: false }, (res) => {
+    //   if (res.code == 200) {
+    //     return this.setState({
+    //       applicationsTemplatesArr: res.data,
+    //       loading: false,
+    //     });
+    //   }
+    // });
   }
 
   timeoutAlert = () => {
@@ -62,11 +69,14 @@ class MisApplicationsTemplates extends React.Component {
 
   deleteApplicationTemplate = (applicationTemplate) => {
     this.setState({ callingDeleteApi: true })
-    socket.emit('applicationsTemplates/delete', {
-      template_id: applicationTemplate.template_id
-    }, (res) => {
+    MakeDELETECall('/api/applicationsTemplates/' + applicationTemplate.template_id).then(res => {
       this.setState({ callingDeleteApi: false })
-    })
+    }).catch(console.error)
+    // socket.emit('applicationsTemplates/delete', {
+    //   template_id: applicationTemplate.template_id
+    // }, (res) => {
+    //   this.setState({ callingDeleteApi: false })
+    // })
   }
 
   applicationCard = (applicationTemplate) => {

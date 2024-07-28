@@ -25,7 +25,7 @@ class MisBatchesUpdate extends React.Component {
   componentDidMount() {
 
     MakeGETCall('/api/batches', { query: { batch_id: this.batch_id } }).then(res => {
-      const batch = res
+      const batch = res[0]
       this.setState({
         loading: false,
         batch_no: batch.batch_no,
@@ -65,6 +65,7 @@ class MisBatchesUpdate extends React.Component {
             <FormGenerator
               endpoint="batches"
               formType="update"
+              idField='batch_id'
               submitSuccessMessage='Batch Edited Successfully'
               backgroundColor='white'
               options={{

@@ -161,13 +161,13 @@ class MisCourseAttendance extends React.Component {
 
   componentDidMount() {
     this.fetchData();
-    socket.addEventListener('semestersCourses/listener/changed', this.changeListener)
-    socket.addEventListener('studentsCourses/listener/changed', this.changeListener)
+    socket.addEventListener('semesters_courses_changed', this.changeListener)
+    socket.addEventListener('students_courses_changed', this.changeListener)
   }
 
   componentWillUnmount() {
-    socket.removeEventListener('semestersCourses/listener/changed', this.changeListener)
-    socket.removeEventListener('studentsCourses/listener/changed', this.changeListener)
+    socket.removeEventListener('semesters_courses_changed', this.changeListener)
+    socket.removeEventListener('students_courses_changed', this.changeListener)
   }
 
 
@@ -181,7 +181,7 @@ class MisCourseAttendance extends React.Component {
 
     MakeGETCall('/api/semestersCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
       if (res.length == 1) {
-        const semesterCourse = res;
+        const semesterCourse = res[0];
         MakeGETCall('/api/studentsCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
           return this.setState({
             semesterCourse: semesterCourse,
@@ -389,7 +389,7 @@ class MisCourseAttendance extends React.Component {
             onClick={() => {
               this.setState({ callingApi: true })
 
-              MakePATCHCall('/api/studentsCourses/updateAttendances', { body: { sem_course_id: this.sem_course_id, attendances: this.state.attendances } }).then(res => {
+              MakePATCHCall(`/api/studentsCourses/${this.sem_course_id}/updateAttendances`, { body: { attendances: this.state.attendances } }).then(res => {
                 this.setState({
                   alertMsg: 'Updated students attendance',
                   alertSeverity: 'success',
@@ -578,7 +578,7 @@ class MisCourseAttendance extends React.Component {
                             onClick={() => {
                               this.setState({ callingApi: true })
 
-                              MakePATCHCall('/api/studentsCourses/updateAttendances').then(res => {
+                              MakePATCHCall(`/api/studentsCourses/${this.sem_course_id}/updateAttendances`, { body: { attendances: this.state.attendances } }).then(res => {
                                 this.setState({ callingApi: false })
                                 this.setState({
                                   alertMsg: 'Updated students attendance',

@@ -24,7 +24,7 @@ class MisSemestersUpdate extends React.Component {
   componentDidMount() {
 
     MakeGETCall('/api/semesters', { query: { semester_id: this.semester_id } }).then(res => {
-      const semester = res
+      const semester = res[0]
       console.log('setting state')
       this.setState({
         loading: false,
@@ -63,6 +63,7 @@ class MisSemestersUpdate extends React.Component {
             <FormGenerator
               endpoint="semesters"
               formType="update"
+              idField="semester_id"
               submitSuccessMessage='Semester Edited Successfully'
               backgroundColor='white'
               options={{
