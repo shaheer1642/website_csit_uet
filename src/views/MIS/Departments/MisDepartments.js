@@ -53,7 +53,7 @@ class MisDepartments extends React.Component {
     this.setState({ loading: true })
     MakeGETCall('/api/departments').then(res => {
       return this.setState({
-        departmentsArr: res,
+        departmentsArr: res.sort((a, b) => a.department_id == this.props.user.user_department_id ? -1 : 1),
         loading: false,
       });
     }).catch(console.error)
@@ -82,11 +82,12 @@ class MisDepartments extends React.Component {
           <Grid item xs={12}>
             <CustomTable
               loadingState={this.state.loading}
-              onEditClick={(department) =>
+              onEditClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (department) =>
                 this.props.navigate("update", {
                   state: { department_id: department.department_id, context_info: department },
-                })
+                }) : undefined
               }
+              disableAction={(department) => department.department_id != this.props.user.user_department_id}
               rows={this.state.departmentsArr}
               columns={columns}
             />

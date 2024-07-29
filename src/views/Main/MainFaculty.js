@@ -26,12 +26,12 @@ class MainFaculty extends React.Component {
   fetchData = () => {
     this.setCallingApi('fetchData')
 
-    const cachedData = getCache('teachers/fetch')
-    if (cachedData) return this.setState({ teachersArr: this.filterTeachers(cachedData), callingApi: '' })
+    // const cachedData = getCache(`teachers/${this.props.user?.user_department_id}/fetch`)
+    // if (cachedData) return this.setState({ teachersArr: this.filterTeachers(cachedData), callingApi: '' })
 
-    MakeGETCall('/api/teachers').then(res => {
+    MakeGETCall('/api/teachers', { query: { user_department_id: 'CS&IT' } }).then(res => {
       this.setState({ teachersArr: this.filterTeachers(res), callingApi: '' })
-      setCache('teachers/fetch', res)
+      // setCache(`teachers/${this.props.user?.user_department_id}/fetch`, res)
     }).catch(console.error)
 
     // socket.emit('teachers/fetch', {}, (res) => {
@@ -43,7 +43,7 @@ class MainFaculty extends React.Component {
   }
 
   filterTeachers = (arr) => {
-    const newarr = arr.filter(t => t.teacher_department_id == 'CS&IT')
+    const newarr = arr.filter(t => t.user_department_id == 'CS&IT')
       .filter(t => !t.teacher_name.includes('teacher') && t.teacher_name != 'Not determined')
       .sort((a, b) => a.teacher_name > b.teacher_name ? -1 : 1)
       .sort((a, b) => a.teacher_name.includes('Dr.') ? -1 : 1)

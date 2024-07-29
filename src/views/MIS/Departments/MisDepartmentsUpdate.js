@@ -106,7 +106,7 @@ class MisDepartmentsUpdate extends React.Component {
                 <Grid item xs={'auto'}>
                   <CustomSelect
                     label="Chairman"
-                    menuItems={[{ id: '', label: 'None' }]}
+                    menuItems={[{ id: null, label: 'None' }]}
                     endpoint='/api/autocomplete/teachers'
                     endpointData={{
                       include_roles: ['chairman']

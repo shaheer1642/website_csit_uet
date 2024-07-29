@@ -35,6 +35,7 @@ interface IProps {
   onViewClick?: Function,
   onRowClick?: Function,
   onEditClick?: Function,
+  disableAction?: Function,
   onDeleteClick?: Function,
   headerTextColor?: string,
   headerBackgroundColor?: string,
@@ -114,7 +115,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
       <Paper sx={{ overflow: 'hidden', maxWidth: this.props.maxWidth, width: '100%' }}>
         {this.props.loadingState ? <LoadingIcon /> :
           <React.Fragment>
-            <TextField InputProps={{ startAdornment: ( <InputAdornment position="start"> <Search /> </InputAdornment> ), }} label='Search' size='small' variant='filled' fullWidth onChange={(e) => this.setState({searchText: e.target.value, page: 0})}/>
+            <TextField InputProps={{ startAdornment: (<InputAdornment position="start"> <Search /> </InputAdornment>), }} label='Search' size='small' variant='filled' fullWidth onChange={(e) => this.setState({ searchText: e.target.value, page: 0 })} />
             <TableContainer sx={{ maxHeight: 440, backgroundColor: styles.background }}>
               <Table stickyHeader>
                 <TableHead>
@@ -151,7 +152,7 @@ export default class CustomTable extends React.Component<IProps, IState> {
                           '&:last-child td, &:last-child th': {
                             border: 0,
                           },
-                      })}>
+                        })}>
                           {this.props.columns.map((column, index) => {
                             const value = column.valueFunc ? column.valueFunc(row) : row[column.id];
                             return (
@@ -160,14 +161,14 @@ export default class CustomTable extends React.Component<IProps, IState> {
                               </StyledTableCell>
                             );
                           })}
-                          {this.props.onEditClick || this.props.onDeleteClick || this.props.onViewClick?
-                            <StyledTableCell key="action_buttons" sx={{minWidth: '120px'}}>
-                              {this.props.onEditClick ? 
-                              <IconButton color='primary' onClick={() => this.props.onEditClick(row)}><Edit /></IconButton>:<></>}
+                          {this.props.onEditClick || this.props.onDeleteClick || this.props.onViewClick ?
+                            <StyledTableCell key="action_buttons" sx={{ minWidth: '120px' }}>
+                              {this.props.onEditClick ?
+                                <IconButton disabled={(this.props.disableAction && this.props.disableAction(row)) || false} color='primary' onClick={() => this.props.onEditClick(row)}><Edit /></IconButton> : <></>}
                               {this.props.onDeleteClick ?
-                              <IconButton color='error' onClick={() => this.props.onDeleteClick(row)}><Delete /></IconButton>:<></>}
-                              {this.props.onViewClick ? 
-                              <CustomButton fontSize={'12px'} size='small' variant='outlined' label={this.props.viewButtonLabel} onClick={() => this.props.onViewClick(row)} />:<></>}
+                                <IconButton disabled={(this.props.disableAction && this.props.disableAction(row)) || false} color='error' onClick={() => this.props.onDeleteClick(row)}><Delete /></IconButton> : <></>}
+                              {this.props.onViewClick ?
+                                <CustomButton fontSize={'12px'} size='small' variant='outlined' label={this.props.viewButtonLabel} onClick={() => this.props.onViewClick(row)} /> : <></>}
                             </StyledTableCell> : <></>
                           }
                         </TableRow >
@@ -186,9 +187,9 @@ export default class CustomTable extends React.Component<IProps, IState> {
               onPageChange={this.handleChangePage}
               onRowsPerPageChange={this.handleChangeRowsPerPage}
             />
-            {this.props.footerText ? 
+            {this.props.footerText ?
               <Grid container marginLeft={2} marginBottom={1} flexDirection={'column'}>
-                {this.props.footerText.split('\\n').map((text,index) => <Typography key={index}>{text}</Typography>)}
+                {this.props.footerText.split('\\n').map((text, index) => <Typography key={index}>{text}</Typography>)}
               </Grid> : <></>
             }
           </React.Fragment>

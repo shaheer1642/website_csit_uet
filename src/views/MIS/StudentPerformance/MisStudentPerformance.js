@@ -37,7 +37,7 @@ class MisStudentPerformance extends React.Component {
   }
 
   fetchStudents = () => {
-    const cachedData = getCache('students/fetch')
+    const cachedData = getCache(`students/${this.props.user?.user_department_id}/fetch`)
     if (cachedData) return this.setState({ studentsArr: cachedData, callingApi: '' })
 
     this.setState({ callingApi: 'fetchStudents' })
@@ -47,7 +47,7 @@ class MisStudentPerformance extends React.Component {
         studentsArr: res,
         callingApi: ''
       })
-      setCache('students/fetch', res)
+      setCache(`students/${this.props.user?.user_department_id}/fetch`, res)
     }).catch(console.error)
 
     // socket.emit('students/fetch', {}, (res) => {

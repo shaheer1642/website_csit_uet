@@ -20,15 +20,15 @@ class MisTeachersUpdate extends React.Component {
       user_email: '',
       qualification: '',
       designation: '',
-      teacher_department_id: ''
+      // teacher_department_id: ''
     }
     this.teacher_id = this.props.location.state.teacher_id
   }
 
   componentDidMount() {
 
-    MakeGETCall('/api/teachers', { query: { teacher_id: this.teacher_id } }).then(res => {
-      const teacher = res
+    MakeGETCall('/api/teachers', { query: { teacher_id: this.teacher_id, user_department_id: this.props.user.user_department_id } }).then(res => {
+      const teacher = res[0]
       this.setState({
         loading: false,
         cnic: teacher.cnic,
@@ -38,7 +38,7 @@ class MisTeachersUpdate extends React.Component {
         user_email: teacher.user_email,
         qualification: teacher.qualification,
         designation: teacher.designation,
-        teacher_department_id: teacher.teacher_department_id,
+        // teacher_department_id: teacher.teacher_department_id,
       })
     }).catch(console.error)
 
@@ -135,14 +135,14 @@ class MisTeachersUpdate extends React.Component {
                 areas_of_interest: {
                   hidden: true
                 },
-                teacher_department_id: {
-                  label: "Department",
-                  position: 9,
-                  xs: 6,
-                  defaultValue: this.state.teacher_department_id,
-                  fieldType: 'select',
-                  endpoint: '/api/autocomplete/departments',
-                },
+                // teacher_department_id: {
+                //   label: "Department",
+                //   position: 9,
+                //   xs: 6,
+                //   defaultValue: this.state.teacher_department_id,
+                //   fieldType: 'select',
+                //   endpoint: '/api/autocomplete/departments',
+                // },
               }}
             />
           </Grid>

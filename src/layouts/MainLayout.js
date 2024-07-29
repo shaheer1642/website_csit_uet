@@ -80,7 +80,7 @@ function HeaderAppBar(props) {
             textDecoration: 'none',
           }}
         >
-          {display?.xs == 'none' ? 'Computer Science & IT' : 'CS & IT'}
+          {display?.xs == 'none' ? 'University of Engg. & Tech.' : 'UET'}
         </Typography>
       </React.Fragment>
     )
@@ -379,7 +379,7 @@ const Footer = () => {
         <Grid item container>
           <Grid container item padding={1} justifyContent={'center'} alignItems={'center'} display='flex' sx={{ backgroundColor: 'primary.dark' }} direction={'column'}>
             <Typography>Developed by the FYP team Muhammad Shaheer Qureshi, Sameer Shahzad, and Muqaddas Ishaq under the supervision of Dr. M. Imran Khan Khalil</Typography>
-            <Typography>Copyright © 2023 - University of Engineering & Technology, Peshawar. All Rights Reserved.</Typography>
+            <Typography>Copyright © {new Date().getFullYear()} - University of Engineering & Technology, Peshawar. All Rights Reserved.</Typography>
           </Grid>
         </Grid>
       </Grid>

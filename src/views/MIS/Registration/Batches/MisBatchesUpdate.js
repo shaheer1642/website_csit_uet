@@ -89,7 +89,7 @@ class MisBatchesUpdate extends React.Component {
                   position: 3,
                   xs: 6,
                   fieldType: 'radiobox',
-                  fieldTypeOptions: ['computer_science', 'data_science', 'cyber_security']
+                  fieldTypeOptions: this.props.user.user_department_id == 'CS&IT' ? ['computer_science', 'data_science', 'cyber_security'] : ['main']
                 },
                 enrollment_year: {
                   label: 'Enrollment Year',
@@ -128,7 +128,7 @@ class MisBatchesUpdate extends React.Component {
                   fieldType: 'select',
                   endpoint: '/api/autocomplete/teachers',
                   endpointData: { include_roles: ['batch_advisor'] },
-                  selectMenuItems: [{ id: '', label: 'None' }]
+                  selectMenuItems: [{ id: null, label: 'None' }]
                 },
               }}
             />

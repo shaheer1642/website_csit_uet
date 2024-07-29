@@ -115,7 +115,7 @@ class MisStudent extends React.Component {
   fetchData = () => {
     this.setState({ loadingStudents: true })
 
-    MakeGETCall('/api/students', { query: { batch_id: this.batch_id } }).then(res => {
+    MakeGETCall('/api/students', { query: { batch_id: this.batch_id, user_department_id: this.props.user.user_department_id } }).then(res => {
       return this.setState({
         studentsArr: res,
       });
@@ -331,15 +331,15 @@ class MisStudent extends React.Component {
               <Grid item xs={12}>
                 <CustomTable
                   loadingState={this.state.loadingStudents}
-                  onRowClick={(student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } })}
-                  onEditClick={(student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } })}
-                  onDeleteClick={(student) => {
+                  onRowClick={(this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga')) && ((student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } }))}
+                  onEditClick={(this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga')) && ((student) => this.props.navigate('update', { state: { batch_id: this.batch_id, student_id: student.student_id } }))}
+                  onDeleteClick={(this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga')) && ((student) => {
                     this.setState({
                       confirmationModalShow: true,
                       confirmationModalMessage: 'Are you sure you want to remove this student?',
                       confirmationModalExecute: () => this.deleteStudent(student.student_id, this.batch_id)
                     })
-                  }}
+                  })}
                   rows={this.state.studentsArr}
                   columns={columns}
                   rowSx={(student) => {
@@ -362,14 +362,14 @@ class MisStudent extends React.Component {
                   <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity]}><pre>{this.state.alertMsg}</pre></Alert>
                 </Zoom>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'flex' : 'none'}>
                 <CustomButton
                   onClick={() => this.props.navigate("create", { state: { batch_id: this.batch_id } })}
                   label="Create New"
                 />
               </Grid>
               <Grid item xs={12}></Grid>
-              <Grid item>
+              <Grid item display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'flex' : 'none'}>
                 <CustomButton
                   variant='contained'
                   component="label"
@@ -383,7 +383,7 @@ class MisStudent extends React.Component {
                   }
                 />
               </Grid>
-              <Grid item>
+              <Grid item display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'flex' : 'none'}>
                 <CustomButton
                   variant='outlined'
                   label={
@@ -397,11 +397,13 @@ class MisStudent extends React.Component {
                   }
                 />
               </Grid>
-              <Tooltip title="Download the .csv template to add students using excel. Starred colums cannot be left empty. Either CNIC or Reg# should be filled">
-                <IconButton>
-                  <Info />
-                </IconButton>
-              </Tooltip>
+              <Grid item display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'flex' : 'none'}>
+                <Tooltip title="Download the .csv template to add students using excel. Starred colums cannot be left empty. Either CNIC or Reg# should be filled">
+                  <IconButton>
+                    <Info />
+                  </IconButton>
+                </Tooltip>
+              </Grid>
               <CustomModal
                 title={this.state.modalTitle}
                 body={this.state.modalBody}

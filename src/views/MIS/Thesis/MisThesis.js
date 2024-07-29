@@ -58,7 +58,11 @@ class MisThesis extends React.Component {
   }
 
   fetchStudentsThesis = () => {
-    MakeGETCall('/api/studentsThesis', { query: this.props.user.user_type == 'teacher' ? { supervisor_id: this.props.user.user_id } : {} }).then(res => {
+    MakeGETCall('/api/studentsThesis', {
+      query: this.props.user.user_type == 'teacher' ? { supervisor_id: this.props.user.user_id } : {
+        user_department_id: this.props.user.user_department_id
+      }
+    }).then(res => {
       return this.setState({
         studentsThesisArr: res.map(thesis => ({ ...thesis, supervisor_id: getUserNameById(thesis.supervisor_id) })),
         loadingStudentsThesis: false,
@@ -122,15 +126,15 @@ class MisThesis extends React.Component {
                   },
                 })
               }
-              onEditClick={(student_thesis) =>
+              onEditClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (student_thesis) =>
                 this.props.navigate("manage", {
                   state: {
                     student_batch_id: student_thesis.student_batch_id,
                     context_info: student_thesis
                   },
-                })
+                }) : undefined
               }
-              onDeleteClick={(student_thesis) => {
+              onDeleteClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (student_thesis) => {
                 this.setState({
                   confirmationModalShow: true,
                   confirmationModalMessage:
@@ -143,7 +147,7 @@ class MisThesis extends React.Component {
                   //   student_batch_id: student_thesis.student_batch_id,
                   // }, (res) => this.fetchStudentsThesis())
                 });
-              }}
+              } : undefined}
               rows={this.state.studentsThesisArr.filter(thesis => (this.state.tabIndex == 0 && thesis.degree_type == 'ms') || (this.state.tabIndex == 1 && thesis.degree_type == 'phd'))}
               columns={columns}
               rowSx={(row) => {
@@ -158,7 +162,7 @@ class MisThesis extends React.Component {
               footerText='Green = Satifactory Grade\nYellow = Unsatisfactory Grade\nRed = Time barred'
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'flex' : 'none'}>
             <CustomButton
               onClick={() => this.props.navigate("create")}
               label="Create New"

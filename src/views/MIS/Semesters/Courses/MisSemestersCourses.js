@@ -139,16 +139,16 @@ class MisSemestersCourses extends React.Component {
                       }
                     })
                   }
-                  onEditClick={(semesterCourse) =>
+                  onEditClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (semesterCourse) =>
                     this.props.navigate('update', {
                       state: {
                         sem_course_id: semesterCourse.sem_course_id,
                         context_info: { ...semesterCourse, ...this.context_info }
                       }
                     }
-                    )
+                    ) : undefined
                   }
-                  onDeleteClick={(semesterCourse) => {
+                  onDeleteClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (semesterCourse) => {
                     this.setState({
                       confirmationModalShow: true,
                       confirmationModalMessage: 'Are you sure you want to remove this course?',
@@ -157,12 +157,12 @@ class MisSemestersCourses extends React.Component {
                         // socket.emit('semestersCourses/delete', { sem_course_id: semesterCourse.sem_course_id })
                       }
                     })
-                  }}
+                  } : undefined}
                   rows={this.state.semestersCoursesArr}
                   columns={columns}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'flex' : 'none'}>
                 <CustomButton
                   onClick={() => this.props.navigate("create", { state: { semester_id: this.semester_id } })}
                   label="Create New"

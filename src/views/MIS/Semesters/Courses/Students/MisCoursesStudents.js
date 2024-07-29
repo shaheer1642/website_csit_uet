@@ -114,12 +114,12 @@ class MisCoursesStudents extends React.Component {
         MakeGETCall('/api/studentsCourses', { query: { sem_course_id: this.sem_course_id } }).then(res => {
           const studentsCourses = res
           const studentBatchIds = studentsCourses.map(studentCourse => studentCourse.student_batch_id)
-          const students = getCache('students/fetch')
-          if (students) return this.setState({ students, semesterCourse, studentBatchIds, studentsCourses, loading: false })
+          // const students = getCache(`students/${this.props.user?.user_department_id}/fetch`)
+          // if (students) return this.setState({ students, semesterCourse, studentBatchIds, studentsCourses, loading: false })
 
-          MakeGETCall('/api/students').then(res => {
+          MakeGETCall('/api/students', { query: { user_department_id: this.props.user.user_department_id } }).then(res => {
             const students = res
-            setCache('students/fetch', students)
+            setCache(`students/${this.props.user?.user_department_id}/fetch`, students)
             return this.setState({
               students,
               semesterCourse,
@@ -307,7 +307,7 @@ class MisCoursesStudents extends React.Component {
                   </Grid>
                   {
                     this.state.semesterCourse.changes_locked ? <></> :
-                      <Grid item xs={6}>
+                      <Grid item xs={6} display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'block' : 'none'}>
                         {this.studentsSelectMenu()}
                       </Grid>
                   }
@@ -317,7 +317,7 @@ class MisCoursesStudents extends React.Component {
                       columns={columns}
                       rows={this.state.students.filter(student => this.state.studentBatchIds.includes(student.student_batch_id))}
                       loadingState={this.state.loading}
-                      onDeleteClick={this.state.semesterCourse.changes_locked ? undefined : (student) => {
+                      onDeleteClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? this.state.semesterCourse.changes_locked ? undefined : (student) => {
                         this.setState({
                           confirmationModalShow: true,
                           confirmationModalMessage:
@@ -329,21 +329,21 @@ class MisCoursesStudents extends React.Component {
                               }
                             })
                         });
-                      }}
-                      onRowClick={(student) => this.props.navigate("update", {
+                      } : undefined}
+                      onRowClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (student) => this.props.navigate("update", {
                         state: {
                           sem_course_id: this.sem_course_id,
                           student_batch_id: student.student_batch_id,
                           context_info: { ...this.context_info, ...student }
                         },
-                      })}
-                      onViewClick={(student) => this.props.navigate("update", {
+                      }) : undefined}
+                      onViewClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (student) => this.props.navigate("update", {
                         state: {
                           sem_course_id: this.sem_course_id,
                           student_batch_id: student.student_batch_id,
                           context_info: { ...this.context_info, ...student }
                         },
-                      })}
+                      }) : undefined}
                       rowSx={(student) => {
                         return this.state.studentsCourses.some(sc => sc.student_batch_id == student.student_batch_id && sc.grade == 'W') ? {
                           backgroundColor: Color.red[100]
@@ -361,7 +361,7 @@ class MisCoursesStudents extends React.Component {
                     </Zoom>
                   </Grid>
                   {this.state.semesterCourse.changes_locked ? <></> :
-                    <Grid item container spacing={2}>
+                    <Grid item container spacing={2} display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'flex' : 'none'}>
                       <Grid item>
                         <CustomButton
                           disabled={this.state.callingApi}

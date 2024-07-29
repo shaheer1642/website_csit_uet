@@ -108,7 +108,8 @@ class MisSemestersUpdate extends React.Component {
                   xs: 6,
                   fieldType: 'select',
                   endpoint: '/api/autocomplete/teachers',
-                  selectMenuItems: [{ id: '', label: 'None' }]
+                  endpointData: { include_roles: ['semester_coordinator'] },
+                  selectMenuItems: [{ id: null, label: 'None' }]
                 },
               }}
             />

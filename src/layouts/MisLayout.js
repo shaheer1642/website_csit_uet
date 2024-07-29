@@ -29,6 +29,9 @@ import { withRouter } from '../withRouter';
 import { socket, socketHasConnected } from '../websocket/socket';
 import * as Color from "@mui/material/colors";
 import SocketConnection from '../views/SocketConnection';
+import CustomTextField from '../components/CustomTextField';
+import { MakeGETCall } from '../api';
+import CustomSelect from '../components/CustomSelect';
 
 const drawerWidth = 300;
 
@@ -111,6 +114,7 @@ function MisLayout(props) {
   useEffect(() => {
     if (!props.user)
       navigate('/')
+    setCurrentMenu('')
   }, [props.user])
 
   const handleDrawerOpen = () => {
@@ -153,7 +157,7 @@ function MisLayout(props) {
             }
           }}
         >
-          Computer Science & IT (MIS)
+          University of Engg. & Tech. (MIS)
         </Typography>
         <Typography
           variant="h6"
@@ -216,19 +220,58 @@ function MisLayout(props) {
       <Box sx={{ display: 'flex' }}>
         <AppBar position="fixed" open={open}>
           <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              onClick={handleDrawerOpen}
-              edge="start"
-              sx={{
-                marginRight: 5,
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            {LogoText()}
+            <Grid container justifyContent={'space-between'}>
+              <Grid item container xs='auto' flexDirection={'row'}>
+                <Grid item >
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={handleDrawerOpen}
+                    edge="start"
+                    sx={{
+                      marginRight: 5,
+                      ...(open && { display: 'none' }),
+                    }}
+                  >
+                    <MenuIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item display={'flex'} alignItems={'center'}>
+                  {LogoText()}
+                </Grid>
+              </Grid>
+              <Grid item container xs='auto' alignItems={'center'} display={'flex'} gap={2}>
+                <Grid item display={props.user.user_type == 'dpgs' ? 'flex' : 'none'}>
+                  <CustomSelect
+                    label="Department"
+                    size='small'
+                    fieldType='select'
+                    endpoint='/api/autocomplete/departments'
+                    sx={{
+                      minWidth: '300px',
+                      '& .MuiInputBase-root.MuiOutlinedInput-root': {
+                        color: 'white',
+                        borderRadius: 0,
+                        '& fieldset': {
+                          borderColor: 'white',  // Default border color
+                        },
+                      },
+                      '& .MuiButtonBase-root.MuiIconButton-root': {
+                        color: 'white'
+                      },
+                      '& .MuiFormLabel-root.MuiInputLabel-root': {
+                        color: 'white'
+                      }
+                    }}
+                    onChange={(e, option) => props.updateDepartmentId(option.id, option.label)}
+                    value={props.user.user_department_id}
+                  />
+                </Grid>
+                <Grid item>
+                  <Typography>Logged in as {props.user.name}</Typography>
+                </Grid>
+              </Grid>
+            </Grid>
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -239,23 +282,23 @@ function MisLayout(props) {
           </DrawerHeader>
           <List>
 
-            {['admin', 'pga'].includes(props.user.user_type) ?
+            {['admin', 'pga', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name="Documents" navigation="documents" icon={Icon.Description} /> : <></>
             }
 
-            {['admin', 'pga'].includes(props.user.user_type) ?
+            {['admin', 'pga', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name="Department Management" navigation="departments" icon={Icon.Apartment} /> : <></>
             }
 
-            {['admin', 'pga'].includes(props.user.user_type) ?
+            {['admin', 'pga', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name="Batch Management" navigation="batches" icon={Icon.People} /> : <></>
             }
 
-            {['admin', 'pga'].includes(props.user.user_type) ?
+            {['admin', 'pga', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name="Student Management" navigation="students" icon={Icon.ManageAccounts} /> : <></>
             }
 
-            {['admin', 'pga'].includes(props.user.user_type) ?
+            {['admin', 'pga', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name="Semester Management" navigation="semesters" icon={Icon.CastForEducation} /> : <></>
             }
 
@@ -267,23 +310,23 @@ function MisLayout(props) {
               <DrawerItem name="Courses" navigation="sportal/courses" icon={Icon.Book} /> : <></>
             }
 
-            {['pga', 'student', 'teacher'].includes(props.user.user_type) ?
+            {['pga', 'student', 'teacher', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name={props.user.user_type == 'pga' ? 'Thesis Management' : 'Thesis'} navigation={props.user.user_type == 'student' ? "thesis/manage" : "thesis"} icon={Icon.Article} /> : <></>
             }
 
-            {['admin', 'pga'].includes(props.user.user_type) ?
+            {['admin', 'pga', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name="Instructors" navigation="teachers" icon={Icon.School} /> : <></>
             }
 
-            {['admin', 'pga'].includes(props.user.user_type) ?
+            {['admin', 'pga', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name="Courses" navigation="courses" icon={Icon.Book} /> : <></>
             }
 
-            {['admin', 'pga'].includes(props.user.user_type) ?
+            {['admin', 'pga', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name="Student Performance" navigation="studentPerformance" icon={Icon.Troubleshoot} /> : <></>
             }
 
-            {['admin', 'pga'].includes(props.user.user_type) ?
+            {['admin', 'pga', 'dpgs'].includes(props.user.user_type) ?
               <DrawerItem name="Instructors Performance" navigation="teachersPerformance" icon={Icon.QueryStats} /> : <></>
             }
 

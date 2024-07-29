@@ -3,9 +3,11 @@ import { getCookie, putCookie } from '../cookie_handler';
 import { AuthContext } from '../contexts/AuthContext';
 import { generateNewToken, socket, socketHasConnected } from '../websocket/socket';
 import { MakeGETCall, MakePOSTCall } from '../api';
+import { useNavigate } from 'react-router';
 
 export const useAuth = () => {
-    const { setUser } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
+    const navigate = useNavigate()
 
     const login = async ({ username, password, user_type }) => {
         return new Promise((resolve, reject) => {
@@ -32,7 +34,11 @@ export const useAuth = () => {
             if (!localStorage.getItem('token')) return reject('No token found')
             MakeGETCall('/api/user')
                 .then(res => {
-                    setUser(res)
+                    setUser({
+                        ...res,
+                        user_department_id: res.user_department_id || 'CS&IT',
+                        department_name: res.department_name || 'Computer Science & IT',
+                    })
                     resolve(res)
                 }).catch(err => {
                     reject(err.message || JSON.stringify(err))
@@ -46,5 +52,14 @@ export const useAuth = () => {
         setUser(null);
     };
 
-    return { login, logout, fetchUser };
+    const updateDepartmentId = (id, name) => {
+        setUser({
+            ...user,
+            user_department_id: id,
+            department_name: name,
+        })
+        navigate('/mis')
+    }
+
+    return { login, logout, fetchUser, updateDepartmentId };
 };

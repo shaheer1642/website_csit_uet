@@ -43,10 +43,10 @@ class MisStudentsManagement extends React.Component {
     console.log('fetchStudent', this.student_batch_id)
     this.setState({ callingApi: 'fetchStudent' })
 
-    MakeGETCall('/api/students', { query: { student_batch_id: this.student_batch_id } }).then(res => {
+    MakeGETCall('/api/students', { query: { student_batch_id: this.student_batch_id, user_department_id: this.props.user.user_department_id } }).then(res => {
       this.setState({
         callingApi: '',
-        student: res[0]
+        student: res[0],
       })
     }).catch(console.error)
 
@@ -174,6 +174,7 @@ class MisStudentsManagement extends React.Component {
           idField='student_id'
           submitSuccessMessage='Student Edited Successfully'
           backgroundColor='white'
+          readOnly={(this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga')) ? false : true}
           options={{
             student_id: {
               label: "Student ID",
@@ -251,47 +252,50 @@ class MisStudentsManagement extends React.Component {
             },
           }}
         >
-          <Grid item xs={'auto'}>
-            <CustomButton
-              disabled={this.state.student.semester_frozen || this.state.student.admission_cancelled}
-              color={this.state.student.degree_completed ? 'error' : 'success'}
-              callingApiState={this.state.callingApi == 'degreeComplete'}
-              label={this.state.student.degree_completed ? 'Mark Degree Incomplete' : 'Mark Degree Completed'}
-              variant='outlined'
-              onClick={() => this.setState({
-                confirmationModalShow: true,
-                confirmationModalMessage: `Are you sure you want to mark degree as ${this.state.student.degree_completed ? 'incomplete' : 'completed'} for this student?`,
-                confirmationModalExecute: () => this.degreeComplete()
-              })}
-            />
-          </Grid>
-          <Grid item xs={'auto'}>
-            <CustomButton
-              disabled={this.state.student.degree_completed || this.state.student.admission_cancelled}
-              color={this.state.student.semester_frozen ? 'success' : 'error'}
-              callingApiState={this.state.callingApi == 'semesterFreeze'}
-              label={this.state.student.semester_frozen ? 'Unfreeze Semester' : 'Freeze Semester'}
-              variant='outlined'
-              onClick={() => this.setState({
-                confirmationModalShow: true,
-                confirmationModalMessage: `Are you sure you want to ${this.state.student.semester_frozen ? 'unfreeze' : 'freeze'} semester for this student?`,
-                confirmationModalExecute: () => this.semesterFreeze()
-              })}
-            />
-          </Grid>
-          <Grid item xs={'auto'}>
-            <CustomButton
-              disabled={this.state.student.degree_completed}
-              color={this.state.student.admission_cancelled ? 'success' : 'error'}
-              callingApiState={this.state.callingApi == 'cancelAdmission'}
-              label={this.state.student.admission_cancelled ? 'Uncancel Admission' : 'Cancel Admission'}
-              variant='outlined'
-              onClick={() => this.setState({
-                confirmationModalShow: true,
-                confirmationModalMessage: `Are you sure you want to ${this.state.student.admission_cancelled ? 'uncancel' : 'cancel'} admission for this student?`,
-                confirmationModalExecute: () => this.cancelAdmission()
-              })}
-            />
+          <Grid container xs='auto' paddingLeft={2} marginTop={'auto'} gap={2} display={(this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga')) ? 'flex' : 'none'}>
+            <Grid item xs={'auto'}>
+              <CustomButton
+                disabled={this.state.student.semester_frozen || this.state.student.admission_cancelled}
+                color={this.state.student.degree_completed ? 'error' : 'success'}
+                callingApiState={this.state.callingApi == 'degreeComplete'}
+                label={this.state.student.degree_completed ? 'Mark Degree Incomplete' : 'Mark Degree Completed'}
+                variant='outlined'
+                onClick={() => this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage: `Are you sure you want to mark degree as ${this.state.student.degree_completed ? 'incomplete' : 'completed'} for this student?`,
+                  confirmationModalExecute: () => this.degreeComplete()
+                })}
+              />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton
+                disabled={this.state.student.degree_completed || this.state.student.admission_cancelled}
+                color={this.state.student.semester_frozen ? 'success' : 'error'}
+                callingApiState={this.state.callingApi == 'semesterFreeze'}
+                label={this.state.student.semester_frozen ? 'Unfreeze Semester' : 'Freeze Semester'}
+                variant='outlined'
+                onClick={() => this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage: `Are you sure you want to ${this.state.student.semester_frozen ? 'unfreeze' : 'freeze'} semester for this student?`,
+                  confirmationModalExecute: () => this.semesterFreeze()
+                })}
+              />
+            </Grid>
+            <Grid item xs={'auto'}>
+              <CustomButton
+                disabled={this.state.student.degree_completed}
+                color={this.state.student.admission_cancelled ? 'success' : 'error'}
+                callingApiState={this.state.callingApi == 'cancelAdmission'}
+                label={this.state.student.admission_cancelled ? 'Uncancel Admission' : 'Cancel Admission'}
+                variant='outlined'
+                onClick={() => this.setState({
+                  confirmationModalShow: true,
+                  confirmationModalMessage: `Are you sure you want to ${this.state.student.admission_cancelled ? 'uncancel' : 'cancel'} admission for this student?`,
+                  confirmationModalExecute: () => this.cancelAdmission()
+                })}
+              />
+            </Grid>
+
           </Grid>
         </FormGenerator>
       )
@@ -309,24 +313,26 @@ class MisStudentsManagement extends React.Component {
               <Field name='Total Extensions' value={this.state.student.degree_extension_periods.length} />
               <Field name='History' alignment='vertical' value={this.state.student.degree_extension_periods.map(ext => <Typography>Extended by {ext.period / 86400000} days ({ext.reason})</Typography>)} />
             </Grid>
-            <Grid item xs={12}>
-              <CustomTextField label='Extension Period (in days)' variant='filled' type='number' value={this.state.degree_extension_period} onChange={(e) => this.setState({ degree_extension_period: e.target.value })} />
-            </Grid>
-            <Grid item xs={6}>
-              <CustomTextField fullWidth label='Reason / Notification No.' variant='filled' value={this.state.degree_extension_reason} onChange={(e) => this.setState({ degree_extension_reason: e.target.value })} />
-            </Grid>
-            <Grid item xs={12}>
-              <CustomButton
-                disabled={!Number(this.state.degree_extension_period) || !this.state.degree_extension_reason}
-                label={'Extend Degree Time'}
-                callingApiState={this.state.callingApi == 'extendDegreeTime'}
-                variant='contained'
-                onClick={() => this.setState({
-                  confirmationModalShow: true,
-                  confirmationModalMessage: `Are you sure you want to extend degree time for this student?`,
-                  confirmationModalExecute: () => this.extendDegreeTime()
-                })}
-              />
+            <Grid item container gap={2} display={(this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga')) ? 'flex' : 'none'}>
+              <Grid item xs={12}>
+                <CustomTextField label='Extension Period (in days)' variant='filled' type='number' value={this.state.degree_extension_period} onChange={(e) => this.setState({ degree_extension_period: e.target.value })} />
+              </Grid>
+              <Grid item xs={6}>
+                <CustomTextField fullWidth label='Reason / Notification No.' variant='filled' value={this.state.degree_extension_reason} onChange={(e) => this.setState({ degree_extension_reason: e.target.value })} />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomButton
+                  disabled={!Number(this.state.degree_extension_period) || !this.state.degree_extension_reason}
+                  label={'Extend Degree Time'}
+                  callingApiState={this.state.callingApi == 'extendDegreeTime'}
+                  variant='contained'
+                  onClick={() => this.setState({
+                    confirmationModalShow: true,
+                    confirmationModalMessage: `Are you sure you want to extend degree time for this student?`,
+                    confirmationModalExecute: () => this.extendDegreeTime()
+                  })}
+                />
+              </Grid>
             </Grid>
           </Grid>
         </CustomCard>
@@ -355,14 +361,15 @@ class MisStudentsManagement extends React.Component {
                 <CustomTable
                   margin='0px'
                   loadingState={this.state.studentCoursesArr == undefined}
-                  onRowClick={(studentCourse) =>
-                    this.props.navigate('/mis/semesters/courses/students/update', {
-                      state: {
-                        student_batch_id: this.student_batch_id,
-                        sem_course_id: studentCourse.sem_course_id,
-                        context_info: { ...studentCourse, ...this.state.student }
-                      }
-                    })
+                  onRowClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ?
+                    (studentCourse) =>
+                      this.props.navigate('/mis/semesters/courses/students/update', {
+                        state: {
+                          student_batch_id: this.student_batch_id,
+                          sem_course_id: studentCourse.sem_course_id,
+                          context_info: { ...studentCourse, ...this.state.student }
+                        }
+                      }) : undefined
                   }
                   viewButtonLabel='Manage Course'
 
@@ -379,7 +386,7 @@ class MisStudentsManagement extends React.Component {
 
   render() {
     return (
-      this.state.callingApi == 'fetchStudent' ? <LoadingIcon /> :
+      !this.state.student || !this.state.studentCoursesArr ? <LoadingIcon /> :
         <Grid container spacing={2}>
           <GoBackButton context={this.props.navigate} />
           <Grid item xs={12}>

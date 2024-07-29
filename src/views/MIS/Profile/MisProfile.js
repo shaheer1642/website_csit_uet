@@ -167,6 +167,7 @@ class MisProfile extends React.Component {
       }
     }).then(res => {
       this.updateAlertMesg(res.message, 'success')
+      callback && callback(res)
     }).catch(err => {
       this.updateAlertMesg(err.message, 'warning')
     }).finally(() => {

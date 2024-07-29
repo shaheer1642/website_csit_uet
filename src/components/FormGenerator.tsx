@@ -96,7 +96,8 @@ interface IProps {
   endpoint: string,
   options: fieldOptions,
   submitSuccessMessage: string,
-  backgroundColor?: string
+  backgroundColor?: string,
+  readOnly?: boolean
 }
 
 interface IState {
@@ -169,7 +170,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
     // console.log(this.state.formFields)
   }
 
-  handleFormFieldChange = (key: string, value: string | number | []) => {
+  handleFormFieldChange = (key: string, value: string | number | null | []) => {
     this.setState({ formFields: { ...this.state.formFields, [key]: value } })
   }
 
@@ -186,7 +187,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
           <Grid container spacing={2} style={{ backgroundColor: this.props.backgroundColor || defaultStyles.container.backgroundColor }}>
             <Grid item xs={12}>
               <Typography variant='h2'>
-                {this.props.formType == 'create' ? 'Create New' : 'Update Info'}
+                {this.props.readOnly ? 'Info' : this.props.formType == 'create' ? 'Create New' : 'Update Info'}
               </Typography>
             </Grid>
             {this.state.schema.map((attribute, index) => {
@@ -201,7 +202,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                             <RadioGroup row defaultValue={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.value)}>
                               {
                                 this.props.options[attribute.key]?.fieldTypeOptions.map((option, index) => {
-                                  return <FormControlLabel key={index} value={option} control={<Radio />} label={convertUpper(option)} />
+                                  return <FormControlLabel key={index} value={option} control={<Radio disabled={this.props.readOnly} />} label={convertUpper(option)} />
                                 })
                               }
                             </RadioGroup>
@@ -209,6 +210,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                           :
                           this.props.options[attribute.key]?.fieldType == 'select' ?
                             <CustomSelect
+                              readOnly={this.props.readOnly}
                               value={this.state.formFields[attribute.key]}
                               endpoint={this.props.options[attribute.key]?.endpoint}
                               endpointData={this.props.options[attribute.key]?.endpointData}
@@ -218,6 +220,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                               required={attribute.required}
                             /> :
                             <CustomTextField
+                              readOnly={this.props.readOnly}
                               disabled={this.props.options[attribute.key]?.disabled}
                               type={attribute.type == 'number' ? 'number' : 'text'}
                               required={attribute.required}
@@ -233,6 +236,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                           <FormControlLabel control={<Checkbox defaultChecked={this.props.options[attribute.key]?.defaultValue} onChange={(e) => this.handleFormFieldChange(attribute.key, e.target.checked)} />} label={this.props.options[attribute.key]?.label} />
                           : attribute.type == 'unix_timestamp_milliseconds' ?
                             <TextField
+                              readOnly={this.props.readOnly}
                               label={this.props.options[attribute.key]?.label}
                               type="date"
                               defaultValue={new Date(Number(this.props.options[attribute.key]?.defaultValue) || null).toISOString().split('T')[0]}
@@ -249,7 +253,7 @@ export default class FormGenerator extends React.Component<IProps, IState> {
                 <Alert variant="outlined" severity={this.state.alertSeverity} sx={defaultStyles.alertBox[this.state.alertSeverity as AlertColor]}>{this.state.alertMsg}</Alert>
               </Zoom>
             </Grid>
-            <Grid item xs={'auto'}>
+            <Grid item xs={'auto'} display={this.props.readOnly ? 'none' : 'flex'}>
               <CustomButton
                 label={this.state.callingApi ? <CircularProgress size='20px' /> : this.props.formType == 'create' ? 'Create' : 'Update'}
                 disabled={this.state.callingApi}

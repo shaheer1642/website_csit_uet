@@ -39,15 +39,15 @@ class MisStudents extends React.Component {
   fetchStudents = () => {
     this.setState({ callingApi: 'fetchStudents' })
 
-    const cachedData = getCache('students/fetch')
+    const cachedData = getCache(`students/${this.props.user?.user_department_id}/fetch`)
     if (cachedData) return this.setState({ studentsArr: cachedData, callingApi: '' })
 
-    MakeGETCall('/api/students').then(res => {
+    MakeGETCall('/api/students', { query: { user_department_id: this.props.user.user_department_id } }).then(res => {
       this.setState({
         studentsArr: res,
         callingApi: ''
       })
-      setCache('students/fetch', res)
+      setCache(`students/${this.props.user?.user_department_id}/fetch`, res)
     }).catch(console.error)
 
     // socket.emit('students/fetch', {}, (res) => {
@@ -73,30 +73,37 @@ class MisStudents extends React.Component {
       { id: 'batch_expiration_timestamp', label: 'Degree Expiry', format: (value) => convertTimestampToSeasonYear(value), valueFunc: (row) => calculateDegreeExpiry(row) },
     ];
     return (
-      <CustomCard>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h2">Students</Typography>
-          </Grid>
-          <Grid item xs={'auto'}>
-            <Tabs sx={{ border: 2, borderColor: 'primary.main', borderRadius: 5 }} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({ tabIndex: newIndex })}>
-              <Tab label="MS" />
-              <Tab label="PhD" />
-            </Tabs>
-          </Grid>
-          <Grid item xs={12}>
-            <CustomTable
-              margin="0px"
-              loadingState={this.state.callingApi == 'fetchStudents'}
-              viewButtonLabel='Manage Student'
-              onRowClick={(student) => this.props.navigate('manage', { state: { student_batch_id: student.student_batch_id } })}
-              onViewClick={(student) => this.props.navigate('manage', { state: { student_batch_id: student.student_batch_id } })}
-              rows={this.state.studentsArr.filter(student => (this.state.tabIndex == 0 && student.degree_type == 'ms') || (this.state.tabIndex == 1 && student.degree_type == 'phd'))}
-              columns={columns}
-            />
-          </Grid>
+      <Grid container gap={2}>
+        <Grid item xs={12}>
+          <ContextInfo contextInfo={{ department_name: this.props.user.department_name }} />
         </Grid>
-      </CustomCard>
+        <Grid item xs={12}>
+          <CustomCard>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Typography variant="h2">Students</Typography>
+              </Grid>
+              <Grid item xs={'auto'}>
+                <Tabs sx={{ border: 2, borderColor: 'primary.main', borderRadius: 5 }} value={this.state.tabIndex} onChange={(e, newIndex) => this.setState({ tabIndex: newIndex })}>
+                  <Tab label="MS" />
+                  <Tab label="PhD" />
+                </Tabs>
+              </Grid>
+              <Grid item xs={12}>
+                <CustomTable
+                  margin="0px"
+                  loadingState={this.state.callingApi == 'fetchStudents'}
+                  viewButtonLabel='Manage Student'
+                  onRowClick={(student) => this.props.navigate('manage', { state: { student_batch_id: student.student_batch_id } })}
+                  onViewClick={(student) => this.props.navigate('manage', { state: { student_batch_id: student.student_batch_id } })}
+                  rows={this.state.studentsArr.filter(student => (this.state.tabIndex == 0 && student.degree_type == 'ms') || (this.state.tabIndex == 1 && student.degree_type == 'phd'))}
+                  columns={columns}
+                />
+              </Grid>
+            </Grid>
+          </CustomCard>
+        </Grid>
+      </Grid>
     );
   }
 }

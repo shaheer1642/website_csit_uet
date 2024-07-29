@@ -22,11 +22,10 @@ class MisCoursesUpdate extends React.Component {
   }
 
   componentDidMount() {
-    MakeGETCall('/api/courses', { query: { course_id: this.course_id } }).then(res => {
-      console.log('got res', res)
+    MakeGETCall('/api/courses', { query: { course_id: this.course_id, course_department_id: this.props.user.user_department_id } }).then(res => {
       this.setState({
         loading: false,
-        course: res,
+        course: res[0],
       })
     }).catch(console.error)
     // socket.emit('courses/fetch', { course_id: this.course_id }, (res) => {
@@ -88,12 +87,12 @@ class MisCoursesUpdate extends React.Component {
                   xs: 12,
                   width: '150px'
                 },
-                department: {
-                  label: "Department",
-                  defaultValue: this.state.course.department,
-                  position: 6,
-                  xs: 6,
-                },
+                // department: {
+                //   label: "Department",
+                //   defaultValue: this.state.course.department,
+                //   position: 6,
+                //   xs: 6,
+                // },
               }}
             />
           </Grid>

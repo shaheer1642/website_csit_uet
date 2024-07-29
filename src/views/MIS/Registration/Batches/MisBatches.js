@@ -73,7 +73,11 @@ class MisBatches extends React.Component {
   }
 
   fetchBatches = () => {
-    MakeGETCall('/api/batches').then(res => {
+    MakeGETCall('/api/batches', {
+      query: {
+        batch_department_id: this.props.user.user_department_id
+      }
+    }).then(res => {
       return this.setState({
         batchesArr: res,
         loadingBatches: false
@@ -103,7 +107,7 @@ class MisBatches extends React.Component {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <ContextInfo contextInfo={{ department_name: 'Computer Science & Information Technology' }} />
+          <ContextInfo contextInfo={{ department_name: this.props.user.department_name }} />
         </Grid>
         <Grid item xs={12}>
           <CustomCard>
@@ -124,8 +128,8 @@ class MisBatches extends React.Component {
                   viewButtonLabel='Manage students'
                   onViewClick={(batch) => this.props.navigate('students', { state: { batch_id: batch.batch_id, context_info: batch } })}
                   onRowClick={(batch) => this.props.navigate('students', { state: { batch_id: batch.batch_id, context_info: batch } })}
-                  onEditClick={(batch) => this.props.navigate('update', { state: { batch_id: batch.batch_id } })}
-                  onDeleteClick={(batch) => {
+                  onEditClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (batch) => this.props.navigate('update', { state: { batch_id: batch.batch_id } }) : undefined}
+                  onDeleteClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (batch) => {
                     this.setState({
                       confirmationModalShow: true,
                       confirmationModalMessage: 'Are you sure you want to delete this batch? This will also delete all the students in the batch',
@@ -134,7 +138,7 @@ class MisBatches extends React.Component {
                         // socket.emit('batches/delete', { batch_id: batch.batch_id })
                       }
                     })
-                  }}
+                  } : undefined}
                   rows={this.state.batchesArr.filter(batch => (this.state.tabIndex == 0 && batch.degree_type == 'ms') || (this.state.tabIndex == 1 && batch.degree_type == 'phd'))}
                   columns={columns}
                   rowSx={(row) => {
@@ -145,7 +149,7 @@ class MisBatches extends React.Component {
                   footerText='Red = Time barred'
                 />
               </Grid>
-              <Grid item xs={'auto'}>
+              <Grid item xs={'auto'} display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'flex' : 'none'}>
                 <CustomButton onClick={() => this.props.navigate('create')} label="Create New" />
               </Grid>
               <ConfirmationModal

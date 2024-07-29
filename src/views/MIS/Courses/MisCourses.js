@@ -70,7 +70,7 @@ class MisCourses extends React.Component {
   }
 
   fetchCourses = () => {
-    MakeGETCall('/api/courses').then(res => {
+    MakeGETCall('/api/courses', { query: { course_department_id: this.props.user.user_department_id } }).then(res => {
       return this.setState({
         coursesArr: res,
         loadingCourses: false,

@@ -68,7 +68,7 @@ class MisTeachers extends React.Component {
   }
 
   fetchTeachers = () => {
-    MakeGETCall('/api/teachers').then(res => {
+    MakeGETCall('/api/teachers', { query: { user_department_id: this.props.user.user_department_id } }).then(res => {
       return this.setState({
         teachersArr: res,
         loadingTeachers: false,
@@ -90,7 +90,7 @@ class MisTeachers extends React.Component {
       { id: "teacher_name", label: "Instructor Name", format: (value) => value },
       { id: "teacher_gender", label: "Gender", format: (value) => convertUpper(value) },
       { id: "user_email", label: "Email", format: (value) => value },
-      { id: "teacher_department_id", label: "Department", format: (value) => value },
+      { id: "user_department_id", label: "Department", format: (value) => value },
     ];
     return (
       <CustomCard>

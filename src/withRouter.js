@@ -8,10 +8,10 @@ export const withRouter = (Component) => {
     let location = useLocation();
     let navigate = useNavigate();
     let params = useParams();
-    const { login, logout, fetchUser } = useAuth()
+    const { login, logout, fetchUser, updateDepartmentId } = useAuth()
     const { user } = React.useContext(AuthContext)
 
-    return <Component {...props} {...{ location, navigate, params, login, logout, fetchUser, user }} />;
+    return <Component {...props} {...{ location, navigate, params, login, logout, fetchUser, user, updateDepartmentId }} />;
   }
 
   return ComponentWithRouterProp;

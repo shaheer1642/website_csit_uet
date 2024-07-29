@@ -33,7 +33,7 @@ class MisBatchesCreate extends React.Component {
                 position: 2,
                 xs: 6,
                 fieldType: 'radiobox',
-                fieldTypeOptions: ['computer_science', 'data_science', 'cyber_security']
+                fieldTypeOptions: this.props.user.user_department_id == 'CS&IT' ? ['computer_science', 'data_science', 'cyber_security'] : ['main']
               },
               enrollment_year: {
                 label: 'Enrollment Year',

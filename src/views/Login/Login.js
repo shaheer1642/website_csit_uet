@@ -48,7 +48,9 @@ class Login extends React.Component {
       showPassword: false,
 
       userInput: {
-        user_type: 'student'
+        username: '',
+        user_type: 'student',
+        password: ''
       },
       user_obj: undefined,
 
@@ -245,7 +247,7 @@ class Login extends React.Component {
               {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton>
           </Grid>
-          {this.state.userInput['username'] == 'admin' || this.state.userInput['username'] == 'pga' ? <></> :
+          {this.state.userInput['username'].startsWith('admin') || this.state.userInput['username'].startsWith('pga') || this.state.userInput['username'].startsWith('dpgs') ? <></> :
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
               <RadioGroup sx={{ color: 'white' }} row value={this.state.userInput['user_type']} onChange={(e) => this.setUserInput('user_type', e.target.value)}>
                 <FormControlLabel value="student" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Student" />
@@ -288,7 +290,7 @@ class Login extends React.Component {
               value={this.state.userInput['username'] || ''}
               onChange={(e) => this.setUserInput('username', e.target.value)} />
           </Grid>
-          {this.state.userInput['username'] == 'admin' || this.state.userInput['username'] == 'pga' ? <></> :
+          {this.state.userInput['username'].startsWith('admin') || this.state.userInput['username'].startsWith('pga') || this.state.userInput['username'].startsWith('dpgs') ? <></> :
             <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'center', }}>
               <RadioGroup sx={{ color: 'white' }} row value={this.state.userInput['user_type']} onChange={(e) => this.setUserInput('user_type', e.target.value)}>
                 <FormControlLabel value="student" control={<Radio sx={{ color: 'white', '&.Mui-checked': { color: 'white' } }} />} label="Student" />

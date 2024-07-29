@@ -12,6 +12,7 @@ interface IProps {
     endpointData?: Object | Object[] | undefined,
     menuItems: Array<any> | undefined,
     value: string | undefined,
+    size?: 'small' | 'medium',
     label: string,
     onChange?: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
     required: boolean | undefined,
@@ -83,6 +84,7 @@ export default class CustomSelect extends React.Component<IProps, IState> {
         return (
             this.state.componentLoading ? <LoadingIcon /> :
                 <Autocomplete
+                    size={this.props.size}
                     readOnly={this.props.readOnly}
                     disablePortal
                     options={this.state.menuItems}

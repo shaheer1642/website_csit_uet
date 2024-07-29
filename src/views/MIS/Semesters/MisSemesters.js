@@ -54,7 +54,7 @@ class MisSemesters extends React.Component {
   }
 
   fetchSemesters = () => {
-    MakeGETCall('/api/semesters').then(res => {
+    MakeGETCall('/api/semesters', { query: { semester_department_id: this.props.user.user_department_id } }).then(res => {
       return this.setState({
         semestersArr: res,
         loadingSemesters: false,
@@ -104,7 +104,7 @@ class MisSemesters extends React.Component {
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <ContextInfo contextInfo={{ department_name: 'Computer Science & Information Technology' }} />
+          <ContextInfo contextInfo={{ department_name: this.props.user.department_name }} />
         </Grid>
         <Grid item xs={12}>
           <CustomCard>
@@ -134,8 +134,8 @@ class MisSemesters extends React.Component {
                         context_info: semester
                       }
                     })}
-                  onEditClick={(semester) => this.props.navigate('update', { state: { semester_id: semester.semester_id } })}
-                  onDeleteClick={(semester) => {
+                  onEditClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (semester) => this.props.navigate('update', { state: { semester_id: semester.semester_id } }) : undefined}
+                  onDeleteClick={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? (semester) => {
                     this.setState({
                       confirmationModalShow: true,
                       confirmationModalMessage: 'Are you sure you want to remove this semester?',
@@ -144,12 +144,12 @@ class MisSemesters extends React.Component {
                         // socket.emit('semesters/delete', { semester_id: semester.semester_id })
                       }
                     })
-                  }}
+                  } : undefined}
                   rows={this.state.semestersArr}
                   columns={columns}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} display={this.props.user.user_type.startsWith('admin') || this.props.user.user_type.startsWith('pga') ? 'flex' : 'none'}>
                 <CustomButton
                   onClick={() => this.props.navigate("create")}
                   label="Create New"

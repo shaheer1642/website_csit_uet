@@ -45,21 +45,21 @@ class MisTeacherPerformance extends React.Component {
 
   componentDidMount() {
     this.fetchTeacher()
-    socket.addEventListener( "teachers/listener/update", this.fetchTeacher );
+    socket.addEventListener("teachers/listener/update", this.fetchTeacher);
   }
 
   componentWillUnmount() {
-    socket.removeEventListener( "teachers/listener/update", this.teachersListenerUpdate );
+    socket.removeEventListener("teachers/listener/update", this.teachersListenerUpdate);
   }
 
   fetchTeacher() {
-    this.setState({callingApi: 'fetchTeacher'})
+    this.setState({ callingApi: 'fetchTeacher' })
 
-    MakeGETCall(`/api/teachers/`, {query: {teacher_id: this.props.user?.user_id}}).then(res => {
+    MakeGETCall(`/api/teachers/`, { query: { teacher_id: this.props.user?.user_id, user_department_id: this.props.user.user_department_id } }).then(res => {
       return this.setState({
-              teacher: res,
-              callingApi: '',
-            });
+        teacher: res[0],
+        callingApi: '',
+      });
     }).catch(console.error)
 
     // socket.emit("teachers/fetch", {teacher_id: this.props.user?.user_id}, (res) => {
@@ -75,29 +75,29 @@ class MisTeacherPerformance extends React.Component {
 
   render() {
     return (
-      this.state.callingApi == 'fetchTeacher' ? <LoadingIcon />:
-      <CustomCard>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Typography variant="h2">{`Performance Report`}</Typography>
+      this.state.callingApi == 'fetchTeacher' ? <LoadingIcon /> :
+        <CustomCard>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h2">{`Performance Report`}</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Field name="Total Courses Taught" value={this.state.teacher.courses_taught} />
+            </Grid>
+            <Grid item xs={12}>
+              <Field name="MS Students Supervised" value={this.state.teacher.ms_students_supervised} />
+            </Grid>
+            <Grid item xs={12}>
+              <Field name="MS Students Under Supervision" value={this.state.teacher.ms_students_under_supervision} />
+            </Grid>
+            <Grid item xs={12}>
+              <Field name="PhD Students Supervised" value={this.state.teacher.phd_students_supervised} />
+            </Grid>
+            <Grid item xs={12}>
+              <Field name="PhD Students Under Supervision" value={this.state.teacher.phd_students_under_supervision} />
+            </Grid>
           </Grid>
-          <Grid item xs={12}>
-            <Field name="Total Courses Taught" value={this.state.teacher.courses_taught} />
-          </Grid>
-          <Grid item xs={12}>
-            <Field name="MS Students Supervised" value={this.state.teacher.ms_students_supervised} />
-          </Grid>
-          <Grid item xs={12}>
-            <Field name="MS Students Under Supervision" value={this.state.teacher.ms_students_under_supervision} />
-          </Grid>
-          <Grid item xs={12}>
-            <Field name="PhD Students Supervised" value={this.state.teacher.phd_students_supervised} />
-          </Grid>
-          <Grid item xs={12}>
-            <Field name="PhD Students Under Supervision" value={this.state.teacher.phd_students_under_supervision} />
-          </Grid>
-        </Grid>
-      </CustomCard>
+        </CustomCard>
     );
   }
 }

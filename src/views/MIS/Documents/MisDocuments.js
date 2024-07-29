@@ -84,35 +84,38 @@ class MisDocuments extends React.Component {
   }
 
   uploadDocuments = async (e) => {
-    this.setState({ uploadingDocuments: true })
-    console.log('file changed', e.target.files)
     e.preventDefault()
-    const promises = []
-    Array.from(e.target.files).forEach(file => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (e) => {
-        const rawBase64 = e.target.result;
-        promises.push(
-          new Promise((resolve, reject) => {
-            console.log('uploading file', rawBase64);
-            MakePOSTCall('/api/documents', { body: { document: rawBase64, document_name: file.name } })
-              .then(res => {
-                resolve(`✔️ Uploaded file ${file.name}`)
-              }).catch(err => {
-                resolve(`❌ Error uploading file ${file.name}: ${err.message || err}`)
-              })
-          })
-        )
-      };
+    this.setState({ uploadingDocuments: true })
+    Promise.all(
+      Array.from(e.target.files).map(file => {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (e) => {
+            const rawBase64 = e.target.result;
+            resolve({ document: rawBase64, document_name: file.name })
+          };
+
+        })
+      })
+    ).then(files => {
+      Promise.all(files.map(({ document, document_name }) =>
+        new Promise((resolve) => {
+          MakePOSTCall('/api/documents', { body: { document, document_name } })
+            .then(res => {
+              resolve(`✔️ Uploaded file ${document_name}`)
+            }).catch(err => {
+              resolve(`❌ Error uploading file ${document_name}: ${err.message || err}`)
+            })
+        })
+      )).then(responses => {
+        this.setState({
+          alertMsg: responses.join('\n'),
+          alertSeverity: 'success',
+          uploadingDocuments: false
+        }, this.timeoutAlert)
+      })
     })
-    Promise.all(promises).then(responses => {
-      this.setState({
-        alertMsg: responses.join('\n'),
-        alertSeverity: 'success',
-        uploadingDocuments: false
-      }, this.timeoutAlert)
-    }).catch(console.error)
     e.target.value = null
   }
 
@@ -169,13 +172,12 @@ class MisDocuments extends React.Component {
               component="label"
               disabled={this.state.uploadingDocuments}
               label={
-                this.state.uploadingDocuments ? <CircularProgress size='20px' /> :
-                  <React.Fragment>
-                    Upload Documents
-                    <input multiple hidden type="file" onChange={this.uploadDocuments} />
-                  </React.Fragment>
+                <React.Fragment>
+                  Upload Documents
+                  <input multiple hidden type="file" onChange={this.uploadDocuments} />
+                </React.Fragment>
               }
-              startIcon={<UploadFile />}
+              startIcon={this.state.uploadingDocuments ? <CircularProgress size='20px' /> : <UploadFile />}
             />
           </Grid>
           <ConfirmationModal

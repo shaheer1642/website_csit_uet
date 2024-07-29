@@ -273,7 +273,7 @@ class MisApplicationsTemplatesCreateUpdate extends React.Component {
                 <Grid item xs={'auto'}>
                   <CustomSelect
                     label="Received by"
-                    menuItems={[{ id: '', label: 'None' }]}
+                    menuItems={[]}
                     endpoint={['/api/autocomplete/faculty', '/api/autocomplete/teachers']}
                     endpointData={[{}, { include_roles: ['chairman', 'batch_advisor', 'semester_coordinator'] }]}
                     sx={{ minWidth: '300px' }}

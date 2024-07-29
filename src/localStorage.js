@@ -1,13 +1,22 @@
 const { socket } = require("./websocket/socket");
 
-socket.on('students_changed', () => emptyLocalStorage('students/fetch'))
-socket.on('students_batch_changed', () => emptyLocalStorage('students/fetch'))
+socket.on('students_changed', () => emptyLocalStorage('students'))
+socket.on('students_batch_changed', () => emptyLocalStorage('students'))
 
-// localStorage.clear()
+// note: this is for clearing all cached data except tokens and such
+Object.keys(localStorage).forEach(key => {
+    if (key !== 'token') {
+        localStorage.removeItem(key)
+    }
+})
 
 function emptyLocalStorage(item) {
-    console.log('[localStorage.emptyLocalStorage]', item)
-    localStorage.removeItem(item)
+    console.log('[localStorage.emptyLocalStorage]', item, Object.keys(localStorage))
+    Object.keys(localStorage).forEach(key => {
+        if (key.startsWith(item)) {
+            localStorage.removeItem(key)
+        }
+    })
 }
 
 function getCache(item) {

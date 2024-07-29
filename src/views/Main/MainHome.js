@@ -24,7 +24,7 @@ class MainHome extends React.Component {
     super(props);
     this.state = {
       tabValue: 0,
-      eventsArr: [],
+      // eventsArr: [],
       currentImageIndex: 0
     };
     this.interval = null;
@@ -37,7 +37,7 @@ class MainHome extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchEvents()
+    // this.fetchEvents()
 
     // socket.emit("events/fetch", {}, (res) => {
     //   if (res.code == 200) {
@@ -47,7 +47,7 @@ class MainHome extends React.Component {
     //   }
     // });
 
-    socket.addEventListener("events_changed", this.fetchEvents);
+    // socket.addEventListener("events_changed", this.fetchEvents);
 
     // Automatically advance to the next image every 3 seconds
     this.interval = setInterval(() => {
@@ -55,16 +55,16 @@ class MainHome extends React.Component {
     }, 5000);
   }
 
-  fetchEvents = () => {
-    MakeGETCall('/api/events').then(res => {
-      return this.setState({
-        eventsArr: res,
-      });
-    }).catch(console.error)
-  }
+  // fetchEvents = () => {
+  //   MakeGETCall('/api/events').then(res => {
+  //     return this.setState({
+  //       eventsArr: res,
+  //     });
+  //   }).catch(console.error)
+  // }
 
   componentWillUnmount() {
-    socket.removeEventListener("events_changed", this.fetchEvents);
+    // socket.removeEventListener("events_changed", this.fetchEvents);
     clearInterval(this.interval);
   }
 
