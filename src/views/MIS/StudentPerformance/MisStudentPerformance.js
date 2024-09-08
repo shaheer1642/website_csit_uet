@@ -42,7 +42,7 @@ class MisStudentPerformance extends React.Component {
 
     this.setState({ callingApi: 'fetchStudents' })
 
-    MakeGETCall('/api/students').then(res => {
+    MakeGETCall('/api/students', { query: { user_department_id: this.props.user?.user_department_id } }).then(res => {
       this.setState({
         studentsArr: res,
         callingApi: ''
