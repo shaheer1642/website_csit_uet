@@ -426,7 +426,9 @@ function MisLayout(props) {
 
             <DrawerItem name="My Profile" navigation="profile" icon={Icon.AccountCircle} />
 
-            <DrawerItem name="Help" navigation="help" icon={Icon.Help} />
+            {!['dpgs'].includes(props.user.user_type) ?
+              <DrawerItem name="Help" navigation="help" icon={Icon.Help} /> : <></>
+            }
 
             <DrawerItem name="Logout" icon={Icon.PowerSettingsNew} iconColor='Red' onClick={() => onLogoutClick()} />
 
