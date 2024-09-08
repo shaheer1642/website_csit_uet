@@ -19,6 +19,7 @@ const firebaseApp = initializeApp(firebaseConfig);
 export const messaging = getMessaging(firebaseApp);
 
 export const fetchToken = async (callback) => {
+  console.log('fetchtoken called')
   return getToken(messaging, { vapidKey: process.env.REACT_APP_FIREBASE_FCM_VAPIDKEY }).then((currentToken) => {
     if (currentToken) {
       // console.log('[Firebase FCM] Current token for client:', currentToken);

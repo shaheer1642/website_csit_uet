@@ -46,7 +46,7 @@ import MisCoursesStudentsUpdate from "./views/MIS/Semesters/Courses/Students/Mis
 import MisStudentBatches from "./views/MIS/Student Dashboard/Batches/MisStudentBatches";
 import MisStudentSemesters from "./views/MIS/Student Dashboard/Semesters/MisStudentSemesters";
 import MisStudentCourses from "./views/MIS/Student Dashboard/Courses/MisStudentCourses";
-import FirebaseNotifications from "./firebase/firebase-notifications";
+// import FirebaseNotifications from "./firebase/firebase-notifications";
 import MisDepartments from "./views/MIS/Departments/MisDepartments";
 import MisDepartmentsUpdate from "./views/MIS/Departments/MisDepartmentsUpdate";
 import MisHelp from "./views/MIS/Help/MisHelp";
@@ -173,6 +173,6 @@ root.render(
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <Router />
-    <FirebaseNotifications />
+    {/* <FirebaseNotifications /> */}
   </ThemeProvider>
 );
